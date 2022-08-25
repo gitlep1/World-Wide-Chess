@@ -4,8 +4,8 @@ const games = express.Router();
 const {
   getAllPreviousGames,
   getPreviousGamesByID,
-  createPreviousGames,
-  updatePreviousGames,
+  // createPreviousGames,
+  // updatePreviousGames,
   deletePreviousGames,
 } = require("../queries/previousGames");
 
@@ -33,57 +33,57 @@ games.get("/:userID/:id", async (req, res) => {
   }
 });
 
-games.post("/:userID", async (req, res) => {
-  const { userID } = req.params;
-  const newPreviousGame = {
-    userID: req.body.userID,
-    opponentID: req.body.opponentID,
-    winner: req.body.winner,
-    moves: req.body.moves,
-  };
+// games.post("/:userID", async (req, res) => {
+//   const { userID } = req.params;
+//   const newPreviousGame = {
+//     userID: req.body.userID,
+//     opponentID: req.body.opponentID,
+//     winner: req.body.winner,
+//     moves: req.body.moves,
+//   };
 
-  const newGame = await createPreviousGames(
-    userID,
-    newPreviousGame.userID,
-    newPreviousGame.opponentID,
-    newPreviousGame.winner,
-    newPreviousGame.moves
-  );
+//   const newGame = await createPreviousGames(
+//     userID,
+//     newPreviousGame.userID,
+//     newPreviousGame.opponentID,
+//     newPreviousGame.winner,
+//     newPreviousGame.moves
+//   );
 
-  if (newGame) {
-    console.log("=== CREATE game", newGame, "===");
-    res.status(200).json(newGame);
-  } else {
-    res.status(404).send("Cannot create a new game.");
-  }
-});
+//   if (newGame) {
+//     console.log("=== CREATE game", newGame, "===");
+//     res.status(200).json(newGame);
+//   } else {
+//     res.status(404).send("Cannot create a new game.");
+//   }
+// });
 
-games.put("/:userID/:id", async (req, res) => {
-  const { id } = req.params;
-  const updatePreviousGame = {
-    userID: req.body.userID,
-    opponentID: req.body.opponentID,
-    winner: req.body.winner,
-    moves: req.body.moves,
-  };
+// games.put("/:userID/:id", async (req, res) => {
+//   const { id } = req.params;
+//   const updatePreviousGame = {
+//     userID: req.body.userID,
+//     opponentID: req.body.opponentID,
+//     winner: req.body.winner,
+//     moves: req.body.moves,
+//   };
 
-  const updateGame = await updatePreviousGames(
-    id,
-    updatePreviousGame.userID,
-    updatePreviousGame.moves
-  );
+//   const updateGame = await updatePreviousGames(
+//     id,
+//     updatePreviousGame.userID,
+//     updatePreviousGame.moves
+//   );
 
-  if (updateGame) {
-    console.log("=== UPDATE game", updateGame, "===");
-    res.status(200).json(updateGame);
-  } else {
-    res.status(404).send("Couldn't update game.");
-  }
-});
+//   if (updateGame) {
+//     console.log("=== UPDATE game", updateGame, "===");
+//     res.status(200).json(updateGame);
+//   } else {
+//     res.status(404).send("Couldn't update game.");
+//   }
+// });
 
-games.delete("/:id/:userID", async (req, res) => {
-  const { id, userID } = req.params;
-  const deletePreviousGame = await deletePreviousGames(id, userID);
+games.delete("/:userID/:id", async (req, res) => {
+  const { userID, id } = req.params;
+  const deletePreviousGame = await deletePreviousGames(userID, id);
 
   if (deletePreviousGame.id) {
     console.log("=== DESTROY game", deletePreviousGame, "===");

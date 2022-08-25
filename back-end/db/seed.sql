@@ -36,23 +36,3 @@ INSERT INTO games (userID, opponentID, winner, moves) VALUES
   "7q/1pK5/3R4/p1pQPn2/8/2P3kp/q1p2NP1/8 w - - 0 1",
   "8/P2N1B2/1p6/5kB1/5P1r/1q6/b2pQb2/3nRK2 w - - 0 1"
   }');
-
-  INSERT INTO previous_games (userID, winner, moves)  VALUES
-  ('1', 'Hard Bot', '{
-    "1K6/6p1/p1q5/1Q1QP2N/1r4q1/k4p2/2n1RP1p/8 w - - 0 1", 
-    "1N2bn2/5pp1/2p2P1p/3k4/1q6/B3K1Q1/1Q5r/4R3 w - - 0 1", 
-    "8/r1p1q1P1/p7/3rP2R/8/R2Q1K2/1P1qP2p/4k3 b - - 35 1", 
-    "4k2n/p1p3p1/1B1P4/p4P2/8/K2R4/1nr2PP1/5N2 w - - 75 1"
-    }'),
-    ('2', 'Easy Bot', '{
-    "1K6/6p1/p1q5/1Q1QP2N/1r4q1/k4p2/2n1RP1p/8 w - - 0 1", 
-    "1N2bn2/5pp1/2p2P1p/3k4/1q6/B3K1Q1/1Q5r/4R3 w - - 0 1", 
-    "8/r1p1q1P1/p7/3rP2R/8/R2Q1K2/1P1qP2p/4k3 b - - 35 1", 
-    "4k2n/p1p3p1/1B1P4/p4P2/8/K2R4/1nr2PP1/5N2 w - - 75 1"
-    }'),
-    ('3', 'Medium Bot', '{
-    "1K6/6p1/p1q5/1Q1QP2N/1r4q1/k4p2/2n1RP1p/8 w - - 0 1", 
-    "1N2bn2/5pp1/2p2P1p/3k4/1q6/B3K1Q1/1Q5r/4R3 w - - 0 1", 
-    "8/r1p1q1P1/p7/3rP2R/8/R2Q1K2/1P1qP2p/4k3 b - - 35 1", 
-    "4k2n/p1p3p1/1B1P4/p4P2/8/K2R4/1nr2PP1/5N2 w - - 75 1"
-    }');

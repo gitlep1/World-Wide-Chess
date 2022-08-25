@@ -20,12 +20,3 @@ CREATE TABLE games (
   winner TEXT REFERENCES users(username) DEFAULT NULL,
   moves TEXT[] DEFAULT array[]::TEXT[]
 );
-
-DROP TABLE IF EXISTS previous_games;
-CREATE TABLE previous_games (
-  id SERIAL NOT NULL PRIMARY KEY,
-  userID INT NOT NULL REFERENCES users(id),
-  gameID INT NOT NULL REFERENCES games(id),
-  winner TEXT NOT NULL REFERENCES users(username),
-  moves TEXT NOT NULL REFERENCES games(moves)
-);

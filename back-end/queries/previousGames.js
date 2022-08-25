@@ -24,31 +24,31 @@ const getPreviousGamesByID = async (userID, id) => {
   }
 };
 
-const createPreviousGames = async (userID, opponentID, winner, moves) => {
-  try {
-    const newGame = await db.one(
-      "INSERT INTO games (userID, opponentID, winner, moves) VALUES($1, $2, $3, $4) RETURNING *",
-      [userID, opponentID, winner, moves]
-    );
-    return newGame;
-  } catch (error) {
-    return error;
-  }
-};
+// const createPreviousGames = async (userID, opponentID, winner, moves) => {
+//   try {
+//     const newGame = await db.one(
+//       "INSERT INTO games (userID, opponentID, winner, moves) VALUES($1, $2, $3, $4) RETURNING *",
+//       [userID, opponentID, winner, moves]
+//     );
+//     return newGame;
+//   } catch (error) {
+//     return error;
+//   }
+// };
 
-const updatePreviousGames = async (id, userID, opponentID, winner, moves) => {
-  try {
-    const updatedGame = await db.one(
-      "UPDATE games SET opponentID = $3 winner = $4 moves = moves || $5 WHERE id = $1 AND userID = $2 RETURNING *",
-      [id, userID, opponentID, winner, moves]
-    );
-    return updatedGame;
-  } catch (error) {
-    return error;
-  }
-};
+// const updatePreviousGames = async (id, userID, opponentID, winner, moves) => {
+//   try {
+//     const updatedGame = await db.one(
+//       "UPDATE games SET opponentID = $3 winner = $4 moves = moves || $5 WHERE id = $1 AND userID = $2 RETURNING *",
+//       [id, userID, opponentID, winner, moves]
+//     );
+//     return updatedGame;
+//   } catch (error) {
+//     return error;
+//   }
+// };
 
-const deletePreviousGames = async (id, userID) => {
+const deletePreviousGames = async (userID, id) => {
   try {
     if (
       id === null ||
@@ -59,8 +59,8 @@ const deletePreviousGames = async (id, userID) => {
       return false;
     }
     const deletedGame = await db.one(
-      "DELETE FROM games WHERE id = $1 AND userID = $2 RETURNING *",
-      [id, userID]
+      "DELETE FROM games WHERE userID = $1 AND id = $2 RETURNING *",
+      [userID, id]
     );
     return deletedGame;
   } catch (error) {
@@ -71,7 +71,7 @@ const deletePreviousGames = async (id, userID) => {
 module.exports = {
   getAllPreviousGames,
   getPreviousGamesByID,
-  createPreviousGames,
-  updatePreviousGames,
+  // createPreviousGames,
+  // updatePreviousGames,
   deletePreviousGames,
 };
