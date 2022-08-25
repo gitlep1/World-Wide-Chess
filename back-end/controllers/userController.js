@@ -52,9 +52,9 @@ user.post("/", checkValues, async (req, res) => {
       newUser.password,
       newUser.email
     );
-    console.log("=== POST user", createdUser, "===");
 
     if (createdUser) {
+      console.log("=== POST user", createdUser, "===");
       res.status(201).json(createdUser);
     } else {
       res.status(404).send("user not created");

@@ -1,7 +1,7 @@
 {
   "name": "back-end",
   "version": "0.0.0",
-  "description": "Play chess worldwide",
+  "description": "Play World Wide Chess",
   "main": "server.js",
   "scripts": {
     "dbinit": "psql -U postgres -f db/schema.sql",

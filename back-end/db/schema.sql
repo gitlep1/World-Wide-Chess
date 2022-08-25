@@ -1,29 +1,31 @@
-DROP DATABASE IF EXISTS WorldWideChess;
-CREATE DATABASE WorldWideChess;
+DROP DATABASE IF EXISTS world_wide_chess;
+CREATE DATABASE world_wide_chess;
 
-\c WorldWideChess;
+\c world_wide_chess;
 
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (
     id SERIAL NOT NULL PRIMARY KEY,
-    username TEXT NOT NULL,
+    username TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
-    email TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
     created_at TIMESTAMP DEFAULT NOW()
 );
 
-DROP TABLE IF EXISTS gameBoard;
-CREATE TABLE gameBoard (
+DROP TABLE IF EXISTS games;
+CREATE TABLE games (
   id SERIAL NOT NULL PRIMARY KEY,
   userID INT NOT NULL REFERENCES users(id),
-  color TEXT
-  moves JSONB
+  opponentID INT NOT NULL REFERENCES users(id),
+  winner TEXT REFERENCES users(username) DEFAULT NULL,
+  moves TEXT[] DEFAULT array[]::TEXT[]
 );
 
-DROP TABLE IF EXISTS previousGames;
-CREATE TABLE previousGames (
+DROP TABLE IF EXISTS previous_games;
+CREATE TABLE previous_games (
   id SERIAL NOT NULL PRIMARY KEY,
-  gameID INT NOT NULL REFERENCES gameBoard(id),
   userID INT NOT NULL REFERENCES users(id),
-  gameData JSONB
+  gameID INT NOT NULL REFERENCES games(id),
+  winner TEXT NOT NULL REFERENCES users(username),
+  moves TEXT NOT NULL REFERENCES games(moves)
 );
