@@ -1,7 +1,4 @@
-DROP DATABASE IF EXISTS world_wide_chess;
-CREATE DATABASE world_wide_chess;
-
-\c world_wide_chess;
+\c dbdtebh87uhs8i;
 
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (

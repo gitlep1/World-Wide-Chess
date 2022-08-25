@@ -1,4 +1,4 @@
-\c world_wide_chess;
+\c dbdtebh87uhs8i;
 
 INSERT INTO users (username, password, email, created_at) VALUES
 ('Easy Bot', 'o5b21e*F6Wan', 'easybot@bot.com', NOW()),
