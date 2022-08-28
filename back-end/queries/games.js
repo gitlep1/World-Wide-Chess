@@ -2,7 +2,13 @@ const db = require("../db/dbConfig");
 
 const getAllGames = async () => {
   try {
-    const games = await db.any("SELECT * FROM games");
+    const games = await db.any(
+      "SELECT * FROM games"
+      // "SELECT * FROM users JOIN games ON users.id = games.player1ID"
+      // `SELECT *, player1.username AS player1, player2.username AS player2 FROM games
+      // JOIN users AS player1 ON games.player1id = player1.id
+      // JOIN users AS player2 ON games.player2id = player2.id`
+    );
     return games;
   } catch (err) {
     return err;
@@ -18,11 +24,11 @@ const getGamesByID = async (id) => {
   }
 };
 
-const createGames = async (userID, opponentID) => {
+const createGames = async (player1ID, player2ID) => {
   try {
     const newGame = await db.one(
-      "INSERT INTO games (userID, opponentID) VALUES($1, $2) RETURNING *",
-      [userID, opponentID]
+      "INSERT INTO games (player1ID, player2ID) VALUES($1, $2) RETURNING *",
+      [player1ID, player2ID]
     );
     return newGame;
   } catch (error) {

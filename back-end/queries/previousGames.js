@@ -1,10 +1,10 @@
 const db = require("../db/dbConfig");
 
-const getAllPreviousGames = async (userID) => {
+const getAllPreviousGames = async (player1ID) => {
   try {
     const previousGames = await db.any(
-      "SELECT * FROM games WHERE userID = $1",
-      [userID]
+      "SELECT * FROM games WHERE player1ID = $1",
+      [player1ID]
     );
     return previousGames;
   } catch (err) {
@@ -12,11 +12,11 @@ const getAllPreviousGames = async (userID) => {
   }
 };
 
-const getPreviousGamesByID = async (userID, id) => {
+const getPreviousGamesByID = async (player1ID, id) => {
   try {
     const game = await db.any(
-      "SELECT * FROM games WHERE userID = $1 AND id = $2",
-      [userID, id]
+      "SELECT * FROM games WHERE player1ID = $1 AND id = $2",
+      [player1ID, id]
     );
     return game;
   } catch (err) {
@@ -24,43 +24,19 @@ const getPreviousGamesByID = async (userID, id) => {
   }
 };
 
-// const createPreviousGames = async (userID, opponentID, winner, moves) => {
-//   try {
-//     const newGame = await db.one(
-//       "INSERT INTO games (userID, opponentID, winner, moves) VALUES($1, $2, $3, $4) RETURNING *",
-//       [userID, opponentID, winner, moves]
-//     );
-//     return newGame;
-//   } catch (error) {
-//     return error;
-//   }
-// };
-
-// const updatePreviousGames = async (id, userID, opponentID, winner, moves) => {
-//   try {
-//     const updatedGame = await db.one(
-//       "UPDATE games SET opponentID = $3 winner = $4 moves = moves || $5 WHERE id = $1 AND userID = $2 RETURNING *",
-//       [id, userID, opponentID, winner, moves]
-//     );
-//     return updatedGame;
-//   } catch (error) {
-//     return error;
-//   }
-// };
-
-const deletePreviousGames = async (userID, id) => {
+const deletePreviousGames = async (player1ID, id) => {
   try {
     if (
       id === null ||
       id === undefined ||
-      userID === null ||
-      userID === undefined
+      player1ID === null ||
+      player1ID === undefined
     ) {
       return false;
     }
     const deletedGame = await db.one(
-      "DELETE FROM games WHERE userID = $1 AND id = $2 RETURNING *",
-      [userID, id]
+      "DELETE FROM games WHERE player1ID = $1 AND id = $2 RETURNING *",
+      [player1ID, id]
     );
     return deletedGame;
   } catch (error) {
@@ -71,7 +47,5 @@ const deletePreviousGames = async (userID, id) => {
 module.exports = {
   getAllPreviousGames,
   getPreviousGamesByID,
-  // createPreviousGames,
-  // updatePreviousGames,
   deletePreviousGames,
 };

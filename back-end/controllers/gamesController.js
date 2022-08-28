@@ -33,11 +33,14 @@ games.get("/:id", async (req, res) => {
 
 games.post("/", async (req, res) => {
   const newGameData = {
-    userID: req.body.userID,
-    opponentID: req.body.opponentID,
+    player1ID: req.body.player1ID,
+    player2ID: req.body.player2ID,
   };
 
-  const newGame = await createGames(newGameData.userID, newGameData.opponentID);
+  const newGame = await createGames(
+    newGameData.player1ID,
+    newGameData.player2ID
+  );
 
   if (newGame) {
     console.log("=== CREATE game", newGame, "===");

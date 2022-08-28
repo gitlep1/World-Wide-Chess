@@ -1,0 +1,76 @@
+.lobbySection1 {
+  display: flex;
+  justify-content: space-between;
+  text-align: center;
+  align-items: center;
+
+  h1 {
+    text-align: center;
+    text-align: center;
+  }
+
+  .createGameLink {
+    background-color: black;
+    text-decoration: none;
+    width: 10em;
+    height: 2.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 85%;
+
+    &:hover {
+      opacity: 100%;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+      cursor: pointer;
+    }
+
+    div {
+      color: aliceblue;
+    }
+  }
+}
+
+.lobbySection2 {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  height: 35em;
+  overflow: auto;
+
+  .status {
+    width: 20em;
+
+    .lobbyStatusLinks {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+
+      .lobbyStatus1Parent {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 3em;
+        text-decoration: none;
+        color: aliceblue;
+        background-color: black;
+        opacity: 85%;
+
+        &:hover {
+          opacity: 100%;
+          box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+        }
+      }
+
+      .lobbyStatusParent2 {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 3em;
+        text-decoration: none;
+        color: aliceblue;
+        background-color: gray;
+        opacity: 50%;
+      }
+    }
+  }
+}
