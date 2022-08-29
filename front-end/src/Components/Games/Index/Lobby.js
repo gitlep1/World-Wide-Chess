@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Table } from "react-bootstrap";
 import axios from "axios";
 
-const Lobbypage = () => {
+const Lobbypage = ({ user }) => {
   const navigate = useNavigate();
   const API = process.env.REACT_APP_API_URL;
 
@@ -35,11 +35,13 @@ const Lobbypage = () => {
     return () => clearInterval(interval);
   }, []); // eslint-disable-line
 
-  const handleCreate = () => {
-    axios.post(`${API}/games`).then(async (res) => {
-      console.log(res.data);
-      // await getGames();
-      // navigate(`/Games/${games[games.length - 1].id}`);
+  const handleCreate = async () => {
+    const newGameData = {
+      player1ID: user.id,
+    };
+
+    await axios.post(`${API}/games`, newGameData).then(async (res) => {
+      navigate(`/Games/${games[games.length - 1].id}/Edit`);
     });
   };
 

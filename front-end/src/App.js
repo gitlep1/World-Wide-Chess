@@ -40,6 +40,7 @@ const App = () => {
     setUser({});
     setAuthenticated(false);
     navigate("/");
+    handleSidebarOpen();
   };
 
   return (
@@ -50,9 +51,10 @@ const App = () => {
         pageWrapId={"page-wrap"}
         outerContainerId={"outer-container"}
         isOpen={isOpen}
-        authenticated={authenticated}
         user={user}
+        authenticated={authenticated}
         handleLogout={handleLogout}
+        handleSidebarOpen={handleSidebarOpen}
       />
 
       <main id="page-wrap">
@@ -68,12 +70,21 @@ const App = () => {
               path="Accounts/Signin"
               element={<Signin handleUser={handleUser} />}
             />
-            <Route path="Accounts/:userID" element={<AccountPage />} />
-            <Route path="Accounts/:userID/Edit" element={<AccountDetails />} />
-            <Route path="Games/Lobby" element={<Lobby />} />
-            <Route path="Games/New" element={<NewGame />} />
-            <Route path="Games/:gameID" element={<GamePage />} />
-            <Route path="Games/:gameID/Edit" element={<GameSettings />} />
+            <Route
+              path="Accounts/:userID"
+              element={<AccountPage user={user} />}
+            />
+            <Route
+              path="Accounts/:userID/Edit"
+              element={<AccountDetails user={user} />}
+            />
+            <Route path="Games/Lobby" element={<Lobby user={user} />} />
+            <Route path="Games/New" element={<NewGame user={user} />} />
+            <Route path="Games/:gameID" element={<GamePage user={user} />} />
+            <Route
+              path="Games/:gameID/Edit"
+              element={<GameSettings user={user} />}
+            />
             <Route path="*" element={<FoF />} />
           </Route>
         </Routes>

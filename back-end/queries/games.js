@@ -36,11 +36,11 @@ const createGames = async (player1ID, player2ID) => {
   }
 };
 
-const updateGames = async (id, moves) => {
+const updateGames = async (id, player2ID, winner, inProgress, moves) => {
   try {
     const updatedGame = await db.one(
-      "UPDATE games SET moves = moves || $2 WHERE id = $1 RETURNING *",
-      [id, moves]
+      "UPDATE games SET player2ID = $2, winner = $3, in_progress = $4, moves = moves || $5 WHERE id = $1 RETURNING *",
+      [id, player2ID, winner, inProgress, moves]
     );
     return updatedGame;
   } catch (error) {

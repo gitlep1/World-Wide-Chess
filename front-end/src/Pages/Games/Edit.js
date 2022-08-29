@@ -1,7 +1,7 @@
 import GameSettings from "../../Components/Games/Edit/GameSettings";
 
-const Edit = () => {
-  return <GameSettings />;
+const Edit = ({ user }) => {
+  return <GameSettings user={user} />;
 };
 
 export default Edit;

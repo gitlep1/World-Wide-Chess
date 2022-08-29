@@ -3,16 +3,47 @@ import { bubble as Menu } from "react-burger-menu";
 import { Link } from "react-router-dom";
 import "./Sidebar.scss";
 
-const Sidebar = ({ isOpen }) => {
+const Sidebar = ({
+  isOpen,
+  user,
+  authenticated,
+  handleLogout,
+  handleSidebarOpen,
+}) => {
   return (
-    <Menu right className="menuSideBar" isOpen={isOpen}>
-      <Link to="/Accounts/Signup" className="menu-item">
-        Sign Up
-      </Link>
-      <Link to="/Accounts/Signin" className="menu-item">
-        Sign In
-      </Link>
-      {/* <Link to={`/Accounts/${userID}/Settings`} className="menu-item">Settings</Link> */}
+    <Menu right className="menuSideBar" isOpen={isOpen} width={"20%"}>
+      {authenticated ? (
+        <>
+          <h1>{user.username}</h1>
+          <Link
+            to={`/Accounts/${user.id}/Settings`}
+            className="menu-item"
+            onClick={handleSidebarOpen}
+          >
+            Settings
+          </Link>
+          <div className="menu-item" onClick={handleLogout}>
+            Sign Out
+          </div>
+        </>
+      ) : (
+        <>
+          <Link
+            to="/Accounts/Signup"
+            className="menu-item"
+            onClick={handleSidebarOpen}
+          >
+            Sign Up
+          </Link>
+          <Link
+            to="/Accounts/Signin"
+            className="menu-item"
+            onClick={handleSidebarOpen}
+          >
+            Sign In
+          </Link>
+        </>
+      )}
     </Menu>
   );
 };

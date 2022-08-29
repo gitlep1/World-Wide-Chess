@@ -46,6 +46,8 @@ const Signin = ({ handleUser }) => {
     });
     if (foundUser) {
       notify(foundUser);
+    } else {
+      noUser();
     }
   };
 
@@ -65,6 +67,21 @@ const Signin = ({ handleUser }) => {
     setTimeout(() => {
       handleUser(foundUser);
     }, 4100);
+  };
+
+  const noUser = () => {
+    toast.error(
+      "No user with these credentials have been found. \n Please make sure your email and password are correct.",
+      {
+        position: "top-center",
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        pauseOnFocusLoss: false,
+        draggable: true,
+        progress: undefined,
+      }
+    );
   };
 
   return (
