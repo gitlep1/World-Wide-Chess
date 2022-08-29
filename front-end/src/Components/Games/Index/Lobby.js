@@ -41,7 +41,7 @@ const Lobbypage = ({ user }) => {
     };
 
     await axios.post(`${API}/games`, newGameData).then(async (res) => {
-      navigate(`/Games/${games[games.length - 1].id}/Edit`);
+      navigate(`/Games/${res.data.id}/Edit`);
     });
   };
 

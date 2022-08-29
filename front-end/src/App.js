@@ -1,5 +1,5 @@
 import "./App.scss";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 
 import NavBar from "./Components/NavBar/NavBar";
@@ -26,6 +26,16 @@ const App = () => {
   const [user, setUser] = useState({});
   const [authenticated, setAuthenticated] = useState(false);
 
+  useEffect(() => {
+    const data = window.localStorage.getItem("Current_User");
+    const authenticated = window.localStorage.getItem("Authenticated");
+
+    if (data !== null && authenticated !== null) {
+      setUser(JSON.parse(data));
+      setAuthenticated(JSON.parse(authenticated));
+    }
+  }, []);
+
   const handleSidebarOpen = () => {
     setIsOpen((prevOpen) => !prevOpen);
   };
@@ -33,12 +43,21 @@ const App = () => {
   const handleUser = (user) => {
     setUser(user);
     setAuthenticated(true);
+    window.localStorage.setItem("Current_User", JSON.stringify(user));
+    window.localStorage.setItem("Authenticated", JSON.stringify(true));
     navigate(`Games/Lobby`);
   };
 
   const handleLogout = () => {
     setUser({});
     setAuthenticated(false);
+    const data = window.localStorage.getItem("Current_User");
+    const authenticated = window.localStorage.getItem("Authenticated");
+
+    if (data !== null && authenticated !== null) {
+      window.localStorage.setItem("Current_User", JSON.stringify({}));
+      window.localStorage.setItem("Authenticated", JSON.stringify(false));
+    }
     navigate("/");
     handleSidebarOpen();
   };
