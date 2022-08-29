@@ -3,17 +3,11 @@ const db = require("../db/dbConfig");
 const getAllGames = async () => {
   try {
     const games = await db.any(
-      // `SELECT games.id, games.player1ID, games.player2ID, player1.username
-      // AS player1, player2.username AS player2, games.in_progress, games.moves
-      // FROM games
-      // JOIN users AS player1 ON games.player1ID = player1.id
-      // JOIN users AS player2 ON games.player2ID = player2.id
-      // ORDER BY games.id
-      // `
-      `SELECT games.id, games.player1ID, games.player2ID, player1.username 
-      AS player1, games.in_progress, games.moves 
+      `SELECT games.id, games.player1ID, games.player2ID, player1.username
+      AS player1, player2.username AS player2, games.in_progress, games.moves
       FROM games
       JOIN users AS player1 ON games.player1ID = player1.id
+      LEFT JOIN users AS player2 ON games.player2ID = player2.id
       ORDER BY games.id
       `
     );
