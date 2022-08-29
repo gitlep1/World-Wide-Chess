@@ -75,10 +75,10 @@ const Lobbypage = ({ user }) => {
                   <td>
                     {game.player1id && game.player2id ? (
                       <>
-                        {game.player1id} VS {game.player2id}
+                        {game.player1} VS {game.player2}
                       </>
                     ) : (
-                      <>{game.player1id} Is Searching for an opponent...</>
+                      <>{game.player1} Is Searching for an opponent...</>
                     )}
                   </td>
                   <td className="status">

@@ -16,7 +16,7 @@ INSERT INTO games (player1ID, player2ID, in_progress, winner, moves) VALUES
   "4b3/1k1P4/r4pP1/7K/2p2R1P/1Bb4p/p4p2/5Q2 w - - 0 1",
   "1N2bn2/5pp1/2p2P1p/3k4/1q6/B3K1Q1/1Q5r/4R3 w - - 0 1"
   }'),
-(2, 3, false, 'Hard Bot', '{
+(2, 3, true, 'Hard Bot', '{
   "8/r1p1q1P1/p7/3rP2R/8/R2Q1K2/1P1qP2p/4k3 b - - 35 1",
   "4n3/pQ5p/6PP/pB6/1P4k1/K1b4p/1P1p4/5r2 w - - 50 1",
   "1N5n/2p3p1/4K1b1/6pp/p1pb3P/8/P3k1P1/R7 b - - 80 1"
