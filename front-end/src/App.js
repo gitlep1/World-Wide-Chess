@@ -1,6 +1,7 @@
 import "./App.scss";
 import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 import NavBar from "./Components/NavBar/NavBar";
 import Sidebar from "./Components/Sidebar/Sidebar";
@@ -16,14 +17,17 @@ import Signin from "./Pages/Accounts/Signin";
 
 import Lobby from "./Pages/Games/Index";
 import GameSettings from "./Pages/Games/Edit";
-import NewGame from "./Pages/Games/New";
+// import NewGame from "./Pages/Games/New";
 import GamePage from "./Pages/Games/Show";
 
 const App = () => {
   const navigate = useNavigate();
+  const API = process.env.REACT_APP_API_URL;
 
-  const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState({});
+  const [users, setUsers] = useState([]);
+  const [games, setGames] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
@@ -34,7 +38,29 @@ const App = () => {
       setUser(JSON.parse(data));
       setAuthenticated(JSON.parse(authenticated));
     }
-  }, []);
+
+    getGames();
+    getUsers();
+
+    const gameAndUsersInterval = setInterval(() => {
+      getGames();
+      getUsers();
+    }, 1000);
+
+    return () => clearInterval(gameAndUsersInterval);
+  }, []); // eslint-disable-line
+
+  const getGames = async () => {
+    await axios.get(`${API}/games`).then((res) => {
+      setGames(res.data);
+    });
+  };
+
+  const getUsers = async () => {
+    await axios.get(`${API}/users`).then((res) => {
+      setUsers(res.data);
+    });
+  };
 
   const handleSidebarOpen = () => {
     setIsOpen((prevOpen) => !prevOpen);
@@ -83,11 +109,11 @@ const App = () => {
             <Route path="Accounts" element={<Account />} />
             <Route
               path="Accounts/Signup"
-              element={<Signup handleUser={handleUser} />}
+              element={<Signup handleUser={handleUser} users={users} />}
             />
             <Route
               path="Accounts/Signin"
-              element={<Signin handleUser={handleUser} />}
+              element={<Signin handleUser={handleUser} users={users} />}
             />
             <Route
               path="Accounts/:userID"
@@ -97,8 +123,11 @@ const App = () => {
               path="Accounts/:userID/Edit"
               element={<AccountDetails user={user} />}
             />
-            <Route path="Games/Lobby" element={<Lobby user={user} />} />
-            <Route path="Games/New" element={<NewGame user={user} />} />
+            <Route
+              path="Games/Lobby"
+              element={<Lobby user={user} games={games} />}
+            />
+            {/* <Route path="Games/New" element={<NewGame user={user} />} /> */}
             <Route path="Games/:gameID" element={<GamePage user={user} />} />
             <Route
               path="Games/:gameID/Edit"

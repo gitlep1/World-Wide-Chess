@@ -19,7 +19,13 @@ const getAllGames = async () => {
 
 const getGamesByID = async (id) => {
   try {
-    const game = await db.any("SELECT * FROM games WHERE id = $1", id);
+    const game = await db.any(
+      `SELECT games.id, games.player1ID, games.player2ID, player1.username AS player1, player2.username AS player2, games.in_progress, games.moves FROM games 
+      JOIN users AS player1 ON games.player1ID = player1.id
+      LEFT JOIN users AS player2 ON games.player2ID = player2.id 
+      WHERE games.id = $1`,
+      id
+    );
     return game;
   } catch (err) {
     return err;
@@ -41,7 +47,9 @@ const createGames = async (player1ID, player2ID) => {
 const updateGames = async (id, player2ID, winner, inProgress, moves) => {
   try {
     const updatedGame = await db.one(
-      "UPDATE games SET player2ID = $2, winner = $3, in_progress = $4, moves = $5 WHERE id = $1 RETURNING *",
+      `
+      UPDATE games SET player2ID = $2, winner = $3, in_progress = $4, moves = $5
+      WHERE games.id = $1 RETURNING *`,
       [id, player2ID, winner, inProgress, moves]
     );
     return updatedGame;

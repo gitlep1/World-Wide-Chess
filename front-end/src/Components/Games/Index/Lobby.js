@@ -1,39 +1,12 @@
 import "./Lobby.scss";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Table } from "react-bootstrap";
 import axios from "axios";
 
-const Lobbypage = ({ user }) => {
+const Lobbypage = ({ user, games }) => {
   const navigate = useNavigate();
   const API = process.env.REACT_APP_API_URL;
-
-  const [games, setGames] = useState([]);
-  const [users, setUsers] = useState([]);
-
-  const getUsers = async () => {
-    await axios.get(`${API}/users`).then((res) => {
-      setUsers(res.data);
-    });
-  };
-
-  const getGames = async () => {
-    await axios.get(`${API}/games`).then((res) => {
-      setGames(res.data);
-    });
-  };
-
-  useEffect(() => {
-    getUsers();
-    getGames();
-
-    const interval = setInterval(() => {
-      getUsers();
-      getGames();
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []); // eslint-disable-line
 
   const handleCreate = async () => {
     const newGameData = {
@@ -41,6 +14,17 @@ const Lobbypage = ({ user }) => {
     };
 
     await axios.post(`${API}/games`, newGameData).then(async (res) => {
+      navigate(`/Games/${res.data.id}/Edit`);
+    });
+  };
+
+  const handleJoin = async (gameID) => {
+    const updatePlayer2 = {
+      player2ID: user.id,
+      inProgress: true,
+    };
+
+    await axios.put(`${API}/games/${gameID}`, updatePlayer2).then((res) => {
       navigate(`/Games/${res.data.id}/Edit`);
     });
   };
@@ -100,12 +84,14 @@ const Lobbypage = ({ user }) => {
                           <div>SPECTATE</div>
                         </div>
 
-                        <Link
-                          to={`/Games/${game.id}/Edit`}
+                        <div
                           className="lobbyStatus1Parent"
+                          onClick={() => {
+                            handleJoin(game.id);
+                          }}
                         >
                           <div>JOIN</div>
-                        </Link>
+                        </div>
                       </section>
                     )}
                   </td>

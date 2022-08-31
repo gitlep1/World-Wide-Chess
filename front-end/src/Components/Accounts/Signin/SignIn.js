@@ -1,27 +1,11 @@
 import "./SignIn.scss";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
-import axios from "axios";
 
-const Signin = ({ handleUser }) => {
-  const API = process.env.REACT_APP_API_URL;
-
+const Signin = ({ handleUser, users }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [users, setUsers] = useState([]);
-
-  useEffect(() => {
-    axios
-      .get(`${API}/users`)
-      .then((res) => {
-        setUsers(res.data);
-      })
-      .catch((error) => {
-        setError(error.message);
-      });
-  }, [API]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -86,7 +70,6 @@ const Signin = ({ handleUser }) => {
 
   return (
     <section className="SigninSection">
-      {error && <p className="error">{error}</p>}
       <h1>Sign in</h1>
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="formBasicEmail">

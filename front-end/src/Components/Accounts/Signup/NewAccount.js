@@ -4,7 +4,7 @@ import { Form, Button } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 
-const Signup = ({ handleUser }) => {
+const Signup = ({ handleUser, users }) => {
   const API = process.env.REACT_APP_API_URL;
 
   const [username, setUsername] = useState("");
@@ -23,6 +23,7 @@ const Signup = ({ handleUser }) => {
       setEmail(value);
     }
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -32,34 +33,57 @@ const Signup = ({ handleUser }) => {
       email: email,
     };
 
-    await axios
-      .get(`${API}/users`)
-      .then((res) => {
-        const users = res.data.filter(
-          (user) =>
-            user.email === newUser.email || user.username === newUser.username
-        );
-        if (users.length > 0) {
-          toast.error("Email or Username already exists!", {
-            position: "top-right",
-            pauseOnFocusLoss: false,
-            closeOnClick: true,
-            pauseOnHover: false,
-          });
-        } else {
-          axios
-            .post(`${API}/users`, newUser)
-            .then((res) => {
-              notify(res.data);
-            })
-            .catch((err) => {
-              setError(err);
-            });
-        }
-      })
-      .catch((err) => {
-        setError(err);
+    const checkUser = users.filter(
+      (user) =>
+        user.email === newUser.email || user.username === newUser.username
+    );
+
+    if (checkUser.length > 0) {
+      toast.error("Email or Username already exists!", {
+        position: "top-right",
+        pauseOnFocusLoss: false,
+        closeOnClick: true,
+        pauseOnHover: false,
       });
+    } else {
+      axios
+        .post(`${API}/users`, newUser)
+        .then((res) => {
+          notify(res.data);
+        })
+        .catch((err) => {
+          setError(err);
+        });
+    }
+
+    // await axios
+    //   .get(`${API}/users`)
+    //   .then((res) => {
+    //     const users = res.data.filter(
+    //       (user) =>
+    //         user.email === newUser.email || user.username === newUser.username
+    //     );
+    //     if (users.length > 0) {
+    //       toast.error("Email or Username already exists!", {
+    //         position: "top-right",
+    //         pauseOnFocusLoss: false,
+    //         closeOnClick: true,
+    //         pauseOnHover: false,
+    //       });
+    //     } else {
+    //       axios
+    //         .post(`${API}/users`, newUser)
+    //         .then((res) => {
+    //           notify(res.data);
+    //         })
+    //         .catch((err) => {
+    //           setError(err);
+    //         });
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     setError(err);
+    //   });
   };
 
   const notify = (newUser) => {
