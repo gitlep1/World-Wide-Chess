@@ -66,7 +66,7 @@ const Lobbypage = ({ user, games }) => {
                     )}
                   </td>
                   <td className="status">
-                    {game.in_progress ? (
+                    {game.player2 ? (
                       <section className="lobbyStatusLinks">
                         <Link
                           to={`/Games/${game.id}`}
