@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -6,6 +7,31 @@ import axios from "axios";
 const RenderPlayerGame = ({ game, user, error }) => {
   const API = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (error) {
+      if (user.id === game.player1id) {
+        return undefined;
+      } else {
+        toast.success(
+          `${game.player1}(Host) has cancelled the game. \n You will be redirected in 3 seconds.`,
+          {
+            toastId: "hostCancelledPlayerGame",
+            position: "top-center",
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: false,
+            pauseOnFocusLoss: false,
+            draggable: true,
+            progress: undefined,
+          }
+        );
+        setTimeout(() => {
+          navigate("/Games/Lobby");
+        }, 4100);
+      }
+    }
+  }, [error, game.player1, game.player1id, navigate, user.id]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -57,57 +83,39 @@ const RenderPlayerGame = ({ game, user, error }) => {
       });
   };
 
-  if (error) {
-    if (user.id === game.player1id) {
-      return null;
-    } else {
-      toast.success(
-        `${game.player1}(Host) has cancelled the game. \n You will be redirected in 3 seconds.`,
-        {
-          toastId: "hostCancelledPlayerGame",
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          pauseOnFocusLoss: false,
-          draggable: true,
-          progress: undefined,
-        }
-      );
-      setTimeout(() => {
-        navigate("/Games/Lobby");
-      }, 4100);
-    }
-  }
-
-  return error ? (
-    <h1>Host Cancelled Game</h1>
-  ) : user.id === game.player1id ? (
-    <Form onSubmit={handleSubmit}>
-      <Button type="submit" variant="dark">
-        Start Game vs {game.player2}
-      </Button>
-      <Button
-        variant="danger"
-        onClick={() => {
-          handleDelete(game.id);
-        }}
-      >
-        Cancel
-      </Button>
-    </Form>
-  ) : (
-    <>
-      <h3>Waiting for host to start</h3>
-      <Button
-        variant="dark"
-        onClick={() => {
-          handleLeaveGame();
-        }}
-      >
-        Leave Game
-      </Button>
-    </>
+  return (
+    <section className="renderSection">
+      {error ? (
+        <h1>Host Cancelled Game</h1>
+      ) : user.id === game.player1id ? (
+        <Form onSubmit={handleSubmit}>
+          <Button type="submit" variant="dark">
+            Start Game vs {game.player2}
+          </Button>
+          <Button
+            variant="danger"
+            onClick={() => {
+              handleDelete(game.id);
+            }}
+          >
+            Cancel
+          </Button>
+        </Form>
+      ) : (
+        <>
+          <h3>Waiting for host to start</h3>
+          <Button
+            variant="dark"
+            onClick={() => {
+              handleLeaveGame();
+            }}
+          >
+            Leave Game
+          </Button>
+        </>
+      )}
+      {game.in_progress ? navigate(`/Games/${game.id}`) : null}
+    </section>
   );
 };
 

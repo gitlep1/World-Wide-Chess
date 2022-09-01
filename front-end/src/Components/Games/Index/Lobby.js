@@ -1,5 +1,4 @@
 import "./Lobby.scss";
-import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Table } from "react-bootstrap";
 import axios from "axios";
@@ -21,7 +20,6 @@ const Lobbypage = ({ user, games }) => {
   const handleJoin = async (gameID) => {
     const updatePlayer2 = {
       player2ID: user.id,
-      inProgress: true,
     };
 
     await axios.put(`${API}/games/${gameID}`, updatePlayer2).then((res) => {

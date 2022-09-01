@@ -22,11 +22,12 @@ const GamePage = ({ user }) => {
     getChessMatch();
     // updatePositions();
 
-    // const interval = setInterval(() => {
-    //   // updatePositions();
-    // }, 1000);
+    const chessMatchInterval = setInterval(() => {
+      getChessMatch();
+      // updatePositions();
+    }, 1000);
 
-    // return () => clearInterval(interval);
+    return () => clearInterval(chessMatchInterval);
   }, []); // eslint-disable-line
 
   const getChessMatch = async () => {

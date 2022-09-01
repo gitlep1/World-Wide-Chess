@@ -1,6 +1,6 @@
 import "./GameSettings.scss";
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import axios from "axios";
 
@@ -8,7 +8,6 @@ import RenderPlayerGame from "./RenderPlayerGame";
 import RenderBotGame from "./RenderBotGame";
 
 const GameSettings = ({ user }) => {
-  const navigate = useNavigate();
   const { gameID } = useParams();
   const API = process.env.REACT_APP_API_URL;
 
@@ -69,12 +68,8 @@ const GameSettings = ({ user }) => {
         {game.player2 ? <h3>{game.player2}</h3> : <h3>Searching...</h3>}
       </section>
       <section className="editGameSettings">
-        {game.in_progress ? (
-          game.player2 ? (
-            <RenderPlayerGame game={game} user={user} error={error} />
-          ) : (
-            <h1>{game.player2} Has left the game</h1>
-          )
+        {game.player2 ? (
+          <RenderPlayerGame game={game} user={user} error={error} />
         ) : (
           <RenderBotGame game={game} error={error} />
         )}
