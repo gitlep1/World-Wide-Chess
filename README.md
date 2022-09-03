@@ -2,7 +2,7 @@
 
 ## HELPFUL LINKS:
 
-- [Trello](https://trello.com/b/nwmuo8sr/world-wide-chess)
+- [Trello](https://trello.com/b/Nwmuo8SR/world-wide-chess)
 - [ERD](https://i.imgur.com/nadok4b.png)
 - [Wireframe](https://www.figma.com/file/3p02dmkjp0uaqvcbpuebtl/world-wide-chess-wireframe?node-id=0%3a1)
 
