@@ -37,6 +37,7 @@ user.get("/:id", async (req, res) => {
 
 user.post("/", checkValues, async (req, res) => {
   const newUser = {
+    profileImg: req.body.profileImg,
     username: req.body.username,
     password: req.body.password,
     email: req.body.email,
@@ -48,6 +49,7 @@ user.post("/", checkValues, async (req, res) => {
     res.status(400).send("Email already exists!");
   } else {
     const createdUser = await createUser(
+      newUser.profileImg,
       newUser.username,
       newUser.password,
       newUser.email
@@ -66,6 +68,7 @@ user.put("/:id", checkValues, async (req, res) => {
   const { id } = req.params;
 
   const updatedUserData = {
+    profileImg: req.body.profileImg,
     username: req.body.username,
     password: req.body.password,
     email: req.body.email,
@@ -73,6 +76,7 @@ user.put("/:id", checkValues, async (req, res) => {
 
   const updatedUser = await updateUser(
     id,
+    updatedUserData.profileImg,
     updatedUserData.username,
     updatedUserData.password,
     updatedUserData.email

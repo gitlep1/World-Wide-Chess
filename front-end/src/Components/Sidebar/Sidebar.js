@@ -14,6 +14,7 @@ const Sidebar = ({
     <Menu right className="menuSideBar" isOpen={isOpen} width={"20%"}>
       {authenticated ? (
         <>
+          <img src={user.profileimg} alt="profile" className="profileImg" />
           <h1>{user.username}</h1>
           <Link
             to={`/Accounts/${user.id}/Settings`}

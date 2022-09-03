@@ -18,11 +18,11 @@ const getUserByID = async (id) => {
   }
 };
 
-const createUser = async (username, password, email) => {
+const createUser = async (profileImg, username, password, email) => {
   try {
     const newUser = await db.one(
-      "INSERT INTO users (username, password, email) VALUES($1, $2, $3) RETURNING *",
-      [username, password, email]
+      "INSERT INTO users (profileImg, username, password, email) VALUES($1, $2, $3, $4) RETURNING *",
+      [profileImg, username, password, email]
     );
     return newUser;
   } catch (error) {
@@ -30,11 +30,11 @@ const createUser = async (username, password, email) => {
   }
 };
 
-const updateUser = async (id, username, password, email) => {
+const updateUser = async (id, profileImg, username, password, email) => {
   try {
     const updateUser = await db.one(
-      "UPDATE users SET username=$1, password=$2, email=$3 where id=$4 RETURNING *",
-      [username, password, email, id]
+      "UPDATE users SET profileImg = $1, username=$2, password=$3, email=$4 where id=$5 RETURNING *",
+      [profileImg, username, password, email, id]
     );
     return updateUser;
   } catch (error) {

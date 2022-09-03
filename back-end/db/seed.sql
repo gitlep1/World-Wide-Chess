@@ -1,9 +1,9 @@
 \c world_wide_chess;
 
-INSERT INTO users (username, password, email, created_at) VALUES
-('Easy Bot', 'o5b21e*F6Wan', 'easybot@bot.com', NOW()),
-('Medium Bot', 'e%*m9ZW1ZZ64', 'mediumbot@bot.com', NOW()),
-('Hard Bot', '30m5&Ce^Tnbb', 'hardbot@bot.com', NOW());
+INSERT INTO users (profileImg, username, password, email, created_at) VALUES
+('https://i.imgur.com/8puTSd9.png', 'Easy Bot', 'o5b21e*F6Wan', 'easybot@bot.com', NOW()),
+('https://i.imgur.com/MmLQSDV.png', 'Medium Bot', 'e%*m9ZW1ZZ64', 'mediumbot@bot.com', NOW()),
+('https://i.imgur.com/ZlrcYvd.png', 'Hard Bot', '30m5&Ce^Tnbb', 'hardbot@bot.com', NOW());
 
 INSERT INTO games (player1ID, player2ID, in_progress, winner, moves) VALUES 
 (1, 2, true, 'Easy Bot', '{

@@ -10,6 +10,7 @@ const Signup = ({ handleUser, users }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [profImg, setProfImg] = useState("");
 
   const [error, setError] = useState("");
 
@@ -21,6 +22,8 @@ const Signup = ({ handleUser, users }) => {
       setPassword(value);
     } else if (name === "email") {
       setEmail(value);
+    } else if (name === "profileImg") {
+      setProfImg(value);
     }
   };
 
@@ -31,6 +34,7 @@ const Signup = ({ handleUser, users }) => {
       username: username,
       password: password,
       email: email,
+      profileImg: profImg,
     };
 
     const checkUser = users.filter(
@@ -55,35 +59,6 @@ const Signup = ({ handleUser, users }) => {
           setError(err);
         });
     }
-
-    // await axios
-    //   .get(`${API}/users`)
-    //   .then((res) => {
-    //     const users = res.data.filter(
-    //       (user) =>
-    //         user.email === newUser.email || user.username === newUser.username
-    //     );
-    //     if (users.length > 0) {
-    //       toast.error("Email or Username already exists!", {
-    //         position: "top-right",
-    //         pauseOnFocusLoss: false,
-    //         closeOnClick: true,
-    //         pauseOnHover: false,
-    //       });
-    //     } else {
-    //       axios
-    //         .post(`${API}/users`, newUser)
-    //         .then((res) => {
-    //           notify(res.data);
-    //         })
-    //         .catch((err) => {
-    //           setError(err);
-    //         });
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     setError(err);
-    //   });
   };
 
   const notify = (newUser) => {
@@ -139,6 +114,17 @@ const Signup = ({ handleUser, users }) => {
             value={email}
           />
         </Form.Group>
+        <Form.Group controlId="formProfileImg">
+          <Form.Label>Profile Image</Form.Label>
+          <Form.Control
+            type="url"
+            name="profileImg"
+            placeholder="Profile Image URL"
+            onChange={handleChange}
+            value={profImg}
+          />
+        </Form.Group>
+
         <br />
         <Button variant="primary" type="submit">
           Submit
