@@ -8,7 +8,9 @@
 
 <hr />
 
-This App was created in 2 weeks. It allows users to create an account and play a game of chess with other people from all over the WORLD.
+This App was created in 2 weeks. It allows users to create an account and play a game of chess with other people from ALL OVER THE WORLD.
+
+<hr />
 
 ## INSTALLATION INSTRUCTIONS
 
