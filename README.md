@@ -3,8 +3,8 @@
 ## HELPFUL LINKS:
 
 - [Trello](https://trello.com/b/Nwmuo8SR/world-wide-chess)
-- [ERD](https://i.imgur.com/nadok4b.png)
-- [Wireframe](https://www.figma.com/file/3p02dmkjp0uaqvcbpuebtl/world-wide-chess-wireframe?node-id=0%3a1)
+- [ERD](https://imgur.com/Be9nWmu)
+- [Wireframe](https://www.figma.com/file/3p02DmKJp0UaQVcBpuEbtl/world-wide-chess-wireframe?node-id=0%3A1)
 
 <hr />
 
