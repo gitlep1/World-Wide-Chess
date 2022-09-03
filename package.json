@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "cd back-end && npm i && npm start",
+    "start1": "cd back-end && npm i && npm start",
+    "start2": "cd front-end && npm i && npm start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
