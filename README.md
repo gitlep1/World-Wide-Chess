@@ -1,6 +1,6 @@
 # World Wide Chess
 
-## HELPFUL LINKS:\_
+## HELPFUL LINKS:
 
 - [Trello](https://trello.com/b/nwmuo8sr/world-wide-chess)
 - [ERD](https://i.imgur.com/nadok4b.png)
