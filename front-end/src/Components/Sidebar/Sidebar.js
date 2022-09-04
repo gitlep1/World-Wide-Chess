@@ -1,4 +1,4 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import { bubble as Menu } from "react-burger-menu";
 import { Link } from "react-router-dom";
 import "./Sidebar.scss";
@@ -10,10 +10,34 @@ const Sidebar = ({
   handleLogout,
   handleSidebarOpen,
 }) => {
+  const [resize, setResize] = useState("");
+
+  useEffect(() => {
+    const resizeInterval = setInterval(() => {
+      if (window.innerWidth > 1000) {
+        setResize("20%");
+      }
+      if (window.innerWidth <= 1000) {
+        setResize("25%");
+      }
+      if (window.innerWidth <= 800) {
+        setResize("35%");
+      }
+      if (window.innerWidth <= 600) {
+        setResize("45%");
+      }
+      if (window.innerWidth <= 400) {
+        setResize("60%");
+      }
+    }, 1000);
+
+    return () => clearInterval(resizeInterval);
+  });
+
   return (
-    <Menu right className="menuSideBar" isOpen={isOpen} width={"20%"}>
+    <Menu right className="menuSideBar" isOpen={isOpen} width={resize}>
       {authenticated ? (
-        <>
+        <aside className="profileDataSection">
           <img src={user.profileimg} alt="profile" className="profileImg" />
           <h1>{user.username}</h1>
           <Link
@@ -22,11 +46,11 @@ const Sidebar = ({
             onClick={handleSidebarOpen}
           >
             Settings
-          </Link>
+          </Link>{" "}
           <div className="menu-item" onClick={handleLogout}>
             Sign Out
           </div>
-        </>
+        </aside>
       ) : (
         <>
           <Link
@@ -35,7 +59,7 @@ const Sidebar = ({
             onClick={handleSidebarOpen}
           >
             Sign Up
-          </Link>
+          </Link>{" "}
           <Link
             to="/Accounts/Signin"
             className="menu-item"

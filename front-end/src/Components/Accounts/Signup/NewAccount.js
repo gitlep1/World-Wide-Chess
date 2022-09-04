@@ -37,13 +37,49 @@ const Signup = ({ handleUser, users }) => {
       profileImg: profImg,
     };
 
+    if (newUser.profileImg === "") {
+      newUser.profileImg =
+        "https://www.pngitem.com/pimgs/m/97-971070_chess-piece-black-king-king-chess-piece-png.png";
+    }
+
+    if (newUser.username.length > 20) {
+      return toast.error(
+        `Your current username:(${newUser.username}) is ${newUser.username.length} characters long. \n The max chracter length allowed is 20.`,
+        {
+          position: "top-right",
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          pauseOnFocusLoss: false,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+    }
+
+    if (
+      newUser.username === "" ||
+      newUser.password === "" ||
+      newUser.email === ""
+    ) {
+      return toast.error("Please make sure to fill out all fields.", {
+        position: "top-center",
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        pauseOnFocusLoss: false,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+
     const checkUser = users.filter(
       (user) =>
         user.email === newUser.email || user.username === newUser.username
     );
 
     if (checkUser.length > 0) {
-      toast.error("Email or Username already exists!", {
+      return toast.error("Email or Username already exists!", {
         position: "top-right",
         pauseOnFocusLoss: false,
         closeOnClick: true,

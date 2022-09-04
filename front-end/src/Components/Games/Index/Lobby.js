@@ -38,8 +38,8 @@ const Lobbypage = ({ user, games }) => {
         >
           <div>CREATE</div>
         </div>
-        <h1>Lobby</h1>
       </section>
+      <br />
       <section className="lobbySection2">
         <Table striped bordered hover>
           <thead>
@@ -56,11 +56,16 @@ const Lobbypage = ({ user, games }) => {
                   <td>{game.id}</td>
                   <td>
                     {game.player1id && game.player2id ? (
-                      <>
+                      <span className="players">
+                        <img src={game.player1img} alt="player1" />
                         {game.player1} VS {game.player2}
-                      </>
+                        <img src={game.player2img} alt="player1" />
+                      </span>
                     ) : (
-                      <>{game.player1} Is Searching for an opponent...</>
+                      <span className="players">
+                        <img src={game.player1img} alt="player1" />
+                        {game.player1} Is Searching for an opponent...
+                      </span>
                     )}
                   </td>
                   <td className="status">
