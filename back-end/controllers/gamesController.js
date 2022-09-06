@@ -56,7 +56,8 @@ games.put("/:id", async (req, res) => {
     player2ID: req.body.player2ID,
     winner: req.body.winner,
     inProgress: req.body.inProgress,
-    moves: req.body.moves,
+    currentPositions: req.body.currentPositions,
+    // moves: req.body.moves,
   };
 
   const updateGame = await updateGames(
@@ -64,7 +65,8 @@ games.put("/:id", async (req, res) => {
     updatedGameData.player2ID,
     updatedGameData.winner,
     updatedGameData.inProgress,
-    updatedGameData.moves
+    updatedGameData.currentPositions
+    // updatedGameData.moves
   );
 
   if (updateGame) {

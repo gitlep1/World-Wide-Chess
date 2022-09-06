@@ -53,7 +53,6 @@ const GameSettings = ({ user }) => {
   };
 
   const handleEndPoint = async () => {
-    console.log("inside endpoint");
     axios.put(`${API}/games/${gameID}`, { inProgress: false }).then((res) => {
       // alert(`${game.player1} Has left the game.`);
       // console.log("inside endpoint");
@@ -61,7 +60,7 @@ const GameSettings = ({ user }) => {
   };
 
   return (
-    <section>
+    <section className="editGameSection">
       <section className="editGameTitle">
         <h1>{game.player1}'s Chess Match</h1>
         <p>Opponent:</p>

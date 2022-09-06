@@ -1,0 +1,13 @@
+.HomepageSection {
+  height: 100vh;
+  text-align: center;
+  animation: homepageText 10s infinite;
+  @keyframes homepageText {
+    50% {
+      color: aliceblue;
+    }
+    100% {
+      color: black;
+    }
+  }
+}

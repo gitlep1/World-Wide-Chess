@@ -54,7 +54,7 @@ const RenderBotGame = ({ game, error }) => {
       player2ID: choosenBot,
       winner: null,
       inProgress: true,
-      moves: [startingPositions],
+      currentPositions: startingPositions,
     };
 
     axios.put(`${API}/games/${game.id}`, updateGameData).then((res) => {

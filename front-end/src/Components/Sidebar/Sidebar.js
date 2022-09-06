@@ -41,7 +41,7 @@ const Sidebar = ({
           <img src={user.profileimg} alt="profile" className="profileImg" />
           <h1>{user.username}</h1>
           <Link
-            to={`/Accounts/${user.id}/Settings`}
+            to={`/Accounts/${user.id}/Edit`}
             className="menu-item"
             onClick={handleSidebarOpen}
           >

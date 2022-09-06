@@ -1,0 +1,24 @@
+.playerAccountsSection {
+  background-color: aliceblue;
+  height: 40em;
+  overflow: auto;
+
+  img {
+    width: 100px;
+  }
+
+  .playerLinks {
+    text-decoration: none;
+    color: black;
+    opacity: 85%;
+
+    &:hover {
+      color: brown;
+      opacity: 100%;
+    }
+  }
+
+  .matchingPlayer {
+    border: 5px solid greenyellow;
+  }
+}

@@ -31,19 +31,19 @@ const RenderPlayerGame = ({ game, user, error }) => {
         }, 4100);
       }
     }
-  }, [error, game.player1, game.player1id, navigate, user.id]);
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const startingPositions =
+    const startingPosition =
       "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
     const updateGameData = {
       player2ID: game.player2id,
       winner: null,
       inProgress: true,
-      moves: [startingPositions],
+      currentPositions: startingPosition,
     };
 
     axios.put(`${API}/games/${game.id}`, updateGameData).then((res) => {

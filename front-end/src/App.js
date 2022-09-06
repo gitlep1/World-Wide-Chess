@@ -9,7 +9,7 @@ import FoF from "./Components/FourOFour/FoF";
 
 import Home from "./Pages/Home";
 
-import Account from "./Pages/Accounts/Index";
+import Accounts from "./Pages/Accounts/Index";
 import AccountPage from "./Pages/Accounts/Show";
 import AccountDetails from "./Pages/Accounts/Edit";
 import Signup from "./Pages/Accounts/New";
@@ -85,13 +85,13 @@ const App = () => {
       window.localStorage.setItem("Authenticated", JSON.stringify(false));
     }
     navigate("/");
-    handleSidebarOpen();
+    setIsOpen(false);
   };
 
   return (
     <section id="outer-container">
       <h1 id="worldWideChessHeader">WORLD WIDE CHESS</h1>
-      <NavBar handleOpen={handleSidebarOpen} />
+      <NavBar handleOpen={handleSidebarOpen} authenticated={authenticated} />
       <Sidebar
         pageWrapId={"page-wrap"}
         outerContainerId={"outer-container"}
@@ -106,7 +106,10 @@ const App = () => {
         <Routes>
           <Route path="/">
             <Route path="/" index element={<Home />} />
-            <Route path="Accounts" element={<Account />} />
+            <Route
+              path="Accounts"
+              element={<Accounts user={user} users={users} />}
+            />
             <Route
               path="Accounts/Signup"
               element={<Signup handleUser={handleUser} users={users} />}
@@ -121,7 +124,14 @@ const App = () => {
             />
             <Route
               path="Accounts/:userID/Edit"
-              element={<AccountDetails user={user} />}
+              element={
+                <AccountDetails
+                  user={user}
+                  users={users}
+                  handleUser={handleUser}
+                  handleLogout={handleLogout}
+                />
+              }
             />
             <Route
               path="Games/Lobby"

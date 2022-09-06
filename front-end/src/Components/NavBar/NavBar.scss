@@ -29,6 +29,11 @@
       }
     }
   }
+
+  .notAuth {
+    grid-column: 1 / span 3;
+    color: aliceblue;
+  }
 }
 
 #AccountSideBar {

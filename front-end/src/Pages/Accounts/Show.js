@@ -1,7 +1,7 @@
-import AccountDetails from "../../Components/Accounts/Show/AccountDetails";
+import AccountPage from "../../Components/Accounts/Show/AccountPage";
 
-const Show = () => {
-  return <AccountDetails />;
+const Show = ({ user }) => {
+  return <AccountPage user={user} />;
 };
 
 export default Show;

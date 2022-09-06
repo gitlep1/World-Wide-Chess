@@ -22,5 +22,6 @@ CREATE TABLE games (
   player2img TEXT REFERENCES users(profileImg),
   in_progress BOOLEAN DEFAULT false,
   winner TEXT REFERENCES users(username) DEFAULT NULL,
-  moves TEXT[] DEFAULT array[]::TEXT[]
+  currentPositions TEXT
+  -- moves TEXT[] DEFAULT array[]::TEXT[]
 );
