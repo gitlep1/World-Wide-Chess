@@ -1,13 +1,14 @@
 import "./GamePage.scss";
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-
 import VsBot from "./GamePageBot";
 import VsPlayer from "./GamePagePlayer";
 
 const GamePage = ({ user }) => {
   const { gameID } = useParams();
+  const navigate = useNavigate();
   const API = process.env.REACT_APP_API_URL;
 
   const [game, setGame] = useState({});
@@ -29,14 +30,56 @@ const GamePage = ({ user }) => {
     return () => clearInterval(chessMatchInterval);
   }, []); // eslint-disable-line
 
+  useEffect(() => {
+    if (error) {
+      toast.success(
+        `Opponent has forfeited the game. \n You will be redirected in 3 seconds.`,
+        {
+          toastId: "hostCancelledPlayerGame",
+          position: "top-center",
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          pauseOnFocusLoss: false,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+      setTimeout(() => {
+        navigate("/Games/Lobby");
+      }, 4100);
+    }
+  });
+
+  const endGame = (gameID) => {
+    axios.delete(`${API}/games/${gameID}`).then(() => {
+      toast.success("Game Ended", {
+        position: "top-center",
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        pauseOnFocusLoss: false,
+        draggable: true,
+        progress: undefined,
+      });
+      setTimeout(() => {
+        navigate("/Games/Lobby");
+      }, 4100);
+    });
+  };
+
   return (
     <section className="gamePageSection">
-      {game.player2id === 1 || game.player2id === 2 || game.player2id === 3 ? (
-        <VsBot user={user} game={game} />
+      {error ? (
+        <h1>Opponent has forfeited</h1>
+      ) : game.player2id === 1 ||
+        game.player2id === 2 ||
+        game.player2id === 3 ? (
+        <VsBot user={user} game={game} endGame={endGame} />
       ) : (
-        <VsPlayer user={user} game={game} />
+        <VsPlayer user={user} game={game} endGame={endGame} />
       )}
-      {error && <p>{error}</p>}
+      <ToastContainer autoClose={3000} theme="dark" />
     </section>
   );
 };

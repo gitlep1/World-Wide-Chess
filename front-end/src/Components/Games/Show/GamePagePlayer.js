@@ -1,25 +1,29 @@
 import "./GamePage.scss";
-import { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useState, useRef } from "react";
 import { Chessboard } from "react-chessboard";
+import { Button, Modal } from "react-bootstrap";
 import { Chess } from "chess.js";
 import axios from "axios";
 
-const GamePage = ({ user, game }) => {
+const GamePage = ({ user, game, endGame }) => {
   const API = process.env.REACT_APP_API_URL;
 
   const chessboardRef = useRef();
   const [chessGame, setChessGame] = useState(new Chess());
   // const [winner, setWinner] = useState("");
-  const [error, setError] = useState("");
 
-  const safeGameMutate = (modify) => {
-    setChessGame((g) => {
-      const update = { ...g };
-      modify(update);
-      return update;
-    });
-  };
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  // use for future rematch feature \\
+  // const safeGameMutate = (modify) => {
+  //   setChessGame((g) => {
+  //     const update = { ...g };
+  //     modify(update);
+  //     return update;
+  //   });
+  // };
 
   function onDrop(sourceSquare, targetSquare) {
     const gameCopy = { ...chessGame };
@@ -28,6 +32,7 @@ const GamePage = ({ user, game }) => {
       to: targetSquare,
       promotion: "q",
     });
+    console.log(gameCopy.move);
     setChessGame(gameCopy);
     if (move !== null) {
       updatePositions();
@@ -41,26 +46,15 @@ const GamePage = ({ user, game }) => {
       player1img: game.player1img,
       player2img: game.player2img,
       winner: null,
-      inProgress: true,
+      inProgress: game.in_progress,
       currentPositions: chessGame.fen(),
     };
 
-    // axios.put(`${API}/games/${gameID}`, updatedData).then((res) => {
-    //   // console.log(res.data.moves);
-    //   // getChessMatch();
-    // });
+    axios.put(`${API}/games/${game.id}`, updatedData).then((res) => {
+      // setChessGame(res.data.currentpositions);
+      console.log(res.data.currentpositions);
+    });
   };
-
-  // const checkMoves = () => {
-  //   console.log("the game: ", game);
-  //   if (game === {} || game === undefined || game === null) {
-  //     console.log("inside if", game);
-  //     return chessGame.fen();
-  //   } else {
-  //     console.log("inside else", game);
-  //     return game.moves[0];
-  //   }
-  // };
 
   return (
     <section className="gamePageSection">
@@ -68,25 +62,12 @@ const GamePage = ({ user, game }) => {
         <Chessboard
           id="PlayerVsPlayer"
           animationDuration={200}
-          // position={moves > 0 ? game.moves[0] : chessGame.fen()}
-          position={game.currentPositions}
+          position={game.currentpositions}
           onPieceDrop={onDrop}
           ref={chessboardRef}
         />
       </div>
-      <button
-        className="rc-button"
-        onClick={() => {
-          safeGameMutate((game) => {
-            chessGame.reset();
-          });
-          chessboardRef.current.clearPremoves();
-        }}
-      >
-        reset
-      </button>
-      <div>
-        {error && <p>{error}</p>}
+      <div className="playerNames">
         <h1>
           <img src={game.player1img} alt="player profile" />
           {game.player1}
@@ -97,6 +78,29 @@ const GamePage = ({ user, game }) => {
           {game.player2}
         </h1>
       </div>
+      <Button variant="danger" onClick={handleShow}>
+        FORFEIT
+      </Button>
+
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>FORFEITTING MATCH!</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure you want to forfeit?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            NO WAY!
+          </Button>
+          <Button
+            variant="danger"
+            onClick={() => {
+              endGame(game.id);
+            }}
+          >
+            GIVE UP!
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </section>
   );
 };

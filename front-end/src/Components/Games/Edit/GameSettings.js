@@ -61,17 +61,19 @@ const GameSettings = ({ user }) => {
 
   return (
     <section className="editGameSection">
-      <section className="editGameTitle">
-        <h1>{game.player1}'s Chess Match</h1>
-        <p>Opponent:</p>
-        {game.player2 ? <h3>{game.player2}</h3> : <h3>Searching...</h3>}
-      </section>
-      <section className="editGameSettings">
-        {game.player2 ? (
-          <RenderPlayerGame game={game} user={user} error={error} />
-        ) : (
-          <RenderBotGame game={game} error={error} />
-        )}
+      <section className="editGameSection2">
+        <section className="editGameTitle">
+          <h1>{game.player1}'s Chess Match</h1>
+          <p>Opponent:</p>
+          {game.player2 ? <h3>{game.player2}</h3> : <h3>Searching...</h3>}
+        </section>
+        <section className="editGameSettings">
+          {game.player2 ? (
+            <RenderPlayerGame game={game} user={user} error={error} />
+          ) : (
+            <RenderBotGame game={game} error={error} />
+          )}
+        </section>
       </section>
       <ToastContainer autoClose={3000} theme="dark" />
     </section>

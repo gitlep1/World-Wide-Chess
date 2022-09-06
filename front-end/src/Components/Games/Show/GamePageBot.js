@@ -1,13 +1,17 @@
 import { useRef, useState } from "react";
 import { Chessboard } from "react-chessboard";
 import { Chess } from "chess.js";
+import { Button, Modal } from "react-bootstrap";
 
-const PlayVsBot = ({ user, game }) => {
+const PlayVsBot = ({ user, game, endGame }) => {
   const chessboardRef = useRef();
   const [chessGame, setChessGame] = useState(new Chess());
-  const [arrows, setArrows] = useState([]);
   const [boardOrientation, setBoardOrientation] = useState("white");
   const [currentTimeout, setCurrentTimeout] = useState(undefined);
+
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   function safeGameMutate(modify) {
     setChessGame((g) => {
@@ -24,8 +28,9 @@ const PlayVsBot = ({ user, game }) => {
       chessGame.game_over() ||
       chessGame.in_draw() ||
       possibleMoves.length === 0
-    )
+    ) {
       return;
+    }
 
     const randomIndex = Math.floor(Math.random() * possibleMoves.length);
     safeGameMutate((chessGame) => {
@@ -55,11 +60,21 @@ const PlayVsBot = ({ user, game }) => {
 
   return (
     <div>
+      <div>
+        <h1>
+          <img src={game.player1img} alt="player profile" />
+          {game.player1}
+        </h1>
+        <p>VS</p>
+        <h1>
+          <img src={game.player2img} alt="player profile" />
+          {game.player2}
+        </h1>
+      </div>
       <Chessboard
         id="PlayVsRandom"
         animationDuration={200}
         boardOrientation={boardOrientation}
-        customArrows={arrows}
         position={chessGame.fen()}
         onPieceDrop={onDrop}
         customBoardStyle={{
@@ -68,7 +83,8 @@ const PlayVsBot = ({ user, game }) => {
         }}
         ref={chessboardRef}
       />
-      <button
+      <Button
+        variant="secondary"
         className="rc-button"
         onClick={() => {
           safeGameMutate((chessGame) => {
@@ -79,8 +95,9 @@ const PlayVsBot = ({ user, game }) => {
         }}
       >
         reset
-      </button>
-      <button
+      </Button>
+      <Button
+        variant="dark"
         className="rc-button"
         onClick={() => {
           setBoardOrientation((currentOrientation) =>
@@ -89,8 +106,9 @@ const PlayVsBot = ({ user, game }) => {
         }}
       >
         flip board
-      </button>
-      <button
+      </Button>
+      <Button
+        variant="primary"
         className="rc-button"
         onClick={() => {
           safeGameMutate((chessGame) => {
@@ -101,18 +119,29 @@ const PlayVsBot = ({ user, game }) => {
         }}
       >
         undo
-      </button>
-      <button
-        className="rc-button"
-        onClick={() => {
-          setArrows([
-            ["a3", "a5"],
-            ["g1", "f3"],
-          ]);
-        }}
-      >
-        Set Custom Arrows
-      </button>
+      </Button>
+      <Button variant="danger" onClick={handleShow}>
+        END GAME
+      </Button>
+
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Do you want to end this game?</Modal.Title>
+        </Modal.Header>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button
+            variant="danger"
+            onClick={() => {
+              endGame(game.id);
+            }}
+          >
+            End Game
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
