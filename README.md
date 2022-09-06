@@ -22,3 +22,8 @@ This App was created in 2 weeks. It allows users to create an account and play a
 - terminal 1: npm run start1
 - terminal 2: npm run start2
 - CONGRADULATIONS you have started WorldWideChess!!!!
+
+### DEPLOYED LINKS
+
+[front-end](https://world-wide-chess.netlify.app/)
+[back-end](https://world-wide-chess.herokuapp.com/)

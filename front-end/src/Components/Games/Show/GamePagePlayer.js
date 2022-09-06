@@ -32,7 +32,6 @@ const GamePage = ({ user, game, endGame }) => {
       to: targetSquare,
       promotion: "q",
     });
-    console.log(gameCopy.move);
     setChessGame(gameCopy);
     if (move !== null) {
       updatePositions();
@@ -52,7 +51,7 @@ const GamePage = ({ user, game, endGame }) => {
 
     axios.put(`${API}/games/${game.id}`, updatedData).then((res) => {
       // setChessGame(res.data.currentpositions);
-      console.log(res.data.currentpositions);
+      // console.log(res.data.currentpositions);
     });
   };
 
