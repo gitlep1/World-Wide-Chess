@@ -15,7 +15,6 @@ const GamePage = ({ user }) => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    // getChessMatch();
     const chessMatchInterval = setInterval(async () => {
       await axios
         .get(`${API}/games/${gameID}`)
@@ -54,6 +53,7 @@ const GamePage = ({ user }) => {
   const endGame = (gameID) => {
     axios.delete(`${API}/games/${gameID}`).then(() => {
       toast.success("Game Ended", {
+        toastId: "Game has ended",
         position: "top-center",
         hideProgressBar: false,
         closeOnClick: false,
