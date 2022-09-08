@@ -17,19 +17,26 @@ This App was created in 2 weeks. It allows users to create an account and play a
 ### front end:
 
 - HTML
-- SCSS
+- SASS
 - ReactJS
-- react-bootstrap
-- react-toastify
+- axios
 - chess.js
+- react-toastify
+- react-bootstrap
+- react-router-dom
 - react-chessboard
+- react-burger-menu
 
 ### back end:
 
-- nodeJS
-- express
-- psql
+- pg
 - cors
+- psql
+- nodeJS
+- dotenv
+- nodemon
+- express
+- pg-promise
 
 <hr />
 
