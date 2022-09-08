@@ -10,7 +10,7 @@ const GamePage = ({ user, game, endGame }) => {
 
   const chessboardRef = useRef();
   const [chessGame, setChessGame] = useState(Chess(game.currentpositions));
-  const [recent, setRecent] = useState("");
+  const [recentMoves, setRecentMoves] = useState("");
   // const [white, setWhite] = useState("");
   // const [black, setBlack] = useState("");
   // const [winner, setWinner] = useState("");
@@ -21,7 +21,7 @@ const GamePage = ({ user, game, endGame }) => {
 
   useEffect(() => {
     axios.get(`${API}/games/${game.id}`).then((res) => {
-      setRecent(res.data.currentpositions);
+      setRecentMoves(res.data.currentpositions);
     });
   });
 
@@ -49,12 +49,6 @@ const GamePage = ({ user, game, endGame }) => {
   }
 
   const updatePositions = () => {
-    // if (user.id === game.player1id) {
-    //   setWhite()
-    // }
-
-    // console.log(swapTurn());
-
     const updatedData = {
       player2ID: game.player2id,
       player1img: game.player1img,
@@ -64,12 +58,8 @@ const GamePage = ({ user, game, endGame }) => {
       currentPositions: chessGame.fen(),
     };
 
-    // console.log(chessGame);
-
-    // console.log(updatedData.currentPositions);
-
     axios.put(`${API}/games/${game.id}`, updatedData).then((res) => {
-      setRecent(res.data.currentpositions);
+      setRecentMoves(res.data.currentpositions);
     });
   };
 
@@ -89,12 +79,11 @@ const GamePage = ({ user, game, endGame }) => {
 
   return (
     <section className="gamePageSection">
-      {/* {console.log(fen)} */}
       <div>
         <Chessboard
           id="PlayerVsPlayer"
           animationDuration={200}
-          position={recent}
+          position={recentMoves}
           boardOrientation={user.id === game.player1id ? "white" : "black"}
           onPieceDrop={onDrop}
           ref={chessboardRef}

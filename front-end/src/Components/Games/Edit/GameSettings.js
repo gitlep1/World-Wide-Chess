@@ -55,7 +55,6 @@ const GameSettings = ({ user }) => {
   const handleEndPoint = async () => {
     axios.put(`${API}/games/${gameID}`, { inProgress: false }).then((res) => {
       // alert(`${game.player1} Has left the game.`);
-      // console.log("inside endpoint");
     });
   };
 
