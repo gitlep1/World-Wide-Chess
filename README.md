@@ -24,8 +24,6 @@ This App was created in 2 weeks. It allows users to create an account and play a
 - chess.js
 - react-chessboard
 
-<br />
-
 ### back end:
 
 - nodeJS
@@ -45,6 +43,8 @@ This App was created in 2 weeks. It allows users to create an account and play a
 - terminal 1 (front end): cd front-end then npm start
 - terminal 2 (back end): npm start
 - CONGRADULATIONS you have started WorldWideChess!!!!
+
+<hr />
 
 ### DEPLOYED LINKS:
 
