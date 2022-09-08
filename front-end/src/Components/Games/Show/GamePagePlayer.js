@@ -64,13 +64,12 @@ const GamePage = ({ user, game, endGame }) => {
       currentPositions: chessGame.fen(),
     };
 
-    console.log(chessGame);
+    // console.log(chessGame);
 
     // console.log(updatedData.currentPositions);
 
     axios.put(`${API}/games/${game.id}`, updatedData).then((res) => {
-      // setChessGame(res.data.currentpositions);
-      // console.log(res.data.currentpositions);
+      setRecent(res.data.currentpositions);
     });
   };
 
