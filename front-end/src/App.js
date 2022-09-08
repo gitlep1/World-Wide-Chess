@@ -1,6 +1,7 @@
 import "./App.scss";
 import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
+import { MDBFooter } from "mdb-react-ui-kit";
 import axios from "axios";
 
 import NavBar from "./Components/NavBar/NavBar";
@@ -147,6 +148,23 @@ const App = () => {
           </Route>
         </Routes>
       </main>
+
+      <MDBFooter id="footer">
+        <div
+          className="text-center p-4"
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.05)" }}
+        >
+          ©World Wide Chess Copyright:{" "}
+          <a
+            className="text-reset fw-bold"
+            href="https://github.com/gitlep1"
+            rel="nooppener noreferrer"
+            target="_blank"
+          >
+            gitlep1
+          </a>
+        </div>
+      </MDBFooter>
     </section>
   );
 };
