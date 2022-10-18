@@ -42,6 +42,7 @@ This App was created in 2 weeks. It allows users to create an account and play a
 
 ## INSTALLATION INSTRUCTIONS:
 
+- fork this repo
 - select code and copy to clipboard
 - open your terminal and create a new directory
 - type: "git clone" along with the url that you copied
