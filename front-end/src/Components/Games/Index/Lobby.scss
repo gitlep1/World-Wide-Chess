@@ -1,3 +1,7 @@
+.lobbyMain {
+  height: 100vh;
+}
+
 .lobbySection1 {
   display: flex;
   justify-content: space-between;
@@ -35,7 +39,7 @@
   text-align: center;
   display: flex;
   flex-direction: column;
-  height: 30em;
+  height: 95%;
   overflow: auto;
   background-color: #853710;
 

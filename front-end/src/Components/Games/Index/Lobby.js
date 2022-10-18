@@ -28,7 +28,7 @@ const Lobbypage = ({ user, games }) => {
   };
 
   return (
-    <section>
+    <section className="lobbyMain">
       <section className="lobbySection1">
         <div
           onClick={() => {
