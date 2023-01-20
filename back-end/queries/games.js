@@ -59,7 +59,7 @@ const getGamesByID = async (id) => {
 const createGames = async (player1ID, player2ID) => {
   try {
     const newGame = await db.one(
-      "INSERT INTO games (player1ID, player2ID) VALUES($1, $2) RETURNING *",
+      "INSERT INTO games (player1ID, player2ID) VALUES ($1, $2) RETURNING *",
       [player1ID, player2ID]
     );
     return newGame;
