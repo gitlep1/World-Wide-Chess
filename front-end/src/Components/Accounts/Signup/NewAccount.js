@@ -39,7 +39,7 @@ const Signup = ({ handleUser, users }) => {
 
     if (newUser.profileImg === "") {
       newUser.profileImg =
-        "https://www.pngitem.com/pimgs/m/97-971070_chess-piece-black-king-king-chess-piece-png.png";
+        "https://d1yjjnpx0p53s8.cloudfront.net/1024px-no_image_available.svg_.png?bjDpkOybMMbgorBhoXnaTzEMDa4.q5m7";
     }
 
     if (newUser.username.length > 20) {
