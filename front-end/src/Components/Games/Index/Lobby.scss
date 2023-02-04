@@ -1,5 +1,5 @@
 .lobbyMain {
-  height: 100vh;
+  height: 100%;
 }
 
 .lobbySection1 {
@@ -39,9 +39,15 @@
   text-align: center;
   display: flex;
   flex-direction: column;
-  height: 95%;
-  overflow: auto;
+  height: 74vh;
+  overflow-y: auto;
   background-color: #853710;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   .players {
     color: white;

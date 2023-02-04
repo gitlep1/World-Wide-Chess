@@ -7,18 +7,28 @@ import axios from "axios";
 import RenderPlayerGame from "./RenderPlayerGame";
 import RenderBotGame from "./RenderBotGame";
 
-const GameSettings = ({ user }) => {
+const GameSettings = ({ user, games }) => {
   const { gameID } = useParams();
   const API = process.env.REACT_APP_API_URL;
 
   const [game, setGame] = useState({});
+  const [loading, setLoading] = useState(true);
 
   const [error, setError] = useState("");
 
   // const [leftGame, setLeftGame] = useState(false);
 
   useEffect(() => {
-    getGame();
+    const warnUserLeavingPage = () => {
+      window.addEventListener("beforeunload", alertUser);
+      window.addEventListener("unload", handleEndPoint);
+      return () => {
+        window.removeEventListener("beforeunload", alertUser);
+        window.removeEventListener("unload", handleEndPoint);
+      };
+    };
+    warnUserLeavingPage();
+    // getGame();
 
     const interval = setInterval(() => {
       getGame();
@@ -27,17 +37,17 @@ const GameSettings = ({ user }) => {
     return () => clearInterval(interval);
   }, []); // eslint-disable-line
 
-  useEffect(() => {
-    window.addEventListener("beforeunload", alertUser);
-    window.addEventListener("unload", handleEndPoint);
-    return () => {
-      window.removeEventListener("beforeunload", alertUser);
-      window.removeEventListener("unload", handleEndPoint);
-    };
-  }, []); // eslint-disable-line
+  // useEffect(() => {
+  //   window.addEventListener("beforeunload", alertUser);
+  //   window.addEventListener("unload", handleEndPoint);
+  //   return () => {
+  //     window.removeEventListener("beforeunload", alertUser);
+  //     window.removeEventListener("unload", handleEndPoint);
+  //   };
+  // }, []); // eslint-disable-line
 
-  const getGame = () => {
-    axios
+  const getGame = async () => {
+    await axios
       .get(`${API}/games/${gameID}`)
       .then((res) => {
         setGame(res.data);
@@ -45,6 +55,16 @@ const GameSettings = ({ user }) => {
       .catch((err) => {
         setError(err);
       });
+
+    // let findCorrectGame = games.map((foundGame) => {
+    //   if (foundGame.id === Number(gameID)) {
+    //     setGame(foundGame);
+    //   }
+    //   return null;
+    // });
+    // console.log(Number(gameID));
+    // console.log(findCorrectGame);
+    // return setGame(findCorrectGame[0]);
   };
 
   const alertUser = (e) => {

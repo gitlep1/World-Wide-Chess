@@ -1,25 +1,27 @@
 import "./App.scss";
 import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import { MDBFooter } from "mdb-react-ui-kit";
+import { scaleRotate as SidebarMenu } from "react-burger-menu";
+// import { MDBFooter } from "mdb-react-ui-kit";
 import axios from "axios";
 
+// Nav stuff \\
+import Home from "./Components/Homepage/Homepage";
 import NavBar from "./Components/NavBar/NavBar";
 import Sidebar from "./Components/Sidebar/Sidebar";
 import FoF from "./Components/FourOFour/FoF";
 
-import Home from "./Pages/Home";
+// Account stuff \\
+import Accounts from "./Components/Accounts/Index/Accounts";
+import AccountPage from "./Components/Accounts/Show/AccountPage";
+import AccountDetails from "./Components/Accounts/Edit/AccountDetails";
+import Signup from "./Components/Accounts/Signup/NewAccount";
+import Signin from "./Components/Accounts/Signin/SignIn";
 
-import Accounts from "./Pages/Accounts/Index";
-import AccountPage from "./Pages/Accounts/Show";
-import AccountDetails from "./Pages/Accounts/Edit";
-import Signup from "./Pages/Accounts/New";
-import Signin from "./Pages/Accounts/Signin";
-
-import Lobby from "./Pages/Games/Index";
-import GameSettings from "./Pages/Games/Edit";
-// import NewGame from "./Pages/Games/New";
-import GamePage from "./Pages/Games/Show";
+// Game stuff \\
+import Lobby from "./Components/Games/Index/Lobby";
+import GameSettings from "./Components/Games/Edit/GameSettings";
+import GamePage from "./Components/Games/Show/GamePage";
 
 const App = () => {
   const navigate = useNavigate();
@@ -30,6 +32,7 @@ const App = () => {
   const [games, setGames] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
+  const [resize, setResize] = useState("");
 
   useEffect(() => {
     const data = window.localStorage.getItem("Current_User");
@@ -42,13 +45,15 @@ const App = () => {
 
     getGames();
     getUsers();
+    resizeSidebar();
 
-    const gameAndUsersInterval = setInterval(() => {
+    const intervalFunctions = setInterval(() => {
       getGames();
       getUsers();
+      resizeSidebar();
     }, 1000);
 
-    return () => clearInterval(gameAndUsersInterval);
+    return () => clearInterval(intervalFunctions);
   }, []); // eslint-disable-line
 
   const getGames = async () => {
@@ -61,6 +66,24 @@ const App = () => {
     await axios.get(`${API}/users`).then((res) => {
       setUsers(res.data);
     });
+  };
+
+  const resizeSidebar = () => {
+    if (window.innerWidth > 1000) {
+      setResize("20%");
+    }
+    if (window.innerWidth <= 1000) {
+      setResize("25%");
+    }
+    if (window.innerWidth <= 800) {
+      setResize("35%");
+    }
+    if (window.innerWidth <= 600) {
+      setResize("45%");
+    }
+    if (window.innerWidth <= 400) {
+      setResize("60%");
+    }
   };
 
   const handleSidebarOpen = () => {
@@ -91,17 +114,25 @@ const App = () => {
 
   return (
     <section id="outer-container">
+      {/* {console.log(games)} */}
       <h1 id="worldWideChessHeader">WORLD WIDE CHESS</h1>
       <NavBar handleOpen={handleSidebarOpen} authenticated={authenticated} />
-      <Sidebar
+      <SidebarMenu
         pageWrapId={"page-wrap"}
         outerContainerId={"outer-container"}
         isOpen={isOpen}
-        user={user}
-        authenticated={authenticated}
-        handleLogout={handleLogout}
-        handleSidebarOpen={handleSidebarOpen}
-      />
+        onClose={handleSidebarOpen}
+        customBurgerIcon={false}
+        right
+        width={resize}
+      >
+        <Sidebar
+          user={user}
+          authenticated={authenticated}
+          handleLogout={handleLogout}
+          handleSidebarOpen={handleSidebarOpen}
+        />
+      </SidebarMenu>
 
       <main id="page-wrap">
         <Routes>
@@ -138,18 +169,18 @@ const App = () => {
               path="Games/Lobby"
               element={<Lobby user={user} games={games} />}
             />
-            {/* <Route path="Games/New" element={<NewGame user={user} />} /> */}
             <Route path="Games/:gameID" element={<GamePage user={user} />} />
             <Route
               path="Games/:gameID/Edit"
-              element={<GameSettings user={user} />}
+              element={<GameSettings user={user} games={games} />}
             />
             <Route path="*" element={<FoF />} />
           </Route>
         </Routes>
       </main>
 
-      <MDBFooter id="footer">
+      {/* add different info for footer later */}
+      {/* <MDBFooter id="footer">
         <div
           className="text-center p-4"
           style={{ backgroundColor: "rgba(0, 0, 0, 0.05)" }}
@@ -164,7 +195,7 @@ const App = () => {
             gitlep1
           </a>
         </div>
-      </MDBFooter>
+      </MDBFooter> */}
     </section>
   );
 };
