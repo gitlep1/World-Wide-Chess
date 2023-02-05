@@ -1,4 +1,4 @@
-\c dbdtebh87uhs8i;
+\c world-wide-chess-main-db-045fd67346474fc11;
 
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (
@@ -20,5 +20,4 @@ CREATE TABLE games (
   in_progress BOOLEAN DEFAULT false,
   winner TEXT REFERENCES users(username) DEFAULT NULL,
   currentPositions TEXT
-  -- moves TEXT[] DEFAULT array[]::TEXT[]
 );

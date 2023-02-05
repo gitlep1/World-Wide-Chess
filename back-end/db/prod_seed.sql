@@ -1,4 +1,4 @@
-\c dbdtebh87uhs8i;
+\c world-wide-chess-main-db-045fd67346474fc11;
 
 INSERT INTO users (profileImg, username, password, email, created_at) VALUES
 ('https://i.imgur.com/8puTSd9.png', 'Easy Bot', 'o5b21e*F6Wan', 'easybot@bot.com', NOW()),

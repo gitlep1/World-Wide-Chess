@@ -14,6 +14,7 @@ const cn = DATABASE_URL
       },
     }
   : {
+      // DATABASE_URL: DATABASE_URL,
       host: PG_HOST,
       database: PG_DATABASE,
       user: PG_USER,
