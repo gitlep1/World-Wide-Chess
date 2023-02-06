@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 
-const RenderPlayerGame = ({ game, user, error }) => {
+const PlayerGameSettings = ({ game, user, error }) => {
   const API = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
 
@@ -13,19 +13,16 @@ const RenderPlayerGame = ({ game, user, error }) => {
       if (user.id === game.player1id) {
         return undefined;
       } else {
-        toast.success(
-          `${game.player1}(Host) has cancelled the game. \n You will be redirected in 3 seconds.`,
-          {
-            toastId: "hostCancelledPlayerGame",
-            position: "top-center",
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: false,
-            pauseOnFocusLoss: false,
-            draggable: true,
-            progress: undefined,
-          }
-        );
+        toast.success(`${game.player1}(Host) has cancelled the game.`, {
+          toastId: "hostCancelledPlayerGame",
+          position: "top-center",
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          pauseOnFocusLoss: false,
+          draggable: true,
+          progress: undefined,
+        });
         setTimeout(() => {
           navigate("/Games/Lobby");
         }, 4100);
@@ -33,7 +30,7 @@ const RenderPlayerGame = ({ game, user, error }) => {
     }
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const startingPosition =
@@ -46,7 +43,7 @@ const RenderPlayerGame = ({ game, user, error }) => {
       currentPositions: startingPosition,
     };
 
-    axios.put(`${API}/games/${game.id}`, updateGameData).then((res) => {
+    await axios.put(`${API}/games/${game.id}`, updateGameData).then((res) => {
       navigate(`/Games/${game.id}`);
     });
   };
@@ -119,4 +116,4 @@ const RenderPlayerGame = ({ game, user, error }) => {
   );
 };
 
-export default RenderPlayerGame;
+export default PlayerGameSettings;

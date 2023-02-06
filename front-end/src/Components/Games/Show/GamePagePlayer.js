@@ -10,7 +10,7 @@ const GamePage = ({ user, game, endGame }) => {
 
   const chessboardRef = useRef();
   const [chessGame, setChessGame] = useState(Chess(game.currentpositions));
-  const [recentMoves, setRecentMoves] = useState("");
+  const [recentMoves, setRecentMoves] = useState(game.currentPositions);
   // const [white, setWhite] = useState("");
   // const [black, setBlack] = useState("");
   // const [winner, setWinner] = useState("");
@@ -41,11 +41,19 @@ const GamePage = ({ user, game, endGame }) => {
       to: targetSquare,
       promotion: "q",
     });
-    setChessGame(gameCopy);
+    // setChessGame(gameCopy);
+    // let test = chessGame.fen();
+    // test = test.split(" ");
+    // test[1] = test[1] === "w" ? "b" : "w";
+    // test = test.join(" ");
+    // console.log("test swapping turns: ", test);
     if (move !== null) {
       updatePositions();
+      setChessGame(gameCopy);
+      return move;
+    } else {
+      return;
     }
-    return move;
   }
 
   const updatePositions = () => {
@@ -79,9 +87,9 @@ const GamePage = ({ user, game, endGame }) => {
 
   return (
     <section className="gamePageSection">
+      {/* {console.log(chessGame.turn())} */}
       <div>
         <Chessboard
-          id="PlayerVsPlayer"
           animationDuration={200}
           position={recentMoves}
           boardOrientation={user.id === game.player1id ? "white" : "black"}

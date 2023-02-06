@@ -114,7 +114,6 @@ const App = () => {
 
   return (
     <section id="outer-container">
-      {/* {console.log(games)} */}
       <h1 id="worldWideChessHeader">WORLD WIDE CHESS</h1>
       <NavBar handleOpen={handleSidebarOpen} authenticated={authenticated} />
       <SidebarMenu

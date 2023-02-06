@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const RenderBotGame = ({ game, error }) => {
+const BotGameSettings = ({ game, error }) => {
   const API = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
 
@@ -127,4 +127,4 @@ const RenderBotGame = ({ game, error }) => {
   );
 };
 
-export default RenderBotGame;
+export default BotGameSettings;

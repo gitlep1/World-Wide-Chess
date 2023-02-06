@@ -57,4 +57,4 @@ This App was created in 2 weeks. It allows users to create an account and play a
 ### DEPLOYED LINKS:
 
 - [front-end](https://world-wide-chess.netlify.app/)
-- [back-end](https://world-wide-chess.herokuapp.com/)
+- [back-end](https://world-wide-chess.adaptable.app)

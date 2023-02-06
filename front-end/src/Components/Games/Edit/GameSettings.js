@@ -4,15 +4,16 @@ import { useParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import axios from "axios";
 
-import RenderPlayerGame from "./RenderPlayerGame";
-import RenderBotGame from "./RenderBotGame";
+import Loading from "../../Loading/Loading";
+import PlayerGameSettings from "./PlayerGameSettings";
+import BotGameSettings from "./BotGameSettings";
 
 const GameSettings = ({ user, games }) => {
   const { gameID } = useParams();
   const API = process.env.REACT_APP_API_URL;
 
   const [game, setGame] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const [error, setError] = useState("");
 
@@ -37,24 +38,22 @@ const GameSettings = ({ user, games }) => {
     return () => clearInterval(interval);
   }, []); // eslint-disable-line
 
-  // useEffect(() => {
-  //   window.addEventListener("beforeunload", alertUser);
-  //   window.addEventListener("unload", handleEndPoint);
-  //   return () => {
-  //     window.removeEventListener("beforeunload", alertUser);
-  //     window.removeEventListener("unload", handleEndPoint);
-  //   };
-  // }, []); // eslint-disable-line
-
   const getGame = async () => {
-    await axios
-      .get(`${API}/games/${gameID}`)
-      .then((res) => {
-        setGame(res.data);
-      })
-      .catch((err) => {
-        setError(err);
-      });
+    try {
+      // setLoading(true);
+      await axios
+        .get(`${API}/games/${gameID}`)
+        .then((res) => {
+          setGame(res.data);
+        })
+        .catch((err) => {
+          setError(err);
+        });
+      // setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      setError(err);
+    }
 
     // let findCorrectGame = games.map((foundGame) => {
     //   if (foundGame.id === Number(gameID)) {
@@ -78,22 +77,34 @@ const GameSettings = ({ user, games }) => {
     });
   };
 
+  const renderGameSettings = () => {
+    if (loading) {
+      return <Loading />;
+    } else if (error) {
+      return <h1>Error:</h1>;
+    } else {
+      return (
+        <section className="editGameSection2">
+          <div className="editGameTitle">
+            <h1>{game.player1}'s Chess Match</h1>
+            <p>Opponent:</p>
+            {game.player2 ? <h3>{game.player2}</h3> : <h3>Searching...</h3>}
+          </div>
+          <div className="editGameSettings">
+            {game.player2 ? (
+              <PlayerGameSettings game={game} user={user} error={error} />
+            ) : (
+              <BotGameSettings game={game} error={error} />
+            )}
+          </div>
+        </section>
+      );
+    }
+  };
+
   return (
     <section className="editGameSection">
-      <section className="editGameSection2">
-        <section className="editGameTitle">
-          <h1>{game.player1}'s Chess Match</h1>
-          <p>Opponent:</p>
-          {game.player2 ? <h3>{game.player2}</h3> : <h3>Searching...</h3>}
-        </section>
-        <section className="editGameSettings">
-          {game.player2 ? (
-            <RenderPlayerGame game={game} user={user} error={error} />
-          ) : (
-            <RenderBotGame game={game} error={error} />
-          )}
-        </section>
-      </section>
+      {renderGameSettings()}
       <ToastContainer autoClose={3000} theme="dark" />
     </section>
   );
