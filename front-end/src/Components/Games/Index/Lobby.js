@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Table } from "react-bootstrap";
 import axios from "axios";
 
-const Lobbypage = ({ user, games }) => {
+const Lobbypage = ({ user, games, handleRefresh }) => {
   const navigate = useNavigate();
   const API = process.env.REACT_APP_API_URL;
 
@@ -85,9 +85,17 @@ const Lobbypage = ({ user, games }) => {
           onClick={() => {
             handleCreate();
           }}
-          className="createGameLink"
+          className="divButtons"
         >
           <div>CREATE</div>
+        </div>
+        <div
+          onClick={() => {
+            handleRefresh();
+          }}
+          className="divButtons"
+        >
+          <div>REFRESH</div>
         </div>
       </section>
       <br />

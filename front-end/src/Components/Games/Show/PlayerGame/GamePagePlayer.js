@@ -1,4 +1,4 @@
-import "./GamePage.scss";
+// import "../GamePage.scss";
 import { useState, useRef, useEffect } from "react";
 import { Chessboard } from "react-chessboard";
 import { Button, Modal } from "react-bootstrap";

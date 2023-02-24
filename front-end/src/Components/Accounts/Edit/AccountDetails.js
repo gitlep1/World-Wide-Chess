@@ -136,8 +136,9 @@ const EditAccount = ({ user, users, handleUser, handleLogout }) => {
     }, 4100);
   };
 
-  const deleteAccount = (user) => {
-    axios.delete(`${API}/users/${user.id}`).then(() => {
+  const deleteAccount = async (user) => {
+    handleLogout();
+    await axios.delete(`${API}/users/${user.id}`).then(() => {
       toast.success(
         "Your account has been successfully deleted you will be redirected back to the homepage in 3 seconds.",
         {
@@ -150,9 +151,9 @@ const EditAccount = ({ user, users, handleUser, handleLogout }) => {
           progress: undefined,
         }
       );
-      setTimeout(() => {
-        handleLogout();
-      }, 4100);
+      // setTimeout(() => {
+      //   handleLogout();
+      // }, 4100);
     });
   };
 

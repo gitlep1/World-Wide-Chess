@@ -4,8 +4,8 @@ import { ToastContainer, toast } from "react-toastify";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-import VsBot from "./GamePageBot";
-import VsPlayer from "./GamePagePlayer";
+import VsBot from "./BotGame/GamePageBot";
+import VsPlayer from "./PlayerGame/GamePagePlayer";
 
 const GamePage = ({ user }) => {
   const API = process.env.REACT_APP_API_URL;
@@ -69,7 +69,7 @@ const GamePage = ({ user }) => {
         // );
       }
       setTimeout(() => {
-        navigate("/Games/Lobby");
+        navigate("/Games/");
       }, 4100);
     }
   }, [
@@ -95,7 +95,7 @@ const GamePage = ({ user }) => {
         progress: undefined,
       });
       setTimeout(() => {
-        navigate("/Games/Lobby");
+        navigate("/Games/");
       }, 4100);
     });
   };

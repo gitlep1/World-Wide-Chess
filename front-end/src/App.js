@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { scaleRotate as SidebarMenu } from "react-burger-menu";
 // import { MDBFooter } from "mdb-react-ui-kit";
-import axios from "axios";
 
 // Nav stuff \\
 import Home from "./Components/Homepage/Homepage";
@@ -23,9 +22,14 @@ import Lobby from "./Components/Games/Index/Lobby";
 import GameSettings from "./Components/Games/Edit/GameSettings";
 import GamePage from "./Components/Games/Show/GamePage";
 
+// Custom hooks stuff \\
+import useGetReq from "./CustomHooks/GetApi";
+
 const App = () => {
-  const navigate = useNavigate();
   const API = process.env.REACT_APP_API_URL;
+
+  const navigate = useNavigate();
+  const [getData, cancelRequests] = useGetReq();
 
   const [user, setUser] = useState({});
   const [users, setUsers] = useState([]);
@@ -35,6 +39,24 @@ const App = () => {
   const [resize, setResize] = useState("");
 
   useEffect(() => {
+    getGamesAndUsers();
+    setLocalStorage();
+
+    const intervalFunctions = setInterval(() => {
+      resizeSidebar();
+    }, 1000);
+
+    return () => clearInterval(intervalFunctions);
+  }, []); // eslint-disable-line
+
+  const getGamesAndUsers = async () => {
+    await getData(`${API}/games`, setGames);
+    await getData(`${API}/users`, setUsers);
+
+    return cancelRequests;
+  };
+
+  const setLocalStorage = async () => {
     const data = window.localStorage.getItem("Current_User");
     const authenticated = window.localStorage.getItem("Authenticated");
 
@@ -42,30 +64,6 @@ const App = () => {
       setUser(JSON.parse(data));
       setAuthenticated(JSON.parse(authenticated));
     }
-
-    getGames();
-    getUsers();
-    resizeSidebar();
-
-    const intervalFunctions = setInterval(() => {
-      getGames();
-      getUsers();
-      resizeSidebar();
-    }, 1000);
-
-    return () => clearInterval(intervalFunctions);
-  }, []); // eslint-disable-line
-
-  const getGames = async () => {
-    await axios.get(`${API}/games`).then((res) => {
-      setGames(res.data);
-    });
-  };
-
-  const getUsers = async () => {
-    await axios.get(`${API}/users`).then((res) => {
-      setUsers(res.data);
-    });
   };
 
   const resizeSidebar = () => {
@@ -95,7 +93,7 @@ const App = () => {
     setAuthenticated(true);
     window.localStorage.setItem("Current_User", JSON.stringify(user));
     window.localStorage.setItem("Authenticated", JSON.stringify(true));
-    navigate(`Games/Lobby`);
+    navigate(`Games/`);
   };
 
   const handleLogout = () => {
@@ -110,6 +108,11 @@ const App = () => {
     }
     navigate("/");
     setIsOpen(false);
+  };
+
+  const handleRefresh = async () => {
+    getData(`${API}/games`, setGames);
+    return cancelRequests;
   };
 
   return (
@@ -136,6 +139,7 @@ const App = () => {
       <main id="page-wrap">
         <Routes>
           <Route path="/">
+            {/* Account Routes */}
             <Route path="/" index element={<Home />} />
             <Route
               path="Accounts"
@@ -164,9 +168,16 @@ const App = () => {
                 />
               }
             />
+            {/* Game routes */}
             <Route
-              path="Games/Lobby"
-              element={<Lobby user={user} games={games} />}
+              path="Games/"
+              element={
+                <Lobby
+                  user={user}
+                  games={games}
+                  handleRefresh={handleRefresh}
+                />
+              }
             />
             <Route path="Games/:gameID" element={<GamePage user={user} />} />
             <Route

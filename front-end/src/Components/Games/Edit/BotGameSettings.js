@@ -30,7 +30,7 @@ const BotGameSettings = ({ game, error }) => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const easyBotID = 1;
@@ -55,9 +55,11 @@ const BotGameSettings = ({ game, error }) => {
       winner: null,
       inProgress: true,
       currentPositions: startingPositions,
+      player1Color: "white",
+      player2Color: "black",
     };
 
-    axios.put(`${API}/games/${game.id}`, updateGameData).then((res) => {
+    await axios.put(`${API}/games/${game.id}`, updateGameData).then((res) => {
       navigate(`/Games/${game.id}`);
     });
   };
@@ -75,7 +77,7 @@ const BotGameSettings = ({ game, error }) => {
         progress: undefined,
       });
       setTimeout(() => {
-        navigate("/Games/Lobby");
+        navigate("/Games/");
       }, 4100);
     });
   };

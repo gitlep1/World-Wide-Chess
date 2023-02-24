@@ -1,5 +1,5 @@
 import "./NavBar.scss";
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const NavBar = ({ handleOpen, authenticated }) => {
@@ -11,7 +11,7 @@ const NavBar = ({ handleOpen, authenticated }) => {
             <div className="navbarLink">Home</div>
           </Link>
 
-          <Link to="Games/Lobby" className="navbarLinkParent">
+          <Link to="Games/" className="navbarLinkParent">
             <div className="navbarLink">Lobby</div>
           </Link>
 

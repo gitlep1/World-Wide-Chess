@@ -24,7 +24,7 @@ const PlayerGameSettings = ({ game, user, error }) => {
           progress: undefined,
         });
         setTimeout(() => {
-          navigate("/Games/Lobby");
+          navigate("/Games/");
         }, 4100);
       }
     }
@@ -67,7 +67,7 @@ const PlayerGameSettings = ({ game, user, error }) => {
       });
     await axios.delete(`${API}/games/${gameID}`).then(() => {
       setTimeout(() => {
-        navigate("/Games/Lobby");
+        navigate("/Games/");
       }, 4100);
     });
   };
@@ -76,7 +76,7 @@ const PlayerGameSettings = ({ game, user, error }) => {
     await axios
       .put(`${API}/games/${game.id}`, { [game.player2id]: null })
       .then(() => {
-        navigate("/Games/Lobby");
+        navigate("/Games/");
       });
   };
 
