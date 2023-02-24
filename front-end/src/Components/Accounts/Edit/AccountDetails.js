@@ -24,10 +24,11 @@ const EditAccount = ({ user, users, handleUser, handleLogout }) => {
     setPassword(user.password);
     setEmail(user.email);
     setProfImg(user.profileimg);
-  }, []); //eslint-disable-line
+  }, [user.username, user.password, user.email, user.profileimg]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     if (name === "username") {
       setUsername(value);
     } else if (name === "password") {
@@ -51,7 +52,7 @@ const EditAccount = ({ user, users, handleUser, handleLogout }) => {
 
     if (editUser.username.length > 20) {
       return toast.error(
-        `Your current username:(${editUser.username}) is ${editUser.username.length} characters long. \n The max chracter length allowed is 20.`,
+        `Your current username:(${editUser.username}) is ${editUser.username.length} characters long. \n The max character length allowed is 20.`,
         {
           position: "top-right",
           hideProgressBar: false,
@@ -135,8 +136,9 @@ const EditAccount = ({ user, users, handleUser, handleLogout }) => {
     }, 4100);
   };
 
-  const deleteAccount = (user) => {
-    axios.delete(`${API}/users/${user.id}`).then(() => {
+  const deleteAccount = async (user) => {
+    handleLogout();
+    await axios.delete(`${API}/users/${user.id}`).then(() => {
       toast.success(
         "Your account has been successfully deleted you will be redirected back to the homepage in 3 seconds.",
         {
@@ -149,68 +151,81 @@ const EditAccount = ({ user, users, handleUser, handleLogout }) => {
           progress: undefined,
         }
       );
-      setTimeout(() => {
-        handleLogout();
-      }, 4100);
+      // setTimeout(() => {
+      //   handleLogout();
+      // }, 4100);
     });
   };
 
   return (
     <section className="editAccountSection">
       {error && <p className="error">{error}</p>}
-      <h1>{user.username}</h1>
-      <Form onSubmit={handleSubmit}>
-        <Form.Group controlId="formBasicUsername">
-          <Form.Label>Username</Form.Label>
-          <Form.Control
-            type="text"
-            name="username"
-            placeholder="Username"
-            onChange={handleChange}
-            value={username}
-          />
-        </Form.Group>
-        <Form.Group controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            name="password"
-            placeholder="Password"
-            onChange={handleChange}
-            value={password}
-          />
-        </Form.Group>
-        <Form.Group controlId="formBasicEmail">
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            type="email"
-            name="email"
-            placeholder="Email"
-            onChange={handleChange}
-            value={email}
-          />
-        </Form.Group>
-        <Form.Group controlId="formProfileImg">
-          <Form.Label>Profile Image</Form.Label>
-          <Form.Control
-            type="url"
-            name="profileImg"
-            placeholder="Profile Image URL"
-            onChange={handleChange}
-            value={profImg}
-          />
-          <img src={user.profileimg} alt="profile" />
-        </Form.Group>
+      <Form onSubmit={handleSubmit} className="profileFormContainer">
+        <div className="profileForm">
+          <Form.Group controlId="formBasicUsername">
+            <Form.Label>
+              <h3>Username</h3>
+            </Form.Label>
+            <Form.Control
+              type="text"
+              name="username"
+              placeholder="Username"
+              onChange={handleChange}
+              value={username}
+            />
+          </Form.Group>
+          <Form.Group controlId="formBasicPassword">
+            <Form.Label>
+              <h3>Password</h3>
+            </Form.Label>
+            <Form.Control
+              type="password"
+              name="password"
+              placeholder="Password"
+              onChange={handleChange}
+              value={password}
+            />
+          </Form.Group>
+          <Form.Group controlId="formBasicEmail">
+            <Form.Label>
+              <h3>Email</h3>
+            </Form.Label>
+            <Form.Control
+              type="email"
+              name="email"
+              placeholder="Email"
+              onChange={handleChange}
+              value={email}
+            />
+          </Form.Group>
+          <Form.Group controlId="formProfileImg">
+            <Form.Label>
+              <h3>Profile Image</h3>
+            </Form.Label>
+            <Form.Control
+              type="url"
+              name="profileImg"
+              placeholder="Profile Image URL"
+              onChange={handleChange}
+              value={profImg}
+            />
+          </Form.Group>
+        </div>
 
-        <br />
-        <Button variant="primary" type="submit">
-          Submit
-        </Button>
+        <div className="profilePic">
+          <img src={profImg} alt="profile" />
+        </div>
+
+        <div className="profileButtons">
+          <Button variant="dark" type="submit">
+            Save
+          </Button>
+          <Button variant="dark" onClick={handleShow}>
+            Delete Account
+          </Button>
+        </div>
       </Form>
-      <br />
-      <Button variant="danger" onClick={handleShow}>
-        Delete Account
-      </Button>
+
       <ToastContainer autoClose={3000} theme="dark" />
 
       <Modal show={show} onHide={handleClose}>

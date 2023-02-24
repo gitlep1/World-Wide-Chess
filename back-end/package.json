@@ -4,6 +4,8 @@
   "description": "Play World Wide Chess",
   "main": "server.js",
   "scripts": {
+    "dbPinit": "psql -U postgres -f db/prod_schema.sql",
+    "dbPseed": "psql -U postgres -f db/prod_seed.sql",
     "dbinit": "psql -U postgres -f db/schema.sql",
     "dbseed": "psql -U postgres -f db/seed.sql",
     "start": "nodemon server.js"

@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const RenderBotGame = ({ game, error }) => {
+const BotGameSettings = ({ game, error }) => {
   const API = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
 
@@ -30,7 +30,7 @@ const RenderBotGame = ({ game, error }) => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const easyBotID = 1;
@@ -55,9 +55,11 @@ const RenderBotGame = ({ game, error }) => {
       winner: null,
       inProgress: true,
       currentPositions: startingPositions,
+      player1Color: "white",
+      player2Color: "black",
     };
 
-    axios.put(`${API}/games/${game.id}`, updateGameData).then((res) => {
+    await axios.put(`${API}/games/${game.id}`, updateGameData).then((res) => {
       navigate(`/Games/${game.id}`);
     });
   };
@@ -75,7 +77,7 @@ const RenderBotGame = ({ game, error }) => {
         progress: undefined,
       });
       setTimeout(() => {
-        navigate("/Games/Lobby");
+        navigate("/Games/");
       }, 4100);
     });
   };
@@ -127,4 +129,4 @@ const RenderBotGame = ({ game, error }) => {
   );
 };
 
-export default RenderBotGame;
+export default BotGameSettings;

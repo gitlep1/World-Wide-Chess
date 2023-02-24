@@ -1,6 +1,4 @@
-* {
-  box-sizing: border-box;
-}
+@import url("https://fonts.googleapis.com/css2?family=Bungee+Shade&family=IM+Fell+English+SC&family=Tilt+Prism:YROT@-13&display=swap");
 
 #page-wrap {
   padding-bottom: 10px;
@@ -8,8 +6,15 @@
 }
 
 body {
-  background-image: url("https://c4.wallpaperflare.com/wallpaper/621/321/193/background-the-game-chess-wallpaper-preview.jpg");
+  background-image: url("./Images/homepageBackgroundImage.jpg");
   background-repeat: no-repeat;
   background-size: cover;
-  height: 100%;
+  height: 100vh;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  font-family: "IM Fell English SC", serif;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }

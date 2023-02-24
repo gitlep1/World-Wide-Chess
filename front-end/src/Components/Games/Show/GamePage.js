@@ -3,13 +3,14 @@ import { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import VsBot from "./GamePageBot";
-import VsPlayer from "./GamePagePlayer";
+
+import VsBot from "./BotGame/GamePageBot";
+import VsPlayer from "./PlayerGame/GamePagePlayer";
 
 const GamePage = ({ user }) => {
+  const API = process.env.REACT_APP_API_URL;
   const { gameID } = useParams();
   const navigate = useNavigate();
-  const API = process.env.REACT_APP_API_URL;
 
   const [game, setGame] = useState({});
   const [error, setError] = useState("");
@@ -31,24 +32,55 @@ const GamePage = ({ user }) => {
 
   useEffect(() => {
     if (error) {
-      toast.success(
-        `Opponent has forfeited the game. \n You will be redirected in 3 seconds.`,
-        {
-          toastId: "hostCancelledPlayerGame",
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          pauseOnFocusLoss: false,
-          draggable: true,
-          progress: undefined,
-        }
-      );
+      if (user.id === game.player1id) {
+        console.log("inside if");
+        // toast.success(
+        //   user.id === game.player1id
+        //     ? null
+        //     : `${game.player1} has forfeited the game.`,
+        //   {
+        //     toastId: "hostCancelledPlayerGame",
+        //     position: "top-center",
+        //     hideProgressBar: false,
+        //     closeOnClick: false,
+        //     pauseOnHover: false,
+        //     pauseOnFocusLoss: false,
+        //     draggable: true,
+        //     progress: undefined,
+        //   }
+        // );
+      } else {
+        console.log("inside else");
+        // alert(`${game.player1} left game.`);
+        // toast.success(
+        //   user.id === game.player2id
+        //     ? null
+        //     : `${game.player2} has forfeited the game.`,
+        //   {
+        //     toastId: "hostCancelledPlayerGame",
+        //     position: "top-center",
+        //     hideProgressBar: false,
+        //     closeOnClick: false,
+        //     pauseOnHover: false,
+        //     pauseOnFocusLoss: false,
+        //     draggable: true,
+        //     progress: undefined,
+        //   }
+        // );
+      }
       setTimeout(() => {
-        navigate("/Games/Lobby");
+        navigate("/Games/");
       }, 4100);
     }
-  });
+  }, [
+    error,
+    game.player1,
+    game.player1id,
+    game.player2,
+    game.player2id,
+    navigate,
+    user.id,
+  ]);
 
   const endGame = (gameID) => {
     axios.delete(`${API}/games/${gameID}`).then(() => {
@@ -63,7 +95,7 @@ const GamePage = ({ user }) => {
         progress: undefined,
       });
       setTimeout(() => {
-        navigate("/Games/Lobby");
+        navigate("/Games/");
       }, 4100);
     });
   };

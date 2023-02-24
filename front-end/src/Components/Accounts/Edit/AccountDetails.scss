@@ -1,11 +1,79 @@
 .editAccountSection {
-  text-align: center;
   color: rgb(0, 255, 213);
   box-shadow: -2px 3px 12px 17px rgba(0, 0, 0, 0.82);
   margin: 0 auto;
   width: 80%;
+  height: 80vh;
 
-  img {
-    width: 50%;
+  .profileFormContainer {
+    text-align: center;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    align-items: flex-start;
+    justify-content: center;
+    height: inherit;
+
+    h3 {
+      width: 300px;
+      margin-left: 5%;
+      color: aliceblue;
+    }
+
+    .profileForm {
+      margin-top: 5%;
+
+      #formBasicUsername {
+        color: white;
+        background-color: #212529;
+        opacity: 85%;
+        margin-left: 5%;
+      }
+
+      #formBasicPassword {
+        color: white;
+        background-color: #212529;
+        opacity: 85%;
+        margin-left: 5%;
+      }
+
+      #formBasicEmail {
+        color: white;
+        background-color: #212529;
+        opacity: 85%;
+        margin-left: 5%;
+      }
+
+      #formProfileImg {
+        color: white;
+        background-color: #212529;
+        opacity: 85%;
+        margin-left: 5%;
+      }
+    }
+
+    .profilePic {
+      position: relative;
+      grid-column: 2;
+
+      img {
+        position: absolute;
+        top: 15px;
+        right: 5px;
+        width: 250px;
+        border-radius: 100%;
+        // height: 250px;
+      }
+    }
+
+    .profileButtons {
+      grid-column: 1 / span 2;
+      height: 30%;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 3%;
+    }
   }
 }
+
+// button black color: #212529
+// button white color: #f8f9fa

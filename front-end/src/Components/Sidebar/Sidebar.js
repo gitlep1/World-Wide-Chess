@@ -1,55 +1,29 @@
-import { useState, useEffect } from "react";
-import { bubble as Menu } from "react-burger-menu";
-import { Link } from "react-router-dom";
+import { Button } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
 import "./Sidebar.scss";
 
-const Sidebar = ({
-  isOpen,
-  user,
-  authenticated,
-  handleLogout,
-  handleSidebarOpen,
-}) => {
-  const [resize, setResize] = useState("");
-
-  useEffect(() => {
-    const resizeInterval = setInterval(() => {
-      if (window.innerWidth > 1000) {
-        setResize("20%");
-      }
-      if (window.innerWidth <= 1000) {
-        setResize("25%");
-      }
-      if (window.innerWidth <= 800) {
-        setResize("35%");
-      }
-      if (window.innerWidth <= 600) {
-        setResize("45%");
-      }
-      if (window.innerWidth <= 400) {
-        setResize("60%");
-      }
-    }, 1000);
-
-    return () => clearInterval(resizeInterval);
-  });
+const Sidebar = ({ user, authenticated, handleLogout, handleSidebarOpen }) => {
+  const navigate = useNavigate();
 
   return (
-    <Menu right className="menuSideBar" isOpen={isOpen} width={resize}>
+    <section className="menuSideBar">
       {authenticated ? (
         <aside className="profileDataSection">
           <img src={user.profileimg} alt="profile" className="profileImg" />
           <h1>{user.username}</h1>
-          <Link
-            to={`/Accounts/${user.id}/Edit`}
+          <Button
             className="menu-item"
-            onClick={handleSidebarOpen}
+            onClick={() => {
+              navigate(`/Accounts/${user.id}/Edit`);
+              handleSidebarOpen();
+            }}
           >
             Settings
-          </Link>{" "}
-          <div className="menu-item" onClick={handleLogout}>
+          </Button>
+          <br />
+          <Button className="menu-item" onClick={handleLogout} variant="danger">
             Sign Out
-          </div>
+          </Button>
         </aside>
       ) : (
         <>
@@ -59,7 +33,8 @@ const Sidebar = ({
             onClick={handleSidebarOpen}
           >
             Sign Up
-          </Link>{" "}
+          </Link>
+          <br />
           <Link
             to="/Accounts/Signin"
             className="menu-item"
@@ -69,7 +44,7 @@ const Sidebar = ({
           </Link>
         </>
       )}
-    </Menu>
+    </section>
   );
 };
 
