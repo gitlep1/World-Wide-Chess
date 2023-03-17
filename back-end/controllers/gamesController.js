@@ -52,21 +52,22 @@ games.post("/", async (req, res) => {
 
 games.put("/:id", async (req, res) => {
   const { id } = req.params;
+
   const updatedGameData = {
     player2ID: req.body.player2ID,
-    winner: req.body.winner,
+    player1Color: req.body.player1Color,
+    player2Color: req.body.player2Color,
     inProgress: req.body.inProgress,
     currentPositions: req.body.currentPositions,
-    // moves: req.body.moves,
   };
 
   const updateGame = await updateGames(
     id,
     updatedGameData.player2ID,
-    updatedGameData.winner,
+    updatedGameData.player1Color,
+    updatedGameData.player2Color,
     updatedGameData.inProgress,
     updatedGameData.currentPositions
-    // updatedGameData.moves
   );
 
   if (updateGame) {

@@ -30,11 +30,19 @@ const createUser = async (profileImg, username, password, email) => {
   }
 };
 
-const updateUser = async (id, profileImg, username, password, email) => {
+const updateUser = async (
+  id,
+  profileImg,
+  username,
+  password,
+  email,
+  theme,
+  preferred_color
+) => {
   try {
     const updateUser = await db.one(
-      "UPDATE users SET profileImg = $1, username=$2, password=$3, email=$4 where id=$5 RETURNING *",
-      [profileImg, username, password, email, id]
+      "UPDATE users SET profileImg = $1, username=$2, password=$3, email=$4, theme=$5, preferred_color=$6, WHERE id=$7 RETURNING *",
+      [profileImg, username, password, email, theme, preferred_color, id]
     );
     return updateUser;
   } catch (error) {

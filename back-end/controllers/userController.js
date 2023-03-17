@@ -72,6 +72,8 @@ user.put("/:id", checkValues, async (req, res) => {
     username: req.body.username,
     password: req.body.password,
     email: req.body.email,
+    theme: req.body.theme,
+    preferred_color: req.body.preferred_color,
   };
 
   const updatedUser = await updateUser(
@@ -79,7 +81,9 @@ user.put("/:id", checkValues, async (req, res) => {
     updatedUserData.profileImg,
     updatedUserData.username,
     updatedUserData.password,
-    updatedUserData.email
+    updatedUserData.email,
+    updatedUserData.theme,
+    updatedUserData.preferred_color
   );
 
   if (updatedUser) {
