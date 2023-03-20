@@ -7,7 +7,10 @@ import QueenImg from "../../../../Images/Queen.png";
 import RookImg from "../../../../Images/Rook.png";
 import BishopImg from "../../../../Images/Bishop.png";
 import KnightImg from "../../../../Images/Knight.png";
-// import BotLogic from "./BotLogic/BotLogic";
+
+import EasyBot from "./BotLogic/EasyBot";
+import MediumBot from "./BotLogic/MediumBot";
+import HardBot from "./BotLogic/HardBot";
 
 import { animalPieceTheme } from "../../../Accounts/Themes/Pieces/AnimalPieces";
 
@@ -38,20 +41,13 @@ const PlayVsBot = ({ user, game, endGame }) => {
   }
 
   function makeRandomMove() {
-    const possibleMoves = chessGame.moves();
-
-    if (chessGame.game_over() || possibleMoves.length === 0) {
-      if (chessGame.turn() === "b") {
-        alert(`${game.player1} won`);
-      } else {
-        alert(`${game.player2} won`);
-      }
+    if (game.player2id === 1) {
+      EasyBot(chessGame, game, safeGameMutate);
+    } else if (game.player2id === 2) {
+      MediumBot(chessGame, game, safeGameMutate);
+    } else if (game.player2id === 3) {
+      HardBot(chessGame, game, safeGameMutate);
     }
-
-    const randomIndex = Math.floor(Math.random() * possibleMoves.length);
-    safeGameMutate((chessGame) => {
-      chessGame.move(possibleMoves[randomIndex]);
-    });
   }
 
   const onDrop = (sourceSquare, targetSquare, piece) => {
