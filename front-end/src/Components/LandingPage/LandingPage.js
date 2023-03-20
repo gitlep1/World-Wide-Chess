@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { animated } from "@react-spring/web";
+import { useSpring, animated } from "@react-spring/web";
 import { Button, Image } from "react-bootstrap";
 import Logo from "../../Images/Logo.png";
 import "./LandingPage.scss";
@@ -19,6 +19,23 @@ const LandingPage = ({ handleUser, users }) => {
       setShowGuest(false);
       setShowSignIn(false);
     }
+  };
+
+  const [springs, api] = useSpring(() => ({
+    from: {
+      y: 0,
+    },
+  }));
+
+  const handleClickTest = () => {
+    api.start({
+      from: {
+        y: 0,
+      },
+      to: {
+        y: -300,
+      },
+    });
   };
 
   return (
@@ -62,6 +79,16 @@ const LandingPage = ({ handleUser, users }) => {
         showSignIn={showSignIn}
         handleClose={handleClose}
       />
+
+      <div>
+        <animated.div
+          className="testingReactSpring"
+          onClick={handleClickTest}
+          style={{
+            ...springs,
+          }}
+        ></animated.div>
+      </div>
     </section>
   );
 };

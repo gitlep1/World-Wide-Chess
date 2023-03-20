@@ -14,8 +14,6 @@ import FoF from "./Components/FourOFour/FoF";
 import Accounts from "./Components/Accounts/Index/Accounts";
 import AccountPage from "./Components/Accounts/Show/AccountPage";
 import AccountDetails from "./Components/Accounts/Edit/AccountDetails";
-// import Signup from "./Components/Accounts/Signup/SignUp";
-// import Signin from "./Components/Accounts/Signin/SignIn";
 
 // Game stuff \\
 import Lobby from "./Components/Games/Index/Lobby";
@@ -98,7 +96,7 @@ const App = () => {
       setAuthenticated(true);
       window.localStorage.setItem("Current_User", JSON.stringify(user));
       window.localStorage.setItem("Authenticated", JSON.stringify(true));
-      navigate(`/Homepage`);
+      navigate(`/`);
     } else {
       return;
     }
@@ -126,8 +124,7 @@ const App = () => {
   return (
     <section id="outer-container">
       {user && authenticated ? (
-        <>
-          <h1 id="worldWideChessHeader">WORLD WIDE CHESS</h1>
+        <section className="mainParent">
           <NavBar
             handleOpen={handleSidebarOpen}
             authenticated={authenticated}
@@ -196,7 +193,7 @@ const App = () => {
               </Route>
             </Routes>
           </main>
-        </>
+        </section>
       ) : (
         <LandingPage handleUser={handleUser} users={users} />
       )}
