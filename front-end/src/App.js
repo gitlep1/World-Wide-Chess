@@ -14,8 +14,6 @@ import FoF from "./Components/FourOFour/FoF";
 import Accounts from "./Components/Accounts/Index/Accounts";
 import AccountPage from "./Components/Accounts/Show/AccountPage";
 import AccountDetails from "./Components/Accounts/Edit/AccountDetails";
-import Signup from "./Components/Accounts/Signup/NewAccount";
-import Signin from "./Components/Accounts/Signin/SignIn";
 
 // Game stuff \\
 import Lobby from "./Components/Games/Index/Lobby";
@@ -23,13 +21,17 @@ import GameSettings from "./Components/Games/Edit/GameSettings";
 import GamePage from "./Components/Games/Show/GamePage";
 
 // Custom hooks stuff \\
-import useGetReq from "./CustomHooks/GetApi";
+import GetApi from "./CustomHooks/GetApi";
+
+// V2 Wireframe stuff \\
+import LandingPage from "./Components/LandingPage/LandingPage";
+import Homepage from "./Components/Homepage/Homepage";
 
 const App = () => {
   const API = process.env.REACT_APP_API_URL;
 
   const navigate = useNavigate();
-  const [getData, cancelRequests] = useGetReq();
+  const [getData, cancelRequests] = GetApi();
 
   const [user, setUser] = useState({});
   const [users, setUsers] = useState([]);
@@ -89,11 +91,15 @@ const App = () => {
   };
 
   const handleUser = (user) => {
-    setUser(user);
-    setAuthenticated(true);
-    window.localStorage.setItem("Current_User", JSON.stringify(user));
-    window.localStorage.setItem("Authenticated", JSON.stringify(true));
-    navigate(`Games/`);
+    if (user) {
+      setUser(user);
+      setAuthenticated(true);
+      window.localStorage.setItem("Current_User", JSON.stringify(user));
+      window.localStorage.setItem("Authenticated", JSON.stringify(true));
+      navigate(`/`);
+    } else {
+      return;
+    }
   };
 
   const handleLogout = () => {
@@ -117,77 +123,80 @@ const App = () => {
 
   return (
     <section id="outer-container">
-      <h1 id="worldWideChessHeader">WORLD WIDE CHESS</h1>
-      <NavBar handleOpen={handleSidebarOpen} authenticated={authenticated} />
-      <SidebarMenu
-        pageWrapId={"page-wrap"}
-        outerContainerId={"outer-container"}
-        isOpen={isOpen}
-        onClose={handleSidebarOpen}
-        customBurgerIcon={false}
-        right
-        width={resize}
-      >
-        <Sidebar
-          user={user}
-          authenticated={authenticated}
-          handleLogout={handleLogout}
-          handleSidebarOpen={handleSidebarOpen}
-        />
-      </SidebarMenu>
+      {user && authenticated ? (
+        <section className="mainParent">
+          <NavBar
+            handleOpen={handleSidebarOpen}
+            authenticated={authenticated}
+          />
+          <SidebarMenu
+            pageWrapId={"page-wrap"}
+            outerContainerId={"outer-container"}
+            isOpen={isOpen}
+            onClose={handleSidebarOpen}
+            customBurgerIcon={false}
+            right
+            width={resize}
+          >
+            <Sidebar
+              user={user}
+              authenticated={authenticated}
+              handleLogout={handleLogout}
+              handleSidebarOpen={handleSidebarOpen}
+            />
+          </SidebarMenu>
 
-      <main id="page-wrap">
-        <Routes>
-          <Route path="/">
-            {/* Account Routes */}
-            <Route path="/" index element={<Home />} />
-            <Route
-              path="Accounts"
-              element={<Accounts user={user} users={users} />}
-            />
-            <Route
-              path="Accounts/Signup"
-              element={<Signup handleUser={handleUser} users={users} />}
-            />
-            <Route
-              path="Accounts/Signin"
-              element={<Signin handleUser={handleUser} users={users} />}
-            />
-            <Route
-              path="Accounts/:userID"
-              element={<AccountPage user={user} />}
-            />
-            <Route
-              path="Accounts/:userID/Edit"
-              element={
-                <AccountDetails
-                  user={user}
-                  users={users}
-                  handleUser={handleUser}
-                  handleLogout={handleLogout}
+          <main id="page-wrap">
+            <Routes>
+              <Route path="/">
+                {/* Account Routes */}
+                <Route path="/" index element={<Homepage />} />
+                <Route
+                  path="Accounts"
+                  element={<Accounts user={user} users={users} />}
                 />
-              }
-            />
-            {/* Game routes */}
-            <Route
-              path="Games/"
-              element={
-                <Lobby
-                  user={user}
-                  games={games}
-                  handleRefresh={handleRefresh}
+                <Route
+                  path="Accounts/:userID"
+                  element={<AccountPage user={user} />}
                 />
-              }
-            />
-            <Route path="Games/:gameID" element={<GamePage user={user} />} />
-            <Route
-              path="Games/:gameID/Edit"
-              element={<GameSettings user={user} games={games} />}
-            />
-            <Route path="*" element={<FoF />} />
-          </Route>
-        </Routes>
-      </main>
+                <Route
+                  path="Accounts/:userID/Edit"
+                  element={
+                    <AccountDetails
+                      user={user}
+                      users={users}
+                      handleUser={handleUser}
+                      handleLogout={handleLogout}
+                    />
+                  }
+                />
+                {/* Game routes */}
+                <Route
+                  path="Games/"
+                  element={
+                    <Lobby
+                      user={user}
+                      games={games}
+                      handleRefresh={handleRefresh}
+                    />
+                  }
+                />
+                <Route
+                  path="Games/:gameID"
+                  element={<GamePage user={user} />}
+                />
+                <Route
+                  path="Games/:gameID/Edit"
+                  element={<GameSettings user={user} games={games} />}
+                />
+                <Route path="*" element={<FoF />} />
+              </Route>
+            </Routes>
+          </main>
+        </section>
+      ) : (
+        <LandingPage handleUser={handleUser} users={users} />
+      )}
 
       {/* add different info for footer later */}
       {/* <MDBFooter id="footer">

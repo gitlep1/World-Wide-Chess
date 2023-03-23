@@ -1,17 +1,17 @@
 \c world_wide_chess_legacy;
 
-INSERT INTO users (profileImg, username, password, email, created_at) VALUES
-('https://i.imgur.com/8puTSd9.png', 'Easy Bot', 'o5b21e*F6Wan', 'easybot@bot.com', NOW()),
-('https://i.imgur.com/MmLQSDV.png', 'Medium Bot', 'e%*m9ZW1ZZ64', 'mediumbot@bot.com', NOW()),
-('https://i.imgur.com/ZlrcYvd.png', 'Hard Bot', '30m5&Ce^Tnbb', 'hardbot@bot.com', NOW());
+INSERT INTO users (profileImg, username, password, email, theme, preferred_color, created_at) VALUES
+('https://i.imgur.com/8puTSd9.png', 'Easy Bot', 'o5b21e*F6Wan', 'easybot@bot.com', 'default', 'black', NOW()),
+('https://i.imgur.com/MmLQSDV.png', 'Medium Bot', 'e%*m9ZW1ZZ64', 'mediumbot@bot.com', 'default', 'black', NOW()),
+('https://i.imgur.com/ZlrcYvd.png', 'Hard Bot', '30m5&Ce^Tnbb', 'hardbot@bot.com', 'default', 'black', NOW());
 
-INSERT INTO games (player1ID, player2ID, in_progress, winner, currentPositions) VALUES 
-(1, 2, true, 'Easy Bot', 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'),
-(1, null, false, 'Medium Bot', 'n6k/2q1r3/3NP1P1/7p/p1Q1q3/6P1/1K4pp/n7 b - - 0 1'),
-(2, 3, true, 'Hard Bot', '8/r1p1q1P1/p7/3rP2R/8/R2Q1K2/1P1qP2p/4k3 w - - 35 1'),
-(2, 3, true, 'Medium Bot', '3k1K2/8/2p1p1Q1/RB2P2q/1Qq1r1p1/7R/5N2/B7 b - - 0 1'),
-(3, 1, true, 'Easy Bot', '1nb1kbn1/ppp1pp1p/3p4/r2q3r/6p1/Q1PB2PP/PP1PPP11/RNB1K1NR w KQkq - 40 1'),
-(3, null, false, 'Hard Bot', 'n7/p3N3/Rn2R3/4K1Qp/1kp4N/3P4/5P1P/3q4 b - - 0 1');
+INSERT INTO games (player1ID, player2ID, player1Color, player2Color, in_progress, currentPositions) VALUES 
+(1, 2, 'white', 'black', true, 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'),
+(1, null, 'white', 'black', false, 'n6k/2q1r3/3NP1P1/7p/p1Q1q3/6P1/1K4pp/n7 b - - 0 1'),
+(2, 3, 'black', 'white', true, '8/r1p1q1P1/p7/3rP2R/8/R2Q1K2/1P1qP2p/4k3 w - - 35 1'),
+(2, 3, 'black', 'white', true, '3k1K2/8/2p1p1Q1/RB2P2q/1Qq1r1p1/7R/5N2/B7 b - - 0 1'),
+(3, 1, 'white', 'black', true, '1nb1kbn1/ppp1pp1p/3p4/r2q3r/6p1/Q1PB2PP/PP1PPP11/RNB1K1NR w KQkq - 40 1'),
+(3, null, 'black', 'white', false, 'n7/p3N3/Rn2R3/4K1Qp/1kp4N/3P4/5P1P/3q4 b - - 0 1');
 
 -- INSERT INTO games (player1ID, player2ID, in_progress, winner, moves) VALUES 
 -- (1, 2, true, 'Easy Bot', '{
