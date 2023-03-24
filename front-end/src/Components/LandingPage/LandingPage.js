@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSpring, animated } from "@react-spring/web";
 import { Button, Image } from "react-bootstrap";
 import Logo from "../../Images/Logo.png";
@@ -13,6 +13,10 @@ const LandingPage = ({ handleUser, users }) => {
   const [showGuest, setShowGuest] = useState(false);
   const [showSignIn, setShowSignIn] = useState(false);
 
+  useEffect(() => {
+    handleSpringAnimations();
+  }, []); // eslint-disable-line
+
   const handleClose = () => {
     if (showSignUp || showGuest || showSignIn) {
       setShowSignUp(false);
@@ -21,49 +25,122 @@ const LandingPage = ({ handleUser, users }) => {
     }
   };
 
-  const [springs, api] = useSpring(() => ({
+  const [springButtonOne, apiOne] = useSpring(() => ({
     from: {
+      y: -1000,
+    },
+    to: {
       y: 0,
     },
+    delay: 2500,
   }));
 
-  const handleClickTest = () => {
-    api.start({
-      from: {
-        y: 0,
-      },
-      to: {
-        y: -300,
-      },
-    });
+  const [springButtonTwo, apiTwo] = useSpring(() => ({
+    from: {
+      y: -1000,
+    },
+    to: {
+      y: 0,
+    },
+    delay: 3500,
+  }));
+
+  const [springButtonThree, apiThree] = useSpring(() => ({
+    from: {
+      y: -1000,
+    },
+    to: {
+      y: 0,
+    },
+    delay: 4500,
+  }));
+
+  const [springLogoAndTitle, apiLogoAndTitle] = useSpring(() => ({
+    from: {
+      opacity: 0,
+    },
+    to: {
+      opacity: 1,
+    },
+    delay: 1000,
+  }));
+
+  const [springMotto, apiMotto] = useSpring(() => ({
+    from: {
+      opacity: 0,
+    },
+    to: {
+      opacity: 1,
+    },
+    delay: 2000,
+  }));
+
+  const handleSpringAnimations = () => {
+    apiLogoAndTitle.start();
+    apiMotto.start();
+    apiOne.start();
+    setTimeout(() => {
+      apiTwo.start();
+    }, 1000);
+    setTimeout(() => {
+      apiThree.start();
+    }, 2000);
   };
 
   return (
     <section className="LandingPageContainer">
       <div className="LandingPageContent">
-        <div className="logoAndTitle">
-          <Image src={Logo} alt="Logo" />
-          <h1>World Wide Chess</h1>
-        </div>
+        <animated.div style={{ ...springLogoAndTitle }}>
+          <div className="logoAndTitle">
+            <Image src={Logo} alt="Logo" />
+            <h1>World Wide Chess</h1>
+          </div>
+        </animated.div>
 
-        <div className="motto">
-          <h3>
-            WELCOME! <span>Go destroy your opponents in chess!</span>
-          </h3>
-        </div>
+        <animated.div style={{ ...springMotto }}>
+          <div className="motto">
+            <h3>
+              WELCOME! <span>Go destroy your opponents in chess!</span>
+            </h3>
+          </div>
+        </animated.div>
 
         <div className="landingPageButtons">
-          <Button variant="primary" onClick={() => setShowSignUp(true)}>
-            Sign Up
-          </Button>
+          <animated.div
+            className="landingPage-spring-buttons"
+            onClick={handleSpringAnimations}
+            style={{
+              ...springButtonOne,
+            }}
+          >
+            <Button variant="primary" onClick={() => setShowSignUp(true)}>
+              Sign Up
+            </Button>
+          </animated.div>
 
-          <Button variant="dark" onClick={() => setShowGuest(true)}>
-            Guest
-          </Button>
+          <animated.div
+            className="landingPage-spring-buttons"
+            onClick={handleSpringAnimations}
+            style={{
+              ...springButtonTwo,
+            }}
+          >
+            <Button variant="dark" onClick={() => setShowGuest(true)}>
+              Guest
+            </Button>
+          </animated.div>
 
-          <Button variant="success" onClick={() => setShowSignIn(true)}>
-            Sign In
-          </Button>
+          <animated.div
+            className="landingPage-spring-buttons"
+            onClick={handleSpringAnimations}
+            style={{
+              ...springButtonThree,
+            }}
+          >
+            <Button variant="success" onClick={() => setShowSignIn(true)}>
+              Sign In
+            </Button>
+          </animated.div>
         </div>
       </div>
       <Signup
@@ -79,16 +156,6 @@ const LandingPage = ({ handleUser, users }) => {
         showSignIn={showSignIn}
         handleClose={handleClose}
       />
-
-      <div>
-        <animated.div
-          className="testingReactSpring"
-          onClick={handleClickTest}
-          style={{
-            ...springs,
-          }}
-        ></animated.div>
-      </div>
     </section>
   );
 };

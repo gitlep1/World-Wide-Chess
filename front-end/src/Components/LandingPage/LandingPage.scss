@@ -11,8 +11,8 @@
   background-position: center;
 
   .LandingPageContent {
-    height: 85vh;
-    width: 85vw;
+    height: 100%;
+    width: 100%;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -34,15 +34,11 @@
       text-shadow: 2px 2px 0 #000000, 2px -2px 0 #000000, -2px 2px 0 #000000,
         -2px -2px 0 #000000, 2px 0px 0 #000000, 0px 2px 0 #000000,
         -2px 0px 0 #000000, 0px -2px 0 #000000, 10px 4px 5px rgba(0, 0, 0, 0);
-      // font-family: "Bungee Shade", cursive;
     }
 
     .landingPageButtons {
-      width: 50%;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 10%;
-      // font-family: "Bungee Shade", cursive;
     }
   }
 }
@@ -74,10 +70,4 @@ img {
     cursor: pointer;
     color: gray;
   }
-}
-
-.testingReactSpring {
-  width: 100px;
-  height: 100px;
-  background-color: #ff6d6d;
 }

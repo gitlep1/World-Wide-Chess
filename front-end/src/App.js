@@ -21,7 +21,7 @@ import GameSettings from "./Components/Games/Edit/GameSettings";
 import GamePage from "./Components/Games/Show/GamePage";
 
 // Custom hooks stuff \\
-import GetApi from "./CustomHooks/GetApi";
+import GetApi from "./CustomFunctions/GetApi";
 
 // V2 Wireframe stuff \\
 import LandingPage from "./Components/LandingPage/LandingPage";

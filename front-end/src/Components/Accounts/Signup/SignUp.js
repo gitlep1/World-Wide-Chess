@@ -6,7 +6,7 @@ import axios from "axios";
 import Logo from "../../../Images/Logo.png";
 import defaultProfImg from "../../../Images/DefaultProfImg.png";
 
-import GetApi from "../../../CustomHooks/GetApi";
+import GetApi from "../../../CustomFunctions/GetApi";
 
 const Signup = ({ handleUser, showSignUp, handleClose }) => {
   const API = process.env.REACT_APP_API_URL;
