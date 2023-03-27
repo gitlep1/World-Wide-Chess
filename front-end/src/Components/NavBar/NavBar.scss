@@ -256,7 +256,7 @@ $giant: 1200px;
       grid-column: 1;
       grid-row: 1;
       display: grid;
-      grid-template-columns: 130px 1fr;
+      grid-template-columns: 1fr 1fr;
       font-size: 23px;
 
       #navbarLink-lobby-container {
@@ -343,9 +343,9 @@ $giant: 1200px;
 
 @media (min-width: $large) {
   .NavBar {
-    border: 5px solid purple;
+    // border: 5px solid purple;
     display: grid;
-    grid-template-columns: 1fr 300px 1fr;
+    grid-template-columns: 1fr 400px 1fr;
 
     #worldWideChessHeader {
       // border: 5px solid green;
@@ -366,7 +366,7 @@ $giant: 1200px;
         }
 
         #mainlogoImg {
-          width: 150px;
+          width: 200px;
           &:hover {
             cursor: pointer;
           }
@@ -379,7 +379,7 @@ $giant: 1200px;
       grid-column: 1;
       grid-row: 1;
       display: grid;
-      grid-template-columns: 130px 1fr;
+      grid-template-columns: 1fr 1fr;
       font-size: 23px;
 
       #navbarLink-lobby-container {
@@ -392,6 +392,7 @@ $giant: 1200px;
         background-color: #212529;
         opacity: 98%;
         height: 1.5em;
+        max-width: 400px;
         margin-left: 0.3em;
 
         &:hover {
@@ -410,6 +411,7 @@ $giant: 1200px;
         background-color: #212529;
         opacity: 98%;
         height: 1.5em;
+        max-width: 400px;
 
         &:hover {
           cursor: pointer;
@@ -436,6 +438,7 @@ $giant: 1200px;
         background-color: #212529;
         opacity: 98%;
         height: 1.5em;
+        max-width: 400px;
 
         &:hover {
           cursor: pointer;
@@ -454,6 +457,7 @@ $giant: 1200px;
         opacity: 98%;
         height: 1.5em;
         margin-right: 0.3em;
+        max-width: 400px;
 
         &:hover {
           cursor: pointer;
@@ -466,7 +470,128 @@ $giant: 1200px;
 
 @media (min-width: $giant) {
   .NavBar {
-    border: 5px solid cyan;
+    // border: 5px solid cyan;
+    display: grid;
+    grid-template-columns: 1fr 500px 1fr;
+
+    #worldWideChessHeader {
+      // border: 5px solid green;
+      grid-column: 2;
+      text-align: center;
+      color: aliceblue;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .worldWideChessHeader-navigation {
+        h1 {
+          font-size: 30px;
+          font-family: "Bungee Shade", cursive;
+          &:hover {
+            cursor: pointer;
+          }
+        }
+
+        #mainlogoImg {
+          width: 250px;
+          &:hover {
+            cursor: pointer;
+          }
+        }
+      }
+    }
+
+    .lobbyAndLeaderboard-container {
+      // border: 5px solid black;
+      grid-column: 1;
+      grid-row: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      font-size: 30px;
+
+      #navbarLink-lobby-container {
+        // border: 5px solid cyan;
+        grid-column: 1;
+        grid-row: 2;
+        text-align: center;
+        border-radius: 0.5em;
+        color: white;
+        background-color: #212529;
+        opacity: 98%;
+        height: 1.5em;
+        max-width: 400px;
+        margin-left: 0.3em;
+
+        &:hover {
+          cursor: pointer;
+          opacity: 100%;
+        }
+      }
+
+      #navbarLink-leaderboard-container {
+        // border: 5px solid white;
+        grid-column: 2;
+        grid-row: 3;
+        text-align: center;
+        border-radius: 0.5em;
+        color: white;
+        background-color: #212529;
+        opacity: 98%;
+        height: 1.5em;
+        max-width: 400px;
+
+        &:hover {
+          cursor: pointer;
+          opacity: 100%;
+        }
+      }
+    }
+
+    .shopAndAccount-container {
+      // border: 5px solid orange;
+      grid-column: 3;
+      grid-row: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      font-size: 30px;
+
+      #navbarLink-shop-container {
+        // border: 5px solid purple;
+        grid-column: 1;
+        grid-row: 3;
+        text-align: center;
+        border-radius: 0.5em;
+        color: white;
+        background-color: #212529;
+        opacity: 98%;
+        height: 1.5em;
+        max-width: 400px;
+
+        &:hover {
+          cursor: pointer;
+          opacity: 100%;
+        }
+      }
+
+      #navbarLink-account-container {
+        // border: 5px solid orange;
+        grid-column: 2;
+        grid-row: 2;
+        text-align: center;
+        border-radius: 0.5em;
+        color: white;
+        background-color: #212529;
+        opacity: 98%;
+        height: 1.5em;
+        margin-right: 0.3em;
+        max-width: 400px;
+
+        &:hover {
+          cursor: pointer;
+          opacity: 100%;
+        }
+      }
+    }
   }
 }
 

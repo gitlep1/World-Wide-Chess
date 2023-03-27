@@ -1,4 +1,4 @@
-\c world_wide_chess_legacy;
+\c world_wide_chess;
 
 INSERT INTO users (profileImg, username, password, email, theme, preferred_color, created_at) VALUES
 ('https://i.imgur.com/8puTSd9.png', 'Easy Bot', 'o5b21e*F6Wan', 'easybot@bot.com', 'default', 'black', NOW()),
