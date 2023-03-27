@@ -1,5 +1,5 @@
-import axios from "axios";
 import { useCallback } from "react";
+import axios from "axios";
 
 const GetApi = () => {
   const cancelToken = axios.CancelToken.source();

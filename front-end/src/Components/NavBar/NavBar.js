@@ -22,7 +22,7 @@ const NavBar = ({ handleOpen, authenticated }) => {
   useEffect(() => {
     const intervalFunctions = setInterval(() => {
       getScreenSize();
-    }, 1000);
+    });
 
     return () => clearInterval(intervalFunctions);
   }, []);

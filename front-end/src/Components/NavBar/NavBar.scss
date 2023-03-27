@@ -1,11 +1,11 @@
-$tiny: 400px;
+// $tiny: 400px;
 $small: 600px;
 $medium: 800px;
-$large: 1200px;
-$giant: 1201px;
+$large: 1000px;
+$giant: 1200px;
 
 .NavBar {
-  border: 5px solid orangered;
+  // border: 5px solid orangered;
   width: 100%;
 
   #worldWideChessHeader {
@@ -101,10 +101,13 @@ $giant: 1201px;
 
 @media (min-width: $small) {
   .NavBar {
-    border: 5px solid blue;
+    // border: 5px solid blue;
+    display: grid;
+    grid-template-columns: 1fr 300px 1fr;
 
     #worldWideChessHeader {
       // border: 5px solid green;
+      grid-column: 2;
       text-align: center;
       color: aliceblue;
       display: flex;
@@ -130,66 +133,86 @@ $giant: 1201px;
     }
 
     .burgerMenu-body {
-      // border: 3px solid black;
+      border: 3px solid black;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 0.1em;
       padding: 0.3em;
     }
 
-    #navbarLink-lobby-container {
+    .lobbyAndLeaderboard-container {
       // border: 5px solid cyan;
-      text-align: center;
-      border-radius: 0.5em;
-      color: white;
-      background-color: #212529;
-      opacity: 98%;
+      grid-column: 1;
+      grid-row: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      font-size: 23px;
 
-      &:hover {
-        cursor: pointer;
-        opacity: 100%;
+      #navbarLink-lobby-container {
+        // border: 5px solid cyan;
+        text-align: center;
+        border-radius: 0.5em;
+        color: white;
+        background-color: #212529;
+        opacity: 98%;
+
+        &:hover {
+          cursor: pointer;
+          opacity: 100%;
+        }
+      }
+
+      #navbarLink-leaderboard-container {
+        // border: 5px solid white;
+        text-align: center;
+        border-radius: 0.5em;
+        color: white;
+        background-color: #212529;
+        opacity: 98%;
+
+        &:hover {
+          cursor: pointer;
+          opacity: 100%;
+        }
       }
     }
 
-    #navbarLink-leaderboard-container {
-      // border: 5px solid white;
-      text-align: center;
-      border-radius: 0.5em;
-      color: white;
-      background-color: #212529;
-      opacity: 98%;
+    .shopAndAccount-container {
+      // border: 5px solid orange;
+      grid-column: 3;
+      grid-row: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      font-size: 23px;
 
-      &:hover {
-        cursor: pointer;
-        opacity: 100%;
+      #navbarLink-shop-container {
+        // border: 5px solid purple;
+        text-align: center;
+        border-radius: 0.5em;
+        color: white;
+        background-color: #212529;
+        opacity: 98%;
+
+        &:hover {
+          cursor: pointer;
+          opacity: 100%;
+        }
       }
-    }
 
-    #navbarLink-shop-container {
-      // border: 5px solid purple;
-      text-align: center;
-      border-radius: 0.5em;
-      color: white;
-      background-color: #212529;
-      opacity: 98%;
+      #navbarLink-account-container {
+        // border: 5px solid orange;
+        text-align: center;
+        border-radius: 0.5em;
+        color: white;
+        background-color: #212529;
+        opacity: 98%;
 
-      &:hover {
-        cursor: pointer;
-        opacity: 100%;
-      }
-    }
-
-    #navbarLink-account-container {
-      // border: 5px solid blue;
-      text-align: center;
-      border-radius: 0.5em;
-      color: white;
-      background-color: #212529;
-      opacity: 98%;
-
-      &:hover {
-        cursor: pointer;
-        opacity: 100%;
+        &:hover {
+          cursor: pointer;
+          opacity: 100%;
+        }
       }
     }
   }
@@ -197,13 +220,247 @@ $giant: 1201px;
 
 @media (min-width: $medium) {
   .NavBar {
-    border: 5px solid purple;
+    // border: 5px solid purple;
+    display: grid;
+    grid-template-columns: 1fr 300px 1fr;
+
+    #worldWideChessHeader {
+      // border: 5px solid green;
+      grid-column: 2;
+      text-align: center;
+      color: aliceblue;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .worldWideChessHeader-navigation {
+        h1 {
+          font-size: 20px;
+          font-family: "Bungee Shade", cursive;
+          &:hover {
+            cursor: pointer;
+          }
+        }
+
+        #mainlogoImg {
+          width: 150px;
+          &:hover {
+            cursor: pointer;
+          }
+        }
+      }
+    }
+
+    .lobbyAndLeaderboard-container {
+      // border: 5px solid black;
+      grid-column: 1;
+      grid-row: 1;
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      font-size: 23px;
+
+      #navbarLink-lobby-container {
+        // border: 5px solid cyan;
+        grid-column: 1;
+        grid-row: 2;
+        text-align: center;
+        border-radius: 0.5em;
+        color: white;
+        background-color: #212529;
+        opacity: 98%;
+        height: 1.5em;
+        margin-left: 0.3em;
+
+        &:hover {
+          cursor: pointer;
+          opacity: 100%;
+        }
+      }
+
+      #navbarLink-leaderboard-container {
+        // border: 5px solid white;
+        grid-column: 2;
+        grid-row: 3;
+        text-align: center;
+        border-radius: 0.5em;
+        color: white;
+        background-color: #212529;
+        opacity: 98%;
+        height: 1.5em;
+
+        &:hover {
+          cursor: pointer;
+          opacity: 100%;
+        }
+      }
+    }
+
+    .shopAndAccount-container {
+      // border: 5px solid orange;
+      grid-column: 3;
+      grid-row: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      font-size: 23px;
+
+      #navbarLink-shop-container {
+        // border: 5px solid purple;
+        grid-column: 1;
+        grid-row: 3;
+        text-align: center;
+        border-radius: 0.5em;
+        color: white;
+        background-color: #212529;
+        opacity: 98%;
+        height: 1.5em;
+
+        &:hover {
+          cursor: pointer;
+          opacity: 100%;
+        }
+      }
+
+      #navbarLink-account-container {
+        // border: 5px solid orange;
+        grid-column: 2;
+        grid-row: 2;
+        text-align: center;
+        border-radius: 0.5em;
+        color: white;
+        background-color: #212529;
+        opacity: 98%;
+        height: 1.5em;
+        margin-right: 0.3em;
+
+        &:hover {
+          cursor: pointer;
+          opacity: 100%;
+        }
+      }
+    }
   }
 }
 
 @media (min-width: $large) {
   .NavBar {
-    border: 5px solid greenyellow;
+    border: 5px solid purple;
+    display: grid;
+    grid-template-columns: 1fr 300px 1fr;
+
+    #worldWideChessHeader {
+      // border: 5px solid green;
+      grid-column: 2;
+      text-align: center;
+      color: aliceblue;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .worldWideChessHeader-navigation {
+        h1 {
+          font-size: 20px;
+          font-family: "Bungee Shade", cursive;
+          &:hover {
+            cursor: pointer;
+          }
+        }
+
+        #mainlogoImg {
+          width: 150px;
+          &:hover {
+            cursor: pointer;
+          }
+        }
+      }
+    }
+
+    .lobbyAndLeaderboard-container {
+      // border: 5px solid black;
+      grid-column: 1;
+      grid-row: 1;
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      font-size: 23px;
+
+      #navbarLink-lobby-container {
+        // border: 5px solid cyan;
+        grid-column: 1;
+        grid-row: 2;
+        text-align: center;
+        border-radius: 0.5em;
+        color: white;
+        background-color: #212529;
+        opacity: 98%;
+        height: 1.5em;
+        margin-left: 0.3em;
+
+        &:hover {
+          cursor: pointer;
+          opacity: 100%;
+        }
+      }
+
+      #navbarLink-leaderboard-container {
+        // border: 5px solid white;
+        grid-column: 2;
+        grid-row: 3;
+        text-align: center;
+        border-radius: 0.5em;
+        color: white;
+        background-color: #212529;
+        opacity: 98%;
+        height: 1.5em;
+
+        &:hover {
+          cursor: pointer;
+          opacity: 100%;
+        }
+      }
+    }
+
+    .shopAndAccount-container {
+      // border: 5px solid orange;
+      grid-column: 3;
+      grid-row: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      font-size: 23px;
+
+      #navbarLink-shop-container {
+        // border: 5px solid purple;
+        grid-column: 1;
+        grid-row: 3;
+        text-align: center;
+        border-radius: 0.5em;
+        color: white;
+        background-color: #212529;
+        opacity: 98%;
+        height: 1.5em;
+
+        &:hover {
+          cursor: pointer;
+          opacity: 100%;
+        }
+      }
+
+      #navbarLink-account-container {
+        // border: 5px solid orange;
+        grid-column: 2;
+        grid-row: 2;
+        text-align: center;
+        border-radius: 0.5em;
+        color: white;
+        background-color: #212529;
+        opacity: 98%;
+        height: 1.5em;
+        margin-right: 0.3em;
+
+        &:hover {
+          cursor: pointer;
+          opacity: 100%;
+        }
+      }
+    }
   }
 }
 
@@ -213,7 +470,7 @@ $giant: 1201px;
   }
 }
 
-// Burger Menu Stuff //
+// Burger Menu Stuff \\
 /* Icon 1 */
 .animated-icon1,
 .animated-icon2,
