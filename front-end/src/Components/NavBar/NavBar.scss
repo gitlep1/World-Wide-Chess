@@ -29,6 +29,7 @@ $giant: 1200px;
         width: 150px;
         &:hover {
           cursor: pointer;
+          // border: 3px solid greenyellow;
         }
       }
     }
@@ -48,11 +49,12 @@ $giant: 1200px;
     border-radius: 0.5em;
     color: white;
     background-color: #212529;
-    opacity: 98%;
+    opacity: 95%;
 
     &:hover {
       cursor: pointer;
       opacity: 100%;
+      border: 3px solid greenyellow;
     }
   }
 
@@ -62,11 +64,12 @@ $giant: 1200px;
     border-radius: 0.5em;
     color: white;
     background-color: #212529;
-    opacity: 98%;
+    opacity: 95%;
 
     &:hover {
       cursor: pointer;
       opacity: 100%;
+      border: 3px solid greenyellow;
     }
   }
 
@@ -76,11 +79,12 @@ $giant: 1200px;
     border-radius: 0.5em;
     color: white;
     background-color: #212529;
-    opacity: 98%;
+    opacity: 95%;
 
     &:hover {
       cursor: pointer;
       opacity: 100%;
+      border: 3px solid greenyellow;
     }
   }
 
@@ -90,11 +94,12 @@ $giant: 1200px;
     border-radius: 0.5em;
     color: white;
     background-color: #212529;
-    opacity: 98%;
+    opacity: 95%;
 
     &:hover {
       cursor: pointer;
       opacity: 100%;
+      border: 3px solid greenyellow;
     }
   }
 }
@@ -155,7 +160,7 @@ $giant: 1200px;
         border-radius: 0.5em;
         color: white;
         background-color: #212529;
-        opacity: 98%;
+        opacity: 95%;
 
         &:hover {
           cursor: pointer;
@@ -169,7 +174,7 @@ $giant: 1200px;
         border-radius: 0.5em;
         color: white;
         background-color: #212529;
-        opacity: 98%;
+        opacity: 95%;
 
         &:hover {
           cursor: pointer;
@@ -193,7 +198,7 @@ $giant: 1200px;
         border-radius: 0.5em;
         color: white;
         background-color: #212529;
-        opacity: 98%;
+        opacity: 95%;
 
         &:hover {
           cursor: pointer;
@@ -207,7 +212,7 @@ $giant: 1200px;
         border-radius: 0.5em;
         color: white;
         background-color: #212529;
-        opacity: 98%;
+        opacity: 95%;
 
         &:hover {
           cursor: pointer;
@@ -267,7 +272,7 @@ $giant: 1200px;
         border-radius: 0.5em;
         color: white;
         background-color: #212529;
-        opacity: 98%;
+        opacity: 95%;
         height: 1.5em;
         margin-left: 0.3em;
 
@@ -285,7 +290,7 @@ $giant: 1200px;
         border-radius: 0.5em;
         color: white;
         background-color: #212529;
-        opacity: 98%;
+        opacity: 95%;
         height: 1.5em;
 
         &:hover {
@@ -311,7 +316,7 @@ $giant: 1200px;
         border-radius: 0.5em;
         color: white;
         background-color: #212529;
-        opacity: 98%;
+        opacity: 95%;
         height: 1.5em;
 
         &:hover {
@@ -328,7 +333,7 @@ $giant: 1200px;
         border-radius: 0.5em;
         color: white;
         background-color: #212529;
-        opacity: 98%;
+        opacity: 95%;
         height: 1.5em;
         margin-right: 0.3em;
 
@@ -343,7 +348,7 @@ $giant: 1200px;
 
 @media (min-width: $large) {
   .NavBar {
-    // border: 5px solid purple;
+    border: 5px solid purple;
     display: grid;
     grid-template-columns: 1fr 400px 1fr;
 
@@ -366,7 +371,7 @@ $giant: 1200px;
         }
 
         #mainlogoImg {
-          width: 200px;
+          width: 150px;
           &:hover {
             cursor: pointer;
           }
@@ -390,7 +395,7 @@ $giant: 1200px;
         border-radius: 0.5em;
         color: white;
         background-color: #212529;
-        opacity: 98%;
+        opacity: 95%;
         height: 1.5em;
         max-width: 400px;
         margin-left: 0.3em;
@@ -409,7 +414,7 @@ $giant: 1200px;
         border-radius: 0.5em;
         color: white;
         background-color: #212529;
-        opacity: 98%;
+        opacity: 95%;
         height: 1.5em;
         max-width: 400px;
 
@@ -436,7 +441,7 @@ $giant: 1200px;
         border-radius: 0.5em;
         color: white;
         background-color: #212529;
-        opacity: 98%;
+        opacity: 95%;
         height: 1.5em;
         max-width: 400px;
 
@@ -454,7 +459,7 @@ $giant: 1200px;
         border-radius: 0.5em;
         color: white;
         background-color: #212529;
-        opacity: 98%;
+        opacity: 95%;
         height: 1.5em;
         margin-right: 0.3em;
         max-width: 400px;
@@ -493,7 +498,7 @@ $giant: 1200px;
         }
 
         #mainlogoImg {
-          width: 250px;
+          width: 200px;
           &:hover {
             cursor: pointer;
           }
@@ -517,7 +522,7 @@ $giant: 1200px;
         border-radius: 0.5em;
         color: white;
         background-color: #212529;
-        opacity: 98%;
+        opacity: 95%;
         height: 1.5em;
         max-width: 400px;
         margin-left: 0.3em;
@@ -536,7 +541,7 @@ $giant: 1200px;
         border-radius: 0.5em;
         color: white;
         background-color: #212529;
-        opacity: 98%;
+        opacity: 95%;
         height: 1.5em;
         max-width: 400px;
 
@@ -563,7 +568,7 @@ $giant: 1200px;
         border-radius: 0.5em;
         color: white;
         background-color: #212529;
-        opacity: 98%;
+        opacity: 95%;
         height: 1.5em;
         max-width: 400px;
 
@@ -581,7 +586,7 @@ $giant: 1200px;
         border-radius: 0.5em;
         color: white;
         background-color: #212529;
-        opacity: 98%;
+        opacity: 95%;
         height: 1.5em;
         margin-right: 0.3em;
         max-width: 400px;
