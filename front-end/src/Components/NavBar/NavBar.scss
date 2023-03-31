@@ -1,4 +1,3 @@
-// $tiny: 400px;
 $small: 600px;
 $medium: 800px;
 $large: 1000px;
@@ -348,7 +347,7 @@ $giant: 1200px;
 
 @media (min-width: $large) {
   .NavBar {
-    border: 5px solid purple;
+    // border: 5px solid purple;
     display: grid;
     grid-template-columns: 1fr 400px 1fr;
 
