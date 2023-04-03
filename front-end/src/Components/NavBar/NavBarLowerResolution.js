@@ -10,6 +10,7 @@ import {
 const NavBarLowerResolution = ({ handleOpen }) => {
   const navigate = useNavigate();
   const [showAnimated, setShowAnimated] = useState(false);
+
   return (
     <>
       <MDBNavbar dark bgColor="dark">

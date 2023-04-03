@@ -1,97 +1,141 @@
+$small: 600px;
+$medium: 800px;
+$large: 1000px;
+$giant: 1200px;
+
 .lobbyMain {
+  // border: 5px solid red;
   height: 100%;
-}
 
-.lobbySection1 {
-  display: flex;
-  justify-content: space-evenly;
-  text-align: center;
-  align-items: center;
+  .lobbySection1 {
+    // border: 5px solid cyan;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
 
-  h1 {
-    text-align: center;
-    text-align: center;
-  }
+    h4 {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 0.5em;
+      color: aliceblue;
+    }
 
-  .divButtons {
-    background-color: black;
-    text-decoration: none;
-    width: 10em;
-    height: 2.5em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 85%;
+    .lobbyButtons {
+      color: aliceblue;
+      background-color: black;
+      width: 10em;
+      height: 2.5em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      justify-self: center;
+      opacity: 85%;
+      margin: 0.3em;
 
-    &:hover {
-      opacity: 100%;
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-      cursor: pointer;
+      &:hover {
+        opacity: 100%;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+        cursor: pointer;
+      }
+    }
+
+    .advancedSearch-container {
+      // border: 5px solid red;
+      justify-self: center;
+      grid-column: 1 / span 2;
+      grid-row: 2;
+    }
+
+    .advancedSearch-options {
+      border: 5px solid red;
+      grid-column: 1 / span 2;
+      grid-row: 3;
     }
   }
 
-  div {
-    color: aliceblue;
+  .lobbySection2 {
+    // border: 5px solid blue;
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    height: 75vh;
+    overflow-y: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .players {
+      color: white;
+    }
+
+    img {
+      width: 50px;
+    }
+
+    .status {
+      width: 20em;
+
+      .lobbyStatusLinks {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+
+        .lobbyStatus1Parent {
+          // border: 5px solid red;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 3em;
+          text-decoration: none;
+          color: aliceblue;
+          background-color: black;
+          opacity: 85%;
+
+          &:hover {
+            opacity: 100%;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            color: white;
+          }
+        }
+
+        .lobbyStatusParent2 {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 3em;
+          text-decoration: none;
+          color: aliceblue;
+          background-color: gray;
+          opacity: 50%;
+        }
+      }
+    }
   }
 }
 
-.lobbySection2 {
+.lobbyModal {
   text-align: center;
-  display: flex;
-  flex-direction: column;
-  height: 74vh;
-  overflow-y: auto;
-  background-color: #853710;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
 
-  &::-webkit-scrollbar {
-    display: none;
-  }
-
-  .players {
+  .lobbyModal-title {
+    background-color: black;
     color: white;
   }
 
-  img {
-    width: 50px;
+  .lobbyModal-buttons {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    margin-top: 5%;
   }
 
-  .status {
-    width: 20em;
-
-    .lobbyStatusLinks {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-
-      .lobbyStatus1Parent {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 3em;
-        text-decoration: none;
-        color: aliceblue;
-        background-color: black;
-        opacity: 85%;
-
-        &:hover {
-          opacity: 100%;
-          box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-          cursor: pointer;
-          color: white;
-        }
-      }
-
-      .lobbyStatusParent2 {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 3em;
-        text-decoration: none;
-        color: aliceblue;
-        background-color: gray;
-        opacity: 50%;
-      }
-    }
+  .lobbyModal-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    background-color: black;
   }
 }

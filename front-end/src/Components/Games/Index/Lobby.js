@@ -1,81 +1,89 @@
 import "./Lobby.scss";
-import { Link, useNavigate } from "react-router-dom";
-import { Table } from "react-bootstrap";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Table, Modal, Button, Form } from "react-bootstrap";
+import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
+import RenderLobby from "./RenderLobby";
+import FilterSearch from "./FilterSearch";
 
 const Lobbypage = ({ user, games, handleRefresh }) => {
   const navigate = useNavigate();
   const API = process.env.REACT_APP_API_URL;
+  const gamesCopy = [...games];
 
-  const handleCreate = async () => {
+  const [roomName, setRoomName] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [showFilter, setShowFilter] = useState(false);
+  const handleShowFilter = () => setShowFilter(true);
+  const handleCloseFilter = () => setShowFilter(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (roomName.length < 3 || roomName.length > 20) {
+      return toast.error("Room Name must be between 3-20 characters.", {
+        position: "top-center",
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        pauseOnFocusLoss: false,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+
     const newGameData = {
-      player1ID: user.id,
+      room_name: roomName,
+      room_password: password,
+      player1id: user.id,
     };
 
-    await axios.post(`${API}/games`, newGameData).then(async (res) => {
-      navigate(`/Games/${res.data.id}/Edit`);
+    await axios.post(`${API}/games`, newGameData).then((res) => {
+      navigate(`/Room/${res.data.id}/Settings`);
     });
   };
 
   const handleJoin = async (gameID) => {
     const updatePlayer2 = {
-      player2ID: user.id,
+      player2id: user.id,
     };
 
     await axios.put(`${API}/games/${gameID}`, updatePlayer2).then((res) => {
-      navigate(`/Games/${res.data.id}/Edit`);
+      notify(res.data);
     });
   };
 
-  const renderLobby = () => {
-    return games.map((game, index) => {
-      return (
-        <tr key={game.id}>
-          <td>{index + 1}</td>
-          <td>
-            {game.player1id && game.player2id ? (
-              <span className="players">
-                <img src={game.player1img} alt="player1" />
-                {game.player1} VS {game.player2}
-                <img src={game.player2img} alt="player1" />
-              </span>
-            ) : (
-              <span className="players">
-                <img src={game.player1img} alt="player1" />
-                {game.player1} Is Searching for an opponent...
-              </span>
-            )}
-          </td>
-          <td className="status">
-            {game.player2 ? (
-              <section className="lobbyStatusLinks">
-                <Link to={`/Games/${game.id}`} className="lobbyStatus1Parent">
-                  <div>SPECTATE</div>
-                </Link>
-                <div className="lobbyStatusParent2">
-                  <div>JOIN</div>
-                </div>
-              </section>
-            ) : (
-              <section className="lobbyStatusLinks">
-                <div className="lobbyStatusParent2">
-                  <div>SPECTATE</div>
-                </div>
+  const handleChange = (e) => {
+    const { name, value } = e.target;
 
-                <div
-                  className="lobbyStatus1Parent"
-                  onClick={() => {
-                    handleJoin(game.id);
-                  }}
-                >
-                  <div>JOIN</div>
-                </div>
-              </section>
-            )}
-          </td>
-        </tr>
-      );
+    if (name === "roomName") {
+      setRoomName(value);
+    } else if (name === "password") {
+      setPassword(value);
+    }
+  };
+
+  const notify = (gameData) => {
+    toast.success("Game is being created ...", {
+      position: "top-center",
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: false,
+      pauseOnFocusLoss: false,
+      draggable: true,
+      progress: undefined,
     });
+    setTimeout(() => {
+      navigate(`/Games/${gameData.id}`);
+    }, 4100);
+    clearFields();
+  };
+
+  const clearFields = () => {
+    setRoomName("");
+    setPassword("");
   };
 
   return (
@@ -83,20 +91,21 @@ const Lobbypage = ({ user, games, handleRefresh }) => {
       <section className="lobbySection1">
         <div
           onClick={() => {
-            handleCreate();
+            handleShowFilter();
           }}
-          className="divButtons"
+          className="lobbyButtons"
         >
-          <div>CREATE</div>
+          CREATE
         </div>
         <div
           onClick={() => {
             handleRefresh();
           }}
-          className="divButtons"
+          className="lobbyButtons"
         >
-          <div>REFRESH</div>
+          REFRESH
         </div>
+        <FilterSearch gamesCopy={gamesCopy} />
       </section>
       <br />
       <section className="lobbySection2">
@@ -104,13 +113,67 @@ const Lobbypage = ({ user, games, handleRefresh }) => {
           <thead>
             <tr>
               <th>#</th>
-              <th>Players</th>
+              <th>Room Name</th>
               <th>Status</th>
             </tr>
           </thead>
-          <tbody>{renderLobby()}</tbody>
+          <tbody>
+            <RenderLobby gamesCopy={gamesCopy} handleJoin={handleJoin} />
+          </tbody>
         </Table>
       </section>
+
+      <ToastContainer autoClose={3000} theme="dark" />
+
+      <Modal
+        show={showFilter}
+        onHide={handleCloseFilter}
+        centered
+        className="lobbyModal"
+        backdrop="static"
+        keyboard={false}
+      >
+        <Modal.Title className="lobbyModal-title">Game Settings</Modal.Title>
+        <Modal.Body>
+          <Form onSubmit={handleSubmit}>
+            <h3 className="lobbyModal-roomName">Room Name</h3>
+            <Form.Group controlId="formRoomName">
+              <Form.Control
+                type="text"
+                name="roomName"
+                placeholder="RoomName"
+                onChange={handleChange}
+                value={roomName}
+                className="lobbyModal-roomName-data"
+              />
+            </Form.Group>
+
+            <h3 className="lobbyModal-Password">Password</h3>
+            <Form.Group controlId="formPassword">
+              <Form.Control
+                type="text"
+                name="password"
+                placeholder="Password"
+                onChange={handleChange}
+                value={password}
+                className="lobbyModal-password-data"
+              />
+            </Form.Group>
+
+            <div className="lobbyModal-buttons">
+              <Button variant="danger" onClick={handleCloseFilter}>
+                Cancel
+              </Button>{" "}
+              <Button variant="success" type="submit">
+                Create Room
+              </Button>
+            </div>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer className="lobbyModal-footer">
+          {/* <h3>{user.username}</h3> */}
+        </Modal.Footer>
+      </Modal>
     </section>
   );
 };

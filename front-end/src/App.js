@@ -179,17 +179,18 @@ const App = () => {
                     element={
                       <Lobby
                         user={user}
+                        users={users}
                         games={games}
                         handleRefresh={handleRefresh}
                       />
                     }
                   />
                   <Route
-                    path="Lobby/:gameID"
+                    path="Room/:gameID"
                     element={<GamePage user={user} />}
                   />
                   <Route
-                    path="Lobby/:gameID/Settings"
+                    path="Room/:gameID/Settings"
                     element={<GameSettings user={user} games={games} />}
                   />
                   <Route path="*" element={<FoF />} />

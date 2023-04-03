@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Image } from "react-bootstrap";
-import DailyTasks from "./DailyTasks/DailyTasks";
+import DailyTasks from "./DailyTasks";
 import "./Homepage.scss";
-import MonthlyTasks from "./MonthlyTasks/MonthlyTasks";
+import MonthlyTasks from "./MonthlyTasks";
 
 const Homepage = ({ users }) => {
   const [selectedTaskButton, setSelectedTaskButton] = useState(false);

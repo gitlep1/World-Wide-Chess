@@ -6,7 +6,7 @@ const DailyTasks = () => {
         <div className="taskProgress">0 / 1</div>
       </div>
       <div className="tasks">
-        Achieve 1 win
+        Play 5 games
         <div className="taskProgress">0 / 1</div>
       </div>
       <div className="tasks">

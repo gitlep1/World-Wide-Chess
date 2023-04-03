@@ -5,17 +5,19 @@ const getAllGames = async () => {
     const games = await db.any(
       `SELECT
       games.id,
-      games.player1ID,
-      games.player2ID,
-      games.player1Color,
-      games.player2Color,
+      games.room_name,
+      games.room_password,
+      games.player1id,
+      games.player2id,
+      games.player1color,
+      games.player2color,
       games.in_progress,
-      games.currentPositions,
+      games.current_positions,
       player1.username AS player1,
       player2.username AS player2
       FROM games
-      JOIN users AS player1 ON games.player1ID = player1.id
-      LEFT JOIN users AS player2 ON games.player2ID = player2.id
+      JOIN users AS player1 ON games.player1id = player1.id
+      LEFT JOIN users AS player2 ON games.player2id = player2.id
       ORDER BY games.id
       `
     );
@@ -30,17 +32,19 @@ const getGamesByID = async (id) => {
     const game = await db.any(
       `SELECT
       games.id,
-      games.player1ID,
-      games.player2ID,
-      games.player1Color,
-      games.player2Color,
+      games.room_name,
+      games.room_password,
+      games.player1id,
+      games.player2id,
+      games.player1color,
+      games.player2color,
       games.in_progress,
-      games.currentPositions,
+      games.current_positions,
       player1.username AS player1,
       player2.username AS player2
       FROM games
-      JOIN users AS player1 ON games.player1ID = player1.id
-      LEFT JOIN users AS player2 ON games.player2ID = player2.id
+      JOIN users AS player1 ON games.player1id = player1.id
+      LEFT JOIN users AS player2 ON games.player2id = player2.id
       WHERE games.id = $1`,
       id
     );
@@ -50,11 +54,16 @@ const getGamesByID = async (id) => {
   }
 };
 
-const createGames = async (player1ID, player2ID) => {
+const createGames = async (newGameData) => {
   try {
     const newGame = await db.one(
-      "INSERT INTO games (player1ID, player2ID) VALUES ($1, $2) RETURNING *",
-      [player1ID, player2ID]
+      "INSERT INTO games (room_name, room_password, player1id, player2id) VALUES ($1, $2, $3, $4) RETURNING *",
+      [
+        newGameData.room_name,
+        newGameData.room_password,
+        newGameData.player1id,
+        newGameData.player2id,
+      ]
     );
     return newGame;
   } catch (error) {
@@ -62,20 +71,20 @@ const createGames = async (player1ID, player2ID) => {
   }
 };
 
-const updateGames = async (
-  id,
-  player2ID,
-  player1Color,
-  player2Color,
-  inProgress,
-  currentPositions
-) => {
+const updateGames = async (id, updatedGameData) => {
   try {
     const updatedGame = await db.one(
       `
-      UPDATE games SET player2ID = $2, player1Color=$3, player2Color=$4, in_progress = $5, currentPositions = $6
+      UPDATE games SET player2id = $2, player1color=$3, player2color=$4, in_progress = $5, current_positions = $6
       WHERE games.id = $1 RETURNING *`,
-      [id, player2ID, player1Color, player2Color, inProgress, currentPositions]
+      [
+        id,
+        updatedGameData.player2id,
+        updatedGameData.player1color,
+        updatedGameData.player2color,
+        updatedGameData.in_progress,
+        updatedGameData.current_positions,
+      ]
     );
     return updatedGame;
   } catch (error) {

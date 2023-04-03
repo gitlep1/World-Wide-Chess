@@ -2,12 +2,6 @@ import "./NavBar.scss";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Image } from "react-bootstrap";
-import {
-  MDBContainer,
-  MDBCollapse,
-  MDBNavbar,
-  MDBNavbarToggler,
-} from "mdb-react-ui-kit";
 
 import DetectScreenSize from "../../CustomFunctions/DetectScreenSize";
 import NavBarLowerResolution from "./NavBarLowerResolution";
