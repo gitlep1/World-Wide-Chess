@@ -41,15 +41,90 @@ $giant: 1200px;
 
     .advancedSearch-container {
       // border: 5px solid red;
-      justify-self: center;
       grid-column: 1 / span 2;
       grid-row: 2;
+
+      .advancedSearch-title {
+        text-align: center;
+      }
+
+      .advancedSearchArrows {
+        margin: 0.3em;
+      }
     }
 
-    .advancedSearch-options {
-      border: 5px solid red;
+    .advancedSearch-options-container {
+      // border: 5px solid red;
       grid-column: 1 / span 2;
       grid-row: 3;
+
+      .advancedSearch-options {
+        // border: 5px solid cyan;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        text-align: center;
+        width: 90%;
+        margin: 0 auto;
+
+        .bg-dark {
+          color: white;
+          // height: 100%;
+        }
+
+        .bg-light {
+          color: black;
+          // height: 100%;
+        }
+
+        #custom-switch {
+          background-color: white;
+
+          &:checked {
+            background-color: black;
+          }
+        }
+
+        .advancedSearch-eloRating-container {
+          // border: 5px solid red;
+          // display: grid;
+          // grid-template-columns: repeat(2, 1fr);
+          // justify-content: center;
+          // align-items: center;
+          // text-align: center;
+
+          .advancedSearch-eloRating-title {
+            // grid-column: 1 / span 2;
+            // grid-row: 1;
+          }
+
+          .advancedSearch-eloRating {
+            // border: 5px solid purple;
+            // width: 25vw;
+            // margin-left: 1.5em;
+            // display: grid;
+            // grid-template-columns: 1fr 50px 1fr;
+            // justify-content: center;
+            // align-items: center;
+
+            .min-elo-rating {
+              // border: 5px solid cyan;
+              width: 50%;
+              margin: 0 auto;
+            }
+
+            .max-elo-rating {
+              // border: 5px solid green;
+              width: 50%;
+              margin: 0 auto;
+            }
+          }
+        }
+
+        .advancedSearch-buttons {
+          grid-column: 1 / span 3;
+          margin-top: 0.3em;
+        }
+      }
     }
   }
 

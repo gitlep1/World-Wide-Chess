@@ -1,11 +1,12 @@
 import "./Lobby.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Table, Modal, Button, Form } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import RenderLobby from "./RenderLobby";
 import FilterSearch from "./FilterSearch";
+import DetectScreenSize from "../../../CustomFunctions/DetectScreenSize";
 
 const Lobbypage = ({ user, games, handleRefresh }) => {
   const navigate = useNavigate();
@@ -18,6 +19,20 @@ const Lobbypage = ({ user, games, handleRefresh }) => {
   const [showFilter, setShowFilter] = useState(false);
   const handleShowFilter = () => setShowFilter(true);
   const handleCloseFilter = () => setShowFilter(false);
+
+  const [screenSize, setScreenSize] = useState(0);
+
+  useEffect(() => {
+    const intervalFunctions = setInterval(() => {
+      getScreenSize();
+    });
+
+    return () => clearInterval(intervalFunctions);
+  }, []);
+
+  const getScreenSize = () => {
+    return setScreenSize(DetectScreenSize().width);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
