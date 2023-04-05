@@ -50,7 +50,7 @@ const Signup = ({ handleUser, showSignUp, handleClose }) => {
       username: username,
       password: password,
       email: email,
-      profileImg: defaultProfImg,
+      profileimg: defaultProfImg,
     };
 
     if (newUser.username.length > 20) {
@@ -109,7 +109,6 @@ const Signup = ({ handleUser, showSignUp, handleClose }) => {
       axios
         .post(`${API}/users`, newUser)
         .then((res) => {
-          console.log("sent api: ", API, "-", res.data, "=====", res.status);
           notify(res.data);
         })
         .catch((err) => {

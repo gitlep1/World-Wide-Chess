@@ -9,7 +9,7 @@ const GamePage = ({ user, game, endGame }) => {
   const API = process.env.REACT_APP_API_URL;
 
   const chessboardRef = useRef();
-  const [chessGame, setChessGame] = useState(Chess(game.currentpositions));
+  const [chessGame, setChessGame] = useState(new Chess());
   const [recentMoves, setRecentMoves] = useState(game.currentPositions);
   // const [white, setWhite] = useState("");
   // const [black, setBlack] = useState("");
@@ -52,18 +52,17 @@ const GamePage = ({ user, game, endGame }) => {
       setChessGame(gameCopy);
       return move;
     } else {
-      return;
+      return null;
     }
   }
 
   const updatePositions = () => {
     const updatedData = {
-      player2ID: game.player2id,
-      player1img: game.player1img,
-      player2img: game.player2img,
-      winner: null,
-      inProgress: game.in_progress,
-      currentPositions: chessGame.fen(),
+      player2id: game.player2id,
+      player1color: game.player1color,
+      player2color: game.player2color,
+      in_progress: game.in_progress,
+      current_positions: chessGame.fen(),
     };
 
     axios.put(`${API}/games/${game.id}`, updatedData).then((res) => {

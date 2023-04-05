@@ -72,7 +72,7 @@ const GameSettings = ({ user, games }) => {
   };
 
   const handleEndPoint = async () => {
-    axios.put(`${API}/games/${gameID}`, { inProgress: false }).then((res) => {
+    axios.put(`${API}/games/${gameID}`, { in_progress: false }).then((res) => {
       // alert(`${game.player1} Has left the game.`);
     });
   };
@@ -87,7 +87,7 @@ const GameSettings = ({ user, games }) => {
         <section className="editGameSection2">
           <div className="editGameTitle">
             <h1>{game.player1}'s Chess Match</h1>
-            <p>Opponent:</p>
+            <h4>Opponent:</h4>
             {game.player2 ? <h3>{game.player2}</h3> : <h3>Searching...</h3>}
           </div>
           <div className="editGameSettings">

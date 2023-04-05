@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { Table, Modal, Button, Form } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
-import RenderLobby from "./RenderLobby";
-import FilterSearch from "./FilterSearch";
+import RenderLobby from "./RenderLobby/RenderLobby";
+import FilterSearch from "./FilterSearch/FilterSearch";
 import DetectScreenSize from "../../../CustomFunctions/DetectScreenSize";
 
 const Lobbypage = ({ user, games, handleRefresh }) => {
@@ -16,11 +16,14 @@ const Lobbypage = ({ user, games, handleRefresh }) => {
   const [roomName, setRoomName] = useState("");
   const [password, setPassword] = useState("");
 
-  const [showFilter, setShowFilter] = useState(false);
-  const handleShowFilter = () => setShowFilter(true);
-  const handleCloseFilter = () => setShowFilter(false);
+  const [showCreate, setShowCreate] = useState(false);
+  const handleShowCreate = () => setShowCreate(true);
+  const handleCloseCreate = () => setShowCreate(false);
 
   const [screenSize, setScreenSize] = useState(0);
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const intervalFunctions = setInterval(() => {
@@ -39,6 +42,7 @@ const Lobbypage = ({ user, games, handleRefresh }) => {
 
     if (roomName.length < 3 || roomName.length > 20) {
       return toast.error("Room Name must be between 3-20 characters.", {
+        toastId: "roomNameError",
         position: "top-center",
         hideProgressBar: false,
         closeOnClick: false,
@@ -65,9 +69,27 @@ const Lobbypage = ({ user, games, handleRefresh }) => {
       player2id: user.id,
     };
 
-    await axios.put(`${API}/games/${gameID}`, updatePlayer2).then((res) => {
-      notify(res.data);
-    });
+    try {
+      setLoading(true);
+      setError("");
+      toast.promise(
+        await axios.put(`${API}/games/${gameID}`, updatePlayer2).then((res) => {
+          notify(res.data);
+          setLoading(false);
+        }),
+        {
+          pending: "Joining Game ...",
+          success: "Joined Game",
+          error: "Error",
+        }
+      );
+      // await axios.put(`${API}/games/${gameID}`, updatePlayer2).then((res) => {
+      //   notify(res.data);
+      // });
+    } catch (err) {
+      setLoading(false);
+      setError(err.message);
+    }
   };
 
   const handleChange = (e) => {
@@ -81,7 +103,8 @@ const Lobbypage = ({ user, games, handleRefresh }) => {
   };
 
   const notify = (gameData) => {
-    toast.success("Game is being created ...", {
+    toast.success({
+      toastId: "joiningGame",
       position: "top-center",
       hideProgressBar: false,
       closeOnClick: false,
@@ -91,7 +114,7 @@ const Lobbypage = ({ user, games, handleRefresh }) => {
       progress: undefined,
     });
     setTimeout(() => {
-      navigate(`/Games/${gameData.id}`);
+      navigate(`/Room/${gameData.id}/Settings`);
     }, 4100);
     clearFields();
   };
@@ -106,7 +129,7 @@ const Lobbypage = ({ user, games, handleRefresh }) => {
       <section className="lobbySection1">
         <div
           onClick={() => {
-            handleShowFilter();
+            handleShowCreate();
           }}
           className="lobbyButtons"
         >
@@ -124,7 +147,7 @@ const Lobbypage = ({ user, games, handleRefresh }) => {
       </section>
       <br />
       <section className="lobbySection2">
-        <Table striped bordered hover>
+        <Table striped bordered hover className="lobbyTable">
           <thead>
             <tr>
               <th>#</th>
@@ -138,11 +161,11 @@ const Lobbypage = ({ user, games, handleRefresh }) => {
         </Table>
       </section>
 
-      <ToastContainer autoClose={3000} theme="dark" />
+      <ToastContainer autoClose={3000} theme="dark" limit={3} />
 
       <Modal
-        show={showFilter}
-        onHide={handleCloseFilter}
+        show={showCreate}
+        onHide={handleCloseCreate}
         centered
         className="lobbyModal"
         backdrop="static"
@@ -151,7 +174,7 @@ const Lobbypage = ({ user, games, handleRefresh }) => {
         <Modal.Title className="lobbyModal-title">Game Settings</Modal.Title>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
-            <h3 className="lobbyModal-roomName">Room Name</h3>
+            <h3>Room Name</h3>
             <Form.Group controlId="formRoomName">
               <Form.Control
                 type="text"
@@ -176,7 +199,7 @@ const Lobbypage = ({ user, games, handleRefresh }) => {
             </Form.Group>
 
             <div className="lobbyModal-buttons">
-              <Button variant="danger" onClick={handleCloseFilter}>
+              <Button variant="danger" onClick={handleCloseCreate}>
                 Cancel
               </Button>{" "}
               <Button variant="success" type="submit">

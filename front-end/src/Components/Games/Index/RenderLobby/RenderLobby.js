@@ -1,3 +1,4 @@
+import "./RenderLobby.scss";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Modal, Button, Form } from "react-bootstrap";
@@ -47,12 +48,10 @@ const RenderLobby = ({ gamesCopy, handleJoin }) => {
   const renderLobbyGames = () => {
     return gamesCopy.map((game, index) => {
       return (
-        <tr key={game.id}>
-          <td>{index + 1}</td>
+        <tr key={game.id} className="lobby-renderGames">
+          <td className="room-number">{index + 1}</td>
           <td>
-            <span className="players">
-              {game.room_name} {game.room_password}
-            </span>
+            <span className="room-name">{game.room_name}</span>
           </td>
           <td className="status">
             {game.player2 ? (
@@ -103,22 +102,21 @@ const RenderLobby = ({ gamesCopy, handleJoin }) => {
         centered
         className="lobbyModalPassword-container"
       >
-        <Modal.Title className="lobbyModal-title">Game Settings</Modal.Title>
-        <Modal.Body>
+        <Modal.Title>Room Password</Modal.Title>
+        <Modal.Body className="lobbyModalPassword-modal">
           <Form onSubmit={handlePasswordSubmit}>
-            <h3 className="lobbyModal-Password">Password</h3>
-            <Form.Group controlId="formPassword">
+            <h3>Password</h3>
+            <Form.Group controlId="lobbyModalPassword-formControl">
               <Form.Control
                 type="text"
                 name="password"
                 placeholder="Password"
                 onChange={handleChange}
                 value={password}
-                className="lobbyModal-password-data"
               />
             </Form.Group>
 
-            <div className="lobbyModal-buttons">
+            <div>
               <Button variant="danger" onClick={handleClosePasswordModal}>
                 Cancel
               </Button>{" "}
@@ -128,6 +126,7 @@ const RenderLobby = ({ gamesCopy, handleJoin }) => {
             </div>
           </Form>
         </Modal.Body>
+        <Modal.Footer></Modal.Footer>
       </Modal>
     </>
   );

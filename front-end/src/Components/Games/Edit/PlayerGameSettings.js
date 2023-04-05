@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Form, Button } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -24,37 +24,46 @@ const PlayerGameSettings = ({ game, user, error }) => {
           progress: undefined,
         });
         setTimeout(() => {
-          navigate("/Games/");
+          navigate("/Lobby/");
         }, 4100);
       }
     }
   });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleStartGame = async () => {
     const startingPosition =
       "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
     const updateGameData = {
-      player2ID: game.player2id,
-      winner: null,
-      inProgress: true,
-      currentPositions: startingPosition,
+      player2id: game.player2id,
+      in_progress: true,
+      current_positions: startingPosition,
+      player1color: "white",
+      player2color: "black",
     };
 
-    await axios.put(`${API}/games/${game.id}`, updateGameData).then((res) => {
-      navigate(`/Games/${game.id}`);
-    });
+    try {
+      await axios
+        .put(`${API}/games/${game.id}`, updateGameData)
+        .then((res) => {
+          navigate(`/Room/${game.id}`);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   const handleDelete = async (gameID) => {
     await axios
-      .put(`${API}/games/${gameID}`, { inProgress: false })
+      .put(`${API}/games/${gameID}`, { in_progress: false })
       .then(() => {
         toast.success(
           "You have cancelled the game. \n You will be redirected in 3 seconds.",
           {
+            toastId: "delete",
             position: "top-center",
             hideProgressBar: false,
             closeOnClick: false,
@@ -67,7 +76,7 @@ const PlayerGameSettings = ({ game, user, error }) => {
       });
     await axios.delete(`${API}/games/${gameID}`).then(() => {
       setTimeout(() => {
-        navigate("/Games/");
+        navigate("/Lobby/");
       }, 4100);
     });
   };
@@ -76,7 +85,7 @@ const PlayerGameSettings = ({ game, user, error }) => {
     await axios
       .put(`${API}/games/${game.id}`, { [game.player2id]: null })
       .then(() => {
-        navigate("/Games/");
+        navigate("/Lobby/");
       });
   };
 
@@ -85,10 +94,10 @@ const PlayerGameSettings = ({ game, user, error }) => {
       {error ? (
         <h1>Host Cancelled Game</h1>
       ) : user.id === game.player1id ? (
-        <Form onSubmit={handleSubmit}>
-          <Button type="submit" variant="dark">
-            Start Game vs {game.player2}
-          </Button>
+        <div>
+          <Button onClick={handleStartGame} variant="dark">
+            Start Game
+          </Button>{" "}
           <Button
             variant="danger"
             onClick={() => {
@@ -97,7 +106,7 @@ const PlayerGameSettings = ({ game, user, error }) => {
           >
             Cancel
           </Button>
-        </Form>
+        </div>
       ) : (
         <>
           <h3>Waiting for host to start</h3>
@@ -111,7 +120,7 @@ const PlayerGameSettings = ({ game, user, error }) => {
           </Button>
         </>
       )}
-      {game.in_progress ? navigate(`/Games/${game.id}`) : null}
+      {game.in_progress ? navigate(`/Room/${game.id}`) : null}
     </section>
   );
 };

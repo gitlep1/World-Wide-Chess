@@ -69,7 +69,7 @@ const GamePage = ({ user }) => {
         // );
       }
       setTimeout(() => {
-        navigate("/Games/");
+        navigate("/Lobby/");
       }, 4100);
     }
   }, [
@@ -95,7 +95,7 @@ const GamePage = ({ user }) => {
         progress: undefined,
       });
       setTimeout(() => {
-        navigate("/Games/");
+        navigate("/Lobby/");
       }, 4100);
     });
   };

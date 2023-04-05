@@ -100,7 +100,7 @@ const App = () => {
       window.localStorage.setItem("Authenticated", JSON.stringify(true));
       navigate(`/`);
     } else {
-      return;
+      return null;
     }
   };
 

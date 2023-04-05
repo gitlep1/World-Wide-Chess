@@ -1,3 +1,4 @@
+import "./FilterSearch.scss";
 import { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { MDBCollapse, MDBNavbar } from "mdb-react-ui-kit";
@@ -11,7 +12,7 @@ const FilterSearch = ({ gamesCopy }) => {
   const [roomsWithPasswords, setRoomsWithPasswords] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value } = e;
+    const { name, value } = e.target;
 
     if (name === "searchbar") {
       setSearch(value);
@@ -24,6 +25,10 @@ const FilterSearch = ({ gamesCopy }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
   };
+
+  if (search !== "") {
+    gamesCopy = gamesCopy.map((game) => game.room_name.includes(search));
+  }
 
   return (
     <>
@@ -47,8 +52,25 @@ const FilterSearch = ({ gamesCopy }) => {
         className="advancedSearch-options-container"
       >
         <Form onSubmit={handleSubmit} className="advancedSearch-options">
-          <div className="bg-dark">single or multi</div>
-          <div className="bg-light">
+          <div className="bg-dark advancedSearch-singleOrMulti">
+            <div className="singleOrMultiButtons">
+              <Form.Check
+                // inline
+                label="Single Player"
+                name="group1"
+                type="radio"
+                id="radio-1"
+              />
+              <Form.Check
+                // inline
+                label="Multi Player"
+                name="group1"
+                type="radio"
+                id="radio-2"
+              />
+            </div>
+          </div>
+          <div className="bg-light advancedSearch-searchbar-container">
             Room Name:
             <Form.Group controlId="advancedSearch-searchbar">
               <Form.Control
@@ -61,7 +83,7 @@ const FilterSearch = ({ gamesCopy }) => {
             </Form.Group>
           </div>
           <div className="bg-dark">placeholder3</div>
-          <div className="bg-light">
+          <div className="bg-light advancedSearch-roomPassword-container">
             password?
             <Form.Check
               type="switch"
@@ -96,7 +118,7 @@ const FilterSearch = ({ gamesCopy }) => {
               </div>
             </Form.Group>
           </div>
-          <div className="bg-light">
+          <div className="bg-light advancedSearch-roomFull-container">
             full?
             <Form.Check
               type="switch"
