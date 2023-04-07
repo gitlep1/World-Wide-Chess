@@ -39,31 +39,14 @@ const GameSettings = ({ user, games }) => {
   }, []); // eslint-disable-line
 
   const getGame = async () => {
-    try {
-      // setLoading(true);
-      await axios
-        .get(`${API}/games/${gameID}`)
-        .then((res) => {
-          setGame(res.data);
-        })
-        .catch((err) => {
-          setError(err);
-        });
-      // setLoading(false);
-    } catch (err) {
-      setLoading(false);
-      setError(err);
-    }
-
-    // let findCorrectGame = games.map((foundGame) => {
-    //   if (foundGame.id === Number(gameID)) {
-    //     setGame(foundGame);
-    //   }
-    //   return null;
-    // });
-    // console.log(Number(gameID));
-    // console.log(findCorrectGame);
-    // return setGame(findCorrectGame[0]);
+    await axios
+      .get(`${API}/games/${gameID}`)
+      .then((res) => {
+        setGame(res.data);
+      })
+      .catch((err) => {
+        setError(err);
+      });
   };
 
   const alertUser = (e) => {
@@ -72,9 +55,11 @@ const GameSettings = ({ user, games }) => {
   };
 
   const handleEndPoint = async () => {
-    axios.put(`${API}/games/${gameID}`, { in_progress: false }).then((res) => {
-      // alert(`${game.player1} Has left the game.`);
-    });
+    return axios
+      .put(`${API}/games/${gameID}`, { in_progress: false })
+      .then((res) => {
+        // alert(`${game.player1} Has left the game.`);
+      });
   };
 
   const renderGameSettings = () => {

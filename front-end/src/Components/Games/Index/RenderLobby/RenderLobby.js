@@ -4,45 +4,33 @@ import { useNavigate } from "react-router-dom";
 import { Modal, Button, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
 
-const RenderLobby = ({ gamesCopy, handleJoin }) => {
-  const navigate = useNavigate();
+const RenderLobby = ({
+  gamesCopy,
+  joinWithPassword,
+  setJoinWithPassword,
+  handleJoin,
+}) => {
+  // const navigate = useNavigate();
 
-  const [password, setPassword] = useState("");
+  const [passwordGameId, setPasswordGameId] = useState("");
   const [showPasswordModal, setShowPasswordModal] = useState(false);
 
   const handleShowPasswordModal = () => setShowPasswordModal(true);
   const handleClosePasswordModal = () => setShowPasswordModal(false);
 
   const handleChange = (e) => {
-    setPassword(e.target.value);
+    setJoinWithPassword(e.target.value);
   };
 
-  const handlePasswordSubmit = (e) => {
+  const handlePasswordSubmit = async (e) => {
     e.preventDefault();
 
-    let findPassword = gamesCopy.filter(
-      (game) => game.room_password === password
-    );
-
-    if (findPassword.length > 0) {
-      clearFields();
-      return console.log("correct");
-    } else {
-      clearFields();
-      return toast.error("Incorrect room password.", {
-        position: "top-center",
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        pauseOnFocusLoss: false,
-        draggable: true,
-        progress: undefined,
-      });
-    }
+    await handleJoin(passwordGameId);
+    clearFields();
   };
 
   const clearFields = () => {
-    setPassword("");
+    setJoinWithPassword("");
   };
 
   const renderLobbyGames = () => {
@@ -75,9 +63,14 @@ const RenderLobby = ({ gamesCopy, handleJoin }) => {
                 <div
                   className="lobbyStatus1Parent"
                   onClick={() => {
-                    game.room_password
-                      ? handleShowPasswordModal()
-                      : handleJoin(game.id);
+                    game.room_password ? (
+                      <>
+                        {handleShowPasswordModal()}
+                        {setPasswordGameId(game.id)}
+                      </>
+                    ) : (
+                      handleJoin(game.id)
+                    );
                   }}
                 >
                   JOIN
@@ -108,11 +101,11 @@ const RenderLobby = ({ gamesCopy, handleJoin }) => {
             <h3>Password</h3>
             <Form.Group controlId="lobbyModalPassword-formControl">
               <Form.Control
-                type="text"
-                name="password"
+                type="password"
+                name="joinWithPassword"
                 placeholder="Password"
                 onChange={handleChange}
-                value={password}
+                value={joinWithPassword}
               />
             </Form.Group>
 

@@ -3,10 +3,14 @@ import { useState } from "react";
 import { Form, Button, Modal, Image } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import Logo from "../../../Images/Logo.png";
+import axios from "axios";
 
 const Signin = ({ handleUser, users, showSignIn, handleClose }) => {
+  const API = process.env.REACT_APP_API_URL;
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -17,19 +21,35 @@ const Signin = ({ handleUser, users, showSignIn, handleClose }) => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const loggedInUser = {
-      password: password,
-      email: email,
-    };
-    const foundUser = users.find((user) => {
-      return (
-        user.email === loggedInUser.email && loggedInUser.password === password
-      );
-    });
+    const foundUser = users.find(
+      (user) => user.email === email && user.password === password
+    );
+
     if (foundUser) {
+      await axios
+        .put(`${API}/users/${foundUser.id}`, foundUser)
+        // .patch(`${API}/users/${foundUser.id}`, {
+        //   profileimg: foundUser.profileimg,
+        //   username: foundUser.username,
+        //   password: foundUser.password,
+        //   email: foundUser.email,
+        //   theme: foundUser.theme || null,
+        //   wins: foundUser.wins,
+        //   ties: foundUser.ties || 0,
+        //   loss: foundUser.loss || 0,
+        //   preferred_color: foundUser.preferred_color || null,
+        //   last_online: new Date().toISOString(),
+        // })
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+          setError(err.message);
+        });
       notify(foundUser);
     } else {
       noUser();

@@ -1,0 +1,88 @@
+$tiny: 400px;
+$small: 600px;
+$medium: 800px;
+$large: 1000px;
+$giant: 1200px;
+
+.leaderboard-container {
+  // border: 5px solid red;
+  height: 95vh;
+  width: 95vw;
+  margin: 0 auto;
+  text-align: center;
+  overflow: auto;
+
+  .leaderboard-table {
+    // border: 5px solid cyan;
+
+    // only for screens smaller than 400px
+    .lastOnline {
+      // border: 5px solid red;
+      width: 95vw;
+      position: absolute;
+      bottom: 23%;
+    }
+  }
+}
+
+@media (min-width: $tiny) {
+  .leaderboard-container {
+    // border: 5px solid red;
+    height: 95vh;
+    width: 95vw;
+    margin: 0 auto;
+    text-align: center;
+    overflow: auto;
+
+    .leaderboard-table {
+      // border: 3px solid black;
+      width: 95%;
+      margin: 0 auto;
+      box-shadow: 0px 0px 20px black;
+
+      .leaderboard-table-head-th {
+        // border: 5px solid red;
+        color: white;
+        background-color: black;
+        box-shadow: 0px 0px 20px black;
+
+        &:hover {
+          // border: 5px solid cyan;
+        }
+      }
+
+      .showLeaderboardArrows {
+        &:hover {
+          // border: 5px solid green;
+          // display: black;
+        }
+      }
+
+      // .leaderboard-table-head-rank {
+      //   border: 5px solid red;
+      // }
+      // .leaderboard-table-head-username {
+      //   border: 5px solid cyan;
+      // }
+      // .leaderboard-table-head-wins {
+      //   border: 5px solid blue;
+      // }
+      // .leaderboard-table-head-ties {
+      //   border: 5px solid green;
+      // }
+      // .leaderboard-table-head-losses {
+      //   border: 5px solid purple;
+      // }
+      // .leaderboard-table-head-lastOnline {
+      //   border: 5px solid orange;
+      // }
+
+      .leaderboard-table-body {
+        // border: 5px solid red;
+        // color: white;
+        // background-color: black;
+        // box-shadow: 0px 0px 20px black;
+      }
+    }
+  }
+}

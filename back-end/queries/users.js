@@ -21,8 +21,13 @@ const getUserByID = async (id) => {
 const createUser = async (newUserData) => {
   try {
     const newUser = await db.one(
-      "INSERT INTO users (username, password, email) VALUES($1, $2, $3) RETURNING *",
-      [newUserData.username, newUserData.password, newUserData.email]
+      "INSERT INTO users (username, password, email, profileimg) VALUES($1, $2, $3, $4) RETURNING *",
+      [
+        newUserData.username,
+        newUserData.password,
+        newUserData.email,
+        newUserData.profileimg,
+      ]
     );
     return newUser;
   } catch (error) {
@@ -33,7 +38,7 @@ const createUser = async (newUserData) => {
 const updateUser = async (id, updatedUserData) => {
   try {
     const updateUser = await db.one(
-      "UPDATE users SET profileimg=$1, username=$2, password=$3, email=$4, theme=$5, wins=$6, ties=$7, loss=$8, preferred_color=$9, WHERE id=$10 RETURNING *",
+      "UPDATE users SET profileimg=$1, username=$2, password=$3, email=$4, theme=$5, wins=$6, ties=$7, loss=$8, preferred_color=$9, last_online=$10 WHERE id=$11 RETURNING *",
       [
         updatedUserData.profileimg,
         updatedUserData.username,
@@ -44,6 +49,7 @@ const updateUser = async (id, updatedUserData) => {
         updatedUserData.ties,
         updatedUserData.loss,
         updatedUserData.preferred_color,
+        updatedUserData.last_online,
         id,
       ]
     );

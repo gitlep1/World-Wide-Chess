@@ -15,7 +15,7 @@ CREATE TABLE users (
   ties INT DEFAULT 0,
   loss INT DEFAULT 0,
   preferred_color TEXT DEFAULT null,
-  created_at TIMESTAMP DEFAULT NOW()
+  last_online TIMESTAMP DEFAULT NOW()
 );
 
 DROP TABLE IF EXISTS games;

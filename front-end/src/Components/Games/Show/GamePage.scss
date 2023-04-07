@@ -1,59 +1,12 @@
 .gamePageSection {
-  width: 95vw;
+  border: 5px solid red;
+  width: 100vw;
+  height: 100vw;
   margin: 0 auto;
 
   .botBoard {
+    border: 5px solid cyan;
     display: grid;
-    grid-template-columns: 2fr 1fr;
-    justify-content: center;
-    align-items: center;
-
-    .botGameButtons {
-      grid-row: 3;
-      grid-column: 1 / span 2;
-      text-align: center;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      margin-top: 5%;
-    }
-  }
-
-  .chessboard {
-    grid-row: 1;
-
-    img {
-      width: 70px;
-    }
-  }
-
-  .playerNames {
-    grid-column: 2;
-    grid-row: 1;
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-
-    img {
-      width: 100px;
-    }
-
-    .player1 {
-      border: 3px dotted red;
-      width: 300px;
-      height: 250px;
-      background-color: aliceblue;
-      -webkit-box-shadow: inset 5px 9px 15px 10px rgba(0, 0, 0, 0.88);
-      box-shadow: inset 5px 9px 15px 10px rgba(0, 0, 0, 0.88);
-    }
-
-    .player2 {
-      border: 3px dotted blue;
-      width: 300px;
-      height: 250px;
-      background-color: aliceblue;
-      -webkit-box-shadow: inset 5px 9px 15px 10px rgba(0, 0, 0, 0.88);
-      box-shadow: inset 5px 9px 15px 10px rgba(0, 0, 0, 0.88);
-    }
   }
 }
 

@@ -5,7 +5,6 @@ import { MDBCollapse, MDBNavbar } from "mdb-react-ui-kit";
 
 const FilterSearch = ({ gamesCopy }) => {
   const [showAnimated, setShowAnimated] = useState(false);
-  const [search, setSearch] = useState("");
   const [minEloRating, setMinEloRating] = useState();
   const [maxEloRating, setMaxEloRating] = useState();
   const [fullRooms, setFullRooms] = useState(false);
@@ -14,9 +13,7 @@ const FilterSearch = ({ gamesCopy }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    if (name === "searchbar") {
-      setSearch(value);
-    } else if (name === "minElo") {
+    if (name === "minElo") {
       setMinEloRating(value);
     } else if (name === "maxElo") {
       setMaxEloRating(value);
@@ -24,11 +21,9 @@ const FilterSearch = ({ gamesCopy }) => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-  };
 
-  if (search !== "") {
-    gamesCopy = gamesCopy.map((game) => game.room_name.includes(search));
-  }
+    console.log("inside submit");
+  };
 
   return (
     <>
@@ -55,14 +50,12 @@ const FilterSearch = ({ gamesCopy }) => {
           <div className="bg-dark advancedSearch-singleOrMulti">
             <div className="singleOrMultiButtons">
               <Form.Check
-                // inline
                 label="Single Player"
                 name="group1"
                 type="radio"
                 id="radio-1"
               />
               <Form.Check
-                // inline
                 label="Multi Player"
                 name="group1"
                 type="radio"
@@ -70,24 +63,13 @@ const FilterSearch = ({ gamesCopy }) => {
               />
             </div>
           </div>
-          <div className="bg-light advancedSearch-searchbar-container">
-            Room Name:
-            <Form.Group controlId="advancedSearch-searchbar">
-              <Form.Control
-                type="text"
-                name="searchbar"
-                placeholder="Room Name ..."
-                onChange={handleChange}
-                value={search}
-              />
-            </Form.Group>
-          </div>
-          <div className="bg-dark">placeholder3</div>
+          <div className="bg-light renameLaterTwo">placeholder 2</div>
+          <div className="bg-dark renameLaterThree">placeholder3</div>
           <div className="bg-light advancedSearch-roomPassword-container">
             password?
             <Form.Check
               type="switch"
-              id="custom-switch"
+              className="custom-switch"
               checked={roomsWithPasswords}
               onChange={() => {
                 setRoomsWithPasswords(!roomsWithPasswords);
@@ -96,8 +78,8 @@ const FilterSearch = ({ gamesCopy }) => {
           </div>
           <div className="bg-dark advancedSearch-eloRating-container">
             <span className="advancedSearch-eloRating-title">Elo Rating:</span>
-            <Form.Group controlId="advancedSearch-eloRating">
-              <div className="advancedSearch-eloRating">
+            <Form.Group controlId="eloRating-min">
+              <div className="advancedSearch-eloRating-min">
                 <Form.Control
                   type="number"
                   name="minElo"
@@ -106,7 +88,11 @@ const FilterSearch = ({ gamesCopy }) => {
                   value={minEloRating}
                   className="min-elo-rating"
                 />
-                -
+              </div>
+            </Form.Group>
+            -
+            <Form.Group controlId="eloRating-max">
+              <div className="advancedSearch-eloRating-max">
                 <Form.Control
                   type="number"
                   name="maxElo"
@@ -122,7 +108,7 @@ const FilterSearch = ({ gamesCopy }) => {
             full?
             <Form.Check
               type="switch"
-              id="custom-switch"
+              className="custom-switch"
               checked={fullRooms}
               onChange={() => {
                 setFullRooms(!fullRooms);
@@ -131,7 +117,9 @@ const FilterSearch = ({ gamesCopy }) => {
           </div>
 
           <div className="advancedSearch-buttons">
-            <Button variant="dark">Search</Button>
+            <Button variant="dark" type="submit">
+              Search
+            </Button>
           </div>
         </Form>
       </MDBCollapse>

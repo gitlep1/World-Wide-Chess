@@ -53,9 +53,9 @@ const Signup = ({ handleUser, showSignUp, handleClose }) => {
       profileimg: defaultProfImg,
     };
 
-    if (newUser.username.length > 20) {
+    if (newUser.username.length > 12) {
       return toast.error(
-        `Your current username:(${newUser.username}) is ${newUser.username.length} characters long. \n The max chracter length allowed is 20.`,
+        `Your current username:(${newUser.username}) is ${newUser.username.length} characters long. \n The max chracter length allowed is 12.`,
         {
           position: "top-right",
           hideProgressBar: false,
@@ -94,8 +94,7 @@ const Signup = ({ handleUser, showSignUp, handleClose }) => {
     }
 
     const checkUser = users.filter(
-      (user) =>
-        user.email === newUser.email || user.username === newUser.username
+      (user) => user.email === email || user.username === username
     );
 
     if (checkUser.length > 0) {
@@ -106,7 +105,7 @@ const Signup = ({ handleUser, showSignUp, handleClose }) => {
         pauseOnHover: false,
       });
     } else {
-      axios
+      await axios
         .post(`${API}/users`, newUser)
         .then((res) => {
           notify(res.data);

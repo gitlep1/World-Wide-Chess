@@ -9,12 +9,14 @@ import FilterSearch from "./FilterSearch/FilterSearch";
 import DetectScreenSize from "../../../CustomFunctions/DetectScreenSize";
 
 const Lobbypage = ({ user, games, handleRefresh }) => {
+  let gamesCopy = [];
   const navigate = useNavigate();
   const API = process.env.REACT_APP_API_URL;
-  const gamesCopy = [...games];
 
-  const [roomName, setRoomName] = useState("");
-  const [password, setPassword] = useState("");
+  const [createRoomName, setCreateRoomName] = useState("");
+  const [createRoomPassword, setCreateRoomPassword] = useState("");
+  const [joinWithPassword, setJoinWithPassword] = useState("");
+  const [searchbar, setSearchbar] = useState("");
 
   const [showCreate, setShowCreate] = useState(false);
   const handleShowCreate = () => setShowCreate(true);
@@ -37,12 +39,24 @@ const Lobbypage = ({ user, games, handleRefresh }) => {
     return setScreenSize(DetectScreenSize().width);
   };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    if (name === "createRoomName") {
+      setCreateRoomName(value);
+    } else if (name === "password") {
+      setCreateRoomPassword(value);
+    } else if (name === "searchbar") {
+      setSearchbar(value);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (roomName.length < 3 || roomName.length > 20) {
+    if (createRoomName.length < 3 || createRoomName.length > 20) {
       return toast.error("Room Name must be between 3-20 characters.", {
-        toastId: "roomNameError",
+        toastId: "createRoomNameError",
         position: "top-center",
         hideProgressBar: false,
         closeOnClick: false,
@@ -54,8 +68,8 @@ const Lobbypage = ({ user, games, handleRefresh }) => {
     }
 
     const newGameData = {
-      room_name: roomName,
-      room_password: password,
+      room_name: createRoomName,
+      room_password: createRoomPassword,
       player1id: user.id,
     };
 
@@ -65,46 +79,67 @@ const Lobbypage = ({ user, games, handleRefresh }) => {
   };
 
   const handleJoin = async (gameID) => {
+    let gameData = {};
     const updatePlayer2 = {
       player2id: user.id,
     };
 
-    try {
-      setLoading(true);
-      setError("");
-      toast.promise(
-        await axios.put(`${API}/games/${gameID}`, updatePlayer2).then((res) => {
-          notify(res.data);
-          setLoading(false);
-        }),
-        {
+    for (const game of gamesCopy) {
+      if (game.id === gameID) {
+        gameData = game;
+      }
+    }
+
+    const addDataToGame = async () => {
+      return axios.put(`${API}/games/${gameData.id}`, updatePlayer2);
+    };
+
+    if (gameData.room_password) {
+      if (
+        gameData.room_password.toLowerCase() === joinWithPassword.toLowerCase()
+      ) {
+        toast
+          .promise(addDataToGame(), {
+            pending: "Joining Game ...",
+            success: "Joined Game",
+            error: "Error",
+          })
+          .then((res) => {
+            notify(res.data);
+          })
+          .catch((err) => {
+            setError(err.message);
+          });
+      } else {
+        return toast.error("Incorrect room password.", {
+          position: "top-center",
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          pauseOnFocusLoss: false,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+    } else {
+      toast
+        .promise(addDataToGame(), {
           pending: "Joining Game ...",
           success: "Joined Game",
           error: "Error",
-        }
-      );
-      // await axios.put(`${API}/games/${gameID}`, updatePlayer2).then((res) => {
-      //   notify(res.data);
-      // });
-    } catch (err) {
-      setLoading(false);
-      setError(err.message);
-    }
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    if (name === "roomName") {
-      setRoomName(value);
-    } else if (name === "password") {
-      setPassword(value);
+        })
+        .then((res) => {
+          notify(res.data);
+        })
+        .catch((err) => {
+          setError(err.message);
+        });
     }
   };
 
   const notify = (gameData) => {
     toast.success({
-      toastId: "joiningGame",
+      toastId: "notify-success",
       position: "top-center",
       hideProgressBar: false,
       closeOnClick: false,
@@ -115,14 +150,23 @@ const Lobbypage = ({ user, games, handleRefresh }) => {
     });
     setTimeout(() => {
       navigate(`/Room/${gameData.id}/Settings`);
-    }, 4100);
+    }, 3500);
     clearFields();
   };
 
   const clearFields = () => {
-    setRoomName("");
-    setPassword("");
+    setCreateRoomName("");
+    setCreateRoomPassword("");
   };
+
+  if (searchbar !== "") {
+    const gamesList = [...games];
+    gamesCopy = gamesList.filter((game) =>
+      game.room_name.toLowerCase().includes(searchbar.toLowerCase())
+    );
+  } else {
+    gamesCopy = [...games];
+  }
 
   return (
     <section className="lobbyMain">
@@ -134,6 +178,17 @@ const Lobbypage = ({ user, games, handleRefresh }) => {
           className="lobbyButtons"
         >
           CREATE
+        </div>
+        <div className="lobby-searchbar-container">
+          <Form.Group controlId="lobby-searchbar">
+            <Form.Control
+              type="text"
+              name="searchbar"
+              placeholder="Room Name ..."
+              onChange={handleChange}
+              value={searchbar}
+            />
+          </Form.Group>
         </div>
         <div
           onClick={() => {
@@ -156,7 +211,12 @@ const Lobbypage = ({ user, games, handleRefresh }) => {
             </tr>
           </thead>
           <tbody>
-            <RenderLobby gamesCopy={gamesCopy} handleJoin={handleJoin} />
+            <RenderLobby
+              gamesCopy={gamesCopy}
+              joinWithPassword={joinWithPassword}
+              setJoinWithPassword={setJoinWithPassword}
+              handleJoin={handleJoin}
+            />
           </tbody>
         </Table>
       </section>
@@ -175,14 +235,14 @@ const Lobbypage = ({ user, games, handleRefresh }) => {
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
             <h3>Room Name</h3>
-            <Form.Group controlId="formRoomName">
+            <Form.Group controlId="formcreateRoomName">
               <Form.Control
                 type="text"
-                name="roomName"
-                placeholder="RoomName"
+                name="createRoomName"
+                placeholder="Room Name"
                 onChange={handleChange}
-                value={roomName}
-                className="lobbyModal-roomName-data"
+                value={createRoomName}
+                className="lobbyModal-createRoomName-data"
               />
             </Form.Group>
 
@@ -193,7 +253,7 @@ const Lobbypage = ({ user, games, handleRefresh }) => {
                 name="password"
                 placeholder="Password"
                 onChange={handleChange}
-                value={password}
+                value={createRoomPassword}
                 className="lobbyModal-password-data"
               />
             </Form.Group>
@@ -208,9 +268,7 @@ const Lobbypage = ({ user, games, handleRefresh }) => {
             </div>
           </Form>
         </Modal.Body>
-        <Modal.Footer className="lobbyModal-footer">
-          {/* <h3>{user.username}</h3> */}
-        </Modal.Footer>
+        <Modal.Footer className="lobbyModal-footer"></Modal.Footer>
       </Modal>
     </section>
   );

@@ -2,12 +2,22 @@ import { useRef, useState, useEffect } from "react";
 import { Chessboard } from "react-chessboard";
 import { Chess } from "chess.js";
 import { Button, Modal, Image } from "react-bootstrap";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 import EasyBot from "./BotLogic/EasyBot";
 import MediumBot from "./BotLogic/MediumBot";
 import HardBot from "./BotLogic/HardBot";
 
-const PlayVsBot = ({ user, game, endGame }) => {
+const PlayVsBot = ({
+  user,
+  game,
+  endGame,
+  player1Data,
+  player2Data,
+  forfeitNotify,
+}) => {
+  const navigate = useNavigate();
   const prevBoard = useRef([]);
   const depth = 4;
 
@@ -92,6 +102,17 @@ const PlayVsBot = ({ user, game, endGame }) => {
 
   return (
     <section className="botBoard">
+      {!player1Data[0] || !player2Data[0] ? forfeitNotify() : null}
+      <div className="gamePage-players-data">
+        <div className="gamePage-players-data-one">
+          <Image src={player1Data[0].profileimg} alt="player 1" />{" "}
+          <span>{player1Data[0].username}</span>
+        </div>
+        <div className="gamePage-players-data-two">
+          <Image src={player2Data[0].profileimg} alt="player 2" />
+          <span>{player2Data[0].username}</span>
+        </div>
+      </div>
       <div className="chessboard">
         <Chessboard
           id="PlayVsRandom" // use only if multiple boards

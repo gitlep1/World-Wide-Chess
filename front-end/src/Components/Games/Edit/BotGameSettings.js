@@ -60,7 +60,7 @@ const BotGameSettings = ({ game, error }) => {
     };
 
     await axios.put(`${API}/games/${game.id}`, updateGameData).then((res) => {
-      navigate(`/Games/${game.id}`);
+      navigate(`/Room/${res.data.id}`);
     });
   };
 
@@ -77,7 +77,7 @@ const BotGameSettings = ({ game, error }) => {
         progress: undefined,
       });
       setTimeout(() => {
-        navigate("/Games/");
+        navigate("/Lobby/");
       }, 4100);
     });
   };
