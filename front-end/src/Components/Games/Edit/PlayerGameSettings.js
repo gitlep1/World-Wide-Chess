@@ -49,10 +49,10 @@ const PlayerGameSettings = ({ game, user, error }) => {
           navigate(`/Room/${game.id}`);
         })
         .catch((err) => {
-          console.log(err);
+          // console.log(err);
         });
     } catch (error) {
-      console.log(error.message);
+      // console.log(error.message);
     }
   };
 

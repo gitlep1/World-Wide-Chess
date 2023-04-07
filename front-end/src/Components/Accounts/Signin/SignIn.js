@@ -44,10 +44,10 @@ const Signin = ({ handleUser, users, showSignIn, handleClose }) => {
         //   last_online: new Date().toISOString(),
         // })
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
         })
         .catch((err) => {
-          console.log(err);
+          // console.log(err);
           setError(err.message);
         });
       notify(foundUser);

@@ -1,5 +1,5 @@
 const EasyBot = (chessGame, game, safeGameMutate) => {
-  console.log("easy");
+  // console.log("easy");
   const possibleMoves = chessGame.moves();
 
   if (chessGame.game_over() || possibleMoves.length === 0) {

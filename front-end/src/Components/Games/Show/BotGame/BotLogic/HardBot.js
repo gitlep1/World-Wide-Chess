@@ -1,24 +1,24 @@
 import { Chess } from "chess.js";
 
 const HardBot = (chessGame, setFen, depth) => {
-  console.log("inside hardbot func");
+  // console.log("inside hardbot func");
 
   const makeMove = (game, move) => {
-    console.log("inside makeMove function");
+    // console.log("inside makeMove function");
 
     game.move(move);
     return game.fen();
   };
 
   const generateMoves = (game) => {
-    console.log("inside generateMoves function");
+    // console.log("inside generateMoves function");
 
     const moves = game.moves();
     return moves.map((move) => makeMove(new Chess(game.fen()), move));
   };
 
   const evaluate = (fen) => {
-    console.log("evaluate function");
+    // console.log("evaluate function");
 
     const game = new Chess(fen);
     let score = 0;
@@ -56,7 +56,7 @@ const HardBot = (chessGame, setFen, depth) => {
   };
 
   const generateTree = (fen, depth) => {
-    console.log("generating tree");
+    // console.log("generating tree");
 
     const game = new Chess(fen);
     if (depth === 0 || game.game_over()) {
@@ -75,7 +75,7 @@ const HardBot = (chessGame, setFen, depth) => {
   };
 
   const minimax = (tree, depth, isMaximizingPlayer) => {
-    console.log("minimax function");
+    // console.log("minimax function");
 
     if (depth === 0 || tree.children.length === 0) {
       return tree.score;
@@ -98,7 +98,7 @@ const HardBot = (chessGame, setFen, depth) => {
   };
 
   const chooseMove = (fen) => {
-    console.log("chooseMove function");
+    // console.log("chooseMove function");
 
     const tree = generateTree(fen, depth);
     let bestScore = -Infinity;
@@ -116,7 +116,7 @@ const HardBot = (chessGame, setFen, depth) => {
   const game = new Chess(chessGame);
   const move = chooseMove(chessGame);
   const newFen = makeMove(game, move);
-  console.log("new fen: ", newFen);
+  // console.log("new fen: ", newFen);
   // setFen(newFen);
 };
 

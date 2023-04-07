@@ -1,5 +1,5 @@
 const MediumBot = (chessGame, game, safeGameMutate) => {
-  console.log("medium");
+  // console.log("medium");
   const possibleMoves = chessGame.moves();
 
   if (chessGame.game_over() || possibleMoves.length === 0) {

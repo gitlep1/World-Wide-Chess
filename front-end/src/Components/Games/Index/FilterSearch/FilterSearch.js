@@ -22,7 +22,7 @@ const FilterSearch = ({ gamesCopy }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log("inside submit");
+    // console.log("inside submit");
   };
 
   return (
