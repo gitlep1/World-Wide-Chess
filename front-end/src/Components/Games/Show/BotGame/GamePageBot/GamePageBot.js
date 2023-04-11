@@ -1,3 +1,4 @@
+import "./GamePageBot.scss";
 import { useRef, useState, useEffect } from "react";
 import { Chessboard } from "react-chessboard";
 import { Chess } from "chess.js";
@@ -9,6 +10,9 @@ import EasyBot from "./BotLogic/EasyBot";
 import MediumBot from "./BotLogic/MediumBot";
 import HardBot from "./BotLogic/HardBot";
 
+import DetectScreenSize from "../../../../../CustomFunctions/DetectScreenSize";
+import controlWidth from "../../../../../CustomFunctions/ControlWidth";
+
 const PlayVsBot = ({
   user,
   game,
@@ -18,6 +22,8 @@ const PlayVsBot = ({
   forfeitNotify,
 }) => {
   const navigate = useNavigate();
+  const [screenSize, setScreenSize] = useState(0);
+
   const prevBoard = useRef([]);
   const depth = 4;
 
@@ -30,6 +36,18 @@ const PlayVsBot = ({
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  useEffect(() => {
+    const intervalFunctions = setInterval(() => {
+      getScreenSize();
+    });
+
+    return () => clearInterval(intervalFunctions);
+  }, []);
+
+  const getScreenSize = () => {
+    return setScreenSize(DetectScreenSize().width);
+  };
 
   useEffect(() => {
     prevBoard.current.push(fen);
@@ -100,20 +118,74 @@ const PlayVsBot = ({
     setPromotionMove(null);
   };
 
+  const controlBoardWidth = (screenSize) => {
+    if (controlWidth(screenSize) <= 600) {
+      return controlWidth(screenSize);
+    } else if (controlWidth(screenSize) <= 700) {
+      return 600;
+    } else if (controlWidth(screenSize) <= 750) {
+      return 650;
+    } else if (controlWidth(screenSize) <= 800) {
+      return 600;
+    } else if (controlWidth(screenSize) <= 850) {
+      return 500;
+    } else if (controlWidth(screenSize) <= 900) {
+      return 600;
+    } else if (controlWidth(screenSize) <= 950) {
+      return 650;
+    } else if (controlWidth(screenSize) <= 1000) {
+      return 700;
+    } else {
+      return 750;
+    }
+  };
+
   return (
-    <section className="botBoard">
+    <section className="gamePageBot">
       {!player1Data[0] || !player2Data[0] ? forfeitNotify() : null}
-      <div className="gamePage-players-data">
-        <div className="gamePage-players-data-one">
-          <Image src={player1Data[0].profileimg} alt="player 1" />{" "}
-          <span>{player1Data[0].username}</span>
-        </div>
-        <div className="gamePage-players-data-two">
-          <Image src={player2Data[0].profileimg} alt="player 2" />
-          <span>{player2Data[0].username}</span>
-        </div>
+      <div className="gamePageBot-players-data">
+        {game.player1color === "white" ? (
+          <>
+            <div className="gamePageBot-playerTwo-data">
+              <Image
+                src={player2Data[0].profileimg}
+                className="gamePageBot-player-image"
+                alt="player 2"
+              />
+              <span>{player2Data[0].username}</span>
+            </div>
+
+            <div className="gamePageBot-playerOne-data">
+              <Image
+                src={player1Data[0].profileimg}
+                className="gamePageBot-player-image"
+                alt="player 1"
+              />{" "}
+              <span>{player1Data[0].username}</span>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="gamePageBot-playerOne-data">
+              <Image
+                src={player1Data[0].profileimg}
+                className="gamePageBot-player-image"
+                alt="player 1"
+              />{" "}
+              <span>{player1Data[0].username}</span>
+            </div>
+            <div className="gamePageBot-playerTwo-data">
+              <Image
+                src={player2Data[0].profileimg}
+                className="gamePageBot-player-image"
+                alt="player 2"
+              />
+              <span>{player2Data[0].username}</span>
+            </div>
+          </>
+        )}
       </div>
-      <div className="chessboard">
+      <div className="gamePageBot-chessboard-container">
         <Chessboard
           id="PlayVsRandom" // use only if multiple boards
           boardOrientation={boardOrientation}
@@ -124,8 +196,17 @@ const PlayVsBot = ({
             boxShadow: "0 5px 15px rgba(0, 0, 0, 1)",
           }}
           areArrowsAllowed={false}
-          // customPieces={animalPieceTheme}
-          animationDuration={500}
+          // animationDuration={500}
+          boardWidth={controlBoardWidth(screenSize)}
+          // do custom square styling later  \\
+          // customLightSquareStyle={{
+          //   borderRadius: "15%",
+          //   boxShadow: "0 0 15px rgba(255, 255, 255, 1)",
+          // }}
+          // customDarkSquareStyle={{
+          //   borderRadius: "15%",
+          //   boxShadow: "0 0 15px rgba(0, 0, 0, 1)",
+          // }}
         />
         {promotionMove && (
           <div className="promotion-modal">
@@ -136,6 +217,7 @@ const PlayVsBot = ({
           </div>
         )}
       </div>
+      <div className="gamePageBot-chatBox">Chat Box</div>
     </section>
   );
 };

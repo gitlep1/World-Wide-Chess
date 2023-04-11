@@ -5,7 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import GetApi from "../../../CustomFunctions/GetApi";
 
-import VsBot from "./BotGame/GamePageBot";
+import VsBot from "./BotGame/GamePageBot/GamePageBot";
 import VsPlayer from "./PlayerGame/GamePagePlayer";
 
 const GamePage = ({ user }) => {

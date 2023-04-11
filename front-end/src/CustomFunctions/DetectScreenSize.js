@@ -1,6 +1,6 @@
 const DetectScreenSize = () => {
-  const width = window.innerWidth;
-  const height = window.innerHeight;
+  const width = window.outerWidth;
+  const height = window.outerHeight;
 
   return { width, height };
 };

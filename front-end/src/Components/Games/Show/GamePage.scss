@@ -1,13 +1,8 @@
 .gamePageSection {
-  border: 5px solid red;
+  // border: 5px solid red;
   width: 100vw;
   height: 100vw;
   margin: 0 auto;
-
-  .botBoard {
-    border: 5px solid cyan;
-    display: grid;
-  }
 }
 
 .pawnPromotionModal {
