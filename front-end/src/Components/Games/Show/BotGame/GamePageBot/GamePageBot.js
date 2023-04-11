@@ -39,15 +39,11 @@ const PlayVsBot = ({
 
   useEffect(() => {
     const intervalFunctions = setInterval(() => {
-      getScreenSize();
+      setScreenSize(DetectScreenSize().width);
     });
 
     return () => clearInterval(intervalFunctions);
   }, []);
-
-  const getScreenSize = () => {
-    return setScreenSize(DetectScreenSize().width);
-  };
 
   useEffect(() => {
     prevBoard.current.push(fen);
@@ -118,27 +114,29 @@ const PlayVsBot = ({
     setPromotionMove(null);
   };
 
-  const controlBoardWidth = (screenSize) => {
-    if (controlWidth(screenSize) <= 600) {
-      return controlWidth(screenSize);
-    } else if (controlWidth(screenSize) <= 700) {
-      return 600;
-    } else if (controlWidth(screenSize) <= 750) {
-      return 650;
-    } else if (controlWidth(screenSize) <= 800) {
-      return 600;
-    } else if (controlWidth(screenSize) <= 850) {
-      return 500;
-    } else if (controlWidth(screenSize) <= 900) {
-      return 600;
-    } else if (controlWidth(screenSize) <= 950) {
-      return 650;
-    } else if (controlWidth(screenSize) <= 1000) {
-      return 700;
-    } else {
-      return 750;
-    }
-  };
+  // const controlBoardWidth = (screenSize) => {
+  //   if (controlWidth(screenSize) <= 600) {
+  //     return controlWidth(screenSize);
+  //   } else if (controlWidth(screenSize) <= 700) {
+  //     return 600;
+  //   } else if (controlWidth(screenSize) <= 750) {
+  //     return 650;
+  //   } else if (controlWidth(screenSize) <= 800) {
+  //     return 600;
+  //   } else if (controlWidth(screenSize) <= 850) {
+  //     return 500;
+  //   } else if (controlWidth(screenSize) <= 900) {
+  //     return 600;
+  //   } else if (controlWidth(screenSize) <= 950) {
+  //     return 650;
+  //   } else if (controlWidth(screenSize) <= 1000) {
+  //     return 700;
+  //   } else if (controlWidth(screenSize) <= 1050) {
+  //     return 550;
+  //   } else if (controlWidth(screenSize) <= 1050) {
+  //     return 550;
+  //   }
+  // };
 
   return (
     <section className="gamePageBot">
@@ -197,7 +195,7 @@ const PlayVsBot = ({
           }}
           areArrowsAllowed={false}
           // animationDuration={500}
-          boardWidth={controlBoardWidth(screenSize)}
+          boardWidth={controlWidth(screenSize)}
           // do custom square styling later  \\
           // customLightSquareStyle={{
           //   borderRadius: "15%",

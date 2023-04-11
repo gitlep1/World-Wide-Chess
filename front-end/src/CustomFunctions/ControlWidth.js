@@ -1,5 +1,6 @@
 const controlWidth = (screenSize) => {
-  switch (screenSize) {
+  // console.log(screenSize);
+  switch (true) {
     case screenSize <= 360:
       return 340;
     case screenSize <= 380:
@@ -35,79 +36,79 @@ const controlWidth = (screenSize) => {
     case screenSize <= 680:
       return 660;
     case screenSize <= 700:
-      return 680;
+      return 600;
     case screenSize <= 720:
-      return 700;
+      return 620;
     case screenSize <= 740:
-      return 720;
+      return 640;
     case screenSize <= 760:
-      return 740;
+      return 660;
     case screenSize <= 780:
-      return 760;
-    case screenSize <= 800:
-      return 780;
+      return 680;
+    case screenSize < 800:
+      return 700;
     case screenSize <= 820:
-      return 800;
+      return 460;
     case screenSize <= 840:
-      return 820;
+      return 480;
     case screenSize <= 860:
-      return 840;
+      return 500;
     case screenSize <= 880:
-      return 860;
+      return 520;
     case screenSize <= 900:
-      return 880;
+      return 540;
     case screenSize <= 920:
-      return 900;
+      return 560;
     case screenSize <= 940:
-      return 920;
+      return 580;
     case screenSize <= 960:
-      return 940;
+      return 600;
     case screenSize <= 980:
-      return 960;
+      return 620;
     case screenSize <= 1000:
-      return 980;
+      return 500;
     case screenSize <= 1020:
-      return 1000;
+      return 520;
     case screenSize <= 1040:
-      return 1020;
+      return 540;
     case screenSize <= 1060:
-      return 1040;
+      return 560;
     case screenSize <= 1080:
-      return 1060;
+      return 580;
     case screenSize <= 1100:
-      return 1080;
+      return 600;
     case screenSize <= 1120:
-      return 1100;
+      return 620;
     case screenSize <= 1140:
-      return 1120;
+      return 640;
     case screenSize <= 1160:
-      return 1140;
+      return 660;
     case screenSize <= 1180:
-      return 1160;
+      return 680;
     case screenSize <= 1200:
-      return 1180;
+      return 700;
     case screenSize <= 1220:
-      return 1200;
+      return 600;
     case screenSize <= 1240:
-      return 1220;
+      return 620;
     case screenSize <= 1260:
-      return 1240;
+      return 640;
     case screenSize <= 1280:
-      return 1260;
+      return 660;
     case screenSize <= 1300:
-      return 1280;
+      return 680;
     case screenSize <= 1320:
-      return 1300;
+      return 700;
     case screenSize <= 1340:
-      return 1320;
+      return 660;
     case screenSize <= 1360:
-      return 1340;
+      return 680;
     case screenSize <= 1380:
-      return 1360;
+      return 700;
     case screenSize < 1400:
-      return 1380;
+      return 720;
     default:
-      return screenSize - 20;
+      return 800;
   }
 };
 
