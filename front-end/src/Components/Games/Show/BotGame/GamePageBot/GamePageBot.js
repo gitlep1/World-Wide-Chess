@@ -33,13 +33,13 @@ const PlayVsBot = ({
   const [screenSize, setScreenSize] = useState(0);
 
   const prevBoard = useRef([]);
-  const depth = 4;
 
   const [chessGame, setChessGame] = useState(new Chess());
   const [boardOrientation, setBoardOrientation] = useState("white");
   const [fen, setFen] = useState(chessGame.fen());
   const [promotionMove, setPromotionMove] = useState(null);
   const [currentTimeout, setCurrentTimeout] = useState(null);
+  const [isThinking, setIsThinking] = useState(false);
 
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -57,13 +57,28 @@ const PlayVsBot = ({
     prevBoard.current.push(fen);
   }, [fen]);
 
-  const makeRandomMove = () => {
+  const makeRandomMove = async () => {
     if (game.player2id === 1) {
-      EasyBot(chessGame, game);
+      const depth = 2;
+      setIsThinking(true);
+      const easyBotFunction = EasyBot(chessGame, setFen, depth, setIsThinking);
+      easyBotFunction();
     } else if (game.player2id === 2) {
-      MediumBot(chessGame, game);
+      const depth = 3;
+      setIsThinking(true);
+      const mediumBotFunction = MediumBot(
+        chessGame,
+        setFen,
+        depth,
+        setIsThinking
+      );
+      mediumBotFunction();
     } else if (game.player2id === 3) {
-      HardBot(chessGame, setFen, depth);
+      const depth = 4;
+      const hardBotFunction = HardBot(chessGame, setFen, depth, setIsThinking);
+      const delayedFunction = hardBotFunction();
+      setIsThinking(true);
+      delayedFunction();
     }
   };
 
@@ -122,7 +137,7 @@ const PlayVsBot = ({
     setPromotionMove(null);
   };
 
-  game["spectators"] = 5;
+  game["spectators"] = 700;
 
   const renderSpectatorIcon = () => {
     if (game.spectators < 1) {
@@ -136,6 +151,7 @@ const PlayVsBot = ({
 
   return (
     <section className="gamePageBot">
+      {/* {console.log(fen)} */}
       {!player1Data[0] || !player2Data[0] ? forfeitNotify() : null}
       <div className="gamePageBot-header-container">
         <div className="gamePageBot-header">
@@ -172,6 +188,15 @@ const PlayVsBot = ({
                   color: "white",
                 }}
               >
+                <h5
+                  style={
+                    isThinking
+                      ? { color: "yellow", visibility: "visible" }
+                      : { visibility: "hidden" }
+                  }
+                >
+                  Thinking
+                </h5>
                 {player2Data[0].username}
               </span>
             </div>
@@ -227,7 +252,7 @@ const PlayVsBot = ({
 
       <div className="gamePageBot-chessboard-container">
         <Chessboard
-          id="PlayVsRandom" // use only if multiple boards
+          id="PlayVsRandom"
           boardOrientation={boardOrientation}
           position={fen}
           onPieceDrop={(from, to, piece) => handleMove(from, to, piece)}
@@ -236,9 +261,8 @@ const PlayVsBot = ({
             boxShadow: "0 5px 23px rgba(0, 0, 0, 1)",
           }}
           areArrowsAllowed={false}
-          // animationDuration={500}
+          animationDuration={500}
           boardWidth={controlWidth(screenSize)}
-          // do custom square styling later  \\
           customLightSquareStyle={{
             borderRadius: "15%",
             boxShadow: "0 0 15px rgba(255, 255, 255, 1)",

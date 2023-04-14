@@ -11,6 +11,7 @@ CREATE TABLE users (
   password TEXT NOT NULL,
   email TEXT UNIQUE NOT NULL,
   theme TEXT DEFAULT null,
+  chess_coins INT DEFAULT 0,
   wins INT DEFAULT 0,
   ties INT DEFAULT 0,
   loss INT DEFAULT 0,
@@ -31,14 +32,12 @@ CREATE TABLE games (
   current_positions TEXT
 );
 
--- DROP TABLE IF EXISTS rooms;
--- CREATE TABLE rooms (
---   id SERIAL UNIQUE NOT NULL PRIMARY KEY,
---   room_name TEXT NOT NULL,
---   room_password TEXT,
---   player1id INT NOT NULL REFERENCES users(id),
---   player2id INT REFERENCES users(id) DEFAULT NULL,
--- );
+DROP TABLE IF EXISTS spectators;
+CREATE TABLE spectators (
+  id SERIAL UNIQUE NOT NULL PRIMARY KEY,
+  spec_id INT REFERENCES users(id),
+  room_id INT REFERENCES games(id)
+);
 
 DROP TABLE IF EXISTS messages;
 CREATE TABLE messages (

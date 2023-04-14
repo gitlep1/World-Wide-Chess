@@ -1,9 +1,9 @@
 \c world_wide_chess;
 
-INSERT INTO users (profileimg, username, password, email, theme, wins, ties, loss, preferred_color, last_online) VALUES
-('https://i.imgur.com/8puTSd9.png', 'Easy Bot', 'o5b21e*F6Wan', 'easybot@bot.com', 'default', 1, 1, 1, 'black', NOW()),
-('https://i.imgur.com/MmLQSDV.png', 'Medium Bot', 'e%*m9ZW1ZZ64', 'mediumbot@bot.com', 'default', 2, 2, 2, 'black', NOW()),
-('https://i.imgur.com/ZlrcYvd.png', 'Hard Bot', '30m5&Ce^Tnbb', 'hardbot@bot.com', 'default', 3, 3, 3, 'black', NOW());
+INSERT INTO users (profileimg, username, password, email, theme, chess_coins, wins, ties, loss, preferred_color, last_online) VALUES
+('https://i.imgur.com/8puTSd9.png', 'Easy Bot', 'o5b21e*F6Wan', 'easybot@bot.com', 'default', 0, 1, 1, 1, 'black', NOW()),
+('https://i.imgur.com/MmLQSDV.png', 'Medium Bot', 'e%*m9ZW1ZZ64', 'mediumbot@bot.com', 'default', 10, 2, 2, 2, 'black', NOW()),
+('https://i.imgur.com/ZlrcYvd.png', 'Hard Bot', '30m5&Ce^Tnbb', 'hardbot@bot.com', 'default', 100, 3, 3, 3, 'black', NOW());
 
 INSERT INTO games (room_name, room_password, player1id, player2id, player1color, player2color, in_progress, current_positions) VALUES 
 ('come fight me', null, 1, 2, 'white', 'black', true, 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'),
@@ -12,3 +12,13 @@ INSERT INTO games (room_name, room_password, player1id, player2id, player1color,
 ('pro', 'pro', 2, 3, 'black', 'white', true, '3k1K2/8/2p1p1Q1/RB2P2q/1Qq1r1p1/7R/5N2/B7 b - - 0 1'),
 ('g54ett4gtdr', null, 3, 1, 'white', 'black', true, '1nb1kbn1/ppp1pp1p/3p4/r2q3r/6p1/Q1PB2PP/PP1PPP11/RNB1K1NR w KQkq - 40 1'),
 ('how do i delete this', 'test', 3, null, 'black', 'white', false, 'n7/p3N3/Rn2R3/4K1Qp/1kp4N/3P4/5P1P/3q4 b - - 0 1');
+
+INSERT INTO spectators (spec_id, room_id) VALUES
+(1, 1),
+(2, 1),
+(3, 1);
+
+INSERT INTO messages (user_id, message) VALUES
+(1, 'hello'),
+(2, 'noooobs'),
+(3, 'lol');
