@@ -13,6 +13,14 @@ import HardBot from "./BotLogic/HardBot";
 import DetectScreenSize from "../../../../../CustomFunctions/DetectScreenSize";
 import controlWidth from "../../../../../CustomFunctions/ControlWidth";
 
+import spectatorLight1 from "../../../../../Images/spectatorLight1.png";
+import spectatorLight2 from "../../../../../Images/spectatorLight2.png";
+import spectatorLight3 from "../../../../../Images/spectatorLight3.png";
+
+import spectatorDark1 from "../../../../../Images/spectatorDark1.png";
+import spectatorDark2 from "../../../../../Images/spectatorDark2.png";
+import spectatorDark3 from "../../../../../Images/spectatorDark3.png";
+
 const PlayVsBot = ({
   user,
   game,
@@ -114,75 +122,109 @@ const PlayVsBot = ({
     setPromotionMove(null);
   };
 
-  // const controlBoardWidth = (screenSize) => {
-  //   if (controlWidth(screenSize) <= 600) {
-  //     return controlWidth(screenSize);
-  //   } else if (controlWidth(screenSize) <= 700) {
-  //     return 600;
-  //   } else if (controlWidth(screenSize) <= 750) {
-  //     return 650;
-  //   } else if (controlWidth(screenSize) <= 800) {
-  //     return 600;
-  //   } else if (controlWidth(screenSize) <= 850) {
-  //     return 500;
-  //   } else if (controlWidth(screenSize) <= 900) {
-  //     return 600;
-  //   } else if (controlWidth(screenSize) <= 950) {
-  //     return 650;
-  //   } else if (controlWidth(screenSize) <= 1000) {
-  //     return 700;
-  //   } else if (controlWidth(screenSize) <= 1050) {
-  //     return 550;
-  //   } else if (controlWidth(screenSize) <= 1050) {
-  //     return 550;
-  //   }
-  // };
+  game["spectators"] = 5;
+
+  const renderSpectatorIcon = () => {
+    if (game.spectators < 1) {
+      return spectatorLight1;
+    } else if (game.spectators >= 1 && game.spectators <= 10) {
+      return spectatorLight2;
+    } else if (game.spectators > 10) {
+      return spectatorLight3;
+    }
+  };
 
   return (
     <section className="gamePageBot">
       {!player1Data[0] || !player2Data[0] ? forfeitNotify() : null}
+      <div className="gamePageBot-header-container">
+        <div className="gamePageBot-header">
+          <h3 id="gamePageBot-roomName">Room Name: {game.room_name}</h3>
+          <span
+            id="gamePageBot-spectatorCount"
+            style={
+              game.spectators >= 1
+                ? { visibility: "visible" }
+                : { visibility: "hidden" }
+            }
+          >
+            {game.spectators >= 1 ? game.spectators : null}
+          </span>
+          <Image
+            src={renderSpectatorIcon()}
+            alt="spectator icon"
+            id="gamePageBot-spactatorIcon"
+          ></Image>
+        </div>
+      </div>
+
       <div className="gamePageBot-players-data">
         {game.player1color === "white" ? (
           <>
-            <div className="gamePageBot-playerTwo-data">
+            <div className="gamePageBot-playerTwo-data square bg-secondary rounded-pill">
               <Image
                 src={player2Data[0].profileimg}
                 className="gamePageBot-player-image"
                 alt="player 2"
               />
-              <span>{player2Data[0].username}</span>
+              <span
+                style={{
+                  color: "white",
+                }}
+              >
+                {player2Data[0].username}
+              </span>
             </div>
 
-            <div className="gamePageBot-playerOne-data">
+            <div className="gamePageBot-playerOne-data square bg-secondary rounded-pill">
               <Image
                 src={player1Data[0].profileimg}
                 className="gamePageBot-player-image"
                 alt="player 1"
               />{" "}
-              <span>{player1Data[0].username}</span>
+              <span
+                style={{
+                  color: "black",
+                }}
+              >
+                {player1Data[0].username}
+              </span>
             </div>
           </>
         ) : (
           <>
-            <div className="gamePageBot-playerOne-data">
+            <div className="gamePageBot-playerOne-data square bg-secondary rounded-pill">
               <Image
                 src={player1Data[0].profileimg}
                 className="gamePageBot-player-image"
                 alt="player 1"
               />{" "}
-              <span>{player1Data[0].username}</span>
+              <span
+                style={{
+                  color: "white",
+                }}
+              >
+                {player1Data[0].username}
+              </span>
             </div>
-            <div className="gamePageBot-playerTwo-data">
+            <div className="gamePageBot-playerTwo-data square bg-secondary rounded-pill">
               <Image
                 src={player2Data[0].profileimg}
                 className="gamePageBot-player-image"
                 alt="player 2"
               />
-              <span>{player2Data[0].username}</span>
+              <span
+                style={{
+                  color: "black",
+                }}
+              >
+                {player2Data[0].username}
+              </span>
             </div>
           </>
         )}
       </div>
+
       <div className="gamePageBot-chessboard-container">
         <Chessboard
           id="PlayVsRandom" // use only if multiple boards
@@ -191,20 +233,22 @@ const PlayVsBot = ({
           onPieceDrop={(from, to, piece) => handleMove(from, to, piece)}
           customBoardStyle={{
             borderRadius: "15%",
-            boxShadow: "0 5px 15px rgba(0, 0, 0, 1)",
+            boxShadow: "0 5px 23px rgba(0, 0, 0, 1)",
           }}
           areArrowsAllowed={false}
           // animationDuration={500}
           boardWidth={controlWidth(screenSize)}
           // do custom square styling later  \\
-          // customLightSquareStyle={{
-          //   borderRadius: "15%",
-          //   boxShadow: "0 0 15px rgba(255, 255, 255, 1)",
-          // }}
-          // customDarkSquareStyle={{
-          //   borderRadius: "15%",
-          //   boxShadow: "0 0 15px rgba(0, 0, 0, 1)",
-          // }}
+          customLightSquareStyle={{
+            borderRadius: "15%",
+            boxShadow: "0 0 15px rgba(255, 255, 255, 1)",
+            backgroundColor: "rgba(225, 225, 225, 1)",
+          }}
+          customDarkSquareStyle={{
+            borderRadius: "15%",
+            boxShadow: "0 0 15px rgba(0, 0, 0, 1)",
+            backgroundColor: "rgba(70, 70, 70, 1)",
+          }}
         />
         {promotionMove && (
           <div className="promotion-modal">
@@ -215,7 +259,10 @@ const PlayVsBot = ({
           </div>
         )}
       </div>
-      <div className="gamePageBot-chatBox">Chat Box</div>
+
+      <div className="gamePageBot-chatBox-container rounded-5">
+        <div className="gamePageBot-chatBox rounded-5">Chat Box</div>
+      </div>
     </section>
   );
 };

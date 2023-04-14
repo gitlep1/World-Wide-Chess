@@ -1,5 +1,4 @@
 const controlWidth = (screenSize) => {
-  // console.log(screenSize);
   switch (true) {
     case screenSize <= 360:
       return 340;
@@ -65,10 +64,10 @@ const controlWidth = (screenSize) => {
       return 600;
     case screenSize <= 980:
       return 620;
-    case screenSize <= 1000:
-      return 500;
+    case screenSize < 1000:
+      return 640;
     case screenSize <= 1020:
-      return 520;
+      return 540;
     case screenSize <= 1040:
       return 540;
     case screenSize <= 1060:
@@ -105,7 +104,7 @@ const controlWidth = (screenSize) => {
       return 680;
     case screenSize <= 1380:
       return 700;
-    case screenSize < 1400:
+    case screenSize <= 1400:
       return 720;
     default:
       return 800;

@@ -7,18 +7,65 @@ $giant: 1200px;
   display: grid;
   grid-template-columns: 1fr;
 
-  .gamePageBot-players-data {
+  .gamePageBot-header-container {
     // border: 5px solid red;
     grid-row: 1;
+    grid-column: 1 / span 3;
+    width: 50%;
+    height: 95%;
+    margin: 0 auto;
+    margin-bottom: 3%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .gamePageBot-header {
+      // border: 5px solid cyan;
+      font-size: 30px;
+      height: 100%;
+      width: 70%;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      align-items: center;
+      justify-content: center;
+      column-gap: 5%;
+      margin-left: 3em;
+
+      #gamePageBot-roomName {
+        // border: 5px solid purple;
+        grid-row: 1 / span 2;
+        text-align: center;
+      }
+
+      #gamePageBot-spectatorCount {
+        // border: 5px solid yellow;
+        grid-row: 1;
+        grid-column: 2;
+        text-align: center;
+        width: 50px;
+        margin-bottom: -1em;
+      }
+
+      #gamePageBot-spactatorIcon {
+        // border: 5px solid orange;
+        width: 50px;
+        grid-row: 2;
+        margin-bottom: 0.5em;
+      }
+    }
+  }
+
+  .gamePageBot-players-data {
+    // border: 5px solid red;
+    grid-row: 2;
     width: 90%;
     font-size: 30px;
-    margin-bottom: 5%;
-    // margin-left: 3%;
     margin: 0 auto;
+    margin-bottom: 5%;
 
     .gamePageBot-playerOne-data {
       border: 5px solid white;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 1);
+      box-shadow: 0 5px 23px rgba(0, 0, 0, 1);
       margin-bottom: 5%;
       height: 12vh;
       display: flex;
@@ -27,7 +74,7 @@ $giant: 1200px;
 
     .gamePageBot-playerTwo-data {
       border: 5px solid black;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 1);
+      box-shadow: 0 5px 23px rgba(0, 0, 0, 1);
       margin-bottom: 5%;
       height: 12vh;
       display: flex;
@@ -37,42 +84,92 @@ $giant: 1200px;
     .gamePageBot-player-image {
       // border: 5px solid red;
       width: 100px;
-      margin-right: 5%;
     }
   }
 
   .gamePageBot-chessboard-container {
     // border: 5px solid blue;
-    grid-row: 2;
+    grid-row: 3;
     display: flex;
     justify-content: center;
     margin-bottom: 5%;
   }
 
-  .gamePageBot-chatBox {
+  .gamePageBot-chatBox-container {
     // border: 5px solid green;
-    grid-row: 3;
+    grid-row: 4;
     margin: 0 auto;
-    // margin-left: 3%;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 50vh;
     width: 90%;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 1);
-    font-size: 35px;
+
+    .gamePageBot-chatBox {
+      font-size: 35px;
+      width: 95%;
+      height: 95%;
+    }
   }
 }
 
 @media (min-width: $medium) {
   .gamePageBot {
-    // border: 5px solid cyan;
     display: grid;
     grid-template-columns: 280px 1fr;
 
-    .gamePageBot-players-data {
+    .gamePageBot-header-container {
       // border: 5px solid red;
       grid-row: 1;
+      grid-column: 1 / span 3;
+      width: 50%;
+      height: 95%;
+      margin: 0 auto;
+      margin-bottom: 3%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .gamePageBot-header {
+        // border: 5px solid cyan;
+        font-size: 30px;
+        height: 100%;
+        width: 70%;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        align-items: center;
+        justify-content: center;
+        column-gap: 5%;
+        margin-left: 3em;
+
+        #gamePageBot-roomName {
+          // border: 5px solid purple;
+          grid-row: 1 / span 2;
+          text-align: center;
+        }
+
+        #gamePageBot-spectatorCount {
+          // border: 5px solid yellow;
+          grid-row: 1;
+          grid-column: 2;
+          text-align: center;
+          width: 50px;
+          margin-bottom: -1em;
+        }
+
+        #gamePageBot-spactatorIcon {
+          // border: 5px solid orange;
+          width: 50px;
+          grid-row: 2;
+          margin-bottom: 0.5em;
+        }
+      }
+    }
+
+    .gamePageBot-players-data {
+      // border: 5px solid red;
+      grid-row: 2;
       grid-column: 1;
       width: 95%;
       font-size: 30px;
@@ -103,22 +200,21 @@ $giant: 1200px;
       .gamePageBot-player-image {
         // border: 5px solid red;
         width: 100px;
-        margin-right: 5%;
       }
     }
 
     .gamePageBot-chessboard-container {
       // border: 5px solid blue;
-      grid-row: 1;
+      grid-row: 2;
       display: flex;
       justify-content: center;
       align-items: center;
       margin-bottom: 5%;
     }
 
-    .gamePageBot-chatBox {
+    .gamePageBot-chatBox-container {
       // border: 5px solid green;
-      grid-row: 2;
+      grid-row: 3;
       grid-column: 1 / span 2;
       margin: 0 auto;
       display: flex;
@@ -127,21 +223,74 @@ $giant: 1200px;
       height: 50vh;
       width: 95%;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 1);
-      font-size: 35px;
+
+      .gamePageBot-chatBox {
+        font-size: 35px;
+        width: 95%;
+        height: 95%;
+      }
     }
   }
 }
 
 @media (min-width: $large) {
   .gamePageBot {
-    // border: 5px solid cyan;
+    // border: 5px solid blue;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     column-gap: 1%;
 
-    .gamePageBot-players-data {
+    .gamePageBot-header-container {
       // border: 5px solid red;
       grid-row: 1;
+      grid-column: 1 / span 3;
+      width: 50%;
+      height: 95%;
+      margin: 0 auto;
+      margin-bottom: 3%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .gamePageBot-header {
+        // border: 5px solid cyan;
+        font-size: 30px;
+        height: 100%;
+        width: 70%;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        align-items: center;
+        justify-content: center;
+        column-gap: 5%;
+        margin-left: 3em;
+
+        #gamePageBot-roomName {
+          // border: 5px solid purple;
+          grid-row: 1 / span 2;
+          text-align: center;
+        }
+
+        #gamePageBot-spectatorCount {
+          // border: 5px solid yellow;
+          grid-row: 1;
+          grid-column: 2;
+          text-align: center;
+          width: 50px;
+          margin-bottom: -1em;
+        }
+
+        #gamePageBot-spactatorIcon {
+          // border: 5px solid orange;
+          width: 50px;
+          grid-row: 2;
+          margin-bottom: 0.5em;
+        }
+      }
+    }
+
+    .gamePageBot-players-data {
+      // border: 5px solid red;
+      grid-row: 2;
       grid-column: 1;
       width: 95%;
       font-size: 30px;
@@ -172,22 +321,21 @@ $giant: 1200px;
       .gamePageBot-player-image {
         // border: 5px solid red;
         width: 100px;
-        margin-right: 5%;
       }
     }
 
     .gamePageBot-chessboard-container {
       // border: 5px solid blue;
-      grid-row: 1;
+      grid-row: 2;
       display: flex;
       justify-content: center;
       align-items: center;
       margin-bottom: 5%;
     }
 
-    .gamePageBot-chatBox {
+    .gamePageBot-chatBox-container {
       // border: 5px solid green;
-      grid-row: 1;
+      grid-row: 2;
       grid-column: 3;
       margin: 0 auto;
       display: flex;
@@ -196,7 +344,12 @@ $giant: 1200px;
       height: 100%;
       width: 95%;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 1);
-      font-size: 35px;
+
+      .gamePageBot-chatBox {
+        font-size: 35px;
+        width: 95%;
+        height: 95%;
+      }
     }
   }
 }
