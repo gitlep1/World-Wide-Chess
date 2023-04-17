@@ -31,19 +31,15 @@ const PlayVsBot = ({
 }) => {
   const navigate = useNavigate();
   const [screenSize, setScreenSize] = useState(0);
-
   const prevBoard = useRef([]);
 
   const [chessGame, setChessGame] = useState(new Chess());
-  const [boardOrientation, setBoardOrientation] = useState("white");
   const [fen, setFen] = useState(chessGame.fen());
   const [promotionMove, setPromotionMove] = useState(null);
   const [currentTimeout, setCurrentTimeout] = useState(null);
   const [isThinking, setIsThinking] = useState(false);
 
   const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
 
   useEffect(() => {
     const intervalFunctions = setInterval(() => {
@@ -62,7 +58,8 @@ const PlayVsBot = ({
       const depth = 2;
       setIsThinking(true);
       const easyBotFunction = EasyBot(chessGame, setFen, depth, setIsThinking);
-      easyBotFunction();
+      const delayedFunction = easyBotFunction();
+      delayedFunction();
     } else if (game.player2id === 2) {
       const depth = 3;
       setIsThinking(true);
@@ -72,7 +69,8 @@ const PlayVsBot = ({
         depth,
         setIsThinking
       );
-      mediumBotFunction();
+      const delayedFunction = mediumBotFunction();
+      delayedFunction();
     } else if (game.player2id === 3) {
       const depth = 4;
       const hardBotFunction = HardBot(chessGame, setFen, depth, setIsThinking);
@@ -83,16 +81,24 @@ const PlayVsBot = ({
   };
 
   const handleMove = (from, to, piece) => {
+    console.log("inside handleMove");
+    // Check if the move is a pawn promotion
+    const isPromotion =
+      (piece === "wP" || piece === "bP") && (to[1] === "8" || to[1] === "1");
+
+    if (isPromotion) {
+      console.log("pawn is being promoted");
+      // Store the promotion move and wait for user choice
+      const promotion = { from, to, piece };
+      setPromotionMove(promotion);
+      setShow(true);
+      return;
+    }
+
     // Validate the move before making it
     const move = chessGame.move({ from, to });
     if (move) {
-      // Check for pawn promotion
-      if (move.flags.includes("p")) {
-        // Wait for promotion choice before making AI move
-        setPromotionMove({ from, to, piece });
-        return;
-      }
-
+      console.log("move: ", move);
       // Make the AI move after the user move
       if (currentTimeout !== null) {
         clearTimeout(currentTimeout);
@@ -110,31 +116,35 @@ const PlayVsBot = ({
   };
 
   const handlePromotionChoice = (pieceType) => {
+    console.log("inside handlePromotionChoice");
+    const { from, to, piece } = promotionMove;
+
     // Update the promotion move with the chosen piece
-    const newPiece = {
-      type: pieceType.toLowerCase(),
-      color: promotionMove.piece.color,
-    };
     const newMove = chessGame.move({
-      from: promotionMove.from,
-      to: promotionMove.to,
-      promotion: newPiece.type,
+      from: from,
+      to: to,
+      promotion: pieceType,
     });
-    chessGame.setPiece(newMove);
+    console.log("outside if");
+    console.log(chessGame);
 
-    // Make the AI move after the user promotion
-    if (currentTimeout !== null) {
-      clearTimeout(currentTimeout);
+    if (newMove) {
+      console.log("inside if");
+      setShow(false);
+      // Make the AI move after the user move
+      if (currentTimeout !== null) {
+        clearTimeout(currentTimeout);
+      }
+      const timeout = setTimeout(() => {
+        makeRandomMove();
+        setFen(chessGame.fen());
+        setCurrentTimeout(null);
+      }, 200);
+      setCurrentTimeout(timeout);
+    } else {
+      // Invalid move, reset the promotion move
+      setPromotionMove(null);
     }
-    const timeout = setTimeout(() => {
-      makeRandomMove();
-      setFen(chessGame.fen());
-      setCurrentTimeout(null);
-    }, 200);
-    setCurrentTimeout(timeout);
-
-    // Reset the promotion move
-    setPromotionMove(null);
   };
 
   game["spectators"] = 700;
@@ -253,7 +263,7 @@ const PlayVsBot = ({
       <div className="gamePageBot-chessboard-container">
         <Chessboard
           id="PlayVsRandom"
-          boardOrientation={boardOrientation}
+          boardOrientation={user.id === game.player1id ? "white" : "black"}
           position={fen}
           onPieceDrop={(from, to, piece) => handleMove(from, to, piece)}
           customBoardStyle={{
@@ -275,12 +285,50 @@ const PlayVsBot = ({
           }}
         />
         {promotionMove && (
-          <div className="promotion-modal">
-            <button onClick={() => handlePromotionChoice("q")}>Queen</button>
-            <button onClick={() => handlePromotionChoice("r")}>Rook</button>
-            <button onClick={() => handlePromotionChoice("b")}>Bishop</button>
-            <button onClick={() => handlePromotionChoice("n")}>Knight</button>
-          </div>
+          <Modal
+            className="promotion-modal-container"
+            show={show}
+            centered
+            backdrop="static"
+          >
+            <Modal.Header>
+              <Modal.Title>Select a piece to promote to:</Modal.Title>
+            </Modal.Header>
+            <Modal.Body className="promotion-modal-body">
+              <Button
+                variant="light"
+                onClick={() => handlePromotionChoice("q")}
+                id="queenButton"
+                className="promotion-modal-buttons"
+              >
+                Queen
+              </Button>
+              <Button
+                variant="light"
+                onClick={() => handlePromotionChoice("r")}
+                id="rookButton"
+                className="promotion-modal-buttons"
+              >
+                Rook
+              </Button>
+              <Button
+                variant="light"
+                onClick={() => handlePromotionChoice("b")}
+                id="bishopButton"
+                className="promotion-modal-buttons"
+              >
+                Bishop
+              </Button>
+              <Button
+                variant="light"
+                onClick={() => handlePromotionChoice("n")}
+                id="knightButton"
+                className="promotion-modal-buttons"
+              >
+                Knight
+              </Button>
+            </Modal.Body>
+          </Modal>
         )}
       </div>
 

@@ -353,3 +353,37 @@ $giant: 1200px;
     }
   }
 }
+
+.promotion-modal-container {
+  .promotion-modal-body {
+    height: 50vh;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3%;
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 1);
+
+    .promotion-modal-buttons {
+      border: 5px solid black;
+      background-position: center;
+      background-size: contain;
+      background-repeat: no-repeat;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 1);
+    }
+
+    #queenButton {
+      background-image: url("../../../../../Images/Queen.png");
+    }
+
+    #rookButton {
+      background-image: url("../../../../../Images/Rook.png");
+    }
+
+    #bishopButton {
+      background-image: url("../../../../../Images/Bishop.png");
+    }
+
+    #knightButton {
+      background-image: url("../../../../../Images/Knight.png");
+    }
+  }
+}
