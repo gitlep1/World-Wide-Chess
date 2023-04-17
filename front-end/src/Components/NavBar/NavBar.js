@@ -1,49 +1,47 @@
 import "./NavBar.scss";
-// import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Image } from "react-bootstrap";
+
+import DetectScreenSize from "../../CustomFunctions/DetectScreenSize";
+import NavBarLowerResolution from "./NavBarLowerResolution";
+
+import Logo from "../../Images/Logo.png";
+import NavBarHigherResolution from "./NavBarHigherResolution";
 
 const NavBar = ({ handleOpen, authenticated }) => {
+  const navigate = useNavigate();
+  const [screenSize, setScreenSize] = useState(0);
+
+  useEffect(() => {
+    const intervalFunctions = setInterval(() => {
+      getScreenSize();
+    });
+
+    return () => clearInterval(intervalFunctions);
+  }, []);
+
+  const getScreenSize = () => {
+    return setScreenSize(DetectScreenSize().width);
+  };
+
   return (
     <nav className="NavBar">
-      {authenticated ? (
-        <>
-          <Link to="/" className="navbarLinkParent">
-            <div className="navbarLink">Home</div>
-          </Link>
-
-          <Link to="Games/" className="navbarLinkParent">
-            <div className="navbarLink">Lobby</div>
-          </Link>
-
-          <Link to="/Accounts" className="navbarLinkParent">
-            <div className="navbarLink">Players</div>
-          </Link>
-
-          <div
-            onClick={() => {
-              handleOpen();
-            }}
-            className="navbarLinkParent"
-          >
-            <div className="navbarLink">Account</div>
-          </div>
-        </>
+      <div id="worldWideChessHeader">
+        <div
+          className="worldWideChessHeader-navigation"
+          onClick={() => {
+            navigate("/");
+          }}
+        >
+          <Image src={Logo} alt="Logo" id="mainlogoImg" />
+          <h1>WORLD WIDE CHESS</h1>
+        </div>
+      </div>
+      {screenSize < 600 ? (
+        <NavBarLowerResolution handleOpen={handleOpen} />
       ) : (
-        <>
-          <h5 className="notAuth">
-            Please select account to continue
-            -------------------------------------
-            {">"}
-          </h5>
-          <div
-            onClick={() => {
-              handleOpen();
-            }}
-            className="navbarLinkParent"
-          >
-            <div className="navbarLink">Account</div>
-          </div>
-        </>
+        <NavBarHigherResolution handleOpen={handleOpen} />
       )}
     </nav>
   );

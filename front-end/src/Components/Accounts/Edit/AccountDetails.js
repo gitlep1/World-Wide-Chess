@@ -47,7 +47,7 @@ const EditAccount = ({ user, users, handleUser, handleLogout }) => {
       username: username,
       password: password,
       email: email,
-      profileImg: profImg,
+      profileimg: profImg,
     };
 
     if (editUser.username.length > 20) {
@@ -81,8 +81,8 @@ const EditAccount = ({ user, users, handleUser, handleLogout }) => {
       });
     }
 
-    if (editUser.profileImg === "") {
-      editUser.profileImg =
+    if (editUser.profileimg === "") {
+      editUser.profileimg =
         "https://www.pngitem.com/pimgs/m/97-971070_chess-piece-black-king-king-chess-piece-png.png";
     }
 

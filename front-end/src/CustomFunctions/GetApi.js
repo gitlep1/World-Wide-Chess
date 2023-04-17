@@ -1,7 +1,7 @@
-import axios from "axios";
 import { useCallback } from "react";
+import axios from "axios";
 
-const useGetReq = () => {
+const GetApi = () => {
   const cancelToken = axios.CancelToken.source();
   const getData = useCallback(
     (path, onComplete, onError, reqParams) => {
@@ -33,4 +33,4 @@ const useGetReq = () => {
   return [getData, cancelRequests];
 };
 
-export default useGetReq;
+export default GetApi;

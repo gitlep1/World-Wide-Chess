@@ -18,11 +18,16 @@ const getUserByID = async (id) => {
   }
 };
 
-const createUser = async (profileImg, username, password, email) => {
+const createUser = async (newUserData) => {
   try {
     const newUser = await db.one(
-      "INSERT INTO users (profileImg, username, password, email) VALUES($1, $2, $3, $4) RETURNING *",
-      [profileImg, username, password, email]
+      "INSERT INTO users (username, password, email, profileimg) VALUES($1, $2, $3, $4) RETURNING *",
+      [
+        newUserData.username,
+        newUserData.password,
+        newUserData.email,
+        newUserData.profileimg,
+      ]
     );
     return newUser;
   } catch (error) {
@@ -30,11 +35,24 @@ const createUser = async (profileImg, username, password, email) => {
   }
 };
 
-const updateUser = async (id, profileImg, username, password, email) => {
+const updateUser = async (id, updatedUserData) => {
   try {
     const updateUser = await db.one(
-      "UPDATE users SET profileImg = $1, username=$2, password=$3, email=$4 where id=$5 RETURNING *",
-      [profileImg, username, password, email, id]
+      "UPDATE users SET profileimg=$1, username=$2, password=$3, email=$4, theme=$5, chess_coins=$6, wins=$7, ties=$8, loss=$9, preferred_color=$10, last_online=$11 WHERE id=$12 RETURNING *",
+      [
+        updatedUserData.profileimg,
+        updatedUserData.username,
+        updatedUserData.password,
+        updatedUserData.email,
+        updatedUserData.theme,
+        updatedUserData.chess_coins,
+        updatedUserData.wins,
+        updatedUserData.ties,
+        updatedUserData.loss,
+        updatedUserData.preferred_color,
+        updatedUserData.last_online,
+        id,
+      ]
     );
     return updateUser;
   } catch (error) {

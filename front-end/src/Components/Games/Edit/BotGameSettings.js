@@ -51,16 +51,16 @@ const BotGameSettings = ({ game, error }) => {
       "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
     const updateGameData = {
-      player2ID: choosenBot,
+      player2id: choosenBot,
       winner: null,
-      inProgress: true,
-      currentPositions: startingPositions,
-      player1Color: "white",
-      player2Color: "black",
+      in_progress: true,
+      current_positions: startingPositions,
+      player1color: "white",
+      player2color: "black",
     };
 
     await axios.put(`${API}/games/${game.id}`, updateGameData).then((res) => {
-      navigate(`/Games/${game.id}`);
+      navigate(`/Room/${res.data.id}`);
     });
   };
 
@@ -77,7 +77,7 @@ const BotGameSettings = ({ game, error }) => {
         progress: undefined,
       });
       setTimeout(() => {
-        navigate("/Games/");
+        navigate("/Lobby/");
       }, 4100);
     });
   };

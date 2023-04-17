@@ -1,3 +1,20 @@
 .SigninSection {
   height: 100vh;
 }
+
+.landing-modal-title-signin {
+  color: black;
+
+  h6 {
+    font-family: "Bungee Shade", cursive;
+  }
+
+  h1 {
+    text-decoration: underline;
+  }
+}
+
+.landing-modal-body-signin {
+  color: white;
+  background-color: #202020;
+}

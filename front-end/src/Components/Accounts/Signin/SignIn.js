@@ -1,11 +1,16 @@
 import "./SignIn.scss";
 import { useState } from "react";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, Modal, Image } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
+import Logo from "../../../Images/Logo.png";
+import axios from "axios";
 
-const Signin = ({ handleUser, users }) => {
+const Signin = ({ handleUser, users, showSignIn, handleClose }) => {
+  const API = process.env.REACT_APP_API_URL;
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -16,19 +21,35 @@ const Signin = ({ handleUser, users }) => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const loggedInUser = {
-      password: password,
-      email: email,
-    };
-    const foundUser = users.find((user) => {
-      return (
-        user.email === loggedInUser.email && loggedInUser.password === password
-      );
-    });
+    const foundUser = users.find(
+      (user) => user.email === email && user.password === password
+    );
+
     if (foundUser) {
+      await axios
+        .put(`${API}/users/${foundUser.id}`, foundUser)
+        // .patch(`${API}/users/${foundUser.id}`, {
+        //   profileimg: foundUser.profileimg,
+        //   username: foundUser.username,
+        //   password: foundUser.password,
+        //   email: foundUser.email,
+        //   theme: foundUser.theme || null,
+        //   wins: foundUser.wins,
+        //   ties: foundUser.ties || 0,
+        //   loss: foundUser.loss || 0,
+        //   preferred_color: foundUser.preferred_color || null,
+        //   last_online: new Date().toISOString(),
+        // })
+        .then((res) => {
+          // console.log(res.data);
+        })
+        .catch((err) => {
+          // console.log(err);
+          setError(err.message);
+        });
       notify(foundUser);
     } else {
       noUser();
@@ -70,33 +91,51 @@ const Signin = ({ handleUser, users }) => {
 
   return (
     <section className="SigninSection">
-      <h1>Sign in</h1>
-      <Form onSubmit={handleSubmit}>
-        <Form.Group controlId="formBasicEmail">
-          <Form.Label>Email address</Form.Label>
-          <Form.Control
-            type="email"
-            name="email"
-            value={email}
-            onChange={handleChange}
-          />
-        </Form.Group>
+      <Modal
+        show={showSignIn}
+        onHide={handleClose}
+        centered
+        className="landing-modal-container"
+      >
+        <Modal.Title className="landing-modal-title-signin">
+          <h3 className="closeButton" onClick={handleClose}>
+            X
+          </h3>
+          <Image src={Logo} alt="Logo" id="logoImgModal" />
+          <h6>World Wide Chess</h6>
+          <h1>Sign In</h1>
+        </Modal.Title>
+        <Modal.Body className="landing-modal-body-signin">
+          <Form onSubmit={handleSubmit}>
+            <Form.Group controlId="formBasicEmail">
+              <Form.Label>Email address</Form.Label>
+              <Form.Control
+                type="email"
+                name="email"
+                placeholder="Email Address"
+                value={email}
+                onChange={handleChange}
+              />
+            </Form.Group>
 
-        <Form.Group controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            name="password"
-            value={password}
-            onChange={handleChange}
-          />
-        </Form.Group>
+            <Form.Group controlId="formBasicPassword">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                name="password"
+                placeholder="Password"
+                value={password}
+                onChange={handleChange}
+              />
+            </Form.Group>
 
-        <br />
-        <Button variant="primary" type="submit">
-          Sign in
-        </Button>
-      </Form>
+            <br />
+            <Button variant="light" type="submit" id="landing-modal-button">
+              Sign in
+            </Button>
+          </Form>
+        </Modal.Body>
+      </Modal>
       <ToastContainer autoClose={3000} theme="dark" />
     </section>
   );

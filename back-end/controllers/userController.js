@@ -36,24 +36,19 @@ user.get("/:id", async (req, res) => {
 });
 
 user.post("/", checkValues, async (req, res) => {
-  const newUser = {
-    profileImg: req.body.profileImg,
+  const newUserData = {
     username: req.body.username,
     password: req.body.password,
     email: req.body.email,
+    profileimg: req.body.profileimg,
   };
 
-  const checkEmail = await checkIfEmailExists(newUser.email);
+  const checkEmail = await checkIfEmailExists(newUserData.email);
 
   if (checkEmail) {
     res.status(400).send("Email already exists!");
   } else {
-    const createdUser = await createUser(
-      newUser.profileImg,
-      newUser.username,
-      newUser.password,
-      newUser.email
-    );
+    const createdUser = await createUser(newUserData);
 
     if (createdUser) {
       console.log("=== POST user", createdUser, "===");
@@ -68,19 +63,20 @@ user.put("/:id", checkValues, async (req, res) => {
   const { id } = req.params;
 
   const updatedUserData = {
-    profileImg: req.body.profileImg,
+    profileimg: req.body.profileimg,
     username: req.body.username,
     password: req.body.password,
     email: req.body.email,
+    theme: req.body.theme,
+    chess_coins: req.body.chess_coins,
+    wins: req.body.wins,
+    ties: req.body.ties,
+    loss: req.body.loss,
+    preferred_color: req.body.preferred_color,
+    last_online: req.body.last_online,
   };
 
-  const updatedUser = await updateUser(
-    id,
-    updatedUserData.profileImg,
-    updatedUserData.username,
-    updatedUserData.password,
-    updatedUserData.email
-  );
+  const updatedUser = await updateUser(id, updatedUserData);
 
   if (updatedUser) {
     console.log("=== PUT user", updatedUser, "===");

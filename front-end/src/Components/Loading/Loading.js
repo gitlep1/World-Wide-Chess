@@ -3,8 +3,7 @@ import "./Loading.scss";
 const Loading = () => {
   return (
     <div>
-      {/*  */}
-      loading game ...
+      <h1>loading game ...</h1>
     </div>
   );
 };

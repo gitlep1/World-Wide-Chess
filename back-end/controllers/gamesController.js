@@ -33,14 +33,13 @@ games.get("/:id", async (req, res) => {
 
 games.post("/", async (req, res) => {
   const newGameData = {
-    player1ID: req.body.player1ID,
-    player2ID: req.body.player2ID,
+    room_name: req.body.room_name,
+    room_password: req.body.room_password,
+    player1id: req.body.player1id,
+    player2id: req.body.player2id,
   };
 
-  const newGame = await createGames(
-    newGameData.player1ID,
-    newGameData.player2ID
-  );
+  const newGame = await createGames(newGameData);
 
   if (newGame) {
     console.log("=== CREATE game", newGame, "===");
@@ -52,22 +51,16 @@ games.post("/", async (req, res) => {
 
 games.put("/:id", async (req, res) => {
   const { id } = req.params;
+
   const updatedGameData = {
-    player2ID: req.body.player2ID,
-    winner: req.body.winner,
-    inProgress: req.body.inProgress,
-    currentPositions: req.body.currentPositions,
-    // moves: req.body.moves,
+    player2id: req.body.player2id,
+    player1color: req.body.player1color,
+    player2color: req.body.player2color,
+    in_progress: req.body.in_progress,
+    current_positions: req.body.current_positions,
   };
 
-  const updateGame = await updateGames(
-    id,
-    updatedGameData.player2ID,
-    updatedGameData.winner,
-    updatedGameData.inProgress,
-    updatedGameData.currentPositions
-    // updatedGameData.moves
-  );
+  const updateGame = await updateGames(id, updatedGameData);
 
   if (updateGame) {
     console.log("=== UPDATE game", updateGame, "===");

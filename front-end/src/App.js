@@ -2,10 +2,14 @@ import "./App.scss";
 import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { scaleRotate as SidebarMenu } from "react-burger-menu";
-// import { MDBFooter } from "mdb-react-ui-kit";
+// import { bubble as SidebarMenu } from "react-burger-menu";
+
+// Page stuff \\
+import LandingPage from "./Components/LandingPage/LandingPage";
+import Homepage from "./Components/Homepage/Homepage";
+import LeaderBoard from "./Components/Leaderboard/LeaderBoard";
 
 // Nav stuff \\
-import Home from "./Components/Homepage/Homepage";
 import NavBar from "./Components/NavBar/NavBar";
 import Sidebar from "./Components/Sidebar/Sidebar";
 import FoF from "./Components/FourOFour/FoF";
@@ -14,22 +18,20 @@ import FoF from "./Components/FourOFour/FoF";
 import Accounts from "./Components/Accounts/Index/Accounts";
 import AccountPage from "./Components/Accounts/Show/AccountPage";
 import AccountDetails from "./Components/Accounts/Edit/AccountDetails";
-import Signup from "./Components/Accounts/Signup/NewAccount";
-import Signin from "./Components/Accounts/Signin/SignIn";
 
 // Game stuff \\
 import Lobby from "./Components/Games/Index/Lobby";
 import GameSettings from "./Components/Games/Edit/GameSettings";
 import GamePage from "./Components/Games/Show/GamePage";
 
-// Custom hooks stuff \\
-import useGetReq from "./CustomHooks/GetApi";
+// Custom function stuff \\
+import GetApi from "./CustomFunctions/GetApi";
 
 const App = () => {
   const API = process.env.REACT_APP_API_URL;
 
   const navigate = useNavigate();
-  const [getData, cancelRequests] = useGetReq();
+  const [getData, cancelRequests] = GetApi();
 
   const [user, setUser] = useState({});
   const [users, setUsers] = useState([]);
@@ -44,6 +46,7 @@ const App = () => {
 
     const intervalFunctions = setInterval(() => {
       resizeSidebar();
+      getGamesAndUsers();
     }, 1000);
 
     return () => clearInterval(intervalFunctions);
@@ -89,11 +92,15 @@ const App = () => {
   };
 
   const handleUser = (user) => {
-    setUser(user);
-    setAuthenticated(true);
-    window.localStorage.setItem("Current_User", JSON.stringify(user));
-    window.localStorage.setItem("Authenticated", JSON.stringify(true));
-    navigate(`Games/`);
+    if (user) {
+      setUser(user);
+      setAuthenticated(true);
+      window.localStorage.setItem("Current_User", JSON.stringify(user));
+      window.localStorage.setItem("Authenticated", JSON.stringify(true));
+      navigate(`/`);
+    } else {
+      return null;
+    }
   };
 
   const handleLogout = () => {
@@ -115,9 +122,8 @@ const App = () => {
     return cancelRequests;
   };
 
-  return (
-    <section id="outer-container">
-      <h1 id="worldWideChessHeader">WORLD WIDE CHESS</h1>
+  return user && authenticated ? (
+    <section id="outer-container" className="mainParent">
       <NavBar handleOpen={handleSidebarOpen} authenticated={authenticated} />
       <SidebarMenu
         pageWrapId={"page-wrap"}
@@ -140,18 +146,10 @@ const App = () => {
         <Routes>
           <Route path="/">
             {/* Account Routes */}
-            <Route path="/" index element={<Home />} />
+            <Route path="/" index element={<Homepage users={users} />} />
             <Route
               path="Accounts"
               element={<Accounts user={user} users={users} />}
-            />
-            <Route
-              path="Accounts/Signup"
-              element={<Signup handleUser={handleUser} users={users} />}
-            />
-            <Route
-              path="Accounts/Signin"
-              element={<Signin handleUser={handleUser} users={users} />}
             />
             <Route
               path="Accounts/:userID"
@@ -168,45 +166,38 @@ const App = () => {
                 />
               }
             />
-            {/* Game routes */}
+            {/* Game Routes */}
             <Route
-              path="Games/"
+              path="Lobby"
               element={
                 <Lobby
                   user={user}
+                  users={users}
                   games={games}
                   handleRefresh={handleRefresh}
                 />
               }
             />
-            <Route path="Games/:gameID" element={<GamePage user={user} />} />
             <Route
-              path="Games/:gameID/Edit"
+              path="Room/:gameID/Settings"
               element={<GameSettings user={user} games={games} />}
+            />
+            <Route
+              path="Room/:gameID"
+              element={<GamePage user={user} users={users} games={games} />}
+            />
+            {/* LeaderBoard Route */}
+            <Route
+              path="Leaderboard"
+              element={<LeaderBoard user={user} users={users} />}
             />
             <Route path="*" element={<FoF />} />
           </Route>
         </Routes>
       </main>
-
-      {/* add different info for footer later */}
-      {/* <MDBFooter id="footer">
-        <div
-          className="text-center p-4"
-          style={{ backgroundColor: "rgba(0, 0, 0, 0.05)" }}
-        >
-          ©World Wide Chess Copyright:{" "}
-          <a
-            className="text-reset fw-bold"
-            href="https://github.com/gitlep1"
-            rel="nooppener noreferrer"
-            target="_blank"
-          >
-            gitlep1
-          </a>
-        </div>
-      </MDBFooter> */}
     </section>
+  ) : (
+    <LandingPage handleUser={handleUser} users={users} />
   );
 };
 
