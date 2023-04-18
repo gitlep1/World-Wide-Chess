@@ -218,7 +218,6 @@ const HardBot = (chessGame, setFen, maxDepth, setIsThinking) => {
       }
 
       let timeElapsed = Date.now() - startTime;
-      console.log(timeElapsed, "====", timeLimit);
       if (timeElapsed > timeLimit) {
         break; // Exit the loop if the time limit is reached
       }

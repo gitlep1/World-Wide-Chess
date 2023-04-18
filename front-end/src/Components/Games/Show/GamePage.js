@@ -71,7 +71,7 @@ const GamePage = ({ user }) => {
         progress: undefined,
       });
       setTimeout(() => {
-        navigate("/Lobby/");
+        navigate("/Lobby");
       }, 4100);
     });
   };

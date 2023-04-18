@@ -33,13 +33,15 @@ const PlayVsBot = ({
   const [screenSize, setScreenSize] = useState(0);
   const prevBoard = useRef([]);
 
-  const [chessGame, setChessGame] = useState(new Chess());
+  const [chessGame] = useState(new Chess());
   const [fen, setFen] = useState(chessGame.fen());
   const [promotionMove, setPromotionMove] = useState(null);
   const [currentTimeout, setCurrentTimeout] = useState(null);
   const [isThinking, setIsThinking] = useState(false);
-
-  const [show, setShow] = useState(false);
+  const [showPromotion, setShowPromotion] = useState(false);
+  const [stalemate, setStalemate] = useState(false);
+  const [showWinner, setShowWinner] = useState(false);
+  const [winner, setWinner] = useState({});
 
   useEffect(() => {
     const intervalFunctions = setInterval(() => {
@@ -53,7 +55,7 @@ const PlayVsBot = ({
     prevBoard.current.push(fen);
   }, [fen]);
 
-  const makeRandomMove = async () => {
+  const makeRandomMove = () => {
     if (game.player2id === 1) {
       const depth = 2;
       setIsThinking(true);
@@ -77,28 +79,46 @@ const PlayVsBot = ({
       const delayedFunction = hardBotFunction();
       setIsThinking(true);
       delayedFunction();
+
+      if (chessGame.in_checkmate()) {
+        if (chessGame.turn() === "w") {
+          if (game.player1color[0] === "w") {
+            setWinner(player2Data);
+          } else if (game.player2color[0] === "w") {
+            setWinner(player1Data);
+          }
+        } else if (chessGame.turn() === "b") {
+          if (game.player1color[0] === "b") {
+            setWinner(player2Data);
+          } else if (game.player2color[0] === "b") {
+            setWinner(player1Data);
+          }
+        }
+        setShowWinner(true);
+      }
+
+      if (chessGame.in_stalemate()) {
+        setStalemate(true);
+      }
     }
   };
 
   const handleMove = (from, to, piece) => {
-    console.log("inside handleMove");
     // Check if the move is a pawn promotion
     const isPromotion =
       (piece === "wP" || piece === "bP") && (to[1] === "8" || to[1] === "1");
 
     if (isPromotion) {
-      console.log("pawn is being promoted");
       // Store the promotion move and wait for user choice
-      const promotion = { from, to, piece };
+      const promotion = { from, to };
       setPromotionMove(promotion);
-      setShow(true);
+      setShowPromotion(true);
       return;
     }
 
     // Validate the move before making it
     const move = chessGame.move({ from, to });
     if (move) {
-      console.log("move: ", move);
       // Make the AI move after the user move
       if (currentTimeout !== null) {
         clearTimeout(currentTimeout);
@@ -116,8 +136,7 @@ const PlayVsBot = ({
   };
 
   const handlePromotionChoice = (pieceType) => {
-    console.log("inside handlePromotionChoice");
-    const { from, to, piece } = promotionMove;
+    const { from, to } = promotionMove;
 
     // Update the promotion move with the chosen piece
     const newMove = chessGame.move({
@@ -125,12 +144,9 @@ const PlayVsBot = ({
       to: to,
       promotion: pieceType,
     });
-    console.log("outside if");
-    console.log(chessGame);
 
     if (newMove) {
-      console.log("inside if");
-      setShow(false);
+      setShowPromotion(false);
       // Make the AI move after the user move
       if (currentTimeout !== null) {
         clearTimeout(currentTimeout);
@@ -147,7 +163,7 @@ const PlayVsBot = ({
     }
   };
 
-  game["spectators"] = 700;
+  game["spectators"] = 5;
 
   const renderSpectatorIcon = () => {
     if (game.spectators < 1) {
@@ -161,7 +177,6 @@ const PlayVsBot = ({
 
   return (
     <section className="gamePageBot">
-      {/* {console.log(fen)} */}
       {!player1Data[0] || !player2Data[0] ? forfeitNotify() : null}
       <div className="gamePageBot-header-container">
         <div className="gamePageBot-header">
@@ -284,55 +299,105 @@ const PlayVsBot = ({
             backgroundColor: "rgba(70, 70, 70, 1)",
           }}
         />
-        {promotionMove && (
-          <Modal
-            className="promotion-modal-container"
-            show={show}
-            centered
-            backdrop="static"
-          >
-            <Modal.Header>
-              <Modal.Title>Select a piece to promote to:</Modal.Title>
-            </Modal.Header>
-            <Modal.Body className="promotion-modal-body">
-              <Button
-                variant="light"
-                onClick={() => handlePromotionChoice("q")}
-                id="queenButton"
-                className="promotion-modal-buttons"
-              >
-                Queen
-              </Button>
-              <Button
-                variant="light"
-                onClick={() => handlePromotionChoice("r")}
-                id="rookButton"
-                className="promotion-modal-buttons"
-              >
-                Rook
-              </Button>
-              <Button
-                variant="light"
-                onClick={() => handlePromotionChoice("b")}
-                id="bishopButton"
-                className="promotion-modal-buttons"
-              >
-                Bishop
-              </Button>
-              <Button
-                variant="light"
-                onClick={() => handlePromotionChoice("n")}
-                id="knightButton"
-                className="promotion-modal-buttons"
-              >
-                Knight
-              </Button>
-            </Modal.Body>
-          </Modal>
-        )}
+
+        <Modal
+          className="promotion-modal-container"
+          showPromotion={showPromotion}
+          centered
+          backdrop="static"
+        >
+          <Modal.Header>
+            <Modal.Title>Select a piece to promote to:</Modal.Title>
+          </Modal.Header>
+          <Modal.Body className="promotion-modal-body">
+            <Button
+              variant="light"
+              onClick={() => handlePromotionChoice("q")}
+              id="queenButton"
+              className="promotion-modal-buttons"
+            >
+              Queen
+            </Button>
+            <Button
+              variant="light"
+              onClick={() => handlePromotionChoice("r")}
+              id="rookButton"
+              className="promotion-modal-buttons"
+            >
+              Rook
+            </Button>
+            <Button
+              variant="light"
+              onClick={() => handlePromotionChoice("b")}
+              id="bishopButton"
+              className="promotion-modal-buttons"
+            >
+              Bishop
+            </Button>
+            <Button
+              variant="light"
+              onClick={() => handlePromotionChoice("n")}
+              id="knightButton"
+              className="promotion-modal-buttons"
+            >
+              Knight
+            </Button>
+          </Modal.Body>
+        </Modal>
+
+        <Modal
+          className="winner-modal-container"
+          show={showWinner}
+          centered
+          backdrop="static"
+        >
+          <Modal.Header className="winner-modal-header">
+            <Modal.Title>
+              Winner: <h1>{winner[0].username}</h1>
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Footer className="winner-modal-footer">
+            <Button
+              onClick={() => {
+                endGame(game.id);
+              }}
+            >
+              End Game
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        <Modal
+          className="winner-modal-container"
+          show={stalemate}
+          centered
+          backdrop="static"
+        >
+          <Modal.Header className="winner-modal-header">
+            <Modal.Title>
+              <h1>Game ended in a DRAW!</h1>
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Footer className="winner-modal-footer">
+            <Button
+              onClick={() => {
+                endGame(game.id);
+              }}
+            >
+              End Game
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
 
       <div className="gamePageBot-chatBox-container rounded-5">
+        <Button
+          onClick={() => {
+            setShowWinner(true);
+          }}
+        >
+          show winner
+        </Button>
         <div className="gamePageBot-chatBox rounded-5">Chat Box</div>
       </div>
     </section>

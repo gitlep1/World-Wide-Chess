@@ -387,3 +387,18 @@ $giant: 1200px;
     }
   }
 }
+
+.winner-modal-container {
+  .winner-modal-header {
+    // border: 5px solid blue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .winner-modal-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
