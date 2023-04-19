@@ -1,4 +1,5 @@
 const express = require("express");
+const Chess = require("chess.js").Chess;
 const games = express.Router();
 
 const {
@@ -67,6 +68,45 @@ games.put("/:id", async (req, res) => {
     res.status(200).json(updateGame);
   } else {
     res.status(404).send("Couldn't update game.");
+  }
+});
+
+games.put("/:id/move", async (req, res) => {
+  const { id } = req.params; // game ID
+  const { from, to } = req.body; // move information
+
+  // get the current game state from the database
+  const game = await getGamesByID(id);
+
+  // create a new chess.js instance using the current game state
+  const chessGame = new Chess(game[0].current_positions);
+
+  const oldGameData = {
+    player2id: req.body.player2id,
+    player1color: req.body.player1color,
+    player2color: req.body.player2color,
+    in_progress: req.body.in_progress,
+    current_positions: chessGame.fen(),
+  };
+
+  // validate the move and make the move if it's legal
+  const move = chessGame.move({ from, to });
+  console.log("moveeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee: ", move);
+  if (move) {
+    const updatedGameData = {
+      player2id: oldGameData.player2id,
+      player1color: oldGameData.player1color,
+      player2color: oldGameData.player2color,
+      in_progress: oldGameData.in_progress,
+      current_positions: move.after,
+    };
+    // if the move is valid, update the game state in the database
+    const updatedGame = await updateGames(id, updatedGameData);
+    console.log("updated game ID: ", id, "with data: ", updatedGame);
+    res.status(200).json(updatedGame);
+  } else {
+    console.log(`Could not update game: ${id}, INVALID MOVE!`);
+    res.status(404).send({ error: "Invalid move in error" });
   }
 });
 

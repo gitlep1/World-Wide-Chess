@@ -24,10 +24,10 @@ import spectatorDark3 from "../../../../../Images/spectatorDark3.png";
 const PlayVsBot = ({
   user,
   game,
-  endGame,
   player1Data,
   player2Data,
   forfeitNotify,
+  endGame,
 }) => {
   const navigate = useNavigate();
   const [screenSize, setScreenSize] = useState(0);

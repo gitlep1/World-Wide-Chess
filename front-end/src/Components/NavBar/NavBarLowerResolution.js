@@ -24,7 +24,7 @@ const NavBarLowerResolution = ({ handleOpen }) => {
             aria-label="Toggle navigation"
             onClick={() => setShowAnimated(!showAnimated)}
           >
-            <div className={`animated-icon2 ${showAnimated && "open"}`}>
+            <div className={`animated-icon2 ${showAnimated ? "open" : null}`}>
               <span></span>
               <span></span>
               <span></span>

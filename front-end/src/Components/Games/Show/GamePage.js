@@ -10,13 +10,11 @@ import VsPlayer from "./PlayerGame/GamePagePlayer";
 
 const GamePage = ({ user }) => {
   const API = process.env.REACT_APP_API_URL;
-  const [getData, cancelRequests] = GetApi();
 
   const { gameID } = useParams();
   const navigate = useNavigate();
 
   const [game, setGame] = useState({});
-  // const [users, setUsers] = useState([]);
   const [player1Data, setPlayer1Data] = useState({});
   const [player2Data, setPlayer2Data] = useState({});
   const [loaded, setLoaded] = useState(false);
@@ -58,8 +56,8 @@ const GamePage = ({ user }) => {
       });
   }, []); // eslint-disable-line
 
-  const endGame = (gameID) => {
-    axios.delete(`${API}/games/${gameID}`).then(() => {
+  const endGame = async (gameID) => {
+    await axios.delete(`${API}/games/${gameID}`).then(() => {
       toast.success("Game Ended", {
         containerId: "GameEnded",
         position: "top-center",
@@ -148,13 +146,20 @@ const GamePage = ({ user }) => {
           <VsBot
             user={user}
             game={game}
-            endGame={endGame}
             player1Data={player1Data}
             player2Data={player2Data}
             forfeitNotify={forfeitNotify}
+            endGame={endGame}
           />
         ) : (
-          <VsPlayer user={user} game={game} endGame={endGame} />
+          <VsPlayer
+            user={user}
+            game={game}
+            player1Data={player1Data}
+            player2Data={player2Data}
+            forfeitNotify={forfeitNotify}
+            endGame={endGame}
+          />
         )
       ) : null}
       <ToastContainer
