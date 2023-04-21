@@ -6,6 +6,7 @@ $giant: 1200px;
   // border: 5px solid cyan;
   display: grid;
   grid-template-columns: 1fr;
+  row-gap: 3%;
 
   .gamePageBot-header-container {
     // border: 5px solid red;
@@ -61,12 +62,10 @@ $giant: 1200px;
     width: 90%;
     font-size: 30px;
     margin: 0 auto;
-    margin-bottom: 5%;
 
     .gamePageBot-playerOne-data {
       border: 5px solid white;
       box-shadow: 0 5px 23px rgba(0, 0, 0, 1);
-      margin-bottom: 5%;
       height: 12vh;
       display: flex;
       align-items: center;
@@ -75,7 +74,6 @@ $giant: 1200px;
     .gamePageBot-playerTwo-data {
       border: 5px solid black;
       box-shadow: 0 5px 23px rgba(0, 0, 0, 1);
-      margin-bottom: 5%;
       height: 12vh;
       display: flex;
       align-items: center;
@@ -92,12 +90,18 @@ $giant: 1200px;
     grid-row: 3;
     display: flex;
     justify-content: center;
-    margin-bottom: 5%;
+  }
+
+  .gamePageBot-buttons {
+    // border: 5px solid red;
+    grid-row: 4;
+    display: flex;
+    justify-content: center;
   }
 
   .gamePageBot-chatBox-container {
     // border: 5px solid green;
-    grid-row: 4;
+    grid-row: 5;
     margin: 0 auto;
     display: flex;
     justify-content: center;
@@ -173,7 +177,6 @@ $giant: 1200px;
       grid-column: 1;
       width: 95%;
       font-size: 30px;
-      margin-bottom: 10%;
       margin-left: 5%;
       display: flex;
       flex-direction: column;
@@ -182,7 +185,6 @@ $giant: 1200px;
       .gamePageBot-playerOne-data {
         border: 5px solid white;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 1);
-        margin-bottom: 5%;
         height: 12vh;
         display: flex;
         align-items: center;
@@ -191,7 +193,6 @@ $giant: 1200px;
       .gamePageBot-playerTwo-data {
         border: 5px solid black;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 1);
-        margin-bottom: 5%;
         height: 12vh;
         display: flex;
         align-items: center;
@@ -209,12 +210,19 @@ $giant: 1200px;
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-bottom: 5%;
+    }
+
+    .gamePageBot-buttons {
+      // border: 5px solid red;
+      grid-column: 2;
+      grid-row: 3;
+      display: flex;
+      justify-content: center;
     }
 
     .gamePageBot-chatBox-container {
       // border: 5px solid green;
-      grid-row: 3;
+      grid-row: 4;
       grid-column: 1 / span 2;
       margin: 0 auto;
       display: flex;
@@ -294,7 +302,6 @@ $giant: 1200px;
       grid-column: 1;
       width: 95%;
       font-size: 30px;
-      margin-bottom: 7%;
       margin-left: 5%;
       display: flex;
       flex-direction: column;
@@ -303,7 +310,6 @@ $giant: 1200px;
       .gamePageBot-playerOne-data {
         border: 5px solid white;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 1);
-        margin-bottom: 5%;
         height: 12vh;
         display: flex;
         align-items: center;
@@ -312,7 +318,6 @@ $giant: 1200px;
       .gamePageBot-playerTwo-data {
         border: 5px solid black;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 1);
-        margin-bottom: 5%;
         height: 12vh;
         display: flex;
         align-items: center;
@@ -330,7 +335,15 @@ $giant: 1200px;
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-bottom: 5%;
+      // margin-bottom: 5%;
+    }
+
+    .gamePageBot-buttons {
+      // border: 5px solid red;
+      grid-column: 2;
+      grid-row: 3;
+      display: flex;
+      justify-content: center;
     }
 
     .gamePageBot-chatBox-container {

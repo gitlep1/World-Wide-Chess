@@ -79,27 +79,27 @@ const PlayVsBot = ({
       const delayedFunction = hardBotFunction();
       setIsThinking(true);
       delayedFunction();
+    }
 
-      if (chessGame.in_checkmate()) {
-        if (chessGame.turn() === "w") {
-          if (game.player1color[0] === "w") {
-            setWinner(player2Data);
-          } else if (game.player2color[0] === "w") {
-            setWinner(player1Data);
-          }
-        } else if (chessGame.turn() === "b") {
-          if (game.player1color[0] === "b") {
-            setWinner(player2Data);
-          } else if (game.player2color[0] === "b") {
-            setWinner(player1Data);
-          }
+    if (chessGame.in_checkmate()) {
+      if (chessGame.turn() === "w") {
+        if (game.player1color[0] === "w") {
+          setWinner(player2Data);
+        } else if (game.player2color[0] === "w") {
+          setWinner(player1Data);
         }
-        setShowWinner(true);
+      } else if (chessGame.turn() === "b") {
+        if (game.player1color[0] === "b") {
+          setWinner(player2Data);
+        } else if (game.player2color[0] === "b") {
+          setWinner(player1Data);
+        }
       }
+      setShowWinner(true);
+    }
 
-      if (chessGame.in_stalemate()) {
-        setStalemate(true);
-      }
+    if (chessGame.in_stalemate()) {
+      setStalemate(true);
     }
   };
 
@@ -302,7 +302,7 @@ const PlayVsBot = ({
 
         <Modal
           className="promotion-modal-container"
-          showPromotion={showPromotion}
+          show={showPromotion}
           centered
           backdrop="static"
         >
@@ -345,27 +345,29 @@ const PlayVsBot = ({
           </Modal.Body>
         </Modal>
 
-        <Modal
-          className="winner-modal-container"
-          show={showWinner}
-          centered
-          backdrop="static"
-        >
-          <Modal.Header className="winner-modal-header">
-            <Modal.Title>
-              Winner: <h1>{winner[0].username}</h1>
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Footer className="winner-modal-footer">
-            <Button
-              onClick={() => {
-                endGame(game.id);
-              }}
-            >
-              End Game
-            </Button>
-          </Modal.Footer>
-        </Modal>
+        {winner[0] && (
+          <Modal
+            className="winner-modal-container"
+            show={showWinner}
+            centered
+            backdrop="static"
+          >
+            <Modal.Header className="winner-modal-header">
+              <Modal.Title>
+                Winner: <h1>{winner[0].username}</h1>
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Footer className="winner-modal-footer">
+              <Button
+                onClick={() => {
+                  endGame(game.id);
+                }}
+              >
+                End Game
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        )}
 
         <Modal
           className="winner-modal-container"
@@ -390,14 +392,18 @@ const PlayVsBot = ({
         </Modal>
       </div>
 
-      <div className="gamePageBot-chatBox-container rounded-5">
+      <div className="gamePageBot-buttons">
         <Button
           onClick={() => {
-            setShowWinner(true);
+            endGame(game.id);
           }}
+          variant="danger"
         >
-          show winner
+          End Game
         </Button>
+      </div>
+
+      <div className="gamePageBot-chatBox-container rounded-5">
         <div className="gamePageBot-chatBox rounded-5">Chat Box</div>
       </div>
     </section>

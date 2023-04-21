@@ -32,15 +32,15 @@ const GamePagePlayer = ({
   const [stalemate, setStalemate] = useState(false);
   const [showWinner, setShowWinner] = useState(false);
   const [winner, setWinner] = useState({});
+  const [error, setError] = useState("");
 
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   const updateGameState = (newGameState) => {
-    // update the game state in your component's state
+    // update the game state
     setRecentMoves(newGameState.current_positions);
-    // set any other relevant state here
   };
 
   useEffect(() => {
@@ -104,12 +104,7 @@ const GamePagePlayer = ({
             await axios
               .put(`${API}/games/${game.id}/move`, updatedGameData)
               .then((res) => {
-                // console.log(
-                //   "res data =================player 1====================: ",
-                //   res.data.current_positions
-                // );
-                console.log(res.data.current_positions);
-                setRecentMoves(res.data.current_positions);
+                // setRecentMoves(res.data.current_positions);
                 updateGameState(res.data);
               })
               .catch((err) => {
@@ -146,24 +141,22 @@ const GamePagePlayer = ({
               player1color: game.player1color,
               player2color: game.player2color,
               in_progress: game.in_progress,
-              current_positions: recentMoves,
+              current_positions: chessGame.fen(),
               from: from,
               to: to,
             };
             await axios
               .put(`${API}/games/${game.id}/move`, updatedGameData)
               .then((res) => {
-                // console.log(
-                //   "res data ===================player 2===============: ",
-                //   res.data.current_positions
-                // );
-                setRecentMoves(res.data.current_positions);
+                // setRecentMoves(res.data.current_positions);
                 updateGameState(res.data);
               })
               .catch((err) => {
                 // Handle error
-                console.log("errrrrror: ", err);
+                console.log("error: ", err);
               });
+          } else {
+            setPromotionMove(null);
           }
         } else {
           return null;
@@ -185,40 +178,34 @@ const GamePagePlayer = ({
     });
 
     if (newMove) {
+      updatePositions(newMove);
       setShowPromotion(false);
-      setRecentMoves(chessGame.fen());
-      updatePositions();
+      // setRecentMoves(chessGame.fen());
     }
   };
 
-  const updatePositions = async () => {
+  const updatePositions = async (newMove) => {
     const updatedData = {
       player2id: game.player2id,
       player1color: game.player1color,
       player2color: game.player2color,
       in_progress: game.in_progress,
-      current_positions: recentMoves,
+      current_positions: chessGame.fen(),
+      from: newMove.from,
+      to: newMove.to,
+      promotion: newMove.promotion,
     };
 
-    await axios.put(`${API}/games/${game.id}`, updatedData).then((res) => {
-      setRecentMoves(res.data.current_positions);
-    });
+    await axios
+      .put(`${API}/games/${game.id}/move`, updatedData)
+      .then((res) => {
+        // setRecentMoves(res.data.current_positions);
+        updateGameState(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
-
-  // might need idk \\\
-  // const swapTurn = () => {
-  //   let color = "";
-  //   if (game.player1) {
-  //     color = "w";
-  //   } else if (game.player2) {
-  //     color = "b";
-  //   }
-
-  //   let tokens = chessGame.fen().split(" ");
-  //   tokens[1] = color;
-  //   tokens[3] = "-";
-  //   return chessGame.load(tokens.join(" "));
-  // };
 
   game["spectators"] = 5;
 
@@ -354,7 +341,7 @@ const GamePagePlayer = ({
 
         <Modal
           className="promotion-modal-container"
-          showPromotion={showPromotion}
+          show={showPromotion}
           centered
           backdrop="static"
         >
