@@ -27,7 +27,7 @@ const getAllGames = async () => {
   }
 };
 
-const getGamesByID = async (id) => {
+const getGameByID = async (id) => {
   try {
     const game = await db.any(
       `SELECT
@@ -54,7 +54,7 @@ const getGamesByID = async (id) => {
   }
 };
 
-const createGames = async (newGameData) => {
+const createGame = async (newGameData) => {
   try {
     const newGame = await db.one(
       "INSERT INTO games (room_name, room_password, player1id, player2id) VALUES ($1, $2, $3, $4) RETURNING *",
@@ -71,7 +71,7 @@ const createGames = async (newGameData) => {
   }
 };
 
-const updateGames = async (id, updatedGameData) => {
+const updateGame = async (id, updatedGameData) => {
   try {
     const updatedGame = await db.one(
       `
@@ -92,7 +92,7 @@ const updateGames = async (id, updatedGameData) => {
   }
 };
 
-const deleteGames = async (id) => {
+const deleteGame = async (id) => {
   try {
     if (id === null || id === undefined) {
       return false;
@@ -109,8 +109,8 @@ const deleteGames = async (id) => {
 
 module.exports = {
   getAllGames,
-  getGamesByID,
-  createGames,
-  updateGames,
-  deleteGames,
+  getGameByID,
+  createGame,
+  updateGame,
+  deleteGame,
 };

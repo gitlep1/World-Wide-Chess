@@ -1,13 +1,13 @@
 const { getAllUsers, getUserByID, deleteUser } = require("../queries/users");
 
 const addUsersSocketEventListeners = (socket, socketId) => {
-  socket.on("visit", async () => {
+  socket.on("users-visit", async () => {
     try {
       const getUsers = await getAllUsers();
       socket.emit("users", getUsers);
     } catch (err) {
       const errorMessage = "Could not get all users";
-      socket.emit("error", new Error(errorMessage));
+      socket.emit("users-visit-error", new Error(errorMessage));
     }
   });
 
@@ -18,7 +18,7 @@ const addUsersSocketEventListeners = (socket, socketId) => {
       socket.broadcast.emit("user", getUser);
     } catch (err) {
       const errorMessage = `Could not update user: ${userId}`;
-      socket.emit("error", new Error(errorMessage));
+      socket.emit("user-changed-error", new Error(errorMessage));
     }
   });
 };

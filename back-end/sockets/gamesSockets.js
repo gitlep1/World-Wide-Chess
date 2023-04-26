@@ -1,6 +1,32 @@
+const {
+  getAllGames,
+  getGameByID,
+  createGame,
+  updateGame,
+  deleteGame,
+} = require("../queries/games");
+
 const addGamesSocketEventListeners = (socket, socketId) => {
-  socket.on("room-create", (gameData) => {
-    //
+  socket.on("games-visit", async () => {
+    try {
+      const getGames = await getAllGames();
+      socket.emit("games", getGames);
+    } catch (err) {
+      const errorMessage = "Could not get all games";
+      socket.emit("games-visit-error", new Error(errorMessage));
+    }
+  });
+
+  socket.on("room-create", async (gameId) => {
+    try {
+      const getGame = await getGameByID(gameId);
+      // console.log("the got game: ", getGame);
+      socket.emit("game", getGame);
+      socket.broadcast.emit("game", getGame);
+    } catch (err) {
+      const errorMessage = `Could not update game: ${gameId}`;
+      socket.emit("game-changed-error", new Error(errorMessage));
+    }
   });
 
   socket.on("start-game", (gameId) => {
@@ -8,7 +34,7 @@ const addGamesSocketEventListeners = (socket, socketId) => {
     const gameRoom = io.of(`/Room/${gameId}`);
 
     gameRoom.on("connection", (socket) => {
-      console.log(`A player connected to game ${gameId}`);
+      console.log(`A player connected to game: ${gameId}`);
 
       // Handle game events
     });

@@ -11,7 +11,7 @@ import DetectScreenSize from "../../../CustomFunctions/DetectScreenSize";
 
 const API = process.env.REACT_APP_API_URL;
 
-const Lobbypage = ({ user, games, handleRefresh }) => {
+const Lobbypage = ({ user, games, handleRefresh, socket, setGames }) => {
   let gamesCopy = [];
   const navigate = useNavigate();
 
@@ -21,8 +21,6 @@ const Lobbypage = ({ user, games, handleRefresh }) => {
   const [searchbar, setSearchbar] = useState("");
 
   const [showCreate, setShowCreate] = useState(false);
-  const handleShowCreate = () => setShowCreate(true);
-  const handleCloseCreate = () => setShowCreate(false);
 
   const [screenSize, setScreenSize] = useState(0);
 
@@ -76,7 +74,9 @@ const Lobbypage = ({ user, games, handleRefresh }) => {
     };
 
     await axios.post(`${API}/games`, newGameData).then((res) => {
-      navigate(`/Room/${res.data.id}/Settings`);
+      setGames((prevGames) => [...prevGames, res.data]);
+      socket.emit("room-create", res.data.id);
+      // navigate(`/Room/${res.data.id}/Settings`);
     });
   };
 
@@ -126,7 +126,7 @@ const Lobbypage = ({ user, games, handleRefresh }) => {
     } else {
       toast
         .promise(addDataToGame(), {
-          pending: "Joining Game ...",
+          pending: "Asking host ...",
           success: "Joining Game ...",
           error: "Error",
         })
@@ -175,7 +175,7 @@ const Lobbypage = ({ user, games, handleRefresh }) => {
       <section className="lobbySection1">
         <div
           onClick={() => {
-            handleShowCreate();
+            setShowCreate(true);
           }}
           className="lobbyButtons"
         >
@@ -227,7 +227,9 @@ const Lobbypage = ({ user, games, handleRefresh }) => {
 
       <Modal
         show={showCreate}
-        onHide={handleCloseCreate}
+        onHide={() => {
+          setShowCreate(false);
+        }}
         centered
         className="lobbyModal"
         backdrop="static"
@@ -261,7 +263,12 @@ const Lobbypage = ({ user, games, handleRefresh }) => {
             </Form.Group>
 
             <div className="lobbyModal-buttons">
-              <Button variant="danger" onClick={handleCloseCreate}>
+              <Button
+                variant="danger"
+                onClick={() => {
+                  setShowCreate(false);
+                }}
+              >
                 Cancel
               </Button>{" "}
               <Button variant="success" type="submit">
