@@ -4,8 +4,9 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+const API = process.env.REACT_APP_API_URL;
+
 const BotGameSettings = ({ game, error }) => {
-  const API = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
 
   const [easyBot, setEasyBot] = useState(false);

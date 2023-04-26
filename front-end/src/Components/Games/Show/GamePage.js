@@ -8,9 +8,9 @@ import GetApi from "../../../CustomFunctions/GetApi";
 import VsBot from "./BotGame/GamePageBot/GamePageBot";
 import VsPlayer from "./PlayerGame/GamePagePlayer";
 
-const GamePage = ({ user }) => {
-  const API = process.env.REACT_APP_API_URL;
+const API = process.env.REACT_APP_API_URL;
 
+const GamePage = ({ user }) => {
   const { gameID } = useParams();
   const navigate = useNavigate();
 

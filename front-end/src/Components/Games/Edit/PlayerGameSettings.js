@@ -1,11 +1,12 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 
-const PlayerGameSettings = ({ game, user, error }) => {
-  const API = process.env.REACT_APP_API_URL;
+const API = process.env.REACT_APP_API_URL;
+
+const PlayerGameSettings = ({ game, user, error, socket }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -42,18 +43,26 @@ const PlayerGameSettings = ({ game, user, error }) => {
       player2color: "black",
     };
 
-    try {
-      await axios
-        .put(`${API}/games/${game.id}`, updateGameData)
-        .then((res) => {
-          navigate(`/Room/${game.id}`);
-        })
-        .catch((err) => {
-          // console.log(err);
-        });
-    } catch (error) {
-      // console.log(error.message);
-    }
+    // socket.on("connect", () => {
+    //   console.log("Connected to server!");
+
+    //   socket.emit("start-game", game.id, (response) => {
+    //     console.log(`Server response: ${response}`);
+
+    //     axios
+    //       .put(`${API}/games/${game.id}`, updateGameData)
+    //       .then((res) => {
+    //         console.log(socket);
+    //         console.log(res.data);
+
+    //         // socket.emit("join-game", game.id);
+    //         // navigate(`/Room/${game.id}`);
+    //       })
+    //       .catch((err) => {
+    //         // console.log(err);
+    //       });
+    //   });
+    // });
   };
 
   const handleDelete = async (gameID) => {
@@ -120,7 +129,7 @@ const PlayerGameSettings = ({ game, user, error }) => {
           </Button>
         </>
       )}
-      {game.in_progress ? navigate(`/Room/${game.id}`) : null}
+      {/* {game.in_progress ? navigate(`/Room/${game.id}`) : null} */}
     </section>
   );
 };

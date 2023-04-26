@@ -3,8 +3,9 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
+const API = process.env.REACT_APP_API_URL;
+
 const AccountPage = ({ user }) => {
-  const API = process.env.REACT_APP_API_URL;
   const { userID } = useParams();
 
   const [username, setUsername] = useState("");

@@ -8,8 +8,9 @@ import defaultProfImg from "../../../Images/DefaultProfImg.png";
 
 import GetApi from "../../../CustomFunctions/GetApi";
 
+const API = process.env.REACT_APP_API_URL;
+
 const Signup = ({ handleUser, showSignUp, handleClose }) => {
-  const API = process.env.REACT_APP_API_URL;
   const [getData, cancelRequests] = GetApi();
   const [users, setUsers] = useState([]);
 

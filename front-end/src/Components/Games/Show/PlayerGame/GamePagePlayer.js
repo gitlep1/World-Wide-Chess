@@ -4,6 +4,7 @@ import { Chessboard } from "react-chessboard";
 import { Button, Modal, Image } from "react-bootstrap";
 import { Chess } from "chess.js";
 import axios from "axios";
+import io from "socket.io-client";
 
 import DetectScreenSize from "../../../../CustomFunctions/DetectScreenSize";
 import controlWidth from "../../../../CustomFunctions/ControlWidth";
@@ -11,6 +12,8 @@ import controlWidth from "../../../../CustomFunctions/ControlWidth";
 import spectatorDark1 from "../../../../Images/spectatorDark1.png";
 import spectatorDark2 from "../../../../Images/spectatorDark2.png";
 import spectatorDark3 from "../../../../Images/spectatorDark3.png";
+
+const API = process.env.REACT_APP_API_URL;
 
 const GamePagePlayer = ({
   user,
@@ -20,9 +23,9 @@ const GamePagePlayer = ({
   forfeitNotify,
   endGame,
 }) => {
-  const API = process.env.REACT_APP_API_URL;
   const [screenSize, setScreenSize] = useState(0);
   const prevBoard = useRef([]);
+  const socket = io();
 
   const [chessGame, setChessGame] = useState(new Chess());
   const [recentMoves, setRecentMoves] = useState(game.current_positions);
@@ -63,14 +66,15 @@ const GamePagePlayer = ({
     prevBoard.current.push(recentMoves);
   }, [recentMoves]);
 
-  // use for future rematch feature \\
-  // const safeGameMutate = (modify) => {
-  //   setChessGame((g) => {
-  //     const update = { ...g };
-  //     modify(update);
-  //     return update;
-  //   });
-  // };
+  // // Emit 'move-piece' event when a piece is moved
+  // function movePiece(gameId, from, to, promotion) {
+  //   socket.emit('move-piece', gameId, from, to, promotion);
+  // }
+
+  // // Listen for 'game-state-updated' event to update the chessboard
+  // socket.on('game-state-updated', (gameState) => {
+  //   // Update the chessboard with the new game state
+  // });
 
   const handleMove = async (from, to, piece) => {
     // check if turn is currently white
@@ -101,18 +105,28 @@ const GamePagePlayer = ({
               from: from,
               to: to,
             };
-            await axios
-              .put(`${API}/games/${game.id}/move`, updatedGameData)
-              .then((res) => {
-                // setRecentMoves(res.data.current_positions);
-                updateGameState(res.data);
-              })
-              .catch((err) => {
-                // Handle error
-                console.log("error: ", err);
-              });
+            console.log("moved");
+            // Emit a 'move-piece' event to the server with the move data
+            socket.emit("move-piece", updatedGameData);
+
+            // Wait for the 'game-state-updated' event from the server to update the game state on the client side
+            socket.once("game-state-updated", (updatedGame) => {
+              updateGameState(updatedGame);
+            });
+
+            // await axios
+            //   .put(`${API}/games/${game.id}/move`, updatedGameData)
+            //   .then((res) => {
+            //     // setRecentMoves(res.data.current_positions);
+            //     updateGameState(res.data);
+            //   })
+            //   .catch((err) => {
+            //     // Handle error
+            //     console.log("error: ", err);
+            //   });
           } else {
             setPromotionMove(null);
+            return null;
           }
         } else {
           return null;
@@ -145,18 +159,28 @@ const GamePagePlayer = ({
               from: from,
               to: to,
             };
-            await axios
-              .put(`${API}/games/${game.id}/move`, updatedGameData)
-              .then((res) => {
-                // setRecentMoves(res.data.current_positions);
-                updateGameState(res.data);
-              })
-              .catch((err) => {
-                // Handle error
-                console.log("error: ", err);
-              });
+
+            // Emit a 'move-piece' event to the server with the move data
+            socket.emit("move-piece", updatedGameData);
+
+            // Wait for the 'game-state-updated' event from the server to update the game state on the client side
+            socket.once("game-state-updated", (updatedGame) => {
+              updateGameState(updatedGame);
+            });
+
+            // await axios
+            //   .put(`${API}/games/${game.id}/move`, updatedGameData)
+            //   .then((res) => {
+            //     // setRecentMoves(res.data.current_positions);
+            //     updateGameState(res.data);
+            //   })
+            //   .catch((err) => {
+            //     // Handle error
+            //     console.log("error: ", err);
+            //   });
           } else {
             setPromotionMove(null);
+            return null;
           }
         } else {
           return null;

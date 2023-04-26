@@ -5,9 +5,9 @@ import { ToastContainer, toast } from "react-toastify";
 import Logo from "../../../Images/Logo.png";
 import axios from "axios";
 
-const Signin = ({ handleUser, users, showSignIn, handleClose }) => {
-  const API = process.env.REACT_APP_API_URL;
+const API = process.env.REACT_APP_API_URL;
 
+const Signin = ({ handleUser, users, showSignIn, handleClose }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");

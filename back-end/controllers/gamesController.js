@@ -43,7 +43,7 @@ games.post("/", async (req, res) => {
   const newGame = await createGames(newGameData);
 
   if (newGame) {
-    // console.log("=== CREATE game", newGame, "===");
+    console.log("=== CREATE game", newGame, "===");
     res.status(200).json(newGame);
   } else {
     res.status(404).send("Cannot create a new game.");
@@ -64,7 +64,7 @@ games.put("/:id", async (req, res) => {
   const updateGame = await updateGames(id, updatedGameData);
 
   if (updateGame) {
-    // console.log("=== UPDATE game", updateGame, "===");
+    console.log("=== UPDATE game", updateGame, "===");
     res.status(200).json(updateGame);
   } else {
     res.status(404).send("Couldn't update game.");

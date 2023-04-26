@@ -2,7 +2,7 @@ import "./App.scss";
 import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { scaleRotate as SidebarMenu } from "react-burger-menu";
-// import { bubble as SidebarMenu } from "react-burger-menu";
+import io from "socket.io-client";
 
 // Page stuff \\
 import LandingPage from "./Components/LandingPage/LandingPage";
@@ -27,9 +27,10 @@ import GamePage from "./Components/Games/Show/GamePage";
 // Custom function stuff \\
 import GetApi from "./CustomFunctions/GetApi";
 
-const App = () => {
-  const API = process.env.REACT_APP_API_URL;
+const API = process.env.REACT_APP_API_URL;
+const socket = io(API);
 
+const App = () => {
   const navigate = useNavigate();
   const [getData, cancelRequests] = GetApi();
 
@@ -41,23 +42,47 @@ const App = () => {
   const [resize, setResize] = useState("");
 
   useEffect(() => {
-    getGamesAndUsers();
     setLocalStorage();
 
     const intervalFunctions = setInterval(() => {
       resizeSidebar();
-      getGamesAndUsers();
-    }, 1000);
+    });
 
     return () => clearInterval(intervalFunctions);
-  }, []); // eslint-disable-line
+  }, []);
 
-  const getGamesAndUsers = async () => {
-    await getData(`${API}/games`, setGames);
-    await getData(`${API}/users`, setUsers);
+  // const getGamesAndUsers = async () => {
+  //   await getData(`${API}/games`, setGames);
+  //   await getData(`${API}/users`, setUsers);
 
-    return cancelRequests;
-  };
+  //   return cancelRequests;
+  // };
+
+  useEffect(() => {
+    socket.emit("visit");
+
+    socket.on("users", (users) => {
+      setUsers(users);
+    });
+
+    socket.on("user", (updatedUser) => {
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user.id === updatedUser.id ? updatedUser : user
+        )
+      );
+    });
+
+    socket.on("error", (error) => {
+      console.error("Socket error:", error);
+    });
+
+    return () => {
+      socket.off("users");
+      socket.off("user");
+      socket.off("error");
+    };
+  }, []);
 
   const setLocalStorage = async () => {
     const data = window.localStorage.getItem("Current_User");
@@ -180,11 +205,20 @@ const App = () => {
             />
             <Route
               path="Room/:gameID/Settings"
-              element={<GameSettings user={user} games={games} />}
+              element={
+                <GameSettings user={user} games={games} socket={socket} />
+              }
             />
             <Route
               path="Room/:gameID"
-              element={<GamePage user={user} users={users} games={games} />}
+              element={
+                <GamePage
+                  user={user}
+                  users={users}
+                  games={games}
+                  socket={socket}
+                />
+              }
             />
             {/* LeaderBoard Route */}
             <Route

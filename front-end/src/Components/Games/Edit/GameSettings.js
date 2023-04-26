@@ -8,9 +8,10 @@ import Loading from "../../Loading/Loading";
 import PlayerGameSettings from "./PlayerGameSettings";
 import BotGameSettings from "./BotGameSettings";
 
-const GameSettings = ({ user, games }) => {
+const API = process.env.REACT_APP_API_URL;
+
+const GameSettings = ({ user, games, socket }) => {
   const { gameID } = useParams();
-  const API = process.env.REACT_APP_API_URL;
 
   const [game, setGame] = useState({});
   const [loading, setLoading] = useState(false);
@@ -77,9 +78,14 @@ const GameSettings = ({ user, games }) => {
           </div>
           <div className="editGameSettings">
             {game.player2 ? (
-              <PlayerGameSettings game={game} user={user} error={error} />
+              <PlayerGameSettings
+                game={game}
+                user={user}
+                error={error}
+                socket={socket}
+              />
             ) : (
-              <BotGameSettings game={game} error={error} />
+              <BotGameSettings game={game} error={error} socket={socket} />
             )}
           </div>
         </section>

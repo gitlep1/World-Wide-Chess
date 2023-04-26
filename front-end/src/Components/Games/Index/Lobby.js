@@ -4,14 +4,16 @@ import { useNavigate } from "react-router-dom";
 import { Table, Modal, Button, Form } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
+
 import RenderLobby from "./RenderLobby/RenderLobby";
 import FilterSearch from "./FilterSearch/FilterSearch";
 import DetectScreenSize from "../../../CustomFunctions/DetectScreenSize";
 
+const API = process.env.REACT_APP_API_URL;
+
 const Lobbypage = ({ user, games, handleRefresh }) => {
   let gamesCopy = [];
   const navigate = useNavigate();
-  const API = process.env.REACT_APP_API_URL;
 
   const [createRoomName, setCreateRoomName] = useState("");
   const [createRoomPassword, setCreateRoomPassword] = useState("");
