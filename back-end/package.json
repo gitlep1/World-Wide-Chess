@@ -14,11 +14,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "chess.js": "^1.0.0-beta.5",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "express": "~4.16.1",
     "nodemon": "^2.0.19",
     "pg": "^8.7.3",
-    "pg-promise": "^10.11.1"
+    "pg-promise": "^10.11.1",
+    "socket.io": "^4.6.1"
   }
 }

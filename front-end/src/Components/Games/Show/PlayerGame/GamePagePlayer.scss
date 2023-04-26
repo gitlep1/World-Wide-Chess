@@ -2,52 +2,49 @@ $medium: 800px;
 $large: 1000px;
 $giant: 1200px;
 
-.gamePageBot {
+.gamePagePlayer {
   // border: 5px solid cyan;
   display: grid;
   grid-template-columns: 1fr;
-  row-gap: 3%;
+  row-gap: 1%;
 
-  .gamePageBot-header-container {
+  .gamePagePlayer-header-container {
     // border: 5px solid red;
     grid-row: 1;
     grid-column: 1 / span 3;
-    width: 50%;
+    width: 80%;
     height: 95%;
     margin: 0 auto;
-    margin-bottom: 3%;
     display: flex;
     align-items: center;
     justify-content: center;
 
-    .gamePageBot-header {
+    .gamePagePlayer-header {
       // border: 5px solid cyan;
       font-size: 30px;
       height: 100%;
-      width: 70%;
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       align-items: center;
       justify-content: center;
       column-gap: 5%;
-      margin-left: 3em;
 
-      #gamePageBot-roomName {
+      #gamePagePlayer-roomName {
         // border: 5px solid purple;
         grid-row: 1 / span 2;
         text-align: center;
       }
 
-      #gamePageBot-spectatorCount {
+      #gamePagePlayer-spectatorCount {
         // border: 5px solid yellow;
         grid-row: 1;
         grid-column: 2;
         text-align: center;
         width: 50px;
-        margin-bottom: -1em;
+        // margin-bottom: -1em;
       }
 
-      #gamePageBot-spactatorIcon {
+      #gamePagePlayer-spactatorIcon {
         // border: 5px solid orange;
         width: 50px;
         grid-row: 2;
@@ -56,50 +53,53 @@ $giant: 1200px;
     }
   }
 
-  .gamePageBot-players-data {
+  .gamePagePlayer-players-data {
     // border: 5px solid red;
     grid-row: 2;
     width: 90%;
     font-size: 30px;
     margin: 0 auto;
 
-    .gamePageBot-playerOne-data {
+    .gamePagePlayer-playerOne-data {
       border: 5px solid white;
       box-shadow: 0 5px 23px rgba(0, 0, 0, 1);
-      height: 12vh;
+      margin-bottom: 5%;
+      // height: 12vh;
       display: flex;
       align-items: center;
     }
 
-    .gamePageBot-playerTwo-data {
+    .gamePagePlayer-playerTwo-data {
       border: 5px solid black;
       box-shadow: 0 5px 23px rgba(0, 0, 0, 1);
-      height: 12vh;
+      margin-bottom: 5%;
+      // height: 12vh;
       display: flex;
       align-items: center;
     }
 
-    .gamePageBot-player-image {
+    .gamePagePlayer-player-image {
       // border: 5px solid red;
-      width: 100px;
+      width: 50px;
     }
   }
 
-  .gamePageBot-chessboard-container {
+  .gamePagePlayer-chessboard-container {
     // border: 5px solid blue;
     grid-row: 3;
     display: flex;
     justify-content: center;
   }
 
-  .gamePageBot-buttons {
+  .gamePagePlayer-buttons {
     // border: 5px solid red;
     grid-row: 4;
     display: flex;
-    justify-content: center;
+    align-items: center;
+    justify-content: space-evenly;
   }
 
-  .gamePageBot-chatBox-container {
+  .gamePagePlayer-chatBox-container {
     // border: 5px solid green;
     grid-row: 5;
     margin: 0 auto;
@@ -110,7 +110,7 @@ $giant: 1200px;
     width: 90%;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 1);
 
-    .gamePageBot-chatBox {
+    .gamePagePlayer-chatBox {
       font-size: 35px;
       width: 95%;
       height: 95%;
@@ -119,11 +119,11 @@ $giant: 1200px;
 }
 
 @media (min-width: $medium) {
-  .gamePageBot {
+  .gamePagePlayer {
     display: grid;
     grid-template-columns: 280px 1fr;
 
-    .gamePageBot-header-container {
+    .gamePagePlayer-header-container {
       // border: 5px solid red;
       grid-row: 1;
       grid-column: 1 / span 3;
@@ -135,7 +135,7 @@ $giant: 1200px;
       align-items: center;
       justify-content: center;
 
-      .gamePageBot-header {
+      .gamePagePlayer-header {
         // border: 5px solid cyan;
         font-size: 30px;
         height: 100%;
@@ -147,13 +147,13 @@ $giant: 1200px;
         column-gap: 5%;
         margin-left: 3em;
 
-        #gamePageBot-roomName {
+        #gamePagePlayer-roomName {
           // border: 5px solid purple;
           grid-row: 1 / span 2;
           text-align: center;
         }
 
-        #gamePageBot-spectatorCount {
+        #gamePagePlayer-spectatorCount {
           // border: 5px solid yellow;
           grid-row: 1;
           grid-column: 2;
@@ -162,7 +162,7 @@ $giant: 1200px;
           margin-bottom: -1em;
         }
 
-        #gamePageBot-spactatorIcon {
+        #gamePagePlayer-spactatorIcon {
           // border: 5px solid orange;
           width: 50px;
           grid-row: 2;
@@ -171,56 +171,61 @@ $giant: 1200px;
       }
     }
 
-    .gamePageBot-players-data {
+    .gamePagePlayer-players-data {
       // border: 5px solid red;
       grid-row: 2;
       grid-column: 1;
       width: 95%;
       font-size: 30px;
+      margin-bottom: 10%;
       margin-left: 5%;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
 
-      .gamePageBot-playerOne-data {
+      .gamePagePlayer-playerOne-data {
         border: 5px solid white;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 1);
+        margin-bottom: 5%;
         height: 12vh;
         display: flex;
         align-items: center;
       }
 
-      .gamePageBot-playerTwo-data {
+      .gamePagePlayer-playerTwo-data {
         border: 5px solid black;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 1);
+        margin-bottom: 5%;
         height: 12vh;
         display: flex;
         align-items: center;
       }
 
-      .gamePageBot-player-image {
+      .gamePagePlayer-player-image {
         // border: 5px solid red;
         width: 100px;
       }
     }
 
-    .gamePageBot-chessboard-container {
+    .gamePagePlayer-chessboard-container {
       // border: 5px solid blue;
       grid-row: 2;
       display: flex;
       justify-content: center;
       align-items: center;
+      margin-bottom: 5%;
     }
 
-    .gamePageBot-buttons {
+    .gamePagePlayer-buttons {
       // border: 5px solid red;
-      grid-column: 2;
       grid-row: 3;
+      grid-column: 2;
       display: flex;
-      justify-content: center;
+      align-items: center;
+      justify-content: space-evenly;
     }
 
-    .gamePageBot-chatBox-container {
+    .gamePagePlayer-chatBox-container {
       // border: 5px solid green;
       grid-row: 4;
       grid-column: 1 / span 2;
@@ -232,7 +237,7 @@ $giant: 1200px;
       width: 95%;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 1);
 
-      .gamePageBot-chatBox {
+      .gamePagePlayer-chatBox {
         font-size: 35px;
         width: 95%;
         height: 95%;
@@ -242,13 +247,13 @@ $giant: 1200px;
 }
 
 @media (min-width: $large) {
-  .gamePageBot {
+  .gamePagePlayer {
     // border: 5px solid blue;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     column-gap: 1%;
 
-    .gamePageBot-header-container {
+    .gamePagePlayer-header-container {
       // border: 5px solid red;
       grid-row: 1;
       grid-column: 1 / span 3;
@@ -260,7 +265,7 @@ $giant: 1200px;
       align-items: center;
       justify-content: center;
 
-      .gamePageBot-header {
+      .gamePagePlayer-header {
         // border: 5px solid cyan;
         font-size: 30px;
         height: 100%;
@@ -272,13 +277,13 @@ $giant: 1200px;
         column-gap: 5%;
         margin-left: 3em;
 
-        #gamePageBot-roomName {
+        #gamePagePlayer-roomName {
           // border: 5px solid purple;
           grid-row: 1 / span 2;
           text-align: center;
         }
 
-        #gamePageBot-spectatorCount {
+        #gamePagePlayer-spectatorCount {
           // border: 5px solid yellow;
           grid-row: 1;
           grid-column: 2;
@@ -287,7 +292,7 @@ $giant: 1200px;
           margin-bottom: -1em;
         }
 
-        #gamePageBot-spactatorIcon {
+        #gamePagePlayer-spactatorIcon {
           // border: 5px solid orange;
           width: 50px;
           grid-row: 2;
@@ -296,57 +301,61 @@ $giant: 1200px;
       }
     }
 
-    .gamePageBot-players-data {
+    .gamePagePlayer-players-data {
       // border: 5px solid red;
       grid-row: 2;
       grid-column: 1;
       width: 95%;
       font-size: 30px;
+      margin-bottom: 7%;
       margin-left: 5%;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
 
-      .gamePageBot-playerOne-data {
+      .gamePagePlayer-playerOne-data {
         border: 5px solid white;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 1);
+        margin-bottom: 5%;
         height: 12vh;
         display: flex;
         align-items: center;
       }
 
-      .gamePageBot-playerTwo-data {
+      .gamePagePlayer-playerTwo-data {
         border: 5px solid black;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 1);
+        margin-bottom: 5%;
         height: 12vh;
         display: flex;
         align-items: center;
       }
 
-      .gamePageBot-player-image {
+      .gamePagePlayer-player-image {
         // border: 5px solid red;
         width: 100px;
       }
     }
 
-    .gamePageBot-chessboard-container {
+    .gamePagePlayer-chessboard-container {
       // border: 5px solid blue;
       grid-row: 2;
       display: flex;
       justify-content: center;
       align-items: center;
-      // margin-bottom: 5%;
+      margin-bottom: 5%;
     }
 
-    .gamePageBot-buttons {
+    .gamePagePlayer-buttons {
       // border: 5px solid red;
-      grid-column: 2;
       grid-row: 3;
+      grid-column: 2;
       display: flex;
-      justify-content: center;
+      align-items: center;
+      justify-content: space-evenly;
     }
 
-    .gamePageBot-chatBox-container {
+    .gamePagePlayer-chatBox-container {
       // border: 5px solid green;
       grid-row: 2;
       grid-column: 3;
@@ -358,7 +367,7 @@ $giant: 1200px;
       width: 95%;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 1);
 
-      .gamePageBot-chatBox {
+      .gamePagePlayer-chatBox {
         font-size: 35px;
         width: 95%;
         height: 95%;
@@ -384,19 +393,19 @@ $giant: 1200px;
     }
 
     #queenButton {
-      background-image: url("../../../../../Images/Queen.png");
+      background-image: url("../../../../Images/Queen.png");
     }
 
     #rookButton {
-      background-image: url("../../../../../Images/Rook.png");
+      background-image: url("../../../../Images/Rook.png");
     }
 
     #bishopButton {
-      background-image: url("../../../../../Images/Bishop.png");
+      background-image: url("../../../../Images/Bishop.png");
     }
 
     #knightButton {
-      background-image: url("../../../../../Images/Knight.png");
+      background-image: url("../../../../Images/Knight.png");
     }
   }
 }

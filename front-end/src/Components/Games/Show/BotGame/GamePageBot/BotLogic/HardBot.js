@@ -196,9 +196,9 @@ const HardBot = (chessGame, setFen, maxDepth, setIsThinking) => {
     let startTime = Date.now();
     let bestMoveVar = null;
     let bestEval = -Infinity;
+    let evalArray = [];
 
     for (let depth = 1; depth <= maxDepth; depth++) {
-      let evalArray = [];
       let moves = chessGame.moves();
 
       for (let i = 0; i < moves.length; i++) {
@@ -210,15 +210,19 @@ const HardBot = (chessGame, setFen, maxDepth, setIsThinking) => {
         evalArray.push(evalBestMove);
       }
 
-      let evalMax = Math.max(...evalArray);
+      // keep in case something messes up \\
+      // let evalMax = Math.max(...evalArray);
+
+      let evalMaxIndex = Math.floor(Math.random() * evalArray.length);
+      let evalMax = evalArray[evalMaxIndex];
 
       if (evalMax > bestEval) {
         bestEval = evalMax;
         bestMoveVar = moves[evalArray.indexOf(evalMax)];
+        evalArray = [];
       }
 
       let timeElapsed = Date.now() - startTime;
-      console.log(timeElapsed, "====", timeLimit);
       if (timeElapsed > timeLimit) {
         break; // Exit the loop if the time limit is reached
       }

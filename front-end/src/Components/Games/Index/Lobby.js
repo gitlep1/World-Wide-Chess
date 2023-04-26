@@ -101,7 +101,7 @@ const Lobbypage = ({ user, games, handleRefresh }) => {
         toast
           .promise(addDataToGame(), {
             pending: "Joining Game ...",
-            success: "Joined Game",
+            success: "Joining Game ...",
             error: "Error",
           })
           .then((res) => {
@@ -125,7 +125,7 @@ const Lobbypage = ({ user, games, handleRefresh }) => {
       toast
         .promise(addDataToGame(), {
           pending: "Joining Game ...",
-          success: "Joined Game",
+          success: "Joining Game ...",
           error: "Error",
         })
         .then((res) => {

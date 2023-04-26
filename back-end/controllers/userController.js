@@ -16,7 +16,7 @@ user.get("/", async (req, res) => {
   const allUsers = await getAllUsers();
 
   if (allUsers) {
-    console.log("=== GET Users", allUsers, "===");
+    // console.log("=== GET Users", allUsers, "===");
     res.status(200).json(allUsers);
   } else {
     res.status(404).send("Cannot find any users");
@@ -28,7 +28,7 @@ user.get("/:id", async (req, res) => {
   const getAUser = await getUserByID(id);
 
   if (getAUser.length > 0) {
-    console.log("=== GET user by ID", getAUser, "===");
+    // console.log("=== GET user by ID", getAUser, "===");
     res.status(200).json(getAUser);
   } else {
     res.status(404).send("user not found");
