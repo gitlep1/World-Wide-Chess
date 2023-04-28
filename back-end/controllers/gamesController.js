@@ -61,11 +61,11 @@ games.put("/:id", async (req, res) => {
     current_positions: req.body.current_positions,
   };
 
-  const updateGame = await updateGame(id, updatedGameData);
+  const updateGameData = await updateGame(id, updatedGameData);
 
-  if (updateGame) {
-    console.log("=== UPDATE game", updateGame, "===");
-    res.status(200).json(updateGame);
+  if (updateGameData) {
+    console.log("=== UPDATE game", updateGameData, "===");
+    res.status(200).json(updateGameData);
   } else {
     res.status(404).send("Couldn't update game.");
   }
