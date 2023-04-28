@@ -105,8 +105,7 @@ const PlayVsBot = ({
 
   const handleMove = (from, to, piece) => {
     // Check if the move is a pawn promotion
-    const isPromotion =
-      (piece === "wP" || piece === "bP") && (to[1] === "8" || to[1] === "1");
+    const isPromotion = piece === "wP" && from[1] === "7" && to[1] === "8";
 
     if (isPromotion) {
       // Store the promotion move and wait for user choice
