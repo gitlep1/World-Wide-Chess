@@ -74,8 +74,8 @@ const Lobbypage = ({ user, games, handleRefresh, socket, setGames }) => {
     };
 
     await axios.post(`${API}/games`, newGameData).then((res) => {
-      setGames((prevGames) => [...prevGames, res.data]);
-      socket.emit("room-create", res.data.id);
+      // setGames((prevGames) => [...prevGames, res.data]);
+      // socket.emit("room-create", res.data.id);
       navigate(`/Room/${res.data.id}/Settings`);
     });
   };
