@@ -4,7 +4,7 @@ import { Form, Button } from "react-bootstrap";
 import { MDBCollapse, MDBNavbar } from "mdb-react-ui-kit";
 
 const FilterSearch = ({ gamesCopy }) => {
-  const [showAnimated, setShowAnimated] = useState(false);
+  const [showAnimated, setShowAnimated] = useState(true);
   const [minEloRating, setMinEloRating] = useState();
   const [maxEloRating, setMaxEloRating] = useState();
   const [fullRooms, setFullRooms] = useState(false);
