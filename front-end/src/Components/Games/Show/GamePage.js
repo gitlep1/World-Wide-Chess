@@ -15,7 +15,6 @@ const GamePage = ({ user, users, socket, game, setGame }) => {
   const { gameID } = useParams();
   const navigate = useNavigate();
 
-  // const [game, setGame] = useState({});
   const [player1Data, setPlayer1Data] = useState({});
   const [player2Data, setPlayer2Data] = useState({});
   const [showRefreshModal, setShowRefreshModal] = useState(false);
@@ -77,17 +76,6 @@ const GamePage = ({ user, users, socket, game, setGame }) => {
       // setShowRefreshModal(false);
     };
   }, []); // eslint-disable-line
-
-  // useEffect(() => {
-  //   socket.on("game-started", (player1Data, player2Data) => {
-  //     setPlayer1Data(player1Data);
-  //     setPlayer2Data(player2Data);
-  //   });
-
-  //   return () => {
-  //     socket.off("game-started");
-  //   };
-  // }, [socket]);
 
   const endGame = async (gameID) => {
     await axios.delete(`${API}/games/${gameID}`).then(() => {

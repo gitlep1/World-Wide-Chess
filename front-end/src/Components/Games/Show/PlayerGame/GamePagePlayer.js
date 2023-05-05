@@ -29,7 +29,6 @@ const GamePagePlayer = ({
 
   const [chessGame, setChessGame] = useState(new Chess());
   const [recentMoves, setRecentMoves] = useState(game.current_positions);
-  // const [fen, setFen] = useState(chessGame.fen());
   const [promotionMove, setPromotionMove] = useState(null);
   const [showPromotion, setShowPromotion] = useState(false);
   const [stalemate, setStalemate] = useState(false);
@@ -50,17 +49,6 @@ const GamePagePlayer = ({
   }, []);
 
   useEffect(() => {
-    socket.on("game-state-updated", (moveData) => {
-      // updateGameState(moveData);
-      console.log(moveData);
-    });
-
-    return () => {
-      socket.off("game-state-updated");
-    };
-  }, [socket]);
-
-  useEffect(() => {
     const game = new Chess(recentMoves);
     setChessGame(game);
   }, [recentMoves]);
@@ -69,24 +57,28 @@ const GamePagePlayer = ({
     prevBoard.current.push(recentMoves);
   }, [recentMoves]);
 
-  // const updateGameState = (newMoveData) => {
-  //   console.log("recentMoves: ", recentMoves);
-  //   console.log("newMoveData: ", newMoveData);
-  //   // setRecentMoves(newMoveData);
-  // };
+  const updateGameState = (newMoveData) => {
+    setRecentMoves(newMoveData.current_positions);
+  };
+
+  useEffect(() => {
+    socket.on("game-state-updated", (moveData) => {
+      updateGameState(moveData);
+    });
+
+    return () => {
+      socket.off("game-state-updated");
+    };
+  }, [socket]);
 
   const handleMove = async (from, to, piece) => {
-    // check if turn is currently white
     if (chessGame.turn() === "w") {
-      // check if the current user matches the 1st player's id so only that player can move
       if (user.id === game.player1id) {
-        // check if the piece begins with "w" (white) so the 1st player can only move white
         if (piece[0] === "w") {
-          // Check if the move is a pawn promotion
-          const isPromotion = piece === "wP" && to[1] === "8";
+          const isPromotion =
+            piece === "wP" && from[1] === "7" && to[1] === "8";
 
           if (isPromotion) {
-            // Store the promotion move and wait for user choice
             const promotion = { from, to };
             setPromotionMove(promotion);
             setShowPromotion(true);
@@ -95,30 +87,12 @@ const GamePagePlayer = ({
 
           const move = chessGame.move({ from, to });
           if (move) {
-            // const updatedGameData = {
-            //   player2id: game.player2id,
-            //   player1color: game.player1color,
-            //   player2color: game.player2color,
-            //   in_progress: game.in_progress,
-            //   current_positions: chessGame.fen(),
-            //   from: from,
-            //   to: to,
-            // };
             const updatedGameData = {
               current_positions: chessGame.fen(),
               from: from,
               to: to,
             };
             socket.emit("move-piece", game, updatedGameData);
-
-            // await axios
-            //   .put(`${API}/games/${game.id}/move`, updatedGameData)
-            //   .then((res) => {
-            //     updateGameState(res.data);
-            //   })
-            //   .catch((err) => {
-            //     console.log("error: ", err);
-            //   });
           } else {
             setPromotionMove(null);
             return null;
@@ -132,11 +106,10 @@ const GamePagePlayer = ({
     } else if (chessGame.turn() === "b") {
       if (user.id === game.player2id) {
         if (piece[0] === "b") {
-          // Check if the move is a pawn promotion
-          const isPromotion = piece === "bP" && to[1] === "1";
+          const isPromotion =
+            piece === "bP" && from[1] === "2" && to[1] === "1";
 
           if (isPromotion) {
-            // Store the promotion move and wait for user choice
             const promotion = { from, to };
             setPromotionMove(promotion);
             setShowPromotion(true);
@@ -145,33 +118,12 @@ const GamePagePlayer = ({
 
           const move = chessGame.move({ from, to });
           if (move) {
-            // const updatedGameData = {
-            //   player2id: game.player2id,
-            //   player1color: game.player1color,
-            //   player2color: game.player2color,
-            //   in_progress: game.in_progress,
-            //   current_positions: chessGame.fen(),
-            //   from: from,
-            //   to: to,
-            // };
             const updatedGameData = {
               current_positions: chessGame.fen(),
               from: from,
               to: to,
             };
             socket.emit("move-piece", game, updatedGameData);
-            // socket.once("game-state-updated", (updatedGame) => {
-            //   updateGameState(updatedGame);
-            // });
-
-            // await axios
-            //   .put(`${API}/games/${game.id}/move`, updatedGameData)
-            //   .then((res) => {
-            //     updateGameState(res.data);
-            //   })
-            //   .catch((err) => {
-            //     console.log("error: ", err);
-            //   });
           } else {
             setPromotionMove(null);
             return null;
@@ -188,7 +140,6 @@ const GamePagePlayer = ({
   const handlePromotionChoice = (pieceType) => {
     const { from, to } = promotionMove;
 
-    // Update the promotion move with the chosen piece
     const newMove = chessGame.move({
       from: from,
       to: to,
@@ -213,14 +164,14 @@ const GamePagePlayer = ({
       promotion: newMove.promotion,
     };
 
-    // await axios
-    //   .put(`${API}/games/${game.id}/move`, updatedData)
-    //   .then((res) => {
-    //     updateGameState(res.data);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
+    await axios
+      .put(`${API}/games/${game.id}/move`, updatedData)
+      .then((res) => {
+        updateGameState(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   game["spectators"] = 5;
@@ -237,9 +188,6 @@ const GamePagePlayer = ({
 
   return (
     <section className="gamePagePlayer">
-      {/* {console.log(chessGame.turn())} */}
-      {/* {console.log(recentMoves)} */}
-      {/* {console.log(game)} */}
       {!player1Data || !player2Data ? forfeitNotify() : null}
 
       <div className="gamePagePlayer-header-container">

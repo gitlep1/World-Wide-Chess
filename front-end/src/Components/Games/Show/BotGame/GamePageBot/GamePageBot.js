@@ -56,10 +56,6 @@ const PlayVsBot = ({
     prevBoard.current.push(fen);
   }, [fen]);
 
-  // useEffect(() => {
-
-  // })
-
   const makeRandomMove = () => {
     if (game.player2id === 1) {
       const depth = 2;
