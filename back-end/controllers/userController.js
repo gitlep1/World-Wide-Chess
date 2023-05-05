@@ -46,7 +46,7 @@ user.post("/", checkValues, async (req, res) => {
   const checkEmail = await checkIfEmailExists(newUserData.email);
 
   if (checkEmail) {
-    res.status(400).send("Email already exists!");
+    res.status(409).send("Email already exists!");
   } else {
     const createdUser = await createUser(newUserData);
 

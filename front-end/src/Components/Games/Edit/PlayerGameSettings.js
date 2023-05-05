@@ -6,7 +6,7 @@ import axios from "axios";
 
 const API = process.env.REACT_APP_API_URL;
 
-const PlayerGameSettings = ({ game, user, error, socket }) => {
+const PlayerGameSettings = ({ game, user, setGame, error, socket }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,7 +29,20 @@ const PlayerGameSettings = ({ game, user, error, socket }) => {
         }, 4100);
       }
     }
-  });
+  }, [error, game.player1, game.player1id, navigate, user.id]);
+
+  useEffect(() => {
+    socket.emit("games-update-all-clients");
+
+    socket.on("host-started", (gameData) => {
+      setGame(gameData);
+      navigate(`/Room/${gameData.id}`);
+    });
+
+    return () => {
+      socket.off("host-started");
+    };
+  }, [socket, navigate, setGame]);
 
   const handleStartGame = async () => {
     const startingPosition =
@@ -39,30 +52,14 @@ const PlayerGameSettings = ({ game, user, error, socket }) => {
       player2id: game.player2id,
       in_progress: true,
       current_positions: startingPosition,
-      player1color: "white",
-      player2color: "black",
+      player1color: "w",
+      player2color: "b",
     };
 
-    // socket.on("connect", () => {
-    //   console.log("Connected to server!");
-
-    //   socket.emit("start-game", game.id, (response) => {
-    //     console.log(`Server response: ${response}`);
-
-    //     axios
-    //       .put(`${API}/games/${game.id}`, updateGameData)
-    //       .then((res) => {
-    //         console.log(socket);
-    //         console.log(res.data);
-
-    //         // socket.emit("join-game", game.id);
-    //         // navigate(`/Room/${game.id}`);
-    //       })
-    //       .catch((err) => {
-    //         // console.log(err);
-    //       });
-    //   });
-    // });
+    await axios.put(`${API}/games/${game.id}`, updateGameData).then((res) => {
+      socket.emit("games-update-all-clients");
+      socket.emit("start-game", res.data);
+    });
   };
 
   const handleDelete = async (gameID) => {

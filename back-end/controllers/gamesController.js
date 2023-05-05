@@ -77,7 +77,6 @@ games.put("/:id/move", async (req, res) => {
 
   // get the current game state from the database
   const game = await getGameByID(id);
-
   // create a new chess.js instance using the current game state
   const chessGame = new Chess(game[0].current_positions);
 
@@ -91,7 +90,6 @@ games.put("/:id/move", async (req, res) => {
 
   if (promotion !== "") {
     const move = chessGame.move({ from, to, promotion });
-    // console.log(move);
     if (move) {
       const updatedGameData = {
         player2id: oldGameData.player2id,

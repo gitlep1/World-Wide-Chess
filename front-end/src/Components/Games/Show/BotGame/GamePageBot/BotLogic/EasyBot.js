@@ -1,23 +1,22 @@
-const HardBot = (chessGame, setFen, maxDepth, setIsThinking) => {
+const EasyBot = (chessGame, setFen, maxDepth, setIsThinking) => {
   const evaluateBoard = (board) => {
     let score = 0;
 
-    // Add up the scores for all pieces on the board
-    board.forEach((row, rowIndex) => {
-      row.forEach((piece, colIndex) => {
+    for (let i = 0; i < board.length; i++) {
+      const row = board[i];
+      for (let j = 0; j < row.length; j++) {
+        const piece = row[j];
         if (piece) {
-          // Add points for the piece's value
-          score += getPieceValue(piece.type, piece.color);
-
-          // Add or subtract points based on the piece's position
+          const pieceValue = getPieceValue(piece.type, piece.color);
+          score += pieceValue;
           if (piece.color === "w") {
-            score += getPositionValue(piece.type, rowIndex, colIndex);
+            score += getPositionValue(piece.type, i, j);
           } else {
-            score -= getPositionValue(piece.type, rowIndex, colIndex);
+            score -= getPositionValue(piece.type, i, j);
           }
         }
-      });
-    });
+      }
+    }
 
     return score;
   };
@@ -121,10 +120,10 @@ const HardBot = (chessGame, setFen, maxDepth, setIsThinking) => {
     return pieceValue * colorMultiplier * positionValue;
   };
 
-  const minimax = (depth, alpha, beta, isMaximizingPlayer) => {
+  const minimax = (board, depth, alpha, beta, maximizingPlayer) => {
     if (depth === 0 || chessGame.game_over()) {
       // Base case: if the depth is 0 or the game is over, evaluate the board and return a score
-      return evaluateBoard(chessGame.board());
+      return evaluateBoard(board);
     }
 
     if (chessGame.in_checkmate()) {
@@ -137,16 +136,15 @@ const HardBot = (chessGame, setFen, maxDepth, setIsThinking) => {
       return 0;
     }
 
-    if (isMaximizingPlayer) {
+    if (maximizingPlayer) {
       let maxEval = -Infinity;
-      let betaCutoff = false;
       // For each possible move, make the move on the game board, call minimax with the opposite player and a reduced depth, then undo the move
       const moves = chessGame.moves();
 
       for (let i = 0; i < moves.length; i++) {
         const move = moves[i];
         chessGame.move(move);
-        const evalMax = minimax(depth - 1, alpha, beta, false);
+        const evalMax = minimax(board, depth - 1, alpha, beta, false);
         chessGame.undo();
         // Update the maxEval variable with the maximum evaluation found so far
         maxEval = Math.max(maxEval, evalMax);
@@ -154,37 +152,28 @@ const HardBot = (chessGame, setFen, maxDepth, setIsThinking) => {
         alpha = Math.max(alpha, evalMax);
         // If beta is less than or equal to alpha, a beta cutoff has occurred.
         if (beta <= alpha) {
-          betaCutoff = true; // Set the flag variable to true
           break; // Exit the loop early
         }
       }
 
-      if (betaCutoff) {
-        return maxEval; // Exit the function early
-      }
       // Return the maximum evaluation found
       return maxEval;
     } else {
       let minEval = Infinity;
-      let alphaCutoff = false; // New flag variable for alpha cutoffs
       // Same as above, but with the opposite player and a minimum evaluation
       const moves = chessGame.moves();
       for (let i = 0; i < moves.length; i++) {
         const move = moves[i];
         chessGame.move(move);
-        const evalMin = minimax(depth - 1, alpha, beta, true);
+        const evalMin = minimax(board, depth - 1, alpha, beta, true);
         chessGame.undo();
         minEval = Math.min(minEval, evalMin);
         beta = Math.min(beta, evalMin);
         if (beta <= alpha) {
-          alphaCutoff = true; // Set the flag variable to true
           break; // Exit the loop early
         }
       }
 
-      if (alphaCutoff) {
-        return minEval; // Exit the function early
-      }
       return minEval;
     }
   };
@@ -197,14 +186,20 @@ const HardBot = (chessGame, setFen, maxDepth, setIsThinking) => {
     let bestMoveVar = null;
     let bestEval = -Infinity;
 
-    for (let depth = 1; depth <= maxDepth; depth++) {
+    for (let d = 1; d <= maxDepth; d++) {
       let evalArray = [];
       let moves = chessGame.moves();
 
       for (let i = 0; i < moves.length; i++) {
         const move = moves[i];
         chessGame.move(move);
-        const evalBestMove = minimax(depth, -Infinity, Infinity, false);
+        const evalBestMove = minimax(
+          chessGame.board(),
+          d,
+          -Infinity,
+          Infinity,
+          false
+        );
         chessGame.undo();
 
         evalArray.push(evalBestMove);
@@ -223,18 +218,21 @@ const HardBot = (chessGame, setFen, maxDepth, setIsThinking) => {
       }
     }
 
-    chessGame.move(bestMoveVar);
+    const result = chessGame.move(bestMoveVar);
     setFen(chessGame.fen());
 
     setIsThinking(false);
+
+    return result;
   };
 
   // Return a function that returns the function that makes the best move after a delay
-  return () => {
-    return () => {
-      setTimeout(() => bestMove(), 500);
-    };
+  return (callback) => {
+    setTimeout(() => {
+      const result = bestMove();
+      callback(result);
+    }, 500);
   };
 };
 
-export default HardBot;
+export default EasyBot;

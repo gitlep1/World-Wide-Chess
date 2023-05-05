@@ -30,27 +30,13 @@ const Signin = ({ handleUser, users, showSignIn, handleClose }) => {
 
     if (foundUser) {
       await axios
-        .put(`${API}/users/${foundUser.id}`, foundUser)
-        // .patch(`${API}/users/${foundUser.id}`, {
-        //   profileimg: foundUser.profileimg,
-        //   username: foundUser.username,
-        //   password: foundUser.password,
-        //   email: foundUser.email,
-        //   theme: foundUser.theme || null,
-        //   wins: foundUser.wins,
-        //   ties: foundUser.ties || 0,
-        //   loss: foundUser.loss || 0,
-        //   preferred_color: foundUser.preferred_color || null,
-        //   last_online: new Date().toISOString(),
-        // })
+        .get(`${API}/users/${foundUser.id}`)
         .then((res) => {
-          // console.log(res.data);
+          notify(foundUser);
         })
         .catch((err) => {
-          // console.log(err);
           setError(err.message);
         });
-      notify(foundUser);
     } else {
       noUser();
     }

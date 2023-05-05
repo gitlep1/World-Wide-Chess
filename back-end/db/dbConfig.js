@@ -1,4 +1,3 @@
-// http://vitaly-t.github.io/pg-promise/module-pg-promise.html
 const pgp = require("pg-promise")();
 require("dotenv").config();
 
@@ -20,9 +19,6 @@ const cn = DATABASE_URL
       password: PG_PASSWORD,
       port: PG_PORT,
     };
-
-// alt from express docs
-// var db = pgp('postgres://username:password@host:port/database')
 
 const db = pgp(cn);
 

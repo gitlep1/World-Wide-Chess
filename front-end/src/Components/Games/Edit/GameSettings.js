@@ -1,6 +1,6 @@
 import "./GameSettings.scss";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import axios from "axios";
 
@@ -10,10 +10,10 @@ import BotGameSettings from "./BotGameSettings";
 
 const API = process.env.REACT_APP_API_URL;
 
-const GameSettings = ({ user, games, socket }) => {
+const GameSettings = ({ user, socket, game, setGame }) => {
+  const navigate = useNavigate();
   const { gameID } = useParams();
 
-  const [game, setGame] = useState({});
   const [loading, setLoading] = useState(false);
 
   const [error, setError] = useState("");
@@ -30,40 +30,31 @@ const GameSettings = ({ user, games, socket }) => {
       };
     };
     warnUserLeavingPage();
-    // getGame();
-
-    const interval = setInterval(() => {
-      getGame();
-    }, 1000);
-
-    return () => clearInterval(interval);
   }, []); // eslint-disable-line
 
-  const getGame = async () => {
-    await axios
-      .get(`${API}/games/${gameID}`)
-      .then((res) => {
-        setGame(res.data);
-      })
-      .catch((err) => {
-        setError(err);
-      });
-  };
+  useEffect(() => {
+    socket.on("room-settings", (gameData) => {
+      setGame(gameData[0]);
+    });
+
+    return () => {
+      socket.off("room-settings");
+    };
+  });
 
   const alertUser = (e) => {
     e.preventDefault();
-    e.returnValue = "";
+    e.returnValue =
+      "Are you sure you want to leave this page? ** Doing so will REMOVE THE ROOM!**";
   };
 
   const handleEndPoint = async () => {
-    return axios
-      .put(`${API}/games/${gameID}`, { in_progress: false })
-      .then((res) => {
-        // alert(`${game.player1} Has left the game.`);
-      });
+    await axios.delete(`${API}/games/${gameID}`);
+    navigate("/Lobby");
   };
 
   const renderGameSettings = () => {
+    // if (user.id === game.player1id || user.id === game.player2id) {
     if (loading) {
       return <Loading />;
     } else if (error) {
@@ -80,17 +71,26 @@ const GameSettings = ({ user, games, socket }) => {
             {game.player2 ? (
               <PlayerGameSettings
                 game={game}
+                setGame={setGame}
                 user={user}
                 error={error}
                 socket={socket}
               />
             ) : (
-              <BotGameSettings game={game} error={error} socket={socket} />
+              <BotGameSettings
+                game={game}
+                setGame={setGame}
+                error={error}
+                socket={socket}
+              />
             )}
           </div>
         </section>
       );
     }
+    // } else {
+    //   navigate("/Lobby");
+    // }
   };
 
   return (

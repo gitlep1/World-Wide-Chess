@@ -73,11 +73,16 @@ const Lobbypage = ({ user, games, handleRefresh, socket, setGames }) => {
       player1id: user.id,
     };
 
-    await axios.post(`${API}/games`, newGameData).then((res) => {
-      // setGames((prevGames) => [...prevGames, res.data]);
-      // socket.emit("room-create", res.data.id);
-      navigate(`/Room/${res.data.id}/Settings`);
-    });
+    await axios
+      .post(`${API}/games`, newGameData)
+      .then((res) => {
+        socket.emit("games-update-all-clients");
+        socket.emit("room-created", res.data);
+        navigate(`/Room/${res.data.id}/Settings`);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
   };
 
   const handleJoin = async (gameID) => {
@@ -93,7 +98,16 @@ const Lobbypage = ({ user, games, handleRefresh, socket, setGames }) => {
     }
 
     const addDataToGame = async () => {
-      return axios.put(`${API}/games/${gameData.id}`, updatePlayer2);
+      return axios
+        .put(`${API}/games/${gameData.id}`, updatePlayer2)
+        .then((res) => {
+          socket.emit("games-update-all-clients");
+          socket.emit("room-joined", res.data);
+          navigate(`/Room/${res.data.id}/Settings`);
+        })
+        .catch((err) => {
+          setError(err.message);
+        });
     };
 
     if (gameData.room_password) {

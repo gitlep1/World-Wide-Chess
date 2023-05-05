@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -6,7 +6,7 @@ import axios from "axios";
 
 const API = process.env.REACT_APP_API_URL;
 
-const BotGameSettings = ({ game, error }) => {
+const BotGameSettings = ({ game, setGame, error, socket }) => {
   const navigate = useNavigate();
 
   const [easyBot, setEasyBot] = useState(false);
@@ -61,6 +61,9 @@ const BotGameSettings = ({ game, error }) => {
     };
 
     await axios.put(`${API}/games/${game.id}`, updateGameData).then((res) => {
+      socket.emit("games-update-all-clients");
+      socket.emit("start-game", res.data);
+      setGame(res.data);
       navigate(`/Room/${res.data.id}`);
     });
   };
@@ -92,7 +95,7 @@ const BotGameSettings = ({ game, error }) => {
         <Form.Check
           value="Easy Bot"
           type="radio"
-          aria-label="radio 1"
+          id="easy-bot"
           label="Easy"
           onChange={handleChange}
           checked={easyBot}
@@ -100,16 +103,15 @@ const BotGameSettings = ({ game, error }) => {
         <Form.Check
           value="Medium Bot"
           type="radio"
-          aria-label="radio 2"
+          id="medium-bot"
           label="Medium"
           onChange={handleChange}
           checked={mediumBot}
         />
-
         <Form.Check
           value="Hard Bot"
           type="radio"
-          aria-label="radio 3"
+          id="hard-bot"
           label="Hard"
           onChange={handleChange}
           checked={hardBot}

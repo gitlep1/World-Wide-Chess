@@ -13,8 +13,8 @@ const addSocketEventListeners = (io) => {
     //   socket.disconnect(true);
     // });
 
-    usersSocket(socket, socket.id);
-    gamesSocket(socket, socket.id);
+    usersSocket(io, socket, socket.id);
+    gamesSocket(io, socket, socket.id);
   });
 };
 

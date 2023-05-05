@@ -36,6 +36,7 @@ const App = () => {
 
   const [user, setUser] = useState({});
   const [users, setUsers] = useState([]);
+  const [game, setGame] = useState({});
   const [games, setGames] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
@@ -53,16 +54,9 @@ const App = () => {
     return () => clearInterval(intervalFunctions);
   }, []);
 
-  // const getGamesAndUsers = async () => {
-  //   await getData(`${API}/games`, setGames);
-  //   await getData(`${API}/users`, setUsers);
-
-  //   return cancelRequests;
-  // };
-
   useEffect(() => {
-    socket.emit("users-visit");
-    socket.emit("games-visit");
+    socket.emit("users-update-all-clients");
+    socket.emit("games-update-all-clients");
 
     socket.on("users", (users) => {
       setUsers(users);
@@ -72,68 +66,21 @@ const App = () => {
       setGames(games);
     });
 
-    socket.on("user", (updatedUser) => {
-      setUsers((prevUsers) =>
-        prevUsers.map((user) =>
-          user.id === updatedUser.id ? updatedUser : user
-        )
-      );
-    });
-
-    // socket.on("game", (updatedGame) => {
-    //   // console.log("updatedGame: ", updatedGame);
-    //   setGames((prevGames) =>
-    //     prevGames.map((game) =>
-    //       game.id === updatedGame.id ? updatedGame : game
-    //     )
-    //   );
-    // });
-
-    socket.on("game", (updatedGame) => {
-      setGames((prevGames) => {
-        // Check if the updated game is already in the list of games
-        const gameIndex = prevGames.findIndex(
-          (game) => game.id === updatedGame.id
-        );
-
-        if (gameIndex === -1) {
-          // If the game is not in the list of games, add it to the end
-          return [...prevGames, updatedGame];
-        } else {
-          // If the game is in the list of games, replace the old data with the new data
-          prevGames[gameIndex] = updatedGame;
-          return [...prevGames];
-        }
-      });
-    });
-
     socket.on("users-visit-error", (error) => {
       setUserError(error);
     });
 
-    socket.on("user-changed-error", (error) => {
-      setUserError(error);
-    });
-
-    socket.on("games-visit-error", (error) => {
-      setGameError(error);
-    });
-
-    socket.on("game-changed-error", (error) => {
+    socket.on("games-update-all-clients-error", (error) => {
       setGameError(error);
     });
 
     return () => {
       socket.off("users");
-      socket.off("user");
       socket.off("users-visit-error");
-      socket.off("user-visit-error");
       socket.off("games");
-      socket.off("game");
-      socket.off("games-visit-error");
-      socket.off("game-visit-error");
+      socket.off("games-update-all-clients-error");
     };
-  }, [user]);
+  }, []);
 
   const setLocalStorage = async () => {
     const data = window.localStorage.getItem("Current_User");
@@ -259,7 +206,12 @@ const App = () => {
             <Route
               path="Room/:gameID/Settings"
               element={
-                <GameSettings user={user} games={games} socket={socket} />
+                <GameSettings
+                  user={user}
+                  socket={socket}
+                  game={game}
+                  setGame={setGame}
+                />
               }
             />
             <Route
@@ -268,8 +220,9 @@ const App = () => {
                 <GamePage
                   user={user}
                   users={users}
-                  games={games}
                   socket={socket}
+                  game={game}
+                  setGame={setGame}
                 />
               }
             />

@@ -28,6 +28,7 @@ const PlayVsBot = ({
   player2Data,
   forfeitNotify,
   endGame,
+  socket,
 }) => {
   const navigate = useNavigate();
   const [screenSize, setScreenSize] = useState(0);
@@ -55,30 +56,40 @@ const PlayVsBot = ({
     prevBoard.current.push(fen);
   }, [fen]);
 
+  // useEffect(() => {
+
+  // })
+
   const makeRandomMove = () => {
     if (game.player2id === 1) {
       const depth = 2;
       setIsThinking(true);
-      const easyBotFunction = EasyBot(chessGame, setFen, depth, setIsThinking);
-      const delayedFunction = easyBotFunction();
-      delayedFunction();
+      const delayedFunction = EasyBot(chessGame, setFen, depth, setIsThinking);
+      delayedFunction((bestMove) => {
+        chessGame.move(bestMove);
+        setFen(chessGame.fen());
+      });
     } else if (game.player2id === 2) {
       const depth = 3;
       setIsThinking(true);
-      const mediumBotFunction = MediumBot(
+      const delayedFunction = MediumBot(
         chessGame,
         setFen,
         depth,
         setIsThinking
       );
-      const delayedFunction = mediumBotFunction();
-      delayedFunction();
+      delayedFunction((bestMove) => {
+        chessGame.move(bestMove);
+        setFen(chessGame.fen());
+      });
     } else if (game.player2id === 3) {
       const depth = 4;
-      const hardBotFunction = HardBot(chessGame, setFen, depth, setIsThinking);
-      const delayedFunction = hardBotFunction();
       setIsThinking(true);
-      delayedFunction();
+      const delayedFunction = HardBot(chessGame, setFen, depth, setIsThinking);
+      delayedFunction((bestMove) => {
+        chessGame.move(bestMove);
+        setFen(chessGame.fen());
+      });
     }
 
     if (chessGame.in_checkmate()) {
@@ -176,7 +187,7 @@ const PlayVsBot = ({
 
   return (
     <section className="gamePageBot">
-      {!player1Data[0] || !player2Data[0] ? forfeitNotify() : null}
+      {!player1Data || !player2Data ? forfeitNotify() : null}
       <div className="gamePageBot-header-container">
         <div className="gamePageBot-header">
           <h3 id="gamePageBot-roomName">Room Name: {game.room_name}</h3>
@@ -203,7 +214,7 @@ const PlayVsBot = ({
           <>
             <div className="gamePageBot-playerTwo-data square bg-secondary rounded-pill">
               <Image
-                src={player2Data[0].profileimg}
+                src={player2Data.profileimg}
                 className="gamePageBot-player-image"
                 alt="player 2"
               />
@@ -221,13 +232,13 @@ const PlayVsBot = ({
                 >
                   Thinking
                 </h5>
-                {player2Data[0].username}
+                {player2Data.username}
               </span>
             </div>
 
             <div className="gamePageBot-playerOne-data square bg-secondary rounded-pill">
               <Image
-                src={player1Data[0].profileimg}
+                src={player1Data.profileimg}
                 className="gamePageBot-player-image"
                 alt="player 1"
               />{" "}
@@ -236,7 +247,7 @@ const PlayVsBot = ({
                   color: "black",
                 }}
               >
-                {player1Data[0].username}
+                {player1Data.username}
               </span>
             </div>
           </>
@@ -244,7 +255,7 @@ const PlayVsBot = ({
           <>
             <div className="gamePageBot-playerOne-data square bg-secondary rounded-pill">
               <Image
-                src={player1Data[0].profileimg}
+                src={player1Data.profileimg}
                 className="gamePageBot-player-image"
                 alt="player 1"
               />{" "}
@@ -253,12 +264,12 @@ const PlayVsBot = ({
                   color: "white",
                 }}
               >
-                {player1Data[0].username}
+                {player1Data.username}
               </span>
             </div>
             <div className="gamePageBot-playerTwo-data square bg-secondary rounded-pill">
               <Image
-                src={player2Data[0].profileimg}
+                src={player2Data.profileimg}
                 className="gamePageBot-player-image"
                 alt="player 2"
               />
@@ -267,7 +278,7 @@ const PlayVsBot = ({
                   color: "black",
                 }}
               >
-                {player2Data[0].username}
+                {player2Data.username}
               </span>
             </div>
           </>

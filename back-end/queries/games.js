@@ -92,6 +92,20 @@ const updateGame = async (id, updatedGameData) => {
   }
 };
 
+const updateGamePositions = async (id, updatedGameData) => {
+  try {
+    const updatedGamePosition = await db.one(
+      `
+      UPDATE games SET current_positions = $2
+      WHERE games.id = $1 RETURNING *`,
+      [id, updatedGameData.current_positions]
+    );
+    return updatedGamePosition;
+  } catch (error) {
+    return error;
+  }
+};
+
 const deleteGame = async (id) => {
   try {
     if (id === null || id === undefined) {
@@ -112,5 +126,6 @@ module.exports = {
   getGameByID,
   createGame,
   updateGame,
+  updateGamePositions,
   deleteGame,
 };

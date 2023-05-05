@@ -22,10 +22,10 @@ const GamePagePlayer = ({
   player2Data,
   forfeitNotify,
   endGame,
+  socket,
 }) => {
   const [screenSize, setScreenSize] = useState(0);
   const prevBoard = useRef([]);
-  const socket = io();
 
   const [chessGame, setChessGame] = useState(new Chess());
   const [recentMoves, setRecentMoves] = useState(game.current_positions);
@@ -41,19 +41,6 @@ const GamePagePlayer = ({
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const updateGameState = (newGameState) => {
-    // update the game state
-    setRecentMoves(newGameState.current_positions);
-  };
-
-  useEffect(() => {
-    const game = new Chess(recentMoves);
-
-    setChessGame(game);
-
-    // cleanup function if needed
-  }, [recentMoves]);
-
   useEffect(() => {
     const intervalFunctions = setInterval(() => {
       setScreenSize(DetectScreenSize().width);
@@ -63,18 +50,30 @@ const GamePagePlayer = ({
   }, []);
 
   useEffect(() => {
+    socket.on("game-state-updated", (moveData) => {
+      // updateGameState(moveData);
+      console.log(moveData);
+    });
+
+    return () => {
+      socket.off("game-state-updated");
+    };
+  }, [socket]);
+
+  useEffect(() => {
+    const game = new Chess(recentMoves);
+    setChessGame(game);
+  }, [recentMoves]);
+
+  useEffect(() => {
     prevBoard.current.push(recentMoves);
   }, [recentMoves]);
 
-  // // Emit 'move-piece' event when a piece is moved
-  // function movePiece(gameId, from, to, promotion) {
-  //   socket.emit('move-piece', gameId, from, to, promotion);
-  // }
-
-  // // Listen for 'game-state-updated' event to update the chessboard
-  // socket.on('game-state-updated', (gameState) => {
-  //   // Update the chessboard with the new game state
-  // });
+  // const updateGameState = (newMoveData) => {
+  //   console.log("recentMoves: ", recentMoves);
+  //   console.log("newMoveData: ", newMoveData);
+  //   // setRecentMoves(newMoveData);
+  // };
 
   const handleMove = async (from, to, piece) => {
     // check if turn is currently white
@@ -96,32 +95,28 @@ const GamePagePlayer = ({
 
           const move = chessGame.move({ from, to });
           if (move) {
+            // const updatedGameData = {
+            //   player2id: game.player2id,
+            //   player1color: game.player1color,
+            //   player2color: game.player2color,
+            //   in_progress: game.in_progress,
+            //   current_positions: chessGame.fen(),
+            //   from: from,
+            //   to: to,
+            // };
             const updatedGameData = {
-              player2id: game.player2id,
-              player1color: game.player1color,
-              player2color: game.player2color,
-              in_progress: game.in_progress,
               current_positions: chessGame.fen(),
               from: from,
               to: to,
             };
-            console.log("moved");
-            // Emit a 'move-piece' event to the server with the move data
-            socket.emit("move-piece", updatedGameData);
-
-            // Wait for the 'game-state-updated' event from the server to update the game state on the client side
-            socket.once("game-state-updated", (updatedGame) => {
-              updateGameState(updatedGame);
-            });
+            socket.emit("move-piece", game, updatedGameData);
 
             // await axios
             //   .put(`${API}/games/${game.id}/move`, updatedGameData)
             //   .then((res) => {
-            //     // setRecentMoves(res.data.current_positions);
             //     updateGameState(res.data);
             //   })
             //   .catch((err) => {
-            //     // Handle error
             //     console.log("error: ", err);
             //   });
           } else {
@@ -150,32 +145,31 @@ const GamePagePlayer = ({
 
           const move = chessGame.move({ from, to });
           if (move) {
+            // const updatedGameData = {
+            //   player2id: game.player2id,
+            //   player1color: game.player1color,
+            //   player2color: game.player2color,
+            //   in_progress: game.in_progress,
+            //   current_positions: chessGame.fen(),
+            //   from: from,
+            //   to: to,
+            // };
             const updatedGameData = {
-              player2id: game.player2id,
-              player1color: game.player1color,
-              player2color: game.player2color,
-              in_progress: game.in_progress,
               current_positions: chessGame.fen(),
               from: from,
               to: to,
             };
-
-            // Emit a 'move-piece' event to the server with the move data
-            socket.emit("move-piece", updatedGameData);
-
-            // Wait for the 'game-state-updated' event from the server to update the game state on the client side
-            socket.once("game-state-updated", (updatedGame) => {
-              updateGameState(updatedGame);
-            });
+            socket.emit("move-piece", game, updatedGameData);
+            // socket.once("game-state-updated", (updatedGame) => {
+            //   updateGameState(updatedGame);
+            // });
 
             // await axios
             //   .put(`${API}/games/${game.id}/move`, updatedGameData)
             //   .then((res) => {
-            //     // setRecentMoves(res.data.current_positions);
             //     updateGameState(res.data);
             //   })
             //   .catch((err) => {
-            //     // Handle error
             //     console.log("error: ", err);
             //   });
           } else {
@@ -204,7 +198,6 @@ const GamePagePlayer = ({
     if (newMove) {
       updatePositions(newMove);
       setShowPromotion(false);
-      // setRecentMoves(chessGame.fen());
     }
   };
 
@@ -220,15 +213,14 @@ const GamePagePlayer = ({
       promotion: newMove.promotion,
     };
 
-    await axios
-      .put(`${API}/games/${game.id}/move`, updatedData)
-      .then((res) => {
-        // setRecentMoves(res.data.current_positions);
-        updateGameState(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    // await axios
+    //   .put(`${API}/games/${game.id}/move`, updatedData)
+    //   .then((res) => {
+    //     updateGameState(res.data);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
   };
 
   game["spectators"] = 5;
@@ -248,7 +240,7 @@ const GamePagePlayer = ({
       {/* {console.log(chessGame.turn())} */}
       {/* {console.log(recentMoves)} */}
       {/* {console.log(game)} */}
-      {!player1Data[0] || !player2Data[0] ? forfeitNotify() : null}
+      {!player1Data || !player2Data ? forfeitNotify() : null}
 
       <div className="gamePagePlayer-header-container">
         <div className="gamePagePlayer-header">
@@ -276,7 +268,7 @@ const GamePagePlayer = ({
           <>
             <div className="gamePagePlayer-playerTwo-data square bg-secondary rounded-pill">
               <Image
-                src={player2Data[0].profileimg}
+                src={player2Data.profileimg}
                 className="gamePagePlayer-player-image"
                 alt="player 2"
               />
@@ -285,13 +277,13 @@ const GamePagePlayer = ({
                   color: "white",
                 }}
               >
-                {player2Data[0].username}
+                {player2Data.username}
               </span>
             </div>
 
             <div className="gamePagePlayer-playerOne-data square bg-secondary rounded-pill">
               <Image
-                src={player1Data[0].profileimg}
+                src={player1Data.profileimg}
                 className="gamePagePlayer-player-image"
                 alt="player 1"
               />{" "}
@@ -300,7 +292,7 @@ const GamePagePlayer = ({
                   color: "black",
                 }}
               >
-                {player1Data[0].username}
+                {player1Data.username}
               </span>
             </div>
           </>
@@ -308,7 +300,7 @@ const GamePagePlayer = ({
           <>
             <div className="gamePagePlayer-playerOne-data square bg-secondary rounded-pill">
               <Image
-                src={player1Data[0].profileimg}
+                src={player1Data.profileimg}
                 className="gamePagePlayer-player-image"
                 alt="player 1"
               />{" "}
@@ -317,12 +309,12 @@ const GamePagePlayer = ({
                   color: "black",
                 }}
               >
-                {player1Data[0].username}
+                {player1Data.username}
               </span>
             </div>
             <div className="gamePagePlayer-playerTwo-data square bg-secondary rounded-pill">
               <Image
-                src={player2Data[0].profileimg}
+                src={player2Data.profileimg}
                 className="gamePagePlayer-player-image"
                 alt="player 2"
               />
@@ -331,7 +323,7 @@ const GamePagePlayer = ({
                   color: "white",
                 }}
               >
-                {player2Data[0].username}
+                {player2Data.username}
               </span>
             </div>
           </>

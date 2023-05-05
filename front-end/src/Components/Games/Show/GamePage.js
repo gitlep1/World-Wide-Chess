@@ -7,16 +7,18 @@ import GetApi from "../../../CustomFunctions/GetApi";
 
 import VsBot from "./BotGame/GamePageBot/GamePageBot";
 import VsPlayer from "./PlayerGame/GamePagePlayer";
+import { Modal } from "react-bootstrap";
 
 const API = process.env.REACT_APP_API_URL;
 
-const GamePage = ({ user }) => {
+const GamePage = ({ user, users, socket, game, setGame }) => {
   const { gameID } = useParams();
   const navigate = useNavigate();
 
-  const [game, setGame] = useState({});
+  // const [game, setGame] = useState({});
   const [player1Data, setPlayer1Data] = useState({});
   const [player2Data, setPlayer2Data] = useState({});
+  const [showRefreshModal, setShowRefreshModal] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState("");
 
@@ -34,8 +36,8 @@ const GamePage = ({ user }) => {
           (player) => game.player2id === player.id
         );
 
-        setPlayer1Data(getPlayer1Data);
-        setPlayer2Data(getPlayer2Data);
+        setPlayer1Data(getPlayer1Data[0]);
+        setPlayer2Data(getPlayer2Data[0]);
         setGame(game);
       })
       .catch((err) => {
@@ -43,18 +45,49 @@ const GamePage = ({ user }) => {
       });
   };
 
-  useEffect(() => {
-    toast
+  const reloadData = async () => {
+    await toast
       .promise(getPlayerData(), {
         containerId: "loadChessMatchData",
         pending: "Loading game...",
-        success: "Game loaded!",
+        success: "Game Data Reloaded!",
         error: "Error loading game",
       })
       .then(() => {
-        setLoaded(true);
+        setLoaded(false);
       });
+  };
+
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      e.preventDefault();
+      e.returnValue = "";
+
+      setLoaded(true);
+
+      return "Are you sure you want to leave? Your progress will be lost.";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    reloadData();
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      setLoaded(false);
+      // setShowRefreshModal(false);
+    };
   }, []); // eslint-disable-line
+
+  // useEffect(() => {
+  //   socket.on("game-started", (player1Data, player2Data) => {
+  //     setPlayer1Data(player1Data);
+  //     setPlayer2Data(player2Data);
+  //   });
+
+  //   return () => {
+  //     socket.off("game-started");
+  //   };
+  // }, [socket]);
 
   const endGame = async (gameID) => {
     await axios.delete(`${API}/games/${gameID}`).then(() => {
@@ -68,6 +101,7 @@ const GamePage = ({ user }) => {
         draggable: true,
         progress: undefined,
       });
+      socket.emit("games-update-all-clients");
       setTimeout(() => {
         navigate("/Lobby");
       }, 4100);
@@ -139,29 +173,47 @@ const GamePage = ({ user }) => {
     // }
   };
 
+  const renderBotOrPlayerGame = () => {
+    if (game.player2id === 1 || game.player2id === 2 || game.player2id === 3) {
+      return (
+        <VsBot
+          user={user}
+          game={game}
+          player1Data={player1Data}
+          player2Data={player2Data}
+          forfeitNotify={forfeitNotify}
+          endGame={endGame}
+          socket={socket}
+        />
+      );
+    } else if (game.player2id > 3) {
+      return (
+        <VsPlayer
+          user={user}
+          game={game}
+          player1Data={player1Data}
+          player2Data={player2Data}
+          forfeitNotify={forfeitNotify}
+          endGame={endGame}
+          socket={socket}
+        />
+      );
+    }
+  };
+
   return (
     <section className="gamePageSection">
-      {loaded ? (
-        game.player2id === 1 || game.player2id === 2 || game.player2id === 3 ? (
-          <VsBot
-            user={user}
-            game={game}
-            player1Data={player1Data}
-            player2Data={player2Data}
-            forfeitNotify={forfeitNotify}
-            endGame={endGame}
-          />
-        ) : (
-          <VsPlayer
-            user={user}
-            game={game}
-            player1Data={player1Data}
-            player2Data={player2Data}
-            forfeitNotify={forfeitNotify}
-            endGame={endGame}
-          />
-        )
-      ) : null}
+      {renderBotOrPlayerGame()}
+      <Modal
+        show={showRefreshModal}
+        onHide={() => {
+          setShowRefreshModal(false);
+        }}
+      >
+        <Modal.Header>
+          <Modal.Title>Are you sure you want to leave the page?</Modal.Title>
+        </Modal.Header>
+      </Modal>
       <ToastContainer
         containerId="loadChessMatchData"
         theme="dark"

@@ -9,7 +9,6 @@ const Sidebar = ({ user, authenticated, handleLogout, handleSidebarOpen }) => {
     <section className="menuSideBar">
       {authenticated ? (
         <aside className="profileDataSection">
-          {/* {console.log(user)} */}
           <img src={user.profileimg} alt="profile" className="profileImg" />
           <h1>{user.username}</h1>
           <Button

@@ -27,7 +27,7 @@ const Homepage = ({ users }) => {
     <section className="homepageSection">
       <div className="homepage-topPlayer">
         <h1>
-          * Top Player:{" "}
+          * Top Player:
           <span id="topPlayer-border">
             <Image src={topPlayer.profileimg} alt="top-player" />
             <span id="topPlayer-background"> {topPlayer.username}</span>
