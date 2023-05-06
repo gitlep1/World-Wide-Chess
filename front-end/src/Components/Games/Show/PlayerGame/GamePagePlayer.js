@@ -66,9 +66,9 @@ const GamePagePlayer = ({
       updateGameState(moveData);
     });
 
-    return () => {
-      socket.off("game-state-updated");
-    };
+    // return () => {
+    //   socket.off("game-state-updated");
+    // };
   }, [socket]);
 
   const handleMove = async (from, to, piece) => {
@@ -147,31 +147,20 @@ const GamePagePlayer = ({
     });
 
     if (newMove) {
-      updatePositions(newMove);
+      handlePromotion(newMove);
       setShowPromotion(false);
     }
   };
 
-  const updatePositions = async (newMove) => {
-    const updatedData = {
-      player2id: game.player2id,
-      player1color: game.player1color,
-      player2color: game.player2color,
-      in_progress: game.in_progress,
+  const handlePromotion = async (newMove) => {
+    const updatedGameData = {
       current_positions: chessGame.fen(),
       from: newMove.from,
       to: newMove.to,
       promotion: newMove.promotion,
     };
 
-    await axios
-      .put(`${API}/games/${game.id}/move`, updatedData)
-      .then((res) => {
-        updateGameState(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    socket.emit("piece-promo", game, updatedGameData);
   };
 
   game["spectators"] = 5;

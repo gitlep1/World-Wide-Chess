@@ -25,58 +25,44 @@ const GamePage = ({
   const { gameID } = useParams();
   const navigate = useNavigate();
 
-  const [showRefreshModal, setShowRefreshModal] = useState(false);
-  const [loaded, setLoaded] = useState(false);
-  const [error, setError] = useState("");
-
   const reloadPlayerAndGameData = async () => {
-    await new Promise((resolve, reject) => {
-      try {
-        socket.emit("get-player-and-game-data", gameID);
-        resolve();
-      } catch (err) {
-        reject();
-      }
+    return new Promise((resolve, reject) => {
+      socket.emit("get-player-and-game-data", gameID);
+
+      socket.on("player-reconnected", async (gameData, player1, player2) => {
+        setGame(gameData);
+        setPlayer1Data(player1);
+        setPlayer2Data(player2);
+      });
+
+      resolve();
     });
   };
 
   const reloadData = async () => {
-    await toast
-      .promise(reloadPlayerAndGameData(), {
-        containerId: "loadChessMatchData",
-        pending: "Loading game...",
-        success: "Game Data Reloaded!",
-        error: "Error loading game",
-      })
-      .then(() => {
-        setLoaded(false);
-      });
+    await toast.promise(reloadPlayerAndGameData(), {
+      containerId: "loadChessMatchData",
+      success: "Game Data Reloaded!",
+      error: "Error loading game",
+    });
   };
 
   useEffect(() => {
-    socket.on("player-reconnected", async (gameData, player1, player2) => {
-      setGame(gameData);
-      setPlayer1Data(player1);
-      setPlayer2Data(player2);
-    });
-
     socket.on("game-ended", (errorMessage) => {
       toast.error(errorMessage);
+      socket.off("player-reconnected");
       navigate("/Lobby");
     });
 
     return () => {
-      socket.off("player-reconnected");
+      socket.off("game-ended");
     };
-  }, [navigate, setGame, setPlayer1Data, setPlayer2Data, socket]);
+  }, [navigate, socket]);
 
   useEffect(() => {
     const handleBeforeUnload = (e) => {
       e.preventDefault();
       e.returnValue = "";
-
-      setLoaded(true);
-      reloadData();
 
       return "Are you sure you want to leave? Your progress will be lost.";
     };
@@ -86,7 +72,6 @@ const GamePage = ({
 
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
-      setLoaded(false);
     };
   }, []); // eslint-disable-line
 
@@ -205,27 +190,7 @@ const GamePage = ({
   return (
     <section className="gamePageSection">
       {renderBotOrPlayerGame()}
-      <Modal
-        show={showRefreshModal}
-        onHide={() => {
-          setShowRefreshModal(false);
-        }}
-      >
-        <Modal.Header>
-          <Modal.Title>Are you sure you want to leave the page?</Modal.Title>
-        </Modal.Header>
-      </Modal>
       <ToastContainer
-        containerId="loadChessMatchData"
-        theme="dark"
-        autoClose={3000}
-        position="top-center"
-        closeOnClick={false}
-        pauseOnHover={false}
-        pauseOnFocusLoss={false}
-      />
-      <ToastContainer
-        containerId="GameEnded"
         theme="dark"
         autoClose={3000}
         position="top-center"

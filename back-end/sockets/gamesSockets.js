@@ -140,6 +140,47 @@ const addGamesSocketEventListeners = (io, socket, socketId) => {
       }
     }
   });
+
+  socket.on("piece-promo", async (gameData, updatedGamePosition) => {
+    const oldGameData = await getGameByID(gameData.id);
+    const chessGame = new Chess(oldGameData.current_positions);
+
+    const from = updatedGamePosition.from;
+    const to = updatedGamePosition.to;
+    const promotion = updatedGamePosition.promotion;
+
+    const move = chessGame.move({ from, to, promotion });
+    if (move) {
+      const gameUpdated = await updateGamePositions(
+        gameData.id,
+        updatedGamePosition
+      );
+
+      if (gameUpdated) {
+        console.log(
+          "updated game ID: ",
+          gameData.id,
+          "with data: ",
+          gameUpdated
+        );
+
+        io.in(`/Room/${gameData.id}`).emit("game-state-updated", gameUpdated);
+      } else {
+        console.log(
+          "could not update game ID: ",
+          gameData.id,
+          "with data: ",
+          gameUpdated
+        );
+
+        const errorMessage = "ERROR: 409";
+        io.in(`Room/${gameData.id}`).emit(
+          "game-state-updated-error",
+          errorMessage
+        );
+      }
+    }
+  });
 };
 
 module.exports = addGamesSocketEventListeners;
