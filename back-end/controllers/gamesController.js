@@ -26,7 +26,7 @@ games.get("/:id", async (req, res) => {
 
   if (gotAGame) {
     // console.log("=== GET game", gotAGame, "===");
-    res.status(200).json(gotAGame[0]);
+    res.status(200).json(gotAGame);
   } else {
     res.status(404).send(`Cannot get chess game with ID: ${id}`);
   }

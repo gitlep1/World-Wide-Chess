@@ -78,37 +78,23 @@ const addGamesSocketEventListeners = (io, socket, socketId) => {
     socket.join(`/Room/${gameId}`);
 
     const gameData = await getGameByID(gameId);
-    console.log("gameData", gameData);
 
     if (gameData) {
       const [player1Data] = await getUserByID(gameData.player1id);
       const [player2Data] = await getUserByID(gameData.player2id);
 
-      if (player1Data) {
-        console.log("player1Data", player1Data);
+      if (player1Data && player2Data) {
         io.in(`/Room/${gameId}`).emit(
-          "player1-reconnected",
+          "player-reconnected",
           gameData,
-          player1Data
-        );
-      }
-
-      if (player2Data) {
-        console.log("player2Data", player2Data);
-        io.in(`/Room/${gameId}`).emit(
-          "player2-reconnected",
-          gameData,
+          player1Data,
           player2Data
         );
-      }
-
-      if (!player1Data || !player2Data) {
-        console.log("inside player error");
+      } else {
         const errorMessage = `Opponent has disconnected.`;
         io.in(`/Room/${gameId}`).emit("opponent-disconnected", errorMessage);
       }
     } else {
-      console.log("inside game error");
       const errorMessage = `Game has ended.`;
       io.in(`/Room/${gameId}`).emit("game-ended", errorMessage);
       socket.leave(`/Room/${gameId}`);
@@ -117,7 +103,7 @@ const addGamesSocketEventListeners = (io, socket, socketId) => {
 
   socket.on("move-piece", async (gameData, updatedGamePosition) => {
     const oldGameData = await getGameByID(gameData.id);
-    const chessGame = new Chess(oldGameData[0].current_positions);
+    const chessGame = new Chess(oldGameData.current_positions);
 
     const from = updatedGamePosition.from;
     const to = updatedGamePosition.to;

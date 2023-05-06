@@ -186,6 +186,15 @@ const GamePagePlayer = ({
     }
   };
 
+  const controlBoardOrientation = () => {
+    if (user.id === game.player1id) {
+      return "white";
+    }
+    if (user.id === game.player2id) {
+      return "black";
+    }
+  };
+
   return (
     <section className="gamePagePlayer">
       {!player1Data || !player2Data ? forfeitNotify() : null}
@@ -281,7 +290,7 @@ const GamePagePlayer = ({
       <div className="gamePagePlayer-chessboard-container">
         <Chessboard
           id="PlayVsRandom"
-          boardOrientation={user.id === game.player1id ? "white" : "black"}
+          boardOrientation={controlBoardOrientation()}
           position={recentMoves}
           onPieceDrop={(from, to, piece) => handleMove(from, to, piece)}
           customBoardStyle={{

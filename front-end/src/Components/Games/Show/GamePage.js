@@ -17,52 +17,27 @@ const GamePage = ({
   socket,
   game,
   setGame,
-  // player1Data,
-  // player2Data,
-  // setPlayer1Data,
-  // setPlayer2Data,
+  player1Data,
+  player2Data,
+  setPlayer1Data,
+  setPlayer2Data,
 }) => {
   const { gameID } = useParams();
   const navigate = useNavigate();
 
-  const [player1Data, setPlayer1Data] = useState({});
-  const [player2Data, setPlayer2Data] = useState({});
   const [showRefreshModal, setShowRefreshModal] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState("");
 
   const reloadPlayerAndGameData = async () => {
-    // console.log("inside reloadPlayerAndGameData");
-    //  socket.emit("get-player-and-game-data", gameID);
-    // return new Promise((resolve, reject) => {
-    //   socket.emit("get-player-and-game-data", gameID, (res) => {
-    //     if (res.error) {
-    //       reject(res.error);
-    //     } else {
-    //       //
-    //     }
-    //   });
-    // });
-    return axios
-      .all([axios.get(`${API}/users`), axios.get(`${API}/games/${gameID}`)])
-      .then((res) => {
-        const users = res[0].data;
-        const game = res[1].data;
-
-        const getPlayer1Data = users.filter(
-          (player) => game.player1id === player.id
-        );
-        const getPlayer2Data = users.filter(
-          (player) => game.player2id === player.id
-        );
-
-        setPlayer1Data(getPlayer1Data[0]);
-        setPlayer2Data(getPlayer2Data[0]);
-        setGame(game);
-      })
-      .catch((err) => {
-        setError(err);
-      });
+    await new Promise((resolve, reject) => {
+      try {
+        socket.emit("get-player-and-game-data", gameID);
+        resolve();
+      } catch (err) {
+        reject();
+      }
+    });
   };
 
   const reloadData = async () => {
@@ -79,35 +54,21 @@ const GamePage = ({
   };
 
   useEffect(() => {
-    socket.on("player1-reconnected", async (gameData, player1) => {
-      toast
-        .success(`${player1.username} Reconnected`, {
-          containerId: "player1-reconnected",
-        })
-        .then(() => {
-          setGame(gameData);
-          setPlayer1Data(player1);
-          // setLoaded(false);
-        });
+    socket.on("player-reconnected", async (gameData, player1, player2) => {
+      setGame(gameData);
+      setPlayer1Data(player1);
+      setPlayer2Data(player2);
     });
 
-    socket.on("player2-reconnected", async (gameData, player2) => {
-      toast
-        .success(`${player2.username} Reconnected`, {
-          containerId: "player2-reconnected",
-        })
-        .then(() => {
-          setGame(gameData);
-          setPlayer2Data(player2);
-          // setLoaded(false);
-        });
+    socket.on("game-ended", (errorMessage) => {
+      toast.error(errorMessage);
+      navigate("/Lobby");
     });
 
     return () => {
-      socket.off("player1-reconnected");
-      socket.off("player2-reconnected");
+      socket.off("player-reconnected");
     };
-  }, [setGame, setPlayer1Data, setPlayer2Data, socket]);
+  }, [navigate, setGame, setPlayer1Data, setPlayer2Data, socket]);
 
   useEffect(() => {
     const handleBeforeUnload = (e) => {
@@ -115,8 +76,7 @@ const GamePage = ({
       e.returnValue = "";
 
       setLoaded(true);
-      // reloadPlayerAndGameData();
-      // reloadData();
+      reloadData();
 
       return "Are you sure you want to leave? Your progress will be lost.";
     };
@@ -127,7 +87,6 @@ const GamePage = ({
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
       setLoaded(false);
-      // setShowRefreshModal(false);
     };
   }, []); // eslint-disable-line
 
