@@ -11,7 +11,17 @@ import { Modal } from "react-bootstrap";
 
 const API = process.env.REACT_APP_API_URL;
 
-const GamePage = ({ user, users, socket, game, setGame }) => {
+const GamePage = ({
+  user,
+  users,
+  socket,
+  game,
+  setGame,
+  // player1Data,
+  // player2Data,
+  // setPlayer1Data,
+  // setPlayer2Data,
+}) => {
   const { gameID } = useParams();
   const navigate = useNavigate();
 
@@ -21,7 +31,18 @@ const GamePage = ({ user, users, socket, game, setGame }) => {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState("");
 
-  const getPlayerData = async () => {
+  const reloadPlayerAndGameData = async () => {
+    // console.log("inside reloadPlayerAndGameData");
+    //  socket.emit("get-player-and-game-data", gameID);
+    // return new Promise((resolve, reject) => {
+    //   socket.emit("get-player-and-game-data", gameID, (res) => {
+    //     if (res.error) {
+    //       reject(res.error);
+    //     } else {
+    //       //
+    //     }
+    //   });
+    // });
     return axios
       .all([axios.get(`${API}/users`), axios.get(`${API}/games/${gameID}`)])
       .then((res) => {
@@ -46,7 +67,7 @@ const GamePage = ({ user, users, socket, game, setGame }) => {
 
   const reloadData = async () => {
     await toast
-      .promise(getPlayerData(), {
+      .promise(reloadPlayerAndGameData(), {
         containerId: "loadChessMatchData",
         pending: "Loading game...",
         success: "Game Data Reloaded!",
@@ -58,11 +79,44 @@ const GamePage = ({ user, users, socket, game, setGame }) => {
   };
 
   useEffect(() => {
+    socket.on("player1-reconnected", async (gameData, player1) => {
+      toast
+        .success(`${player1.username} Reconnected`, {
+          containerId: "player1-reconnected",
+        })
+        .then(() => {
+          setGame(gameData);
+          setPlayer1Data(player1);
+          // setLoaded(false);
+        });
+    });
+
+    socket.on("player2-reconnected", async (gameData, player2) => {
+      toast
+        .success(`${player2.username} Reconnected`, {
+          containerId: "player2-reconnected",
+        })
+        .then(() => {
+          setGame(gameData);
+          setPlayer2Data(player2);
+          // setLoaded(false);
+        });
+    });
+
+    return () => {
+      socket.off("player1-reconnected");
+      socket.off("player2-reconnected");
+    };
+  }, [setGame, setPlayer1Data, setPlayer2Data, socket]);
+
+  useEffect(() => {
     const handleBeforeUnload = (e) => {
       e.preventDefault();
       e.returnValue = "";
 
       setLoaded(true);
+      // reloadPlayerAndGameData();
+      // reloadData();
 
       return "Are you sure you want to leave? Your progress will be lost.";
     };
@@ -216,7 +270,7 @@ const GamePage = ({ user, users, socket, game, setGame }) => {
         theme="dark"
         autoClose={3000}
         position="top-center"
-        closeOnClick={false}
+        closeOnClick={true}
         pauseOnHover={false}
         pauseOnFocusLoss={false}
       />

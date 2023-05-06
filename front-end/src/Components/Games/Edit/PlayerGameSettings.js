@@ -6,7 +6,15 @@ import axios from "axios";
 
 const API = process.env.REACT_APP_API_URL;
 
-const PlayerGameSettings = ({ game, user, setGame, error, socket }) => {
+const PlayerGameSettings = ({
+  game,
+  setGame,
+  user,
+  error,
+  socket,
+  setPlayer1Data,
+  setPlayer2Data,
+}) => {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,19 +38,6 @@ const PlayerGameSettings = ({ game, user, setGame, error, socket }) => {
       }
     }
   }, [error, game.player1, game.player1id, navigate, user.id]);
-
-  useEffect(() => {
-    socket.emit("games-update-all-clients");
-
-    socket.on("host-started", (gameData) => {
-      setGame(gameData);
-      navigate(`/Room/${gameData.id}`);
-    });
-
-    return () => {
-      socket.off("host-started");
-    };
-  }, [socket, navigate, setGame]);
 
   const handleStartGame = async () => {
     const startingPosition =

@@ -10,7 +10,14 @@ import BotGameSettings from "./BotGameSettings";
 
 const API = process.env.REACT_APP_API_URL;
 
-const GameSettings = ({ user, socket, game, setGame }) => {
+const GameSettings = ({
+  user,
+  socket,
+  game,
+  setGame,
+  setPlayer1Data,
+  setPlayer2Data,
+}) => {
   const navigate = useNavigate();
   const { gameID } = useParams();
 
@@ -33,14 +40,24 @@ const GameSettings = ({ user, socket, game, setGame }) => {
   }, []); // eslint-disable-line
 
   useEffect(() => {
+    socket.emit("games-update-all-clients");
+
     socket.on("room-settings", (gameData) => {
-      setGame(gameData[0]);
+      setGame(gameData);
+    });
+
+    socket.on("host-started", (gameData, player1Data, player2Data) => {
+      setGame(gameData);
+      setPlayer1Data(player1Data);
+      setPlayer2Data(player2Data);
+      navigate(`/Room/${gameData.id}`);
     });
 
     return () => {
       socket.off("room-settings");
+      socket.off("host-started");
     };
-  });
+  }, [socket, navigate, setGame, setPlayer1Data, setPlayer2Data]);
 
   const alertUser = (e) => {
     e.preventDefault();
@@ -75,6 +92,8 @@ const GameSettings = ({ user, socket, game, setGame }) => {
                 user={user}
                 error={error}
                 socket={socket}
+                setPlayer1Data={setPlayer1Data}
+                setPlayer2Data={setPlayer2Data}
               />
             ) : (
               <BotGameSettings
@@ -82,6 +101,8 @@ const GameSettings = ({ user, socket, game, setGame }) => {
                 setGame={setGame}
                 error={error}
                 socket={socket}
+                setPlayer1Data={setPlayer1Data}
+                setPlayer2Data={setPlayer2Data}
               />
             )}
           </div>

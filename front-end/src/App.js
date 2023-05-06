@@ -38,6 +38,8 @@ const App = () => {
   const [users, setUsers] = useState([]);
   const [game, setGame] = useState({});
   const [games, setGames] = useState([]);
+  const [player1Data, setPlayer1Data] = useState({});
+  const [player2Data, setPlayer2Data] = useState({});
   const [isOpen, setIsOpen] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
   const [resize, setResize] = useState("");
@@ -211,6 +213,8 @@ const App = () => {
                   socket={socket}
                   game={game}
                   setGame={setGame}
+                  setPlayer1Data={setPlayer1Data}
+                  setPlayer2Data={setPlayer2Data}
                 />
               }
             />
@@ -223,6 +227,10 @@ const App = () => {
                   socket={socket}
                   game={game}
                   setGame={setGame}
+                  player1Data={player1Data}
+                  player2Data={player2Data}
+                  setPlayer1Data={setPlayer1Data}
+                  setPlayer2Data={setPlayer2Data}
                 />
               }
             />

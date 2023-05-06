@@ -22,11 +22,11 @@ games.get("/", async (req, res) => {
 
 games.get("/:id", async (req, res) => {
   const { id } = req.params;
-  const aGame = await getGameByID(id);
+  const gotAGame = await getGameByID(id);
 
-  if (aGame.length > 0) {
-    // console.log("=== GET game", aGame, "===");
-    res.status(200).json(aGame[0]);
+  if (gotAGame) {
+    // console.log("=== GET game", gotAGame, "===");
+    res.status(200).json(gotAGame[0]);
   } else {
     res.status(404).send(`Cannot get chess game with ID: ${id}`);
   }

@@ -29,7 +29,7 @@ const getAllGames = async () => {
 
 const getGameByID = async (id) => {
   try {
-    const game = await db.any(
+    const game = await db.oneOrNone(
       `SELECT
       games.id,
       games.room_name,

@@ -24,38 +24,44 @@ const addGamesSocketEventListeners = (io, socket, socketId) => {
   socket.on("room-created", async (gameData) => {
     const getGame = await getGameByID(gameData.id);
 
-    if (getGame.length > 0) {
-      // console.log(`Client connected: ${socketId}`);
+    if (getGame) {
       socket.join(`/Room/${gameData.id}/Settings`);
       socket.join(`/Room/${gameData.id}`);
       io.in(`/Room/${gameData.id}/Settings`).emit("room-settings", getGame);
     } else {
       const errorMessage = `Could not get game with ID: ${gameData.id}`;
       socket.emit("room-created-error", new Error(errorMessage));
+      socket.leave(`/Room/${gameData.id}`);
+      socket.leave(`/Room/${gameData.id}/Settings`);
     }
   });
 
   socket.on("room-joined", async (gameData) => {
     const getGame = await getGameByID(gameData.id);
 
-    if (getGame.length > 0) {
+    if (getGame) {
       socket.join(`/Room/${gameData.id}/Settings`);
       socket.join(`/Room/${gameData.id}`);
       io.in(`/Room/${gameData.id}/Settings`).emit("room-settings", getGame);
     } else {
       const errorMessage = `Could not get game with ID: ${gameData.id}`;
       socket.emit("room-created-error", new Error(errorMessage));
+      socket.leave(`/Room/${gameData.id}`);
       socket.leave(`/Room/${gameData.id}/Settings`);
     }
   });
 
   socket.on("start-game", async (gameData) => {
-    const player1Data = await getUserByID(gameData.player1id);
-    const player2Data = await getUserByID(gameData.player2id);
+    const [player1Data] = await getUserByID(gameData.player1id);
+    const [player2Data] = await getUserByID(gameData.player2id);
 
-    if (player1Data.length > 0 && player2Data.length > 0) {
-      io.in(`/Room/${gameData.id}/Settings`).emit("host-started", gameData);
-      // socket.join(`/Room/${gameData.id}`);
+    if (player1Data && player2Data) {
+      io.in(`/Room/${gameData.id}/Settings`).emit(
+        "host-started",
+        gameData,
+        player1Data,
+        player2Data
+      );
       // io.in(`/Room/${gameData.id}`).emit(
       //   "game-started",
       //   player1Data[0],
@@ -64,6 +70,48 @@ const addGamesSocketEventListeners = (io, socket, socketId) => {
     } else {
       const errorMessage = `Could not get player data: ${player1Data}, ${player2Data}`;
       socket.emit("room-created-error", new Error(errorMessage));
+    }
+  });
+
+  socket.on("get-player-and-game-data", async (gameId) => {
+    socket.leave(`/Room/${gameId}`);
+    socket.join(`/Room/${gameId}`);
+
+    const gameData = await getGameByID(gameId);
+    console.log("gameData", gameData);
+
+    if (gameData) {
+      const [player1Data] = await getUserByID(gameData.player1id);
+      const [player2Data] = await getUserByID(gameData.player2id);
+
+      if (player1Data) {
+        console.log("player1Data", player1Data);
+        io.in(`/Room/${gameId}`).emit(
+          "player1-reconnected",
+          gameData,
+          player1Data
+        );
+      }
+
+      if (player2Data) {
+        console.log("player2Data", player2Data);
+        io.in(`/Room/${gameId}`).emit(
+          "player2-reconnected",
+          gameData,
+          player2Data
+        );
+      }
+
+      if (!player1Data || !player2Data) {
+        console.log("inside player error");
+        const errorMessage = `Opponent has disconnected.`;
+        io.in(`/Room/${gameId}`).emit("opponent-disconnected", errorMessage);
+      }
+    } else {
+      console.log("inside game error");
+      const errorMessage = `Game has ended.`;
+      io.in(`/Room/${gameId}`).emit("game-ended", errorMessage);
+      socket.leave(`/Room/${gameId}`);
     }
   });
 

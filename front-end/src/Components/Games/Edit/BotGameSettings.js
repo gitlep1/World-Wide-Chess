@@ -63,8 +63,6 @@ const BotGameSettings = ({ game, setGame, error, socket }) => {
     await axios.put(`${API}/games/${game.id}`, updateGameData).then((res) => {
       socket.emit("games-update-all-clients");
       socket.emit("start-game", res.data);
-      setGame(res.data);
-      navigate(`/Room/${res.data.id}`);
     });
   };
 
