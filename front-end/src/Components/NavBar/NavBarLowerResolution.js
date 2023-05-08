@@ -34,7 +34,7 @@ const NavBarLowerResolution = ({ handleOpen }) => {
         </MDBContainer>
       </MDBNavbar>
 
-      <MDBCollapse show={showAnimated}>
+      {showAnimated ? (
         <div className="bg-light shadow-3 burgerMenu-body">
           <div
             id="navbarLink-lobby-container"
@@ -72,7 +72,7 @@ const NavBarLowerResolution = ({ handleOpen }) => {
             Account
           </div>
         </div>
-      </MDBCollapse>
+      ) : null}
     </>
   );
 };

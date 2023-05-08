@@ -62,11 +62,6 @@ const addGamesSocketEventListeners = (io, socket, socketId) => {
         player1Data,
         player2Data
       );
-      // io.in(`/Room/${gameData.id}`).emit(
-      //   "game-started",
-      //   player1Data[0],
-      //   player2Data[0]
-      // );
     } else {
       const errorMessage = `Could not get player data: ${player1Data}, ${player2Data}`;
       socket.emit("room-created-error", new Error(errorMessage));

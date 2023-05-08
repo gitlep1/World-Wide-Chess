@@ -8,7 +8,7 @@ const addUsersSocketEventListeners = (io, socket, socketId) => {
       socket.broadcast.emit("users", getUsers);
     } catch (err) {
       const errorMessage = "Could not get all users";
-      socket.emit("users-visit-error", new Error(errorMessage));
+      socket.emit("users-update-all-clients-error", new Error(errorMessage));
     }
   });
 

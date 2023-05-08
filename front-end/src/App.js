@@ -68,7 +68,7 @@ const App = () => {
       setGames(games);
     });
 
-    socket.on("users-visit-error", (error) => {
+    socket.on("users-update-all-clients-error", (error) => {
       setUserError(error);
     });
 
@@ -78,7 +78,7 @@ const App = () => {
 
     return () => {
       socket.off("users");
-      socket.off("users-visit-error");
+      socket.off("users-update-all-clients-error");
       socket.off("games");
       socket.off("games-update-all-clients-error");
     };
