@@ -1,0 +1,23 @@
+.FoFSection {
+  height: 100vh;
+  text-align: center;
+  animation: errorFoF 15s infinite;
+
+  @keyframes errorFoF {
+    0% {
+      color: red;
+    }
+    25% {
+      color: cyan;
+    }
+    50% {
+      color: crimson;
+    }
+    75% {
+      color: blue;
+    }
+    100% {
+      color: aliceblue;
+    }
+  }
+}

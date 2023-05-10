@@ -1,12 +1,20 @@
-.mainParent {
-  height: 100vh;
-  width: 100vw;
-}
+.NavBar-header-navigation {
+  h1 {
+    font-size: 18px;
+    color: white;
+    font-family: "Bungee Shade", cursive;
+    &:hover {
+      cursor: pointer;
+    }
+  }
 
-// #footer {
-//   border: 3px dotted black;
-//   background-color: burlywood;
-// }
+  #mainlogoImg {
+    width: 110px;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
 
 // font-family: 'Bungee Shade', cursive;
 // font-family: 'IM Fell English SC', serif;

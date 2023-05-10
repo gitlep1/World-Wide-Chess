@@ -1,0 +1,122 @@
+$small-desktop: 900px;
+$medium-desktop: 1100px;
+$large-desktop: 1300px;
+$extra-large-desktop: 1400px;
+
+.desktop-NavBar {
+  display: grid;
+  grid-template-columns: 1fr 250px 1fr;
+  background-color: #212529;
+
+  #desktop-NavBar-header {
+    grid-column: 2;
+    text-align: center;
+    color: aliceblue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #desktop-HomeAndLobby-container {
+    grid-column: 1;
+    grid-row: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: center;
+    font-size: 23px;
+    column-gap: 1em;
+
+    .desktop-NavBar-home-container {
+      grid-column: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      border-radius: 0.5em;
+      color: white;
+      background-color: #383838;
+      opacity: 85%;
+      height: 3em;
+      margin-left: 0.3em;
+
+      &:hover {
+        cursor: pointer;
+        opacity: 100%;
+      }
+    }
+
+    .desktop-NavBar-lobby-container {
+      grid-column: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      border-radius: 0.5em;
+      color: white;
+      background-color: #383838;
+      opacity: 85%;
+      height: 3em;
+
+      &:hover {
+        cursor: pointer;
+        opacity: 100%;
+      }
+    }
+  }
+
+  #desktop-shopAndMenu-container {
+    grid-column: 3;
+    grid-row: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: center;
+    font-size: 23px;
+    column-gap: 1em;
+
+    .desktop-NavBar-shop-container {
+      grid-column: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      border-radius: 0.5em;
+      color: white;
+      background-color: #383838;
+      opacity: 85%;
+      height: 3em;
+
+      &:hover {
+        cursor: pointer;
+        opacity: 100%;
+      }
+    }
+
+    .desktop-NavBar-menu-container {
+      grid-column: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      border-radius: 0.5em;
+      color: white;
+      background-color: #383838;
+      opacity: 85%;
+      height: 3em;
+      margin-right: 0.3em;
+
+      &:hover {
+        cursor: pointer;
+        opacity: 100%;
+      }
+    }
+  }
+
+  .active {
+    transition-duration: 0.1s;
+    margin-bottom: 1em;
+  }
+}

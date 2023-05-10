@@ -1,38 +1,24 @@
 import "./App.scss";
 import { useState, useEffect } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
-import { scaleRotate as SidebarMenu } from "react-burger-menu";
+import { useNavigate } from "react-router-dom";
 import io from "socket.io-client";
+
+// App stuff \\
+import DesktopApp from "./Components/DesktopApp/DesktopApp";
+import MobileApp from "./Components/MobileApp/MobileApp";
 
 // Page stuff \\
 import LandingPage from "./Components/LandingPage/LandingPage";
-import Homepage from "./Components/Homepage/Homepage";
-import LeaderBoard from "./Components/Leaderboard/LeaderBoard";
-
-// Nav stuff \\
-import NavBar from "./Components/NavBar/NavBar";
-import Sidebar from "./Components/Sidebar/Sidebar";
-import FoF from "./Components/FourOFour/FoF";
-
-// Account stuff \\
-import Accounts from "./Components/Accounts/Index/Accounts";
-import AccountPage from "./Components/Accounts/Show/AccountPage";
-import AccountDetails from "./Components/Accounts/Edit/AccountDetails";
-
-// Game stuff \\
-import Lobby from "./Components/Games/Index/Lobby";
-import GameSettings from "./Components/Games/Edit/GameSettings";
-import GamePage from "./Components/Games/Show/GamePage";
 
 // Custom function stuff \\
-import GetApi from "./CustomFunctions/GetApi";
+import DetectScreenSize from "./CustomFunctions/DetectScreenSize";
 
 const API = process.env.REACT_APP_API_URL;
 const socket = io(API);
 
 const App = () => {
   const navigate = useNavigate();
-  const [getData, cancelRequests] = GetApi();
+  const [screenSize, setScreenSize] = useState(0);
 
   const [user, setUser] = useState({});
   const [users, setUsers] = useState([]);
@@ -48,12 +34,18 @@ const App = () => {
 
   useEffect(() => {
     setLocalStorage();
+    setScreenSize(DetectScreenSize().width);
 
-    const intervalFunctions = setInterval(() => {
+    const handleResize = () => {
       resizeSidebar();
-    });
+      setScreenSize(DetectScreenSize().width);
+    };
 
-    return () => clearInterval(intervalFunctions);
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   useEffect(() => {
@@ -142,110 +134,52 @@ const App = () => {
     setIsOpen(false);
   };
 
-  const handleRefresh = async () => {
-    getData(`${API}/games`, setGames);
-    return cancelRequests;
-  };
-
   return user && authenticated ? (
-    <section id="outer-container" className="mainParent">
-      <NavBar handleOpen={handleSidebarOpen} authenticated={authenticated} />
-      <SidebarMenu
-        pageWrapId={"page-wrap"}
-        outerContainerId={"outer-container"}
-        isOpen={isOpen}
-        onClose={handleSidebarOpen}
-        customBurgerIcon={false}
-        right
-        width={resize}
-      >
-        <Sidebar
-          user={user}
-          authenticated={authenticated}
-          handleLogout={handleLogout}
+    screenSize >= 800 ? (
+      <>
+        <DesktopApp
           handleSidebarOpen={handleSidebarOpen}
+          user={user}
+          users={users}
+          authenticated={authenticated}
+          game={game}
+          games={games}
+          setGame={setGame}
+          setGames={setGames}
+          isOpen={isOpen}
+          handleUser={handleUser}
+          handleLogout={handleLogout}
+          resize={resize}
+          socket={socket}
+          player1Data={player1Data}
+          player2Data={player2Data}
+          setPlayer1Data={setPlayer1Data}
+          setPlayer2Data={setPlayer2Data}
         />
-      </SidebarMenu>
-
-      <main id="page-wrap">
-        <Routes>
-          <Route path="/">
-            {/* Account Routes */}
-            <Route path="/" index element={<Homepage users={users} />} />
-            <Route
-              path="Accounts"
-              element={<Accounts user={user} users={users} />}
-            />
-            <Route
-              path="Accounts/:userID"
-              element={<AccountPage user={user} />}
-            />
-            <Route
-              path="Accounts/:userID/Edit"
-              element={
-                <AccountDetails
-                  user={user}
-                  users={users}
-                  handleUser={handleUser}
-                  handleLogout={handleLogout}
-                />
-              }
-            />
-            {/* Game Routes */}
-            <Route
-              path="Lobby"
-              element={
-                <Lobby
-                  user={user}
-                  users={users}
-                  games={games}
-                  handleRefresh={handleRefresh}
-                  socket={socket}
-                  setGames={setGames}
-                />
-              }
-            />
-            <Route
-              path="Room/:gameID/Settings"
-              element={
-                <GameSettings
-                  user={user}
-                  socket={socket}
-                  game={game}
-                  setGame={setGame}
-                  setPlayer1Data={setPlayer1Data}
-                  setPlayer2Data={setPlayer2Data}
-                />
-              }
-            />
-            <Route
-              path="Room/:gameID"
-              element={
-                <GamePage
-                  user={user}
-                  users={users}
-                  socket={socket}
-                  game={game}
-                  setGame={setGame}
-                  player1Data={player1Data}
-                  player2Data={player2Data}
-                  setPlayer1Data={setPlayer1Data}
-                  setPlayer2Data={setPlayer2Data}
-                />
-              }
-            />
-            {/* LeaderBoard Route */}
-            <Route
-              path="Leaderboard"
-              element={
-                <LeaderBoard user={user} users={users} socket={socket} />
-              }
-            />
-            <Route path="*" element={<FoF />} />
-          </Route>
-        </Routes>
-      </main>
-    </section>
+      </>
+    ) : (
+      <>
+        <MobileApp
+          handleSidebarOpen={handleSidebarOpen}
+          user={user}
+          users={users}
+          authenticated={authenticated}
+          game={game}
+          games={games}
+          setGame={setGame}
+          setGames={setGames}
+          isOpen={isOpen}
+          handleUser={handleUser}
+          handleLogout={handleLogout}
+          resize={resize}
+          socket={socket}
+          player1Data={player1Data}
+          player2Data={player2Data}
+          setPlayer1Data={setPlayer1Data}
+          setPlayer2Data={setPlayer2Data}
+        />
+      </>
+    )
   ) : (
     <LandingPage handleUser={handleUser} users={users} />
   );
