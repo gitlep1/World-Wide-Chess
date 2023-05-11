@@ -41,15 +41,15 @@ const DesktopApp = ({
 }) => {
   return (
     <section id="desktop-outer-container" className="desktop-main-parent">
-      <NavBar handleOpen={handleSidebarOpen} authenticated={authenticated} />
       <SidebarMenu
-        pageWrapId={"desktop-page-wrap"}
         outerContainerId={"desktop-outer-container"}
+        pageWrapId={"desktop-page-wrap"}
         isOpen={isOpen}
         onClose={handleSidebarOpen}
         customBurgerIcon={false}
         right
         width={resize}
+        id="desktop-sidebarmenu"
       >
         <Sidebar
           user={user}
@@ -58,6 +58,8 @@ const DesktopApp = ({
           handleSidebarOpen={handleSidebarOpen}
         />
       </SidebarMenu>
+
+      <NavBar handleOpen={handleSidebarOpen} authenticated={authenticated} />
 
       <main id="desktop-page-wrap">
         <Routes>
@@ -69,7 +71,7 @@ const DesktopApp = ({
               element={<AccountPage user={user} />}
             />
             <Route
-              path="Accounts/:userID/Edit"
+              path="Accounts/:userID/Settings"
               element={
                 <AccountSettings
                   user={user}

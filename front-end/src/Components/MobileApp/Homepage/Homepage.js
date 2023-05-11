@@ -5,7 +5,7 @@ import "./Homepage.scss";
 import MonthlyTasks from "./MonthlyTasks";
 
 const Homepage = ({ users }) => {
-  const [selectedTaskButton, setSelectedTaskButton] = useState(false);
+  const [selectedTaskButton, setSelectedTaskButton] = useState(true);
 
   let topPlayer = {};
 
@@ -41,9 +41,9 @@ const Homepage = ({ users }) => {
           <div className="homepage-tasks">
             <div
               className={
-                selectedTaskButton
-                  ? "dailyTasks-button"
-                  : "dailyTasks-button-selected"
+                selectedTaskButton === true
+                  ? "dailyTasks-button-selected"
+                  : "dailyTasks-button"
               }
               onClick={() => setSelectedTaskButton(!selectedTaskButton)}
             >
@@ -51,7 +51,7 @@ const Homepage = ({ users }) => {
             </div>
             <div
               className={
-                selectedTaskButton
+                selectedTaskButton === false
                   ? "monthlyTasks-button-selected"
                   : "monthlyTasks-button"
               }

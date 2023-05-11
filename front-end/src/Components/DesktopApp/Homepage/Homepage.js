@@ -6,7 +6,21 @@ import DailyTasks from "./DailyTasks";
 import MonthlyTasks from "./MonthlyTasks";
 
 const Homepage = ({ users }) => {
-  const [selectedTaskButton, setSelectedTaskButton] = useState(false);
+  const [dailyTaskSelected, setDailyTaskSelected] = useState(true);
+  const [monthlyTaskSelected, setMonthlyTaskSelected] = useState(false);
+
+  const handleSelectedTaskButton = (taskSelected) => {
+    if (taskSelected === "daily") {
+      setDailyTaskSelected(true);
+      setMonthlyTaskSelected(false);
+    } else if (taskSelected === "monthly") {
+      setDailyTaskSelected(false);
+      setMonthlyTaskSelected(true);
+    } else {
+      setDailyTaskSelected(false);
+      setMonthlyTaskSelected(false);
+    }
+  };
 
   let topPlayer = {};
 
@@ -42,28 +56,32 @@ const Homepage = ({ users }) => {
           <div className="homepage-tasks">
             <div
               className={
-                selectedTaskButton
-                  ? "dailyTasks-button"
-                  : "dailyTasks-button-selected"
+                dailyTaskSelected
+                  ? "desktop-dailyTasks-button-selected"
+                  : "desktop-dailyTasks-button"
               }
-              onClick={() => setSelectedTaskButton(!selectedTaskButton)}
+              onClick={() => {
+                handleSelectedTaskButton("daily");
+              }}
             >
               <h3>Daily Tasks</h3>
             </div>
             <div
               className={
-                selectedTaskButton
-                  ? "monthlyTasks-button-selected"
-                  : "monthlyTasks-button"
+                monthlyTaskSelected
+                  ? "desktop-monthlyTasks-button-selected"
+                  : "desktop-monthlyTasks-button"
               }
-              onClick={() => setSelectedTaskButton(!selectedTaskButton)}
+              onClick={() => {
+                handleSelectedTaskButton("monthly");
+              }}
             >
               <h3>Monthly Tasks</h3>
             </div>
           </div>
           <div id="tasks-divider"></div>
           <div id="tasks-container">
-            {selectedTaskButton ? <MonthlyTasks /> : <DailyTasks />}
+            {dailyTaskSelected ? <DailyTasks /> : <MonthlyTasks />}
           </div>
         </div>
 

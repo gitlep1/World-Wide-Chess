@@ -62,7 +62,7 @@ $TigerGif: url("../../../Images/tigerRunning.gif");
         grid-template-columns: repeat(2, 1fr);
         column-gap: 1em;
 
-        .dailyTasks-button {
+        .desktop-dailyTasks-button {
           background-color: #575757;
           height: 50px;
           display: flex;
@@ -80,7 +80,7 @@ $TigerGif: url("../../../Images/tigerRunning.gif");
           }
         }
 
-        .dailyTasks-button-selected {
+        .desktop-dailyTasks-button-selected {
           background-color: #c0c0c0;
           height: 50px;
           display: flex;
@@ -93,7 +93,7 @@ $TigerGif: url("../../../Images/tigerRunning.gif");
           }
         }
 
-        .monthlyTasks-button {
+        .desktop-monthlyTasks-button {
           background-color: #575757;
           height: 50px;
           display: flex;
@@ -111,7 +111,7 @@ $TigerGif: url("../../../Images/tigerRunning.gif");
           }
         }
 
-        .monthlyTasks-button-selected {
+        .desktop-monthlyTasks-button-selected {
           background-color: #c0c0c0;
           height: 50px;
           display: flex;

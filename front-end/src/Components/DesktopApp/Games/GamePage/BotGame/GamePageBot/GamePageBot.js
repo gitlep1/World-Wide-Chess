@@ -56,6 +56,39 @@ const PlayVsBot = ({
     prevBoard.current.push(fen);
   }, [fen]);
 
+  useEffect(() => {
+    checkForEndGame();
+
+    const intervalFunction = setInterval(() => {
+      checkForEndGame();
+    }, 1000);
+
+    return () => clearInterval(intervalFunction);
+  }, []); // eslint-disable-line
+
+  const checkForEndGame = () => {
+    if (chessGame.in_checkmate()) {
+      if (chessGame.turn() === "w") {
+        if (game.player1color[0] === "w") {
+          setWinner(player2Data);
+        } else if (game.player2color[0] === "w") {
+          setWinner(player1Data);
+        }
+      } else if (chessGame.turn() === "b") {
+        if (game.player1color[0] === "b") {
+          setWinner(player2Data);
+        } else if (game.player2color[0] === "b") {
+          setWinner(player1Data);
+        }
+      }
+      setShowWinner(true);
+    }
+
+    if (chessGame.in_stalemate()) {
+      setStalemate(true);
+    }
+  };
+
   const makeRandomMove = () => {
     if (game.player2id === 1) {
       const depth = 2;
@@ -86,27 +119,6 @@ const PlayVsBot = ({
         chessGame.move(bestMove);
         setFen(chessGame.fen());
       });
-    }
-
-    if (chessGame.in_checkmate()) {
-      if (chessGame.turn() === "w") {
-        if (game.player1color[0] === "w") {
-          setWinner(player2Data);
-        } else if (game.player2color[0] === "w") {
-          setWinner(player1Data);
-        }
-      } else if (chessGame.turn() === "b") {
-        if (game.player1color[0] === "b") {
-          setWinner(player2Data);
-        } else if (game.player2color[0] === "b") {
-          setWinner(player1Data);
-        }
-      }
-      setShowWinner(true);
-    }
-
-    if (chessGame.in_stalemate()) {
-      setStalemate(true);
     }
   };
 
@@ -351,7 +363,7 @@ const PlayVsBot = ({
           </Modal.Body>
         </Modal>
 
-        {winner[0] && (
+        {winner && (
           <Modal
             className="winner-modal-container"
             show={showWinner}
@@ -360,7 +372,7 @@ const PlayVsBot = ({
           >
             <Modal.Header className="winner-modal-header">
               <Modal.Title>
-                Winner: <h1>{winner[0].username}</h1>
+                Winner: <h1>{winner.username}</h1>
               </Modal.Title>
             </Modal.Header>
             <Modal.Footer className="winner-modal-footer">
