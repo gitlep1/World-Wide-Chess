@@ -16,6 +16,16 @@ $extra-large-desktop: 1400px;
       display: flex;
       justify-content: center;
       align-items: center;
+
+      .desktop-NavBar-header-navigation {
+        h1 {
+          font-family: "Bungee Shade", cursive;
+          font-size: 18px;
+        }
+        #mainlogoImg {
+          width: 110px;
+        }
+      }
     }
 
     #desktop-HomeAndLobby-container {

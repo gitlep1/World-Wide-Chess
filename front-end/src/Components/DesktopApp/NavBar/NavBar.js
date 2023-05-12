@@ -48,12 +48,7 @@ const NavBar = ({ handleOpen, authenticated }) => {
     <nav className="desktop-NavBar-container">
       <div className={`desktop-NavBar ${hideNavbar ? "hide-navbar" : null} `}>
         <header id="desktop-NavBar-header">
-          <div
-            className="NavBar-header-navigation"
-            onClick={() => {
-              handleActiveNav("home");
-            }}
-          >
+          <div className="desktop-NavBar-header-navigation">
             <Image src={Logo} alt="Logo" id="mainlogoImg" />
             <h1>WORLD WIDE CHESS</h1>
           </div>
