@@ -53,7 +53,7 @@ const Sidebar = ({
               className="desktop-menu-item1"
               variant="light"
               onClick={() => {
-                navigate(`/Accounts/${user.id}Inbox`);
+                navigate(`/Accounts/${user.id}/Inbox`);
                 handleSidebarOpen();
               }}
             >

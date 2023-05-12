@@ -173,23 +173,14 @@ $TigerGif: url("../../../Images/tigerRunning.gif");
       }
     }
 
-    .homepage-facts {
+    .homepage-facts-container {
       // border: 5px solid orange;
       grid-column: 2;
       height: 80vh;
       overflow: auto;
+      overflow-x: hidden;
       width: 95%;
       margin: 0 auto;
-
-      .chessFacts {
-        // border: 5px solid red;
-        margin-inline: auto;
-
-        li {
-          text-align: left;
-          font-size: 20px;
-        }
-      }
     }
   }
 }

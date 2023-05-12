@@ -6,6 +6,7 @@ $giant: 1200px;
 .lobbyMain {
   // border: 5px solid red;
   height: 100%;
+  color: white;
 
   .lobbySection1 {
     // border: 5px solid cyan;
@@ -65,6 +66,7 @@ $giant: 1200px;
 
     .lobbyTable {
       // border: 5px solid blue;
+      background-color: darkgray;
       box-shadow: 5px 5px 5px 0px #000000, inset 4px 4px 15px 0px #000000,
         6px 5px 15px 5px;
     }

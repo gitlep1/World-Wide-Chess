@@ -22,6 +22,8 @@ import Lobby from "./Games/Lobby/Lobby";
 import GameSettings from "./Games/GameSettings/GameSettings";
 import GamePage from "./Games/GamePage/GamePage";
 
+import Dragtest from "./dragtest";
+
 const DesktopApp = ({
   handleSidebarOpen,
   user,
@@ -138,6 +140,9 @@ const DesktopApp = ({
             />
             {/* Shop Route */}
             <Route path="Shop" element={<Shop />} />
+
+            {/* drag test route */}
+            {/* <Route path="dragtest" element={<Dragtest />} /> */}
             <Route path="*" element={<FoF />} />
           </Route>
         </Routes>

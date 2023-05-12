@@ -2,8 +2,10 @@ import "./Homepage.scss";
 import { useState } from "react";
 import { Image } from "react-bootstrap";
 
-import DailyTasks from "./DailyTasks";
-import MonthlyTasks from "./MonthlyTasks";
+import DailyTasks from "./HomepageTasks/DailyTasks";
+import MonthlyTasks from "./HomepageTasks/MonthlyTasks";
+
+import HomepageFacts from "./HomepageFacts/HomepageFacts";
 
 const Homepage = ({ users }) => {
   const [dailyTaskSelected, setDailyTaskSelected] = useState(true);
@@ -85,9 +87,10 @@ const Homepage = ({ users }) => {
           </div>
         </div>
 
-        <div className="homepage-facts">
+        <div className="homepage-facts-container">
           <h1>Daily Chess Facts</h1>
-          <ul className="chessFacts">
+          <HomepageFacts />
+          {/* <ul className="chessFacts">
             <li>
               Legend has it that chess was invented around 200 B. C. by a
               commander, Hán Xin, who invented the game as a battle simulator.
@@ -140,7 +143,7 @@ const Homepage = ({ users }) => {
             <li>
               The game of chess reached Western Europe around the year 1000.
             </li>
-          </ul>
+          </ul> */}
         </div>
       </div>
     </section>

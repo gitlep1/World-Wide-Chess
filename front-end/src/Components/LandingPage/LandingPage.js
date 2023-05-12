@@ -1,9 +1,9 @@
+import "./LandingPage.scss";
 import { useState, useEffect } from "react";
 import { useSpring, animated } from "@react-spring/web";
 import { Button, Image } from "react-bootstrap";
-import Logo from "../../Images/Logo.png";
-import "./LandingPage.scss";
 
+import Logo from "../../Images/Logo.png";
 import Signup from "./Signup/SignUp";
 import Guest from "./Guest/Guest";
 import Signin from "./Signin/SignIn";

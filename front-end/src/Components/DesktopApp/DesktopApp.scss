@@ -41,3 +41,12 @@ Note: Beware of modifying this element as it can break the animations - you shou
   // display: none;
   background: rgba(0, 0, 0, 0.3);
 }
+
+.draggableCard {
+  cursor: grab;
+  user-select: none;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
