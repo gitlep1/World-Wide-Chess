@@ -1,19 +1,17 @@
-$small: 600px;
-$medium: 800px;
-$large: 1000px;
-$giant: 1200px;
+$small-desktop: 900px;
+$medium-desktop: 1100px;
+$large-desktop: 1300px;
+$extra-large-desktop: 1400px;
 
 $TestBorder: url("../../../Images/testBorder.png");
 $TigerGif: url("../../../Images/tigerRunning.gif");
 
-.homepageSection {
+.desktop-homepage-section {
   // border: 5px solid purple;
-  // height: 100vh;
+  height: 90vh;
   text-align: center;
-
-  img {
-    width: 90%;
-  }
+  color: rgb(215, 215, 215);
+  // background-color: #212529;
 
   // Top player profile stuff \\
   h1 {
@@ -39,36 +37,43 @@ $TigerGif: url("../../../Images/tigerRunning.gif");
   .homepage-content {
     // border: 5px solid red;
     display: grid;
-    grid-template-columns: 1;
-    row-gap: 1em;
-    height: 100%;
+    grid-template-columns: 300px 1fr;
+    column-gap: 1.5em;
+    // height: 95vh;
     overflow: auto;
+    align-items: center;
 
     .homepage-tasks-container {
       // border: 5px solid cyan;
       background-color: #212529;
-      grid-row: 1;
+      grid-column: 1;
       height: 70vh;
       width: 90%;
-      margin: 0 auto;
+      margin: 0 2em;
       margin-top: 1.5em;
       box-shadow: 0px 0px 0px 8px #000000, 0px 0px 0px 16px #4b4c4b,
         0px 0px 0px 24px #828482, 0px 0px 0px 31px #b2b5b2,
         0px 0px 0px 39px #daddda, 5px -2px 15px 5px rgba(0, 0, 0, 0);
+      border-radius: 10%;
 
       .homepage-tasks {
+        // border: 5px solid cyan;
         margin-top: 1em;
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         column-gap: 1em;
+        // height: 50em;
 
         .desktop-dailyTasks-button {
-          background-color: #575757;
-          height: 50px;
+          // border: 5px solid red;
+          background-color: #282e33;
+          color: rgb(195, 195, 195);
+          height: 4em;
           display: flex;
           align-items: center;
           justify-content: center;
           margin-left: 0.5em;
+          border-radius: 10%;
 
           h3 {
             margin-top: 0.5em;
@@ -76,17 +81,21 @@ $TigerGif: url("../../../Images/tigerRunning.gif");
 
           &:hover {
             cursor: pointer;
-            background-color: #c0c0c0;
+            color: black;
+            background-color: white;
           }
         }
 
         .desktop-dailyTasks-button-selected {
-          background-color: #c0c0c0;
-          height: 50px;
+          // background-color: #c0c0c0;
+          background-color: white;
+          color: black;
+          height: 4em;
           display: flex;
           align-items: center;
           justify-content: center;
           margin-left: 0.5em;
+          border-radius: 10%;
 
           h3 {
             margin-top: 0.5em;
@@ -94,12 +103,15 @@ $TigerGif: url("../../../Images/tigerRunning.gif");
         }
 
         .desktop-monthlyTasks-button {
-          background-color: #575757;
-          height: 50px;
+          // background-color: #575757;
+          background-color: #282e33;
+          color: rgb(195, 195, 195);
+          height: 4em;
           display: flex;
           align-items: center;
           justify-content: center;
           margin-right: 0.5em;
+          border-radius: 10%;
 
           h3 {
             margin-top: 0.5em;
@@ -107,17 +119,21 @@ $TigerGif: url("../../../Images/tigerRunning.gif");
 
           &:hover {
             cursor: pointer;
-            background-color: #c0c0c0;
+            color: black;
+            background-color: white;
           }
         }
 
         .desktop-monthlyTasks-button-selected {
-          background-color: #c0c0c0;
-          height: 50px;
+          // background-color: #c0c0c0;
+          background-color: white;
+          color: black;
+          height: 4em;
           display: flex;
           align-items: center;
           justify-content: center;
           margin-right: 0.5em;
+          border-radius: 10%;
 
           h3 {
             margin-top: 0.5em;
@@ -146,6 +162,7 @@ $TigerGif: url("../../../Images/tigerRunning.gif");
           width: 95%;
           color: white;
           font-size: 25px;
+          border-radius: 10%;
 
           .taskProgress {
             border: 3px solid gold;
@@ -158,11 +175,11 @@ $TigerGif: url("../../../Images/tigerRunning.gif");
 
     .homepage-facts {
       // border: 5px solid orange;
-      grid-row: 2;
+      grid-column: 2;
       height: 80vh;
       overflow: auto;
       width: 95%;
-      margin: auto;
+      margin: 0 auto;
 
       .chessFacts {
         // border: 5px solid red;
@@ -171,166 +188,6 @@ $TigerGif: url("../../../Images/tigerRunning.gif");
         li {
           text-align: left;
           font-size: 20px;
-        }
-      }
-    }
-  }
-}
-
-@media (min-width: $medium) {
-  .homepageSection {
-    // border: 5px solid black;
-    height: 80vh;
-    text-align: center;
-
-    img {
-      width: 90%;
-    }
-
-    // Top player profile stuff \\
-    h1 {
-      #topPlayer-border {
-        background-image: $TestBorder;
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position: center;
-
-        img {
-          width: 35px;
-        }
-
-        #topPlayer-background {
-          background-image: $TigerGif;
-          background-repeat: no-repeat;
-          background-size: cover;
-          background-position: center;
-        }
-      }
-    }
-
-    .homepage-content {
-      display: grid;
-      grid-template-columns: 500px 1fr;
-      column-gap: 1em;
-      height: 100%;
-
-      .homepage-tasks-container {
-        background-color: #212529;
-        margin-left: 1em;
-
-        .homepage-tasks {
-          margin-top: 1em;
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          column-gap: 1em;
-
-          .dailyTasks-button {
-            background-color: #575757;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-left: 0.5em;
-
-            h3 {
-              margin-top: 0.5em;
-            }
-
-            &:hover {
-              cursor: pointer;
-              background-color: #c0c0c0;
-            }
-          }
-
-          .dailyTasks-button-selected {
-            background-color: #c0c0c0;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-left: 0.5em;
-
-            h3 {
-              margin-top: 0.5em;
-            }
-          }
-
-          .monthlyTasks-button {
-            background-color: #575757;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 0.5em;
-
-            h3 {
-              margin-top: 0.5em;
-            }
-
-            &:hover {
-              cursor: pointer;
-              background-color: #c0c0c0;
-            }
-          }
-
-          .monthlyTasks-button-selected {
-            background-color: #c0c0c0;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 0.5em;
-
-            h3 {
-              margin-top: 0.5em;
-            }
-          }
-        }
-
-        #tasks-divider {
-          border: 3px solid white;
-          opacity: 100%;
-          width: 70%;
-          margin: auto;
-          margin-top: 1em;
-        }
-
-        #tasks-container {
-          height: 85%;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-evenly;
-          align-items: center;
-
-          .tasks {
-            border: 5px solid white;
-            height: 20%;
-            width: 95%;
-            color: white;
-            font-size: 25px;
-
-            .taskProgress {
-              border: 3px solid gold;
-              width: 80%;
-              margin: auto;
-            }
-          }
-        }
-      }
-
-      .homepage-facts {
-        overflow: auto;
-        grid-column: 2;
-        grid-row: 1;
-        height: 100%;
-
-        .chessFacts {
-          margin-inline: auto;
-
-          li {
-            text-align: left;
-            font-size: 20px;
-          }
         }
       }
     }

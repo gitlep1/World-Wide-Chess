@@ -39,7 +39,7 @@ const Homepage = ({ users }) => {
   });
 
   return (
-    <section className="homepageSection">
+    <section className="desktop-homepage-section">
       <div className="homepage-topPlayer">
         <h1>
           * Top Player:

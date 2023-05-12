@@ -27,6 +27,7 @@ const App = () => {
   const [player1Data, setPlayer1Data] = useState({});
   const [player2Data, setPlayer2Data] = useState({});
   const [isOpen, setIsOpen] = useState(false);
+  const [openInventory, setOpenInventory] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
   const [resize, setResize] = useState("");
   const [userError, setUserError] = useState("");
@@ -108,6 +109,10 @@ const App = () => {
     setIsOpen((prevOpen) => !prevOpen);
   };
 
+  const handleOpenInventory = () => {
+    setOpenInventory((prev) => !prev);
+  };
+
   const handleUser = (user) => {
     if (user) {
       setUser(user);
@@ -147,6 +152,8 @@ const App = () => {
           setGame={setGame}
           setGames={setGames}
           isOpen={isOpen}
+          openInventory={openInventory}
+          handleOpenInventory={handleOpenInventory}
           handleUser={handleUser}
           handleLogout={handleLogout}
           resize={resize}

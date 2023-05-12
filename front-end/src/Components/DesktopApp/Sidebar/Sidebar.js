@@ -1,8 +1,15 @@
-import { Button } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
 import "./Sidebar.scss";
+import { Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
-const Sidebar = ({ user, authenticated, handleLogout, handleSidebarOpen }) => {
+const Sidebar = ({
+  user,
+  authenticated,
+  handleLogout,
+  handleSidebarOpen,
+  openInventory,
+  handleOpenInventory,
+}) => {
   const navigate = useNavigate();
 
   return (
@@ -24,8 +31,8 @@ const Sidebar = ({ user, authenticated, handleLogout, handleSidebarOpen }) => {
               className="desktop-menu-item1"
               variant="dark"
               onClick={() => {
-                // navigate(`/Accounts/${user.id}/Edit`);
-                handleSidebarOpen();
+                handleOpenInventory();
+                // handleSidebarOpen();
               }}
             >
               Inventory

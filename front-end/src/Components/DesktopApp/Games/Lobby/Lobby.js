@@ -200,7 +200,7 @@ const Lobbypage = ({ user, games, socket, setGames }) => {
             <Form.Control
               type="text"
               name="searchbar"
-              placeholder="Room Name ..."
+              placeholder="Search Room Name ..."
               onChange={handleChange}
               value={searchbar}
             />

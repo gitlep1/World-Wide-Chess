@@ -5,6 +5,7 @@ import { scaleRotate as SidebarMenu } from "react-burger-menu";
 // Page stuff \\
 import Homepage from "./Homepage/Homepage";
 import LeaderBoard from "./Leaderboard/LeaderBoard";
+import Shop from "./Shop/Shop";
 
 // Nav stuff \\
 import NavBar from "./NavBar/NavBar";
@@ -14,6 +15,7 @@ import FoF from "./FourOFour/FoF";
 // Account stuff \\
 import AccountPage from "./Accounts/AccountPage/AccountPage";
 import AccountSettings from "./Accounts/AccountSettings/AccountSettings";
+import Inventory from "./Accounts/Inventory/Inventory";
 
 // Game stuff \\
 import Lobby from "./Games/Lobby/Lobby";
@@ -30,6 +32,8 @@ const DesktopApp = ({
   setGame,
   setGames,
   isOpen,
+  openInventory,
+  handleOpenInventory,
   handleUser,
   handleLogout,
   resize,
@@ -56,6 +60,8 @@ const DesktopApp = ({
           authenticated={authenticated}
           handleLogout={handleLogout}
           handleSidebarOpen={handleSidebarOpen}
+          openInventory={openInventory}
+          handleOpenInventory={handleOpenInventory}
         />
       </SidebarMenu>
 
@@ -130,10 +136,19 @@ const DesktopApp = ({
                 <LeaderBoard user={user} users={users} socket={socket} />
               }
             />
+            {/* Shop Route */}
+            <Route path="Shop" element={<Shop />} />
             <Route path="*" element={<FoF />} />
           </Route>
         </Routes>
       </main>
+
+      {openInventory ? (
+        <Inventory
+          openInventory={openInventory}
+          handleOpenInventory={handleOpenInventory}
+        />
+      ) : null}
     </section>
   );
 };
