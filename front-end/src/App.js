@@ -1,63 +1,81 @@
 import "./App.scss";
 import { useState, useEffect } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
-import { scaleRotate as SidebarMenu } from "react-burger-menu";
-// import { bubble as SidebarMenu } from "react-burger-menu";
+import { useNavigate } from "react-router-dom";
+import io from "socket.io-client";
+
+// App stuff \\
+import DesktopApp from "./Components/DesktopApp/DesktopApp";
+import MobileApp from "./Components/MobileApp/MobileApp";
 
 // Page stuff \\
 import LandingPage from "./Components/LandingPage/LandingPage";
-import Homepage from "./Components/Homepage/Homepage";
-import LeaderBoard from "./Components/Leaderboard/LeaderBoard";
-
-// Nav stuff \\
-import NavBar from "./Components/NavBar/NavBar";
-import Sidebar from "./Components/Sidebar/Sidebar";
-import FoF from "./Components/FourOFour/FoF";
-
-// Account stuff \\
-import Accounts from "./Components/Accounts/Index/Accounts";
-import AccountPage from "./Components/Accounts/Show/AccountPage";
-import AccountDetails from "./Components/Accounts/Edit/AccountDetails";
-
-// Game stuff \\
-import Lobby from "./Components/Games/Index/Lobby";
-import GameSettings from "./Components/Games/Edit/GameSettings";
-import GamePage from "./Components/Games/Show/GamePage";
 
 // Custom function stuff \\
-import GetApi from "./CustomFunctions/GetApi";
+import DetectScreenSize from "./CustomFunctions/DetectScreenSize";
+
+const API = process.env.REACT_APP_API_URL;
+const socket = io(API);
 
 const App = () => {
-  const API = process.env.REACT_APP_API_URL;
-
   const navigate = useNavigate();
-  const [getData, cancelRequests] = GetApi();
+  const [screenSize, setScreenSize] = useState(0);
 
   const [user, setUser] = useState({});
   const [users, setUsers] = useState([]);
+  const [game, setGame] = useState({});
   const [games, setGames] = useState([]);
+  const [player1Data, setPlayer1Data] = useState({});
+  const [player2Data, setPlayer2Data] = useState({});
   const [isOpen, setIsOpen] = useState(false);
+  const [openInventory, setOpenInventory] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
   const [resize, setResize] = useState("");
+  const [userError, setUserError] = useState("");
+  const [gameError, setGameError] = useState("");
 
   useEffect(() => {
-    getGamesAndUsers();
     setLocalStorage();
+    setScreenSize(DetectScreenSize().width);
 
-    const intervalFunctions = setInterval(() => {
+    const handleResize = () => {
       resizeSidebar();
-      getGamesAndUsers();
-    }, 1000);
+      setScreenSize(DetectScreenSize().width);
+    };
 
-    return () => clearInterval(intervalFunctions);
-  }, []); // eslint-disable-line
+    window.addEventListener("resize", handleResize);
 
-  const getGamesAndUsers = async () => {
-    await getData(`${API}/games`, setGames);
-    await getData(`${API}/users`, setUsers);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
-    return cancelRequests;
-  };
+  useEffect(() => {
+    socket.emit("users-update-all-clients");
+    socket.emit("games-update-all-clients");
+
+    socket.on("users", (users) => {
+      setUsers(users);
+    });
+
+    socket.on("games", (games) => {
+      setGames(games);
+    });
+
+    socket.on("users-update-all-clients-error", (error) => {
+      setUserError(error);
+    });
+
+    socket.on("games-update-all-clients-error", (error) => {
+      setGameError(error);
+    });
+
+    return () => {
+      socket.off("users");
+      socket.off("users-update-all-clients-error");
+      socket.off("games");
+      socket.off("games-update-all-clients-error");
+    };
+  }, []);
 
   const setLocalStorage = async () => {
     const data = window.localStorage.getItem("Current_User");
@@ -91,6 +109,10 @@ const App = () => {
     setIsOpen((prevOpen) => !prevOpen);
   };
 
+  const handleOpenInventory = () => {
+    setOpenInventory((prev) => !prev);
+  };
+
   const handleUser = (user) => {
     if (user) {
       setUser(user);
@@ -117,85 +139,54 @@ const App = () => {
     setIsOpen(false);
   };
 
-  const handleRefresh = async () => {
-    getData(`${API}/games`, setGames);
-    return cancelRequests;
-  };
-
   return user && authenticated ? (
-    <section id="outer-container" className="mainParent">
-      <NavBar handleOpen={handleSidebarOpen} authenticated={authenticated} />
-      <SidebarMenu
-        pageWrapId={"page-wrap"}
-        outerContainerId={"outer-container"}
-        isOpen={isOpen}
-        onClose={handleSidebarOpen}
-        customBurgerIcon={false}
-        right
-        width={resize}
-      >
-        <Sidebar
-          user={user}
-          authenticated={authenticated}
-          handleLogout={handleLogout}
+    screenSize >= 800 ? (
+      <>
+        <DesktopApp
           handleSidebarOpen={handleSidebarOpen}
+          user={user}
+          users={users}
+          authenticated={authenticated}
+          game={game}
+          games={games}
+          setGame={setGame}
+          setGames={setGames}
+          isOpen={isOpen}
+          openInventory={openInventory}
+          handleOpenInventory={handleOpenInventory}
+          handleUser={handleUser}
+          handleLogout={handleLogout}
+          resize={resize}
+          socket={socket}
+          player1Data={player1Data}
+          player2Data={player2Data}
+          setPlayer1Data={setPlayer1Data}
+          setPlayer2Data={setPlayer2Data}
         />
-      </SidebarMenu>
-
-      <main id="page-wrap">
-        <Routes>
-          <Route path="/">
-            {/* Account Routes */}
-            <Route path="/" index element={<Homepage users={users} />} />
-            <Route
-              path="Accounts"
-              element={<Accounts user={user} users={users} />}
-            />
-            <Route
-              path="Accounts/:userID"
-              element={<AccountPage user={user} />}
-            />
-            <Route
-              path="Accounts/:userID/Edit"
-              element={
-                <AccountDetails
-                  user={user}
-                  users={users}
-                  handleUser={handleUser}
-                  handleLogout={handleLogout}
-                />
-              }
-            />
-            {/* Game Routes */}
-            <Route
-              path="Lobby"
-              element={
-                <Lobby
-                  user={user}
-                  users={users}
-                  games={games}
-                  handleRefresh={handleRefresh}
-                />
-              }
-            />
-            <Route
-              path="Room/:gameID/Settings"
-              element={<GameSettings user={user} games={games} />}
-            />
-            <Route
-              path="Room/:gameID"
-              element={<GamePage user={user} users={users} games={games} />}
-            />
-            {/* LeaderBoard Route */}
-            <Route
-              path="Leaderboard"
-              element={<LeaderBoard user={user} users={users} />}
-            />
-            <Route path="*" element={<FoF />} />
-          </Route>
-        </Routes>
-      </main>
-    </section>
+      </>
+    ) : (
+      <>
+        <MobileApp
+          handleSidebarOpen={handleSidebarOpen}
+          user={user}
+          users={users}
+          authenticated={authenticated}
+          game={game}
+          games={games}
+          setGame={setGame}
+          setGames={setGames}
+          isOpen={isOpen}
+          handleUser={handleUser}
+          handleLogout={handleLogout}
+          resize={resize}
+          socket={socket}
+          player1Data={player1Data}
+          player2Data={player2Data}
+          setPlayer1Data={setPlayer1Data}
+          setPlayer2Data={setPlayer2Data}
+        />
+      </>
+    )
   ) : (
     <LandingPage handleUser={handleUser} users={users} />
   );

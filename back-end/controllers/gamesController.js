@@ -4,10 +4,10 @@ const games = express.Router();
 
 const {
   getAllGames,
-  getGamesByID,
-  createGames,
-  updateGames,
-  deleteGames,
+  getGameByID,
+  createGame,
+  updateGame,
+  deleteGame,
 } = require("../queries/games");
 
 games.get("/", async (req, res) => {
@@ -22,11 +22,11 @@ games.get("/", async (req, res) => {
 
 games.get("/:id", async (req, res) => {
   const { id } = req.params;
-  const aGame = await getGamesByID(id);
+  const gotAGame = await getGameByID(id);
 
-  if (aGame.length > 0) {
-    // console.log("=== GET game", aGame, "===");
-    res.status(200).json(aGame[0]);
+  if (gotAGame) {
+    // console.log("=== GET game", gotAGame, "===");
+    res.status(200).json(gotAGame);
   } else {
     res.status(404).send(`Cannot get chess game with ID: ${id}`);
   }
@@ -40,10 +40,10 @@ games.post("/", async (req, res) => {
     player2id: req.body.player2id,
   };
 
-  const newGame = await createGames(newGameData);
+  const newGame = await createGame(newGameData);
 
   if (newGame) {
-    // console.log("=== CREATE game", newGame, "===");
+    console.log("=== CREATE game", newGame, "===");
     res.status(200).json(newGame);
   } else {
     res.status(404).send("Cannot create a new game.");
@@ -61,11 +61,11 @@ games.put("/:id", async (req, res) => {
     current_positions: req.body.current_positions,
   };
 
-  const updateGame = await updateGames(id, updatedGameData);
+  const updateGameData = await updateGame(id, updatedGameData);
 
-  if (updateGame) {
-    // console.log("=== UPDATE game", updateGame, "===");
-    res.status(200).json(updateGame);
+  if (updateGameData) {
+    console.log("=== UPDATE game", updateGameData, "===");
+    res.status(200).json(updateGameData);
   } else {
     res.status(404).send("Couldn't update game.");
   }
@@ -76,8 +76,7 @@ games.put("/:id/move", async (req, res) => {
   const { from, to, promotion } = req.body; // move information
 
   // get the current game state from the database
-  const game = await getGamesByID(id);
-
+  const game = await getGameByID(id);
   // create a new chess.js instance using the current game state
   const chessGame = new Chess(game[0].current_positions);
 
@@ -91,7 +90,6 @@ games.put("/:id/move", async (req, res) => {
 
   if (promotion !== "") {
     const move = chessGame.move({ from, to, promotion });
-    // console.log(move);
     if (move) {
       const updatedGameData = {
         player2id: oldGameData.player2id,
@@ -101,7 +99,7 @@ games.put("/:id/move", async (req, res) => {
         current_positions: move.after,
       };
       // if the move is valid, update the game state in the database
-      const updatedGame = await updateGames(id, updatedGameData);
+      const updatedGame = await updateGame(id, updatedGameData);
       console.log("updated game ID: ", id, "with data: ", updatedGame);
       res.status(200).json(updatedGame);
     } else {
@@ -120,7 +118,7 @@ games.put("/:id/move", async (req, res) => {
         current_positions: move.after,
       };
       // if the move is valid, update the game state in the database
-      const updatedGame = await updateGames(id, updatedGameData);
+      const updatedGame = await updateGame(id, updatedGameData);
       // console.log("updated game ID: ", id, "with data: ", updatedGame);
       res.status(200).json(updatedGame);
     } else {
@@ -132,11 +130,11 @@ games.put("/:id/move", async (req, res) => {
 
 games.delete("/:id", async (req, res) => {
   const { id } = req.params;
-  const deleteGame = await deleteGames(id);
+  const gameDelete = await deleteGame(id);
 
-  if (deleteGame.id) {
-    console.log("=== DESTROY game", deleteGame, "===");
-    res.status(200).json(deleteGame);
+  if (gameDelete.id) {
+    console.log("=== DESTROY game", gameDelete, "===");
+    res.status(200).json(gameDelete);
   } else {
     res.status(404).send(`Game with the ID: ${id} could not be deleted.`);
   }
