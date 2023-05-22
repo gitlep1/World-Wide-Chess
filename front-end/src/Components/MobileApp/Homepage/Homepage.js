@@ -1,11 +1,25 @@
+import "./Homepage.scss";
 import { useState } from "react";
 import { Image } from "react-bootstrap";
-import DailyTasks from "./DailyTasks";
-import "./Homepage.scss";
-import MonthlyTasks from "./MonthlyTasks";
+
+import DailyTasks from "./HomepageTasks/DailyTasks";
+import MonthlyTasks from "./HomepageTasks/MonthlyTasks";
+
+import HomepageFacts from "./HomepageFacts/HomepageFacts";
 
 const Homepage = ({ users }) => {
-  const [selectedTaskButton, setSelectedTaskButton] = useState(true);
+  const [dailyTaskSelected, setDailyTaskSelected] = useState(true);
+  const [monthlyTaskSelected, setMonthlyTaskSelected] = useState(false);
+
+  const handleSelectedTaskButton = (taskSelected) => {
+    if (taskSelected === "daily") {
+      setDailyTaskSelected(true);
+      setMonthlyTaskSelected(false);
+    } else if (taskSelected === "monthly") {
+      setDailyTaskSelected(false);
+      setMonthlyTaskSelected(true);
+    }
+  };
 
   let topPlayer = {};
 
@@ -24,8 +38,8 @@ const Homepage = ({ users }) => {
   });
 
   return (
-    <section className="homepageSection">
-      <div className="homepage-topPlayer">
+    <section className="mobile-homepage-container">
+      <div>
         <h1>
           * Top Player:
           <span id="topPlayer-border">
@@ -41,34 +55,39 @@ const Homepage = ({ users }) => {
           <div className="homepage-tasks">
             <div
               className={
-                selectedTaskButton === true
+                dailyTaskSelected === true
                   ? "dailyTasks-button-selected"
                   : "dailyTasks-button"
               }
-              onClick={() => setSelectedTaskButton(!selectedTaskButton)}
+              onClick={() => handleSelectedTaskButton("daily")}
             >
-              <h3>Daily Tasks</h3>
+              <h3>
+                Daily <br /> Tasks
+              </h3>
             </div>
             <div
               className={
-                selectedTaskButton === false
+                monthlyTaskSelected === true
                   ? "monthlyTasks-button-selected"
                   : "monthlyTasks-button"
               }
-              onClick={() => setSelectedTaskButton(!selectedTaskButton)}
+              onClick={() => handleSelectedTaskButton("monthly")}
             >
-              <h3>Monthly Tasks</h3>
+              <h3>
+                Monthly <br /> Tasks
+              </h3>
             </div>
           </div>
           <div id="tasks-divider"></div>
           <div id="tasks-container">
-            {selectedTaskButton ? <MonthlyTasks /> : <DailyTasks />}
+            {dailyTaskSelected ? <DailyTasks /> : <MonthlyTasks />}
           </div>
         </div>
 
-        <div className="homepage-facts">
+        <div className="homepage-facts-container">
           <h1>Daily Chess Facts</h1>
-          <ul className="chessFacts">
+          <HomepageFacts />
+          {/* <ul className="chessFacts">
             <li>
               Legend has it that chess was invented around 200 B. C. by a
               commander, Hán Xin, who invented the game as a battle simulator.
@@ -121,7 +140,7 @@ const Homepage = ({ users }) => {
             <li>
               The game of chess reached Western Europe around the year 1000.
             </li>
-          </ul>
+          </ul> */}
         </div>
       </div>
     </section>

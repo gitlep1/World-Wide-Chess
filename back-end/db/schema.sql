@@ -45,3 +45,10 @@ CREATE TABLE messages (
   user_id INT NOT NULL REFERENCES users(id),
   message TEXT
 );
+
+DROP TABLE IF EXISTS facts;
+CREATE TABLE facts (
+  id SERIAL UNIQUE NOT NULL PRIMARY KEY,
+  fact_num INT,
+  fact TEXT
+);

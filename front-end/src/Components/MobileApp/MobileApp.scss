@@ -2,3 +2,32 @@
   height: 100vh;
   width: 100vw;
 }
+
+.bm-menu-wrap {
+  position: fixed;
+  height: 100%;
+}
+
+/* General sidebar styles */
+.bm-menu {
+  background: #282e33;
+  padding: 1em;
+  font-size: 14px;
+}
+
+/* Morph shape necessary with bubble or elastic */
+.bm-morph-shape {
+  fill: #2b2d42;
+}
+
+/* Wrapper for item list */
+.bm-item-list {
+  color: #edf2f4;
+  // padding: 0.8em;
+}
+
+/* Styling of overlay */
+.bm-overlay {
+  // display: none;
+  background: rgba(0, 0, 0, 0.3);
+}

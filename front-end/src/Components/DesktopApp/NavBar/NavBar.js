@@ -10,35 +10,35 @@ const NavBar = ({ handleOpen, authenticated }) => {
   const navigate = useNavigate();
 
   const [hideNavbar, setHideNavbar] = useState(false);
+  const [homeActive, setHomeActive] = useState(false);
   const [lobbyActive, setLobbyActive] = useState(false);
-  const [leaderboardActive, setLeaderboardActive] = useState(false);
   const [shopActive, setShopActive] = useState(false);
   const [menuActive, setMenuActive] = useState(false);
 
   const handleActiveNav = (active) => {
-    if (active === "lobby") {
-      setLobbyActive(true);
-      setLeaderboardActive(false);
+    if (active === "home") {
+      setHomeActive(true);
+      setLobbyActive(false);
       setShopActive(false);
       setMenuActive(false);
-    } else if (active === "leaderboard") {
-      setLobbyActive(false);
-      setLeaderboardActive(true);
+    } else if (active === "lobby") {
+      setHomeActive(false);
+      setLobbyActive(true);
       setShopActive(false);
       setMenuActive(false);
     } else if (active === "shop") {
+      setHomeActive(false);
       setLobbyActive(false);
-      setLeaderboardActive(false);
       setShopActive(true);
       setMenuActive(false);
     } else if (active === "menu") {
+      setHomeActive(false);
       setLobbyActive(false);
-      setLeaderboardActive(false);
       setShopActive(false);
       setMenuActive(true);
     } else {
+      setHomeActive(false);
       setLobbyActive(false);
-      setLeaderboardActive(false);
       setShopActive(false);
       setMenuActive(false);
     }
@@ -46,21 +46,23 @@ const NavBar = ({ handleOpen, authenticated }) => {
 
   return (
     <nav className="desktop-NavBar-container">
-      <div className={`desktop-NavBar ${hideNavbar ? "hide-navbar" : null} `}>
+      <div
+        className={`desktop-NavBar ${
+          hideNavbar ? "desktop-hide-navbar" : null
+        } `}
+      >
         <header id="desktop-NavBar-header">
-          <div className="desktop-NavBar-header-navigation">
-            <Image src={Logo} alt="Logo" id="mainlogoImg" />
-            <h1>WORLD WIDE CHESS</h1>
-          </div>
+          <Image src={Logo} alt="Logo" id="desktop-mainlogoImg" />
+          <h1>WORLD WIDE CHESS</h1>
         </header>
 
         <div id="desktop-HomeAndLobby-container">
           <div
-            className={`desktop-NavBar-home-container ${
-              lobbyActive ? "active" : null
+            className={`desktop-NavBar-home ${
+              homeActive ? "desktop-active" : null
             }`}
             onClick={() => {
-              handleActiveNav("lobby");
+              handleActiveNav("home");
               navigate("/");
             }}
           >
@@ -68,11 +70,11 @@ const NavBar = ({ handleOpen, authenticated }) => {
           </div>
 
           <div
-            className={`desktop-NavBar-lobby-container ${
-              leaderboardActive ? "active" : null
+            className={`desktop-NavBar-lobby ${
+              lobbyActive ? "desktop-active" : null
             }`}
             onClick={() => {
-              handleActiveNav("leaderboard");
+              handleActiveNav("lobby");
               navigate("/Lobby");
             }}
           >
@@ -82,8 +84,8 @@ const NavBar = ({ handleOpen, authenticated }) => {
 
         <div id="desktop-shopAndMenu-container">
           <div
-            className={`desktop-NavBar-shop-container ${
-              shopActive ? "active" : null
+            className={`desktop-NavBar-shop ${
+              shopActive ? "desktop-active" : null
             }`}
             onClick={() => {
               handleActiveNav("shop");
@@ -98,8 +100,8 @@ const NavBar = ({ handleOpen, authenticated }) => {
               handleActiveNav("menu");
               handleOpen();
             }}
-            className={`desktop-NavBar-menu-container ${
-              menuActive ? "active" : null
+            className={`desktop-NavBar-menu ${
+              menuActive ? "desktop-active" : null
             }`}
           >
             Menu

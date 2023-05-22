@@ -41,7 +41,6 @@ const MobileApp = ({
 }) => {
   return (
     <section id="mobile-outer-container" className="mobile-main-parent">
-      <NavBar handleOpen={handleSidebarOpen} authenticated={authenticated} />
       <SidebarMenu
         pageWrapId={"mobile-page-wrap"}
         outerContainerId={"mobile-outer-container"}
@@ -58,6 +57,8 @@ const MobileApp = ({
           handleSidebarOpen={handleSidebarOpen}
         />
       </SidebarMenu>
+
+      <NavBar handleOpen={handleSidebarOpen} authenticated={authenticated} />
 
       <main id="mobile-page-wrap">
         <Routes>

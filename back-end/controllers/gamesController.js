@@ -1,3 +1,4 @@
+const _ = require("lodash");
 const express = require("express");
 const Chess = require("chess.js").Chess;
 const games = express.Router();
@@ -21,7 +22,7 @@ games.get("/", async (req, res) => {
 });
 
 games.get("/:id", async (req, res) => {
-  const { id } = req.params;
+  const id = _.escape(req.params.id);
   const gotAGame = await getGameByID(id);
 
   if (gotAGame) {
@@ -33,6 +34,8 @@ games.get("/:id", async (req, res) => {
 });
 
 games.post("/", async (req, res) => {
+  console.log("=== req.headers", req.headers);
+
   const newGameData = {
     room_name: req.body.room_name,
     room_password: req.body.room_password,
