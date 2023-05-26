@@ -30,11 +30,8 @@ const HomepageFacts = () => {
   const handleCardSwipe = (cardIndex) => {
     setCards((prevCards) => {
       const newCards = [...prevCards];
-
-      // Remove the current card from the array and move it to the bottom
       const [removed] = newCards.splice(cardIndex, 1);
       newCards.push(removed);
-
       return newCards;
     });
   };

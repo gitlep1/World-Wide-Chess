@@ -5,6 +5,7 @@ import { bubble as SidebarMenu } from "react-burger-menu";
 // Page stuff \\
 import Homepage from "./Homepage/Homepage";
 import LeaderBoard from "./Leaderboard/LeaderBoard";
+import Shop from "./Shop/Shop";
 
 // Nav stuff \\
 import NavBar from "./NavBar/NavBar";
@@ -30,6 +31,8 @@ const MobileApp = ({
   setGame,
   setGames,
   isOpen,
+  openInventory,
+  handleOpenInventory,
   handleUser,
   handleLogout,
   resize,
@@ -42,19 +45,22 @@ const MobileApp = ({
   return (
     <section id="mobile-outer-container" className="mobile-main-parent">
       <SidebarMenu
-        pageWrapId={"mobile-page-wrap"}
         outerContainerId={"mobile-outer-container"}
+        pageWrapId={"mobile-page-wrap"}
         isOpen={isOpen}
         onClose={handleSidebarOpen}
         customBurgerIcon={false}
         right
         width={resize}
+        id="mobile-sidebarmenu"
       >
         <Sidebar
           user={user}
           authenticated={authenticated}
           handleLogout={handleLogout}
           handleSidebarOpen={handleSidebarOpen}
+          openInventory={openInventory}
+          handleOpenInventory={handleOpenInventory}
         />
       </SidebarMenu>
 
@@ -129,6 +135,9 @@ const MobileApp = ({
                 <LeaderBoard user={user} users={users} socket={socket} />
               }
             />
+            {/* Shop Route */}
+            <Route path="Shop" element={<Shop />} />
+            {/* FoF Route */}
             <Route path="*" element={<FoF />} />
           </Route>
         </Routes>

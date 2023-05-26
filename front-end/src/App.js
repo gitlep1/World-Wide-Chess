@@ -176,6 +176,8 @@ const App = () => {
           setGame={setGame}
           setGames={setGames}
           isOpen={isOpen}
+          openInventory={openInventory}
+          handleOpenInventory={handleOpenInventory}
           handleUser={handleUser}
           handleLogout={handleLogout}
           resize={resize}

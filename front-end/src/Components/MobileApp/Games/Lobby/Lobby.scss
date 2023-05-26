@@ -3,57 +3,85 @@ $medium: 800px;
 $large: 1000px;
 $giant: 1200px;
 
-.lobbyMain {
+.mobile-lobby-container {
   // border: 5px solid red;
-  height: 100%;
+  height: 90vh;
+  margin-top: 5%;
+  // overflow: auto;
 
-  .lobbySection1 {
+  .lobbySection1-container {
     // border: 5px solid cyan;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
 
-    h4 {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-top: 0.5em;
-      color: aliceblue;
-    }
+    .lobbySection1 {
+      // border: 5px solid green;
+      display: grid;
+      grid-template-columns: 1fr;
+      row-gap: 1em;
 
-    .lobbyButtons {
-      color: aliceblue;
-      background-color: black;
-      width: 10em;
-      height: 2.5em;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      justify-self: center;
-      opacity: 85%;
-      margin: 0.3em;
+      .lobby-create-button {
+        color: aliceblue;
+        background-color: black;
+        width: 12em;
+        height: 2.5em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        justify-self: center;
+        opacity: 85%;
 
-      &:hover {
-        opacity: 100%;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-        cursor: pointer;
+        &:hover {
+          opacity: 100%;
+          box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+          cursor: pointer;
+        }
       }
-    }
 
-    .lobby-searchbar-container {
-      // border: 5px solid red;
-      margin-top: 3%;
-      // text-align: center;
-      // color: white;
+      .lobby-searchbar-container {
+        // border: 5px solid white;
+        border-radius: 1em;
+        background-color: white;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 25px 1fr 25px;
+        column-gap: 0.5em;
+        justify-content: center;
+        align-items: center;
+
+        #lobby-searchbar {
+          border: none;
+        }
+
+        .lobby-searchbar-icon {
+          font-size: 25px;
+        }
+      }
+
+      .lobby-advanced-search-button {
+        color: aliceblue;
+        background-color: black;
+        width: 12em;
+        height: 2.5em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        justify-self: center;
+        opacity: 85%;
+
+        &:hover {
+          opacity: 100%;
+          box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+          cursor: pointer;
+        }
+      }
     }
   }
 
   .lobbySection2 {
-    // border: 5px solid blue;
+    // border: 5px solid cyan;
     display: flex;
     text-align: center;
     flex-direction: column;
-    height: 75vh;
-    width: 75%;
+    height: 31.5em;
     margin: 0 auto;
     overflow-y: auto;
     -ms-overflow-style: none;
@@ -63,34 +91,60 @@ $giant: 1200px;
       display: none;
     }
 
-    .lobbyTable {
-      // border: 5px solid blue;
-      box-shadow: 5px 5px 5px 0px #000000, inset 4px 4px 15px 0px #000000,
-        6px 5px 15px 5px;
+    .lobbyTable-container {
+      border: 3px solid white;
+      border-radius: 1em;
+      margin: 0 auto;
+      width: 90%;
+      color: aliceblue;
+      background-color: #1b1b1b;
+      font-size: 20px;
+
+      .lobbyTable-header {
+        // border: 3px solid white;
+        display: grid;
+        grid-template-columns: 65px repeat(2, 1fr);
+        justify-content: center;
+        align-items: center;
+        height: 2em;
+        margin: 0 0.5em;
+
+        #room-number {
+          // border-right: 2px solid white;
+        }
+
+        #room-name {
+          // border-right: 2px solid white;
+        }
+
+        #room-status {
+          // border-left: 2px solid white;
+        }
+      }
     }
   }
-}
 
-.lobbyModal {
-  text-align: center;
+  .lobbyModal {
+    text-align: center;
 
-  .lobbyModal-title {
-    background-color: black;
-    color: white;
-  }
+    .lobbyModal-title {
+      background-color: black;
+      color: white;
+    }
 
-  .lobbyModal-buttons {
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    margin-top: 5%;
-  }
+    .lobbyModal-buttons {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      margin-top: 5%;
+    }
 
-  .lobbyModal-footer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    background-color: black;
+    .lobbyModal-footer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      background-color: black;
+    }
   }
 }

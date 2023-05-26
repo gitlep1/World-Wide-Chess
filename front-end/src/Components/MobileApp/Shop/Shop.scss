@@ -1,0 +1,37 @@
+.mobile-shop-container {
+  // border: 5px solid red;
+  width: 99vw;
+  height: 85vh;
+  margin: 0 auto;
+  overflow: auto;
+  text-align: center;
+
+  .mobile-shop-searchbar-container {
+    // border: 5px solid cyan;
+    width: 250px;
+    margin: 0 auto;
+    margin-bottom: 3%;
+  }
+
+  .mobile-shop-items-container {
+    // border: 5px solid green;
+    height: 75vh;
+    background-color: #282e33;
+    overflow: auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+
+    .shop-item-card-container {
+      // border: 5px solid blue;
+      margin: 5px;
+
+      .shop-item-card {
+        .shop-item-card-img {
+          width: 160px;
+          height: 150px;
+          margin: 10px auto;
+        }
+      }
+    }
+  }
+}
