@@ -18,8 +18,10 @@
   "dependencies": {
     "chess.js": "^1.0.0-beta.5",
     "cors": "^2.8.5",
+    "csurf": "^1.11.0",
     "dotenv": "^16.0.1",
     "express": "~4.16.1",
+    "lodash": "^4.17.21",
     "nodemon": "^2.0.19",
     "pg": "^8.7.3",
     "pg-promise": "^10.11.1",

@@ -1,3 +1,4 @@
+const _ = require("lodash");
 const express = require("express");
 const Chess = require("chess.js").Chess;
 const games = express.Router();
@@ -21,7 +22,7 @@ games.get("/", async (req, res) => {
 });
 
 games.get("/:id", async (req, res) => {
-  const { id } = req.params;
+  const id = _.escape(req.params.id);
   const gotAGame = await getGameByID(id);
 
   if (gotAGame) {
@@ -33,6 +34,8 @@ games.get("/:id", async (req, res) => {
 });
 
 games.post("/", async (req, res) => {
+  console.log("=== req.headers", req.headers);
+
   const newGameData = {
     room_name: req.body.room_name,
     room_password: req.body.room_password,
@@ -72,12 +75,10 @@ games.put("/:id", async (req, res) => {
 });
 
 games.put("/:id/move", async (req, res) => {
-  const { id } = req.params; // game ID
-  const { from, to, promotion } = req.body; // move information
+  const { id } = req.params;
+  const { from, to, promotion } = req.body;
 
-  // get the current game state from the database
   const game = await getGameByID(id);
-  // create a new chess.js instance using the current game state
   const chessGame = new Chess(game[0].current_positions);
 
   const oldGameData = {
@@ -98,7 +99,7 @@ games.put("/:id/move", async (req, res) => {
         in_progress: oldGameData.in_progress,
         current_positions: move.after,
       };
-      // if the move is valid, update the game state in the database
+
       const updatedGame = await updateGame(id, updatedGameData);
       console.log("updated game ID: ", id, "with data: ", updatedGame);
       res.status(200).json(updatedGame);
@@ -107,7 +108,6 @@ games.put("/:id/move", async (req, res) => {
       res.status(404).send({ error: "Invalid move in error" });
     }
   } else {
-    // validate the move and make the move if it's legal
     const move = chessGame.move({ from, to });
     if (move) {
       const updatedGameData = {
@@ -117,7 +117,7 @@ games.put("/:id/move", async (req, res) => {
         in_progress: oldGameData.in_progress,
         current_positions: move.after,
       };
-      // if the move is valid, update the game state in the database
+
       const updatedGame = await updateGame(id, updatedGameData);
       // console.log("updated game ID: ", id, "with data: ", updatedGame);
       res.status(200).json(updatedGame);

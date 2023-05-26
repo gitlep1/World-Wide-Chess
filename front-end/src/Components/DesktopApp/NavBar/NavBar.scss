@@ -11,20 +11,18 @@ $extra-large-desktop: 1400px;
 
     #desktop-NavBar-header {
       grid-column: 2;
-      text-align: center;
       color: aliceblue;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
 
-      .desktop-NavBar-header-navigation {
-        h1 {
-          font-family: "Bungee Shade", cursive;
-          font-size: 18px;
-        }
-        #mainlogoImg {
-          width: 110px;
-        }
+      h1 {
+        font-family: "Bungee Shade", cursive;
+        font-size: 18px;
+      }
+      #desktop-mainlogoImg {
+        width: 110px;
       }
     }
 
@@ -37,7 +35,7 @@ $extra-large-desktop: 1400px;
       font-size: 23px;
       column-gap: 1em;
 
-      .desktop-NavBar-home-container {
+      .desktop-NavBar-home {
         grid-column: 1;
         display: flex;
         flex-direction: column;
@@ -57,7 +55,7 @@ $extra-large-desktop: 1400px;
         }
       }
 
-      .desktop-NavBar-lobby-container {
+      .desktop-NavBar-lobby {
         grid-column: 2;
         display: flex;
         flex-direction: column;
@@ -86,7 +84,7 @@ $extra-large-desktop: 1400px;
       font-size: 23px;
       column-gap: 1em;
 
-      .desktop-NavBar-shop-container {
+      .desktop-NavBar-shop {
         grid-column: 1;
         display: flex;
         flex-direction: column;
@@ -105,7 +103,7 @@ $extra-large-desktop: 1400px;
         }
       }
 
-      .desktop-NavBar-menu-container {
+      .desktop-NavBar-menu {
         grid-column: 2;
         display: flex;
         flex-direction: column;
@@ -126,13 +124,13 @@ $extra-large-desktop: 1400px;
       }
     }
 
-    .active {
+    .desktop-active {
       transition-duration: 0.1s;
       margin-bottom: 1em;
     }
   }
 
-  .hide-navbar {
+  .desktop-hide-navbar {
     display: none;
   }
 

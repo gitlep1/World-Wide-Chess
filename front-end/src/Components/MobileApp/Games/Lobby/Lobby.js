@@ -1,12 +1,14 @@
 import "./Lobby.scss";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Table, Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button, Form } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
+import { FcSearch } from "react-icons/fc";
+import { AiOutlineAppstore } from "react-icons/ai";
 import axios from "axios";
 
 import RenderLobby from "./RenderLobby/RenderLobby";
-import FilterSearch from "./FilterSearch/FilterSearch";
+import AdvancedSearch from "./AdvancedSearch/AdvancedSearch";
 import DetectScreenSize from "../../../../CustomFunctions/DetectScreenSize";
 
 const API = process.env.REACT_APP_API_URL;
@@ -19,9 +21,8 @@ const Lobbypage = ({ user, games, socket, setGames }) => {
   const [createRoomPassword, setCreateRoomPassword] = useState("");
   const [joinWithPassword, setJoinWithPassword] = useState("");
   const [searchbar, setSearchbar] = useState("");
-
   const [showCreate, setShowCreate] = useState(false);
-
+  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
   const [screenSize, setScreenSize] = useState(0);
 
   const [loading, setLoading] = useState(false);
@@ -54,8 +55,8 @@ const Lobbypage = ({ user, games, socket, setGames }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (createRoomName.length < 3 || createRoomName.length > 20) {
-      return toast.error("Room Name must be between 3-20 characters.", {
+    if (createRoomName.length < 3 || createRoomName.length > 10) {
+      return toast.error("Room Name must be between 3-10 characters.", {
         toastId: "createRoomNameError",
         position: "top-center",
         hideProgressBar: false,
@@ -185,48 +186,64 @@ const Lobbypage = ({ user, games, socket, setGames }) => {
   }
 
   return (
-    <section className="lobbyMain">
-      <section className="lobbySection1">
-        <div
-          onClick={() => {
-            setShowCreate(true);
-          }}
-          className="lobbyButtons"
-        >
-          CREATE
+    <section className="mobile-lobby-container">
+      <section className="lobbySection1-container">
+        <div className="lobbySection1">
+          <div
+            onClick={() => {
+              setShowCreate(true);
+            }}
+            className="lobby-create-button"
+          >
+            CREATE
+          </div>
+          <div className="lobby-searchbar-container">
+            <FcSearch className="lobby-searchbar-icon" />
+
+            <div>
+              <Form.Group controlId="lobby-searchbar">
+                <Form.Control
+                  type="text"
+                  name="searchbar"
+                  placeholder="Search Room Name ..."
+                  onChange={handleChange}
+                  value={searchbar}
+                />
+              </Form.Group>
+            </div>
+            <AiOutlineAppstore className="lobby-searchbar-icon" />
+          </div>
+          <div
+            onClick={() => {
+              setShowAdvancedSearch(!showAdvancedSearch);
+            }}
+            className="lobby-advanced-search-button"
+          >
+            <div>
+              <span>{showAdvancedSearch ? "↑" : "↓"}</span> Advanced Search
+              <span>{showAdvancedSearch ? "↑" : "↓"}</span>
+            </div>
+          </div>
+          {showAdvancedSearch && <AdvancedSearch gamesCopy={gamesCopy} />}
         </div>
-        <div className="lobby-searchbar-container">
-          <Form.Group controlId="lobby-searchbar">
-            <Form.Control
-              type="text"
-              name="searchbar"
-              placeholder="Room Name ..."
-              onChange={handleChange}
-              value={searchbar}
-            />
-          </Form.Group>
-        </div>
-        <FilterSearch gamesCopy={gamesCopy} />
       </section>
       <br />
       <section className="lobbySection2">
-        <Table striped bordered hover className="lobbyTable">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Room Name</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
+        <div className="lobbyTable-container">
+          <div className="lobbyTable-header">
+            <span id="room-number">#</span>
+            <span id="room-name">Room Name</span>
+            <span id="room-status">Status</span>
+          </div>
+          <div className="lobbyTable-body">
             <RenderLobby
               gamesCopy={gamesCopy}
               joinWithPassword={joinWithPassword}
               setJoinWithPassword={setJoinWithPassword}
               handleJoin={handleJoin}
             />
-          </tbody>
-        </Table>
+          </div>
+        </div>
       </section>
 
       <ToastContainer autoClose={3000} theme="dark" limit={3} />

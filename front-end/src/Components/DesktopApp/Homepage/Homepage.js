@@ -18,9 +18,6 @@ const Homepage = ({ users }) => {
     } else if (taskSelected === "monthly") {
       setDailyTaskSelected(false);
       setMonthlyTaskSelected(true);
-    } else {
-      setDailyTaskSelected(false);
-      setMonthlyTaskSelected(false);
     }
   };
 
@@ -41,7 +38,7 @@ const Homepage = ({ users }) => {
   });
 
   return (
-    <section className="desktop-homepage-section">
+    <section className="desktop-homepage-container">
       <div className="homepage-topPlayer">
         <h1>
           * Top Player:
@@ -66,7 +63,9 @@ const Homepage = ({ users }) => {
                 handleSelectedTaskButton("daily");
               }}
             >
-              <h3>Daily Tasks</h3>
+              <h3>
+                Daily <br /> Tasks
+              </h3>
             </div>
             <div
               className={
@@ -78,7 +77,9 @@ const Homepage = ({ users }) => {
                 handleSelectedTaskButton("monthly");
               }}
             >
-              <h3>Monthly Tasks</h3>
+              <h3>
+                Monthly <br /> Tasks
+              </h3>
             </div>
           </div>
           <div id="tasks-divider"></div>

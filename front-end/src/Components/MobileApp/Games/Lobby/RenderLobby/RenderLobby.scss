@@ -1,21 +1,32 @@
-.lobby-renderGames {
+.mobile-room-info {
+  display: grid;
+  grid-template-columns: 65px repeat(2, 1fr);
+  column-gap: 3%;
+  justify-content: center;
+  align-items: center;
+  margin: 1em 0.5em;
+  border: 3px solid white;
+  border-radius: 1em;
+  font-size: 15px;
+
   .room-number {
-    font-size: 25px;
+    // border-right: 2px solid white;
+    font-size: 30px;
   }
+
   .room-name {
-    color: white;
+    // border-right: 2px solid white;
     font-size: 25px;
   }
 
-  .status {
-    width: 20em;
+  .room-status {
+    // border: 5px solid green;
+    // display: grid;
+    // grid-template-columns: repeat(2, 1fr);
 
-    .lobbyStatusLinks {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-
-      .lobbyStatus1Parent {
-        // border: 5px solid red;
+    .lobby-status-buttons {
+      .lobby-button-one {
+        border: 3px solid white;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -24,6 +35,7 @@
         color: aliceblue;
         background-color: black;
         opacity: 85%;
+        border-radius: 1em;
 
         &:hover {
           opacity: 100%;
@@ -33,7 +45,8 @@
         }
       }
 
-      .lobbyStatusParent2 {
+      .lobby-button-two {
+        border: 3px solid white;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -42,6 +55,7 @@
         color: aliceblue;
         background-color: gray;
         opacity: 50%;
+        border-radius: 1em;
       }
     }
   }

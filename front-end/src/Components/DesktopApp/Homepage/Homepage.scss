@@ -6,7 +6,7 @@ $extra-large-desktop: 1400px;
 $TestBorder: url("../../../Images/testBorder.png");
 $TigerGif: url("../../../Images/tigerRunning.gif");
 
-.desktop-homepage-section {
+.desktop-homepage-container {
   // border: 5px solid purple;
   height: 90vh;
   text-align: center;
@@ -143,9 +143,8 @@ $TigerGif: url("../../../Images/tigerRunning.gif");
 
       #tasks-divider {
         border: 3px solid white;
-        opacity: 100%;
         width: 70%;
-        margin: auto;
+        margin: 0 auto;
         margin-top: 1em;
       }
 
@@ -162,12 +161,13 @@ $TigerGif: url("../../../Images/tigerRunning.gif");
           width: 95%;
           color: white;
           font-size: 25px;
-          border-radius: 10%;
+          border-radius: 1em;
 
           .taskProgress {
             border: 3px solid gold;
             width: 80%;
-            margin: auto;
+            margin: 0 auto;
+            border-radius: 1em;
           }
         }
       }
