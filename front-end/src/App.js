@@ -32,7 +32,6 @@ const App = () => {
   const [resize, setResize] = useState("");
   const [userError, setUserError] = useState("");
   const [gameError, setGameError] = useState("");
-  const test = "";
 
   useEffect(() => {
     setLocalStorage();

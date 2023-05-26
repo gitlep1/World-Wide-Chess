@@ -41,9 +41,9 @@ app.get("/csrf-token", (req, res) => {
 });
 
 app.use(express.json());
-app.use("/users", csrfProtection, userController);
+app.use("/users", userController);
 app.use("/games", gamesController);
-app.use("/previousGames", csrfProtection, previousGamesController);
+app.use("/previousGames", previousGamesController);
 
 app.get("/", (req, res) => {
   res.send("Start playing chess!");
