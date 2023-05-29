@@ -37,22 +37,55 @@ $giant: 1200px;
       }
 
       .lobby-searchbar-container {
-        // border: 5px solid white;
+        color: white;
+        background-color: #1b1b1b;
         border-radius: 1em;
-        background-color: white;
+        border: 3px solid white;
+        width: 95%;
         margin: 0 auto;
-        display: grid;
-        grid-template-columns: 25px 1fr 25px;
-        column-gap: 0.5em;
-        justify-content: center;
-        align-items: center;
 
-        #lobby-searchbar {
-          border: none;
+        .lobby-searchbar-1 {
+          // border: 3px solid orange;
+          display: grid;
+          grid-template-columns: 35px 1fr 35px;
+          column-gap: 0.5em;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
+          border-radius: 1em;
+
+          .lobby-searchbar-icon-1 {
+            font-size: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+
+          .lobby-searchbar-icon-2 {
+            font-size: 35px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+
+          #lobby-searchbar {
+            border: none;
+            border-radius: 1em;
+            background-color: #1b1b1b;
+            color: white;
+
+            &::placeholder {
+              color: white;
+            }
+          }
         }
 
-        .lobby-searchbar-icon {
-          font-size: 25px;
+        .lobby-searchbar-2 {
+          // border: 5px solid red;
+          border-radius: 1em;
+          position: relative;
+          display: flex;
+          justify-content: center;
         }
       }
 
@@ -78,6 +111,8 @@ $giant: 1200px;
 
   .lobbySection2 {
     // border: 5px solid cyan;
+    // position: relative;
+    // z-index: 1;
     display: flex;
     text-align: center;
     flex-direction: column;
@@ -103,7 +138,7 @@ $giant: 1200px;
       .lobbyTable-header {
         // border: 3px solid white;
         display: grid;
-        grid-template-columns: 65px repeat(2, 1fr);
+        grid-template-columns: repeat(2, 1fr);
         justify-content: center;
         align-items: center;
         height: 2em;

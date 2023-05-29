@@ -60,7 +60,6 @@ const DesktopApp = ({
           authenticated={authenticated}
           handleLogout={handleLogout}
           handleSidebarOpen={handleSidebarOpen}
-          openInventory={openInventory}
           handleOpenInventory={handleOpenInventory}
         />
       </SidebarMenu>
