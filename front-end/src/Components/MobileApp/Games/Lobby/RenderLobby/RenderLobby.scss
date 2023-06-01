@@ -1,6 +1,6 @@
 .mobile-room-info {
   display: grid;
-  grid-template-columns: 65px repeat(2, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   column-gap: 3%;
   justify-content: center;
   align-items: center;
@@ -36,6 +36,8 @@
         background-color: black;
         opacity: 85%;
         border-radius: 1em;
+        margin: 0.5em;
+        font-size: 14px;
 
         &:hover {
           opacity: 100%;
@@ -56,6 +58,8 @@
         background-color: gray;
         opacity: 50%;
         border-radius: 1em;
+        margin: 0.5em;
+        font-size: 14px;
       }
     }
   }

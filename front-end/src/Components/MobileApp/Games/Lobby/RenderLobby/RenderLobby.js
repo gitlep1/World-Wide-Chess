@@ -33,7 +33,6 @@ const RenderLobby = ({
     return gamesCopy.map((game, index) => {
       return (
         <div key={game.id} className="mobile-room-info">
-          <span className="room-number">{index + 1}</span>
           <span className="room-name">{game.room_name}</span>
           <span className="room-status">
             <section className="lobby-status-buttons">

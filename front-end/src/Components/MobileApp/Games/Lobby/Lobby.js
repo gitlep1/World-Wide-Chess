@@ -1,10 +1,11 @@
 import "./Lobby.scss";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSpring, animated } from "react-spring";
 import { Modal, Button, Form } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
-import { FcSearch } from "react-icons/fc";
-import { AiOutlineAppstore } from "react-icons/ai";
+import { MdManageSearch } from "react-icons/md";
+import { BiSearchAlt2 } from "react-icons/bi";
 import axios from "axios";
 
 import RenderLobby from "./RenderLobby/RenderLobby";
@@ -14,9 +15,10 @@ import DetectScreenSize from "../../../../CustomFunctions/DetectScreenSize";
 const API = process.env.REACT_APP_API_URL;
 
 const Lobbypage = ({ user, games, socket, setGames }) => {
-  let gamesCopy = [];
+  // let gamesCopy = [...games];
   const navigate = useNavigate();
 
+  let [gamesCopy, setGamesCopy] = useState([]);
   const [createRoomName, setCreateRoomName] = useState("");
   const [createRoomPassword, setCreateRoomPassword] = useState("");
   const [joinWithPassword, setJoinWithPassword] = useState("");
@@ -35,6 +37,10 @@ const Lobbypage = ({ user, games, socket, setGames }) => {
 
     return () => clearInterval(intervalFunctions);
   }, []);
+
+  useEffect(() => {
+    setGamesCopy([...games]);
+  }, [games]);
 
   const getScreenSize = () => {
     return setScreenSize(DetectScreenSize().width);
@@ -181,9 +187,13 @@ const Lobbypage = ({ user, games, socket, setGames }) => {
     gamesCopy = gamesList.filter((game) =>
       game.room_name.toLowerCase().includes(searchbar.toLowerCase())
     );
-  } else {
-    gamesCopy = [...games];
   }
+
+  const advancedSearchAnimation = useSpring({
+    height: showAdvancedSearch ? "26em" : "0",
+    opacity: showAdvancedSearch ? 1 : 0,
+    config: { duration: 500 },
+  });
 
   return (
     <section className="mobile-lobby-container">
@@ -198,9 +208,11 @@ const Lobbypage = ({ user, games, socket, setGames }) => {
             CREATE
           </div>
           <div className="lobby-searchbar-container">
-            <FcSearch className="lobby-searchbar-icon" />
+            <div className="lobby-searchbar-1">
+              <div className="lobby-searchbar-icon-1">
+                <BiSearchAlt2 />
+              </div>
 
-            <div>
               <Form.Group controlId="lobby-searchbar">
                 <Form.Control
                   type="text"
@@ -210,28 +222,37 @@ const Lobbypage = ({ user, games, socket, setGames }) => {
                   value={searchbar}
                 />
               </Form.Group>
+
+              <div
+                className="lobby-searchbar-icon-2"
+                onClick={() => {
+                  setShowAdvancedSearch(!showAdvancedSearch);
+                }}
+              >
+                <MdManageSearch />
+              </div>
             </div>
-            <AiOutlineAppstore className="lobby-searchbar-icon" />
+
+            <animated.div
+              className="lobby-searchbar-2"
+              style={advancedSearchAnimation}
+            >
+              {showAdvancedSearch && (
+                <AdvancedSearch
+                  setGamesCopy={setGamesCopy}
+                  setGames={setGames}
+                  games={games}
+                  socket={socket}
+                />
+              )}
+            </animated.div>
           </div>
-          <div
-            onClick={() => {
-              setShowAdvancedSearch(!showAdvancedSearch);
-            }}
-            className="lobby-advanced-search-button"
-          >
-            <div>
-              <span>{showAdvancedSearch ? "↑" : "↓"}</span> Advanced Search
-              <span>{showAdvancedSearch ? "↑" : "↓"}</span>
-            </div>
-          </div>
-          {showAdvancedSearch && <AdvancedSearch gamesCopy={gamesCopy} />}
         </div>
       </section>
       <br />
       <section className="lobbySection2">
         <div className="lobbyTable-container">
           <div className="lobbyTable-header">
-            <span id="room-number">#</span>
             <span id="room-name">Room Name</span>
             <span id="room-status">Status</span>
           </div>

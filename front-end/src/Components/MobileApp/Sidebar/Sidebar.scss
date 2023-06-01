@@ -1,70 +1,53 @@
-// /* Position and sizing of burger button */
-// .bm-burger-button {
-//   display: none;
-// }
+.mobile-menuSideBar-container {
+  // border: 5px solid cyan;
+  // width: 15em;
+  height: 100%;
 
-// /* Position and sizing of clickable cross button */
-// .bm-cross-button {
-//   height: 24px;
-//   width: 24px;
-// }
+  .mobile-menuSideBar {
+    // border: 5px solid black;
+    display: grid;
+    grid-template-columns: 1fr;
+    height: 80%;
 
-// /* Color/shape of close button cross */
-// .bm-cross {
-//   background: #bdc3c7;
-// }
+    .mobile-menuSideBar-userInfo {
+      // border: 5px solid green;
+      text-align: center;
+      grid-row: 1;
+      grid-column: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-around;
 
-// /*
-// Sidebar wrapper styles
-// Note: Beware of modifying this element as it can break the animations - you should not need to touch it in most cases
-// */
-// .bm-menu-wrap {
-//   position: fixed;
-//   height: 100%;
-// }
+      .profileImg {
+        width: 100px;
+      }
+    }
 
-// /* General sidebar styles */
-// .bm-menu {
-//   background: #373a47;
-//   padding: 2.5em 1.5em 0;
-//   font-size: 1.15em;
-// }
+    .mobile-menuSideBar-buttons-container1 {
+      // border: 5px solid cyan;
+      grid-column: 1 / span 2;
+      grid-row: 2;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      column-gap: 1em;
 
-// /* Morph shape necessary with bubble or elastic */
-// .bm-morph-shape {
-//   fill: #373a47;
-// }
+      .mobile-menu-item1 {
+        margin-bottom: 10px;
+      }
+    }
 
-// /* Wrapper for item list */
-// .bm-item-list {
-//   color: #b8b7ad;
-//   padding: 0.8em;
-// }
+    .mobile-menuSideBar-buttons-container2 {
+      // border: 5px solid red;
+      grid-column: 1 / span 2;
+      grid-row: 3;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
 
-// /* Individual item */
-// .menu-item {
-//   display: inline-block;
-//   color: #d1d1d1;
-//   margin-bottom: 10px;
-//   text-align: left;
-//   text-decoration: none;
-//   transition: color 0.2s;
-
-//   &:hover {
-//     color: #ffffff;
-//     cursor: pointer;
-//   }
-// }
-
-// /* Styling of overlay */
-// .bm-overlay {
-//   background: rgba(0, 0, 0, 0.3);
-// }
-
-// .profileImg {
-//   width: 150px;
-// }
-
-// .profileDataSection {
-//   text-align: center;
-// }
+      .mobile-menu-item2 {
+        margin-bottom: 10px;
+      }
+    }
+  }
+}
