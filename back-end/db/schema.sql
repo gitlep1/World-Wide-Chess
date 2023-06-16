@@ -52,3 +52,10 @@ CREATE TABLE facts (
   fact_num INT,
   fact TEXT
 );
+
+DROP TABLE IF EXISTS inventory;
+CREATE TABLE inventory (
+  id SERIAL UNIQUE NOT NULL PRIMARY KEY,
+  user_id INT,
+  item_name TEXT,
+);
