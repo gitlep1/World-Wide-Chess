@@ -6,16 +6,17 @@ CREATE DATABASE world_wide_chess;
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (
   id SERIAL UNIQUE NOT NULL PRIMARY KEY,
-  profileimg TEXT,
+  profileimg TEXT DEFAULT '../Images/DefaultProfImg.png',
   username TEXT UNIQUE NOT NULL,
   password TEXT NOT NULL,
   email TEXT UNIQUE NOT NULL,
-  theme TEXT DEFAULT null,
-  chess_coins INT DEFAULT 0,
+  theme TEXT DEFAULT 'default',
+  chess_coins INT DEFAULT 100,
   wins INT DEFAULT 0,
   ties INT DEFAULT 0,
   loss INT DEFAULT 0,
-  preferred_color TEXT DEFAULT null,
+  rating INT DEFAULT 1000,
+  preferred_color TEXT,
   last_online TIMESTAMP DEFAULT NOW()
 );
 
@@ -46,16 +47,24 @@ CREATE TABLE messages (
   message TEXT
 );
 
-DROP TABLE IF EXISTS facts;
-CREATE TABLE facts (
+DROP TABLE IF EXISTS shop;
+CREATE TABLE shop (
   id SERIAL UNIQUE NOT NULL PRIMARY KEY,
-  fact_num INT,
-  fact TEXT
+  item_img TEXT NOT NULL,
+  item_name TEXT NOT NULL,
+  item_price INT NOT NULL
 );
 
 DROP TABLE IF EXISTS inventory;
 CREATE TABLE inventory (
   id SERIAL UNIQUE NOT NULL PRIMARY KEY,
-  user_id INT,
-  item_name TEXT,
+  user_id INT NOT NULL REFERENCES users(id),
+  item_id INT REFERENCES shop(id)
+);
+
+DROP TABLE IF EXISTS facts;
+CREATE TABLE facts (
+  id SERIAL UNIQUE NOT NULL PRIMARY KEY,
+  fact_num INT NOT NULL,
+  fact TEXT NOT NULL
 );

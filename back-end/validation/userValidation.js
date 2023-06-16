@@ -1,4 +1,5 @@
 const checkValues = (req, res, next) => {
+  console.log(req.body.username, req.body.password, req.body.email);
   if (req.body.username && req.body.password && req.body.email) {
     next();
   } else {

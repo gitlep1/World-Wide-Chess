@@ -4,20 +4,24 @@
 }
 
 .bm-menu-wrap {
+  // border: 5px solid yellow;
   position: fixed;
   height: 100%;
 }
 
 /* General sidebar styles */
 .bm-menu {
+  // border: 5px solid blue;
   background: #282e33;
   padding: 1em;
   font-size: 14px;
+  width: 100%;
 }
 
 /* Morph shape necessary with bubble or elastic */
 .bm-morph-shape {
-  fill: #2b2d42;
+  // border: 5px solid red;
+  fill: #282e33;
 }
 
 /* Wrapper for item list */

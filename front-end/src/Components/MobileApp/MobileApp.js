@@ -15,6 +15,7 @@ import FoF from "./FourOFour/FoF";
 // Account stuff \\
 import AccountPage from "./Accounts/AccountPage/AccountPage";
 import AccountSettings from "./Accounts/AccountSettings/AccountSettings";
+import Inventory from "./Accounts/Inventory/Inventory";
 
 // Game stuff \\
 import Lobby from "./Games/Lobby/Lobby";
@@ -142,6 +143,14 @@ const MobileApp = ({
           </Route>
         </Routes>
       </main>
+
+      {openInventory ? (
+        <Inventory
+          openInventory={openInventory}
+          handleOpenInventory={handleOpenInventory}
+          user={user}
+        />
+      ) : null}
     </section>
   );
 };

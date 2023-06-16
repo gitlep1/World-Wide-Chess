@@ -11,7 +11,11 @@ const getAllUsers = async () => {
 
 const getUserByID = async (id) => {
   try {
-    const user = await db.any("SELECT * FROM users WHERE id = $1", id);
+    const user = await db.oneOrNone(
+      "SELECT * FROM users WHERE users.id = $1",
+      id
+    );
+    console.log(user);
     return user;
   } catch (err) {
     return err;
@@ -21,13 +25,8 @@ const getUserByID = async (id) => {
 const createUser = async (newUserData) => {
   try {
     const newUser = await db.one(
-      "INSERT INTO users (username, password, email, profileimg) VALUES($1, $2, $3, $4) RETURNING *",
-      [
-        newUserData.username,
-        newUserData.password,
-        newUserData.email,
-        newUserData.profileimg,
-      ]
+      "INSERT INTO users (username, password, email) VALUES($1, $2, $3) RETURNING *",
+      [newUserData.username, newUserData.password, newUserData.email]
     );
     return newUser;
   } catch (error) {
@@ -38,7 +37,7 @@ const createUser = async (newUserData) => {
 const updateUser = async (id, updatedUserData) => {
   try {
     const updateUser = await db.one(
-      "UPDATE users SET profileimg=$1, username=$2, password=$3, email=$4, theme=$5, chess_coins=$6, wins=$7, ties=$8, loss=$9, preferred_color=$10, last_online=$11 WHERE id=$12 RETURNING *",
+      "UPDATE users SET profileimg = $1, username = $2, password = $3, email = $4, theme = $5, chess_coins = $6, wins = $7, ties = $8, loss = $9, preferred_color = $10, last_online = $11 WHERE id = $12 RETURNING *",
       [
         updatedUserData.profileimg,
         updatedUserData.username,
@@ -66,7 +65,7 @@ const deleteUser = async (id) => {
       return false;
     }
     const deletedUser = await db.one(
-      "DELETE FROM users WHERE id=$1 RETURNING *",
+      "DELETE FROM users WHERE id = $1 RETURNING *",
       id
     );
     return deletedUser;
