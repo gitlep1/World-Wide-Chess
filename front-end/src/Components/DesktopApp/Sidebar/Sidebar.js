@@ -1,6 +1,7 @@
 import "./Sidebar.scss";
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { FaCoins } from "react-icons/fa";
 
 const Sidebar = ({
   user,
@@ -22,6 +23,9 @@ const Sidebar = ({
               className="profileImg"
             />
             <h1>{user.username}</h1>
+            <h2>
+              <FaCoins /> {user.chess_coins}
+            </h2>
             <h3>Rating:</h3>
           </aside>
 

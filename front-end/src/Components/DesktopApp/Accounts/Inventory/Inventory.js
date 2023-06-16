@@ -1,9 +1,15 @@
-import { useState } from "react";
 import "./Inventory.scss";
-import { Button, Modal, Form } from "react-bootstrap";
+import { useState, useEffect } from "react";
+import { Button, Modal, Form, Card } from "react-bootstrap";
+import { nanoid } from "nanoid";
+import axios from "axios";
 
-const Inventory = ({ openInventory, handleOpenInventory }) => {
+const API = process.env.REACT_APP_API_URL;
+
+const Inventory = ({ openInventory, handleOpenInventory, user }) => {
+  let InventoryItemsArr = [];
   const [searchbar, setSearchbar] = useState("");
+  const [inventoryItems, setInventoryItems] = useState([]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -12,6 +18,39 @@ const Inventory = ({ openInventory, handleOpenInventory }) => {
       setSearchbar(value);
     }
   };
+
+  useEffect(() => {
+    renderInventoryItems();
+  }, []); // eslint-disable-line
+
+  const renderInventoryItems = async () => {
+    await axios
+      .get(`${API}/inventory/${user.id}`)
+      .then((inventoryRes) => {
+        axios.get(`${API}/shop`).then((shopRes) => {
+          const getAllInventoryItems = inventoryRes.data.map((item) => {
+            for (const shopItem of shopRes.data) {
+              if (item.item_id === shopItem.id) {
+                return shopItem;
+              }
+            }
+            return null;
+          });
+          setInventoryItems(getAllInventoryItems);
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  if (searchbar !== "") {
+    InventoryItemsArr = inventoryItems.filter((item) =>
+      item.item_name.toLowerCase().includes(searchbar)
+    );
+  } else {
+    InventoryItemsArr = [...inventoryItems];
+  }
 
   return (
     <Modal
@@ -39,7 +78,24 @@ const Inventory = ({ openInventory, handleOpenInventory }) => {
       </Modal.Header>
       <Modal.Body>
         <div>
-          <h1>items</h1>
+          {InventoryItemsArr.map((item) => {
+            return (
+              <div key={nanoid()} className="shop-item-card-container">
+                <Card className="shop-item-card">
+                  <Card.Img
+                    className="shop-item-card-img"
+                    variant="top"
+                    src={item.item_img}
+                    alt={item.item_name}
+                  />
+                  <Card.Body>
+                    <Card.Title>{item.item_name}</Card.Title>
+                    <Button variant="dark">Equip</Button>
+                  </Card.Body>
+                </Card>
+              </div>
+            );
+          })}
         </div>
       </Modal.Body>
     </Modal>

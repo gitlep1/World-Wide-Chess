@@ -148,6 +148,7 @@ const MobileApp = ({
         <Inventory
           openInventory={openInventory}
           handleOpenInventory={handleOpenInventory}
+          user={user}
         />
       ) : null}
     </section>

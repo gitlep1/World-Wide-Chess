@@ -7,8 +7,6 @@ import MonthlyTasks from "./HomepageTasks/MonthlyTasks";
 
 import HomepageFacts from "./HomepageFacts/HomepageFacts";
 
-const API = process.env.REACT_APP_API_URL;
-
 const Homepage = ({ users }) => {
   const [dailyTaskSelected, setDailyTaskSelected] = useState(true);
   const [monthlyTaskSelected, setMonthlyTaskSelected] = useState(false);
