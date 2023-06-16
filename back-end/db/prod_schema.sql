@@ -1,6 +1,5 @@
 \c world-wide-chess-main-db-045fd67346474fc11;
 
-
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (
   id SERIAL UNIQUE NOT NULL PRIMARY KEY,
@@ -8,12 +7,13 @@ CREATE TABLE users (
   username TEXT UNIQUE NOT NULL,
   password TEXT NOT NULL,
   email TEXT UNIQUE NOT NULL,
-  theme TEXT DEFAULT null,
-  chess_coins INT DEFAULT 0,
+  theme TEXT DEFAULT 'default',
+  chess_coins INT DEFAULT 100,
   wins INT DEFAULT 0,
   ties INT DEFAULT 0,
   loss INT DEFAULT 0,
-  preferred_color TEXT DEFAULT null,
+  rating INT DEFAULT 1000,
+  preferred_color TEXT,
   last_online TIMESTAMP DEFAULT NOW()
 );
 
@@ -43,4 +43,25 @@ CREATE TABLE messages (
   user_id INT NOT NULL REFERENCES users(id),
   message TEXT
 );
+
+DROP TABLE IF EXISTS shop;
+CREATE TABLE shop (
+  id SERIAL UNIQUE NOT NULL PRIMARY KEY,
+  item_img TEXT NOT NULL,
+  item_name TEXT NOT NULL,
+  item_price INT NOT NULL,
+);
+
+DROP TABLE IF EXISTS inventory;
+CREATE TABLE inventory (
+  id SERIAL UNIQUE NOT NULL PRIMARY KEY,
+  user_id INT NOT NULL REFERENCES users(id),
+  item_id TEXT REFERENCES shop(id),
+);
+
+DROP TABLE IF EXISTS facts;
+CREATE TABLE facts (
+  id SERIAL UNIQUE NOT NULL PRIMARY KEY,
+  fact_num INT NOT NULL,
+  fact TEXT NOT NULL
 );

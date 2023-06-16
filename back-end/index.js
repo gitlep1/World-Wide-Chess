@@ -8,6 +8,10 @@ const addSocketEventListeners = require("./socket");
 const userController = require("./controllers/userController");
 const gamesController = require("./controllers/gamesController");
 const previousGamesController = require("./controllers/previousGamesController");
+const factsController = require("./controllers/factsController");
+const shopController = require("./controllers/shopController");
+const inventoryController = require("./controllers/inventoryController");
+const messagesController = require("./controllers/messagesController");
 
 require("dotenv").config();
 
@@ -39,11 +43,16 @@ app.get("/csrf-token", (req, res) => {
   res.set("X-CSRF-Token", req.csrfToken());
   res.status(200).send();
 });
-
+// app.use(csrfProtection);
 app.use(express.json());
 app.use("/users", userController);
 app.use("/games", gamesController);
-app.use("/previousGames", previousGamesController);
+// work on game history later \\
+// app.use("/previousGames", previousGamesController);
+app.use("/facts", factsController);
+app.use("/shop", shopController);
+app.use("/inventory", inventoryController);
+app.use("/messages", messagesController);
 
 app.get("/", (req, res) => {
   res.send("Start playing chess!");

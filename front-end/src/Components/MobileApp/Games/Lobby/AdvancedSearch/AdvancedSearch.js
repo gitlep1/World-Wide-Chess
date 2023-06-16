@@ -43,9 +43,9 @@ const FilterSearch = ({ setGamesCopy, setGames, games, socket }) => {
             game.player1id !== 1 &&
             game.player1id !== 2 &&
             game.player1id !== 3 &&
-            game.player2id !== 1 &&
-            game.player2id !== 2 &&
-            game.player2id !== 3
+            (game.player2id === 1 ||
+              game.player2id === 2 ||
+              game.player2id === 3)
         );
       }
 

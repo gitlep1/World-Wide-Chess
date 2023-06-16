@@ -31,7 +31,7 @@ const Sidebar = ({
               variant="dark"
               onClick={() => {
                 handleOpenInventory();
-                // handleSidebarOpen();
+                handleSidebarOpen();
               }}
             >
               Inventory
@@ -50,7 +50,7 @@ const Sidebar = ({
 
             <Button
               className="mobile-menu-item1"
-              variant="light"
+              variant="dark"
               onClick={() => {
                 navigate(`/Accounts/${user.id}/Inbox`);
                 handleSidebarOpen();
@@ -61,7 +61,7 @@ const Sidebar = ({
 
             <Button
               className="mobile-menu-item1"
-              variant="dark"
+              variant="light"
               onClick={() => {
                 navigate(`/Accounts/${user.id}/History`);
                 handleSidebarOpen();
@@ -74,7 +74,7 @@ const Sidebar = ({
           <aside className="mobile-menuSideBar-buttons-container2">
             <Button
               className="mobile-menu-item2"
-              variant="dark"
+              variant="success"
               onClick={() => {
                 navigate(`/Accounts/${user.id}/Settings`);
                 handleSidebarOpen();

@@ -14,14 +14,19 @@ const Inventory = ({ openInventory, handleOpenInventory }) => {
   };
 
   return (
-    <Modal show={openInventory} centered backdrop="static">
+    <Modal
+      show={openInventory}
+      centered
+      backdrop="static"
+      className="desktop-inventory-container"
+    >
       <Modal.Header>
         <Button variant="danger" onClick={handleOpenInventory}>
           X
         </Button>
         <Modal.Title>INVENTORY</Modal.Title>
-        <div className="lobby-searchbar-container">
-          <Form.Group controlId="lobby-searchbar">
+        <div className="inventory-searchbar-container">
+          <Form.Group controlId="inventory-searchbar">
             <Form.Control
               type="text"
               name="searchbar"

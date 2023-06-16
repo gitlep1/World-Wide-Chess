@@ -26,8 +26,8 @@ user.get("/", async (req, res) => {
 user.get("/:id", async (req, res) => {
   const { id } = req.params;
   const getAUser = await getUserByID(id);
-
-  if (getAUser.length > 0) {
+  console.log(getAUser);
+  if (getAUser) {
     // console.log("=== GET user by ID", getAUser, "===");
     res.status(200).json(getAUser);
   } else {
@@ -40,7 +40,6 @@ user.post("/", checkValues, async (req, res) => {
     username: req.body.username,
     password: req.body.password,
     email: req.body.email,
-    profileimg: req.body.profileimg,
   };
 
   const checkEmail = await checkIfEmailExists(newUserData.email);
