@@ -6,7 +6,7 @@ CREATE DATABASE world_wide_chess;
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (
   id SERIAL UNIQUE NOT NULL PRIMARY KEY,
-  profileimg TEXT DEFAULT '../Images/DefaultProfImg.png',
+  profileimg TEXT,
   username TEXT UNIQUE NOT NULL,
   password TEXT NOT NULL,
   email TEXT UNIQUE NOT NULL,
