@@ -1,8 +1,6 @@
 import "./RenderLobby.scss";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Modal, Button, Form } from "react-bootstrap";
-import { toast } from "react-toastify";
 
 const RenderLobby = ({
   gamesCopy,
@@ -10,8 +8,6 @@ const RenderLobby = ({
   setJoinWithPassword,
   handleJoin,
 }) => {
-  // const navigate = useNavigate();
-
   const [passwordGameId, setPasswordGameId] = useState("");
   const [showPasswordModal, setShowPasswordModal] = useState(false);
 
@@ -36,51 +32,50 @@ const RenderLobby = ({
   const renderLobbyGames = () => {
     return gamesCopy.map((game, index) => {
       return (
-        <tr key={game.id} className="lobby-renderGames">
-          <td className="room-number">{index + 1}</td>
-          <td>
-            <span className="room-name">{game.room_name}</span>
-          </td>
-          <td className="status">
-            {game.player2 ? (
-              <section className="lobbyStatusLinks">
-                <div className="lobbyStatusParent2">JOIN</div>
+        <div key={game.id} className="desktop-room-info">
+          <span className="room-name">{game.room_name}</span>
+          <span className="room-status">
+            <section className="lobby-status-buttons">
+              {game.player2 ? (
+                <>
+                  <div className="lobby-button-two">JOIN</div>
 
-                <div
-                  // onClick={() => {
-                  //   game.room_password
-                  //     ? handleShowPasswordModal()
-                  //     : console.log("no password");
-                  //   // handleJoin(game.id);
-                  // }}
-                  className="lobbyStatus1Parent"
-                >
-                  SPECTATE
-                </div>
-              </section>
-            ) : (
-              <section className="lobbyStatusLinks">
-                <div
-                  className="lobbyStatus1Parent"
-                  onClick={() => {
-                    game.room_password ? (
-                      <>
-                        {handleShowPasswordModal()}
-                        {setPasswordGameId(game.id)}
-                      </>
-                    ) : (
-                      handleJoin(game.id)
-                    );
-                  }}
-                >
-                  JOIN
-                </div>
+                  <div
+                    // onClick={() => {
+                    //   game.room_password
+                    //     ? handleShowPasswordModal()
+                    //     : console.log("no password");
+                    //   // handleJoin(game.id);
+                    // }}
+                    className="lobby-button-one"
+                  >
+                    SPECTATE
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div
+                    className="lobby-button-one"
+                    onClick={() => {
+                      game.room_password ? (
+                        <>
+                          {handleShowPasswordModal()}
+                          {setPasswordGameId(game.id)}
+                        </>
+                      ) : (
+                        handleJoin(game.id)
+                      );
+                    }}
+                  >
+                    JOIN
+                  </div>
 
-                <div className="lobbyStatusParent2">SPECTATE</div>
-              </section>
-            )}
-          </td>
-        </tr>
+                  <div className="lobby-button-two">SPECTATE</div>
+                </>
+              )}
+            </section>
+          </span>
+        </div>
       );
     });
   };

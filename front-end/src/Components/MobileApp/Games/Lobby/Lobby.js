@@ -293,7 +293,7 @@ const Lobbypage = ({ user, games, socket, setGames }) => {
                 className="lobbyModal-createRoomName-data"
               />
             </Form.Group>
-
+            <br />
             <h3 className="lobbyModal-Password">Password</h3>
             <Form.Group controlId="formPassword">
               <Form.Control
@@ -305,7 +305,7 @@ const Lobbypage = ({ user, games, socket, setGames }) => {
                 className="lobbyModal-password-data"
               />
             </Form.Group>
-
+            <br />
             <div className="lobbyModal-buttons">
               <Button
                 variant="danger"

@@ -1,59 +1,122 @@
-$small: 600px;
 $medium: 800px;
 $large: 1000px;
 $giant: 1200px;
 
-.lobbyMain {
+.desktop-lobby-container {
   // border: 5px solid red;
-  height: 100%;
-  color: white;
+  height: 90vh;
+  margin-top: 5%;
+  // overflow: auto;
 
-  .lobbySection1 {
+  .lobbySection1-container {
     // border: 5px solid cyan;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
 
-    h4 {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-top: 0.5em;
-      color: aliceblue;
-    }
+    .lobbySection1 {
+      // border: 5px solid green;
+      display: grid;
+      grid-template-columns: 1fr;
+      row-gap: 1em;
+      max-width: 70vw;
+      margin: 0 auto;
 
-    .lobbyButtons {
-      color: aliceblue;
-      background-color: black;
-      width: 10em;
-      height: 2.5em;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      justify-self: center;
-      opacity: 85%;
-      margin: 0.3em;
+      .lobby-create-button {
+        color: aliceblue;
+        background-color: black;
+        width: 12em;
+        height: 2.5em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        justify-self: center;
+        opacity: 85%;
 
-      &:hover {
-        opacity: 100%;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-        cursor: pointer;
+        &:hover {
+          opacity: 100%;
+          box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+          cursor: pointer;
+        }
       }
-    }
 
-    .lobby-searchbar-container {
-      // border: 5px solid red;
-      margin-top: 3%;
-      // width: 300px;
+      .lobby-searchbar-container {
+        color: white;
+        background-color: #1b1b1b;
+        border-radius: 1em;
+        border: 3px solid white;
+        width: 95%;
+        margin: 0 auto;
+
+        .lobby-searchbar-1 {
+          // border: 3px solid orange;
+          display: grid;
+          grid-template-columns: 35px 1fr 35px;
+          column-gap: 0.5em;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
+          border-radius: 1em;
+
+          .lobby-searchbar-icon-1 {
+            font-size: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+
+          .lobby-searchbar-icon-2 {
+            font-size: 35px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+
+          #lobby-searchbar {
+            border: none;
+            border-radius: 1em;
+            background-color: #1b1b1b;
+            color: white;
+
+            &::placeholder {
+              color: white;
+            }
+          }
+        }
+
+        .lobby-searchbar-2 {
+          // border: 5px solid red;
+          border-radius: 1em;
+          position: relative;
+          display: flex;
+          justify-content: center;
+        }
+      }
+
+      .lobby-advanced-search-button {
+        color: aliceblue;
+        background-color: black;
+        width: 12em;
+        height: 2.5em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        justify-self: center;
+        opacity: 85%;
+
+        &:hover {
+          opacity: 100%;
+          box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+          cursor: pointer;
+        }
+      }
     }
   }
 
   .lobbySection2 {
-    // border: 5px solid blue;
+    // border: 5px solid cyan;
     display: flex;
     text-align: center;
     flex-direction: column;
-    height: 75vh;
-    width: 75%;
+    height: 42em;
+    max-width: 90vw;
     margin: 0 auto;
     overflow-y: auto;
     -ms-overflow-style: none;
@@ -63,35 +126,48 @@ $giant: 1200px;
       display: none;
     }
 
-    .lobbyTable {
-      // border: 5px solid blue;
-      background-color: darkgray;
-      box-shadow: 5px 5px 5px 0px #000000, inset 4px 4px 15px 0px #000000,
-        6px 5px 15px 5px;
+    .lobbyTable-container {
+      border: 3px solid white;
+      border-radius: 1em;
+      margin: 0 auto;
+      width: 90%;
+      color: aliceblue;
+      background-color: #1b1b1b;
+      font-size: 20px;
+
+      .lobbyTable-header {
+        // border: 3px solid white;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        justify-content: center;
+        align-items: center;
+        height: 2em;
+        margin: 0 0.5em;
+      }
     }
   }
-}
 
-.lobbyModal {
-  text-align: center;
+  .lobbyModal {
+    text-align: center;
 
-  .lobbyModal-title {
-    background-color: black;
-    color: white;
-  }
+    .lobbyModal-title {
+      background-color: black;
+      color: white;
+    }
 
-  .lobbyModal-buttons {
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    margin-top: 5%;
-  }
+    .lobbyModal-buttons {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      margin-top: 5%;
+    }
 
-  .lobbyModal-footer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    background-color: black;
+    .lobbyModal-footer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      background-color: black;
+    }
   }
 }
