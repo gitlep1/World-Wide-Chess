@@ -11,7 +11,10 @@ const {
   deleteGame,
 } = require("../queries/games");
 
-games.get("/", async (req, res) => {
+const { requireAuth } = require("../validation/requireAuth");
+const myRequireAuth = requireAuth("games");
+
+games.get("/", myRequireAuth, async (req, res) => {
   const allGames = await getAllGames();
   if (allGames) {
     // console.log("=== GET games", allGames, "===");
@@ -21,7 +24,7 @@ games.get("/", async (req, res) => {
   }
 });
 
-games.get("/:id", async (req, res) => {
+games.get("/:id", myRequireAuth, async (req, res) => {
   const id = _.escape(req.params.id);
   const gotAGame = await getGameByID(id);
 
@@ -33,7 +36,7 @@ games.get("/:id", async (req, res) => {
   }
 });
 
-games.post("/", async (req, res) => {
+games.post("/", myRequireAuth, async (req, res) => {
   console.log("=== req.headers", req.headers);
 
   const newGameData = {
@@ -53,7 +56,7 @@ games.post("/", async (req, res) => {
   }
 });
 
-games.put("/:id", async (req, res) => {
+games.put("/:id", myRequireAuth, async (req, res) => {
   const { id } = req.params;
 
   const updatedGameData = {
@@ -74,7 +77,7 @@ games.put("/:id", async (req, res) => {
   }
 });
 
-games.put("/:id/move", async (req, res) => {
+games.put("/:id/move", myRequireAuth, async (req, res) => {
   const { id } = req.params;
   const { from, to, promotion } = req.body;
 
@@ -128,7 +131,7 @@ games.put("/:id/move", async (req, res) => {
   }
 });
 
-games.delete("/:id", async (req, res) => {
+games.delete("/:id", myRequireAuth, async (req, res) => {
   const { id } = req.params;
   const gameDelete = await deleteGame(id);
 

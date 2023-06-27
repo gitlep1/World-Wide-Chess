@@ -10,6 +10,4 @@ const checkValues = (req, res, next) => {
   }
 };
 
-module.exports = {
-  checkValues,
-};
+module.exports = { checkValues };

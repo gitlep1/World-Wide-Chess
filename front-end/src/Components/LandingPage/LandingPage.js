@@ -149,7 +149,9 @@ const LandingPage = ({ handleUser, users }) => {
         showSignUp={showSignUp}
         handleClose={handleClose}
       />
-      <Guest showGuest={showGuest} handleClose={handleClose} />
+      {showGuest ? (
+        <Guest showGuest={showGuest} handleUser={handleUser} />
+      ) : null}
       <Signin
         handleUser={handleUser}
         users={users}

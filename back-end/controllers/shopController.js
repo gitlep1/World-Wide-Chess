@@ -3,7 +3,10 @@ const shop = express.Router();
 
 const { getAllShopItems, getShopItemsByID } = require("../queries/shop");
 
-shop.get("/", async (req, res) => {
+const { requireAuth } = require("../validation/requireAuth");
+const myRequireAuth = requireAuth("shop");
+
+shop.get("/", myRequireAuth, async (req, res) => {
   const shopItems = await getAllShopItems();
 
   if (shopItems.length > 0) {
@@ -14,7 +17,7 @@ shop.get("/", async (req, res) => {
   }
 });
 
-shop.get("/:id", async (req, res) => {
+shop.get("/:id", myRequireAuth, async (req, res) => {
   const { id } = req.params;
   const getAshopItem = await getShopItemsByID(id);
 

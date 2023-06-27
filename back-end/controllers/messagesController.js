@@ -10,7 +10,10 @@ const {
   deleteMessage,
 } = require("../queries/messages");
 
-message.get("/", async (req, res) => {
+const { requireAuth } = require("../validation/requireAuth");
+const myRequireAuth = requireAuth("messages");
+
+message.get("/", myRequireAuth, async (req, res) => {
   const allMessages = await getAllMessages();
 
   if (allMessages) {
@@ -21,7 +24,7 @@ message.get("/", async (req, res) => {
   }
 });
 
-message.get("/user", async (req, res) => {
+message.get("/user", myRequireAuth, async (req, res) => {
   const { uid } = req.query;
   const getAllUserMessages = await getallUserMessagesByID(uid);
 
@@ -33,7 +36,7 @@ message.get("/user", async (req, res) => {
   }
 });
 
-message.get("/:id", async (req, res) => {
+message.get("/:id", myRequireAuth, async (req, res) => {
   const { id } = req.params;
   const getAMessage = await getMessageByID(id);
 
@@ -45,7 +48,7 @@ message.get("/:id", async (req, res) => {
   }
 });
 
-message.post("/", async (req, res) => {
+message.post("/", myRequireAuth, async (req, res) => {
   const newMessageData = {
     user_id: req.body.user_id,
     message: req.body.message,
@@ -61,7 +64,7 @@ message.post("/", async (req, res) => {
   }
 });
 
-message.put("/:id", async (req, res) => {
+message.put("/:id", myRequireAuth, async (req, res) => {
   const { id } = req.params;
 
   const updatedMessageData = {
@@ -79,7 +82,7 @@ message.put("/:id", async (req, res) => {
   }
 });
 
-message.delete("/:id", async (req, res) => {
+message.delete("/:id", myRequireAuth, async (req, res) => {
   const { id } = req.params;
 
   const deletedMessage = await deleteMessage(id);

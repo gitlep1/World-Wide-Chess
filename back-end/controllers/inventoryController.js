@@ -7,7 +7,10 @@ const {
 } = require("../queries/inventory");
 const { getShopItemsByID } = require("../queries/shop");
 
-inventory.get("/:uid", async (req, res) => {
+const { requireAuth } = require("../validation/requireAuth");
+const myRequireAuth = requireAuth("inventory");
+
+inventory.get("/:uid", myRequireAuth, async (req, res) => {
   const { uid } = req.params;
   const getAInventory = await getInventoryItemsByUserID(uid);
 
@@ -19,7 +22,7 @@ inventory.get("/:uid", async (req, res) => {
   }
 });
 
-inventory.post("/", async (req, res) => {
+inventory.post("/", myRequireAuth, async (req, res) => {
   const newInventoryData = {
     user_id: req.body.user_id,
     item_id: req.body.item_id,

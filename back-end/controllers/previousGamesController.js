@@ -9,7 +9,10 @@ const {
   deletePreviousGames,
 } = require("../queries/previousGames");
 
-games.get("/:userID", async (req, res) => {
+const { requireAuth } = require("../validation/requireAuth");
+const myRequireAuth = requireAuth("history");
+
+games.get("/:userID", myRequireAuth, async (req, res) => {
   const { userID } = req.params;
 
   const userPreviousGames = await getAllPreviousGames(userID);
@@ -21,7 +24,7 @@ games.get("/:userID", async (req, res) => {
   }
 });
 
-games.get("/:userID/:id", async (req, res) => {
+games.get("/:userID/:id", myRequireAuth, async (req, res) => {
   const { userID, id } = req.params;
   const previousGame = await getPreviousGamesByID(userID, id);
 
@@ -81,7 +84,7 @@ games.get("/:userID/:id", async (req, res) => {
 //   }
 // });
 
-games.delete("/:userID/:id", async (req, res) => {
+games.delete("/:userID/:id", myRequireAuth, async (req, res) => {
   const { userID, id } = req.params;
   const deletePreviousGame = await deletePreviousGames(userID, id);
 

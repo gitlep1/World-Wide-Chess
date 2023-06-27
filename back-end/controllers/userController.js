@@ -1,4 +1,5 @@
 const express = require("express");
+const jwt = require("jsonwebtoken");
 const user = express.Router();
 
 const {
@@ -11,8 +12,14 @@ const {
 } = require("../queries/users");
 
 const { checkValues } = require("../validation/userValidation");
+const { requireAuth } = require("../validation/requireAuth");
+const myRequireAuth = requireAuth("user");
 
-user.get("/", async (req, res) => {
+const JSK = process.env.JWT_SECRET;
+
+const DefaultProfImg = "../Images/DefaultProfImg.png";
+
+user.get("/", myRequireAuth, async (req, res) => {
   const allUsers = await getAllUsers();
 
   if (allUsers) {
@@ -23,10 +30,10 @@ user.get("/", async (req, res) => {
   }
 });
 
-user.get("/:id", async (req, res) => {
+user.get("/:id", myRequireAuth, async (req, res) => {
   const { id } = req.params;
   const getAUser = await getUserByID(id);
-  console.log(getAUser);
+
   if (getAUser) {
     // console.log("=== GET user by ID", getAUser, "===");
     res.status(200).json(getAUser);
@@ -37,6 +44,7 @@ user.get("/:id", async (req, res) => {
 
 user.post("/", checkValues, async (req, res) => {
   const newUserData = {
+    profileimg: req.body.profileimg,
     username: req.body.username,
     password: req.body.password,
     email: req.body.email,
@@ -51,14 +59,15 @@ user.post("/", checkValues, async (req, res) => {
 
     if (createdUser) {
       console.log("=== POST user", createdUser, "===");
-      res.status(201).json(createdUser);
+      const token = jwt.sign({ id: createdUser.id }, JSK, { expiresIn: "30d" });
+      res.status(201).json({ user: createdUser, token });
     } else {
       res.status(404).send("user not created");
     }
   }
 });
 
-user.put("/:id", checkValues, async (req, res) => {
+user.put("/:id", checkValues, myRequireAuth, async (req, res) => {
   const { id } = req.params;
 
   const updatedUserData = {
@@ -85,7 +94,7 @@ user.put("/:id", checkValues, async (req, res) => {
   }
 });
 
-user.delete("/:id", async (req, res) => {
+user.delete("/:id", myRequireAuth, async (req, res) => {
   const { id } = req.params;
 
   const deletedUser = await deleteUser(id);

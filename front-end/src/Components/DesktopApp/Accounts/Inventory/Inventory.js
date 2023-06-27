@@ -40,7 +40,7 @@ const Inventory = ({ openInventory, handleOpenInventory, user }) => {
         });
       })
       .catch((err) => {
-        console.log(err);
+        console.clear();
       });
   };
 

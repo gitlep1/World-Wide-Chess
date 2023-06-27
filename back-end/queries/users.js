@@ -15,7 +15,6 @@ const getUserByID = async (id) => {
       "SELECT * FROM users WHERE users.id = $1",
       id
     );
-    console.log(user);
     return user;
   } catch (err) {
     return err;
@@ -25,8 +24,13 @@ const getUserByID = async (id) => {
 const createUser = async (newUserData) => {
   try {
     const newUser = await db.one(
-      "INSERT INTO users (username, password, email) VALUES($1, $2, $3) RETURNING *",
-      [newUserData.username, newUserData.password, newUserData.email]
+      "INSERT INTO users (profileimg, username, password, email) VALUES($1, $2, $3, $4) RETURNING *",
+      [
+        newUserData.profileimg,
+        newUserData.username,
+        newUserData.password,
+        newUserData.email,
+      ]
     );
     return newUser;
   } catch (error) {

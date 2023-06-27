@@ -13,11 +13,14 @@ const API = process.env.REACT_APP_API_URL;
 const Signup = ({ handleUser, showSignUp, handleClose }) => {
   const [getData, cancelRequests] = GetApi();
   const [users, setUsers] = useState([]);
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    passwordConfirm: "",
+  });
 
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordConfirm, setPasswordConfirm] = useState("");
+  const { username, email, password, passwordConfirm } = formData;
 
   const [error, setError] = useState("");
 
@@ -33,25 +36,20 @@ const Signup = ({ handleUser, showSignUp, handleClose }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === "username") {
-      setUsername(value);
-    } else if (name === "password") {
-      setPassword(value);
-    } else if (name === "email") {
-      setEmail(value);
-    } else if (name === "passwordConfirm") {
-      setPasswordConfirm(value);
-    }
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const newUser = {
-      username: username,
-      password: password,
-      email: email,
       profileimg: defaultProfImg,
+      username,
+      password,
+      email,
     };
 
     if (newUser.username.length > 12) {
@@ -70,9 +68,9 @@ const Signup = ({ handleUser, showSignUp, handleClose }) => {
     }
 
     if (
-      newUser.username === "" ||
-      newUser.password === "" ||
-      newUser.email === ""
+      [newUser.username, newUser.password, newUser.email].some(
+        (field) => !field
+      )
     ) {
       return toast.error("Please make sure to fill out all fields.", {
         position: "top-center",
@@ -94,33 +92,45 @@ const Signup = ({ handleUser, showSignUp, handleClose }) => {
       });
     }
 
-    const checkUser = users.filter(
+    const checkUser = users.some(
       (user) => user.email === email || user.username === username
     );
 
-    if (checkUser.length > 0) {
+    if (checkUser) {
       return toast.error("Email or Username already exists!", {
         position: "top-right",
         pauseOnFocusLoss: false,
         closeOnClick: true,
         pauseOnHover: false,
       });
-    } else {
-      await axios
-        .post(`${API}/users`, newUser)
-        .then((res) => {
-          notify(res.data);
-        })
-        .catch((err) => {
-          setError(err);
-          notify();
-        });
     }
+
+    await axios
+      .post(`${API}/users`, newUser)
+      .then((res) => {
+        notify(res.data);
+      })
+      .catch((err) => {
+        setError(err);
+        notify();
+      });
   };
 
   const notify = (newUser) => {
-    error !== ""
-      ? toast.error("There has been an unexpected error", {
+    if (error) {
+      toast.error("There has been an unexpected error", {
+        position: "top-center",
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        pauseOnFocusLoss: false,
+        draggable: true,
+        progress: undefined,
+      });
+    } else {
+      toast.success(
+        "User account has been created. You have automatially been signed in. \n You will be redirected in 3 seconds.",
+        {
           position: "top-center",
           hideProgressBar: false,
           closeOnClick: false,
@@ -128,30 +138,22 @@ const Signup = ({ handleUser, showSignUp, handleClose }) => {
           pauseOnFocusLoss: false,
           draggable: true,
           progress: undefined,
-        })
-      : toast.success(
-          "User account has been created. You have automatially been signed in. \n You will be redirected in 3 seconds.",
-          {
-            position: "top-center",
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: false,
-            pauseOnFocusLoss: false,
-            draggable: true,
-            progress: undefined,
-          }
-        );
-    setTimeout(() => {
-      handleUser(newUser);
-    }, 4100);
-    clearFields();
+        }
+      );
+      setTimeout(() => {
+        handleUser(newUser);
+      }, 4100);
+      clearFields();
+    }
   };
 
   const clearFields = () => {
-    setUsername("");
-    setPassword("");
-    setEmail("");
-    setPasswordConfirm("");
+    setFormData({
+      username: "",
+      email: "",
+      password: "",
+      passwordConfirm: "",
+    });
   };
 
   return (

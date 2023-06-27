@@ -2,8 +2,11 @@ const express = require("express");
 const facts = express.Router();
 
 const { getAllFacts } = require("../queries/facts");
+const { requireAuth } = require("../validation/requireAuth");
 
-facts.get("/", async (req, res) => {
+const myRequireAuth = requireAuth("facts");
+
+facts.get("/", myRequireAuth, async (req, res) => {
   const allFacts = await getAllFacts();
 
   if (allFacts) {
