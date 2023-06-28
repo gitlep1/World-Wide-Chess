@@ -42,6 +42,8 @@ const MobileApp = ({
   player2Data,
   setPlayer1Data,
   setPlayer2Data,
+  showSignIn,
+  showSignUp,
 }) => {
   return (
     <section id="mobile-outer-container" className="mobile-main-parent">
@@ -62,6 +64,8 @@ const MobileApp = ({
           handleSidebarOpen={handleSidebarOpen}
           openInventory={openInventory}
           handleOpenInventory={handleOpenInventory}
+          showSignIn={showSignIn}
+          showSignUp={showSignUp}
         />
       </SidebarMenu>
 

@@ -15,7 +15,6 @@ import DetectScreenSize from "../../../../CustomFunctions/DetectScreenSize";
 const API = process.env.REACT_APP_API_URL;
 
 const Lobbypage = ({ user, games, socket, setGames }) => {
-  // let gamesCopy = [...games];
   const navigate = useNavigate();
 
   let [gamesCopy, setGamesCopy] = useState([]);

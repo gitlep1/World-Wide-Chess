@@ -43,6 +43,7 @@ guest.post("/", async (req, res) => {
   const newGuestData = {
     profileimg: req.body.profileimg,
     username: req.body.username,
+    is_guest: true,
   };
 
   const createdGuest = await createGuest(newGuestData);

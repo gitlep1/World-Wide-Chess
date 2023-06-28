@@ -143,6 +143,7 @@ const LandingPage = ({ handleUser, users }) => {
           </animated.div>
         </div>
       </div>
+<<<<<<< HEAD
       <Signup
         handleUser={handleUser}
         users={users}
@@ -158,6 +159,27 @@ const LandingPage = ({ handleUser, users }) => {
         showSignIn={showSignIn}
         handleClose={handleClose}
       />
+=======
+      {showSignUp ? (
+        <Signup
+          handleUser={handleUser}
+          users={users}
+          showSignUp={showSignUp}
+          handleClose={handleClose}
+        />
+      ) : null}
+      {showGuest ? (
+        <Guest showGuest={showGuest} handleUser={handleUser} />
+      ) : null}
+      {showSignIn ? (
+        <Signin
+          handleUser={handleUser}
+          users={users}
+          showSignIn={showSignIn}
+          handleClose={handleClose}
+        />
+      ) : null}
+>>>>>>> guest
     </section>
   );
 };

@@ -2,7 +2,9 @@ const db = require("../db/dbConfig.js");
 
 const getAllGuests = async () => {
   try {
-    const guests = await db.any("SELECT * FROM guests");
+    const guests = await db.any(
+      "SELECT * FROM users WHERE users.is_guest = true"
+    );
     return guests;
   } catch (err) {
     return err;
@@ -12,7 +14,7 @@ const getAllGuests = async () => {
 const getGuestByID = async (id) => {
   try {
     const guest = await db.oneOrNone(
-      "SELECT * FROM guests WHERE guests.id = $1",
+      "SELECT * FROM users WHERE users.id = $1 AND users.is_guest = true",
       id
     );
     return guest;
@@ -24,8 +26,8 @@ const getGuestByID = async (id) => {
 const createGuest = async (newGuestData) => {
   try {
     const newGuest = await db.one(
-      "INSERT INTO guests (profileimg, username) VALUES($1, $2) RETURNING *",
-      [newGuestData.profileimg, newGuestData.username]
+      "INSERT INTO users (profileimg, username, is_guest) VALUES($1, $2, $3) RETURNING *",
+      [newGuestData.profileimg, newGuestData.username, newGuestData.is_guest]
     );
     return newGuest;
   } catch (error) {
@@ -39,7 +41,7 @@ const deleteGuest = async (id) => {
       return false;
     }
     const deletedGuest = await db.one(
-      "DELETE FROM guests WHERE id = $1 RETURNING *",
+      "DELETE FROM users WHERE id = $1 AND users.is_guest = true RETURNING *",
       id
     );
     return deletedGuest;

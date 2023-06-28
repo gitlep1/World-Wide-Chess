@@ -9,6 +9,8 @@ const Sidebar = ({
   handleLogout,
   handleSidebarOpen,
   handleOpenInventory,
+  showSignIn,
+  showSignUp,
 }) => {
   const navigate = useNavigate();
 
