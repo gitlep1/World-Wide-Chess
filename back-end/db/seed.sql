@@ -1,10 +1,10 @@
 \c world_wide_chess;
 
-INSERT INTO users (profileimg, username, password, email, theme, chess_coins, wins, ties, loss, rating, preferred_color, last_online) VALUES
-('https://i.imgur.com/8puTSd9.png', 'Easy Bot', 'o5b21e*F6Wan', 'easybot@bot.com', 'default', 10, 1, 1, 1, 950, 'black', NOW()),
-('https://i.imgur.com/MmLQSDV.png', 'Medium Bot', 'e%*m9ZW1ZZ64', 'mediumbot@bot.com', 'default', 50, 2, 2, 2, 1200, 'white', NOW()),
-('https://i.imgur.com/ZlrcYvd.png', 'Hard Bot', '30m5&Ce^Tnbb', 'hardbot@bot.com', 'default', 100, 3, 3, 3, 2000,'black', NOW()),
-('https://www.randomlists.com/img/animals/tiger.webp', 'test1', 'test1', 'test1@test.com', 'dark', 100, 3, 2, 1, 1050, 'white', NOW());
+INSERT INTO users (profileimg, username, password, email, theme, chess_coins, wins, ties, loss, rating, preferred_color, is_guest, is_bot, last_online) VALUES
+('https://i.imgur.com/8puTSd9.png', 'Easy Bot', 'o5b21e*F6Wan', 'easybot@bot.com', 'default', 10, 1, 1, 1, 950, 'black', false, true, NOW()),
+('https://i.imgur.com/MmLQSDV.png', 'Medium Bot', 'e%*m9ZW1ZZ64', 'mediumbot@bot.com', 'default', 50, 2, 2, 2, 1200, 'white', false, true, NOW()),
+('https://i.imgur.com/ZlrcYvd.png', 'Hard Bot', '30m5&Ce^Tnbb', 'hardbot@bot.com', 'default', 100, 3, 3, 3, 2000,'black', false, true, NOW()),
+('https://www.randomlists.com/img/animals/tiger.webp', 'test1', 'test1', 'test1@test.com', 'dark', 100, 3, 2, 1, 1050, 'white', false, false, NOW());
 
 INSERT INTO games (room_name, room_password, player1id, player2id, player1color, player2color, in_progress, current_positions) VALUES 
 ('come fight me', null, 1, 2, 'white', 'black', true, 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'),

@@ -18,10 +18,6 @@
       flex-direction: column;
       align-items: center;
       justify-content: space-around;
-
-      .profileImg {
-        width: 100px;
-      }
     }
 
     .desktop-menuSideBar-buttons-container1 {
@@ -49,5 +45,36 @@
         margin-bottom: 10px;
       }
     }
+
+    .desktop-menuSideBar-guestInfo {
+      text-align: center;
+      grid-row: 1;
+      grid-column: 1 / span 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-evenly;
+    }
+
+    .desktop-menu-guest-inventory {
+      grid-column: 1 / span 2;
+      grid-row: 2;
+    }
+
+    .desktop-menuSideBar-guest-buttons {
+      // border: 5px solid red;
+      grid-column: 1 / span 2;
+      grid-row: 3;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      align-items: start;
+      justify-content: center;
+      margin-top: 5%;
+      gap: 5%;
+    }
   }
+}
+
+.profileImg {
+  width: 100px;
 }

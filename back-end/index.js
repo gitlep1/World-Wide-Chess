@@ -6,6 +6,7 @@ const socketIO = require("socket.io");
 const addSocketEventListeners = require("./socket");
 
 const userController = require("./controllers/userController");
+const guestController = require("./controllers/guestController");
 const gamesController = require("./controllers/gamesController");
 const previousGamesController = require("./controllers/previousGamesController");
 const factsController = require("./controllers/factsController");
@@ -46,6 +47,7 @@ app.get("/csrf-token", (req, res) => {
 // app.use(csrfProtection);
 app.use(express.json());
 app.use("/users", userController);
+app.use("/guests", guestController);
 app.use("/games", gamesController);
 // work on game history later \\
 // app.use("/previousGames", previousGamesController);

@@ -8,8 +8,8 @@ CREATE TABLE users (
   id SERIAL UNIQUE NOT NULL PRIMARY KEY,
   profileimg TEXT,
   username TEXT UNIQUE NOT NULL,
-  password TEXT NOT NULL,
-  email TEXT UNIQUE NOT NULL,
+  password TEXT,
+  email TEXT UNIQUE,
   theme TEXT DEFAULT 'default',
   chess_coins INT DEFAULT 100,
   wins INT DEFAULT 0,
@@ -17,6 +17,8 @@ CREATE TABLE users (
   loss INT DEFAULT 0,
   rating INT DEFAULT 1000,
   preferred_color TEXT,
+  is_guest BOOLEAN DEFAULT false,
+  is_bot BOOLEAN DEFAULT false,
   last_online TIMESTAMP DEFAULT NOW()
 );
 

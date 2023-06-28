@@ -1,4 +1,5 @@
 import "./DesktopApp.scss";
+import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import { scaleRotate as SidebarMenu } from "react-burger-menu";
 
@@ -16,6 +17,8 @@ import FoF from "./FourOFour/FoF";
 import AccountPage from "./Accounts/AccountPage/AccountPage";
 import AccountSettings from "./Accounts/AccountSettings/AccountSettings";
 import Inventory from "./Accounts/Inventory/Inventory";
+import Signin from "../../Signin/SignIn";
+import Signup from "../../Signup/SignUp";
 
 // Game stuff \\
 import Lobby from "./Games/Lobby/Lobby";
@@ -43,6 +46,15 @@ const DesktopApp = ({
   setPlayer1Data,
   setPlayer2Data,
 }) => {
+  const [showSignIn, setShowSignIn] = useState(false);
+  const [showSignUp, setShowSignUp] = useState(false);
+
+  const handleClose = () => {
+    if (showSignUp || showSignIn) {
+      setShowSignUp(false);
+      setShowSignIn(false);
+    }
+  };
   return (
     <section id="desktop-outer-container" className="desktop-main-parent">
       <SidebarMenu
@@ -61,6 +73,8 @@ const DesktopApp = ({
           handleLogout={handleLogout}
           handleSidebarOpen={handleSidebarOpen}
           handleOpenInventory={handleOpenInventory}
+          setShowSignIn={setShowSignIn}
+          setShowSignUp={setShowSignUp}
         />
       </SidebarMenu>
 
@@ -148,6 +162,24 @@ const DesktopApp = ({
           openInventory={openInventory}
           handleOpenInventory={handleOpenInventory}
           user={user}
+        />
+      ) : null}
+
+      {showSignIn ? (
+        <Signin
+          handleUser={handleUser}
+          users={users}
+          showSignIn={showSignIn}
+          handleClose={handleClose}
+        />
+      ) : null}
+
+      {showSignUp ? (
+        <Signup
+          handleUser={handleUser}
+          users={users}
+          showSignUp={showSignUp}
+          handleClose={handleClose}
         />
       ) : null}
     </section>

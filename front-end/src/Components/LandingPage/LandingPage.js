@@ -143,19 +143,25 @@ const LandingPage = ({ handleUser, users }) => {
           </animated.div>
         </div>
       </div>
-      <Signup
-        handleUser={handleUser}
-        users={users}
-        showSignUp={showSignUp}
-        handleClose={handleClose}
-      />
-      <Guest showGuest={showGuest} handleClose={handleClose} />
-      <Signin
-        handleUser={handleUser}
-        users={users}
-        showSignIn={showSignIn}
-        handleClose={handleClose}
-      />
+      {showSignUp ? (
+        <Signup
+          handleUser={handleUser}
+          users={users}
+          showSignUp={showSignUp}
+          handleClose={handleClose}
+        />
+      ) : null}
+      {showGuest ? (
+        <Guest showGuest={showGuest} handleUser={handleUser} />
+      ) : null}
+      {showSignIn ? (
+        <Signin
+          handleUser={handleUser}
+          users={users}
+          showSignIn={showSignIn}
+          handleClose={handleClose}
+        />
+      ) : null}
     </section>
   );
 };

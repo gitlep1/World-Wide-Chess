@@ -1,7 +1,9 @@
 import "./App.scss";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { nanoid } from "nanoid";
 import io from "socket.io-client";
+import axios from "axios";
 
 // App stuff \\
 import DesktopApp from "./Components/DesktopApp/DesktopApp";
@@ -12,6 +14,8 @@ import LandingPage from "./Components/LandingPage/LandingPage";
 
 // Custom function stuff \\
 import DetectScreenSize from "./CustomFunctions/DetectScreenSize";
+
+import DefaultProfImg from "./Images/DefaultProfImg.png";
 
 const API = process.env.REACT_APP_API_URL;
 const socket = io(API);
@@ -77,6 +81,17 @@ const App = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const checkLocalStorage = JSON.parse(
+      window.localStorage.getItem("Current_User")
+    );
+    if (checkLocalStorage.is_guest === false) {
+      handleUser();
+    } else {
+      handleGuest();
+    }
+  }, []); // eslint-disable-line
+
   const setLocalStorage = async () => {
     const data = window.localStorage.getItem("Current_User");
     const authenticated = window.localStorage.getItem("Authenticated");
@@ -125,6 +140,36 @@ const App = () => {
     }
   };
 
+  const handleGuest = async () => {
+    const userFromLocalStorage = JSON.parse(
+      window.localStorage.getItem("Current_User")
+    );
+
+    if (userFromLocalStorage) {
+      setUser(userFromLocalStorage);
+      setAuthenticated(true);
+      navigate(`/`);
+    } else {
+      const newGuest = {
+        profileimg: DefaultProfImg,
+        username: `Guest-${nanoid(5)}`,
+        is_guest: true,
+      };
+      await axios
+        .post(`${API}/guests`, newGuest)
+        .then((res) => {
+          setUser(res.data);
+          setAuthenticated(true);
+          window.localStorage.setItem("Current_User", JSON.stringify(res.data));
+          window.localStorage.setItem("Authenticated", JSON.stringify(true));
+          navigate(`/`);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
   const handleLogout = () => {
     setUser({});
     setAuthenticated(false);
@@ -139,58 +184,54 @@ const App = () => {
     setIsOpen(false);
   };
 
-  return user && authenticated ? (
-    screenSize >= 800 ? (
-      <>
-        <DesktopApp
-          handleSidebarOpen={handleSidebarOpen}
-          user={user}
-          users={users}
-          authenticated={authenticated}
-          game={game}
-          games={games}
-          setGame={setGame}
-          setGames={setGames}
-          isOpen={isOpen}
-          openInventory={openInventory}
-          handleOpenInventory={handleOpenInventory}
-          handleUser={handleUser}
-          handleLogout={handleLogout}
-          resize={resize}
-          socket={socket}
-          player1Data={player1Data}
-          player2Data={player2Data}
-          setPlayer1Data={setPlayer1Data}
-          setPlayer2Data={setPlayer2Data}
-        />
-      </>
-    ) : (
-      <>
-        <MobileApp
-          handleSidebarOpen={handleSidebarOpen}
-          user={user}
-          users={users}
-          authenticated={authenticated}
-          game={game}
-          games={games}
-          setGame={setGame}
-          setGames={setGames}
-          isOpen={isOpen}
-          openInventory={openInventory}
-          handleOpenInventory={handleOpenInventory}
-          handleUser={handleUser}
-          handleLogout={handleLogout}
-          resize={resize}
-          socket={socket}
-          player1Data={player1Data}
-          player2Data={player2Data}
-          setPlayer1Data={setPlayer1Data}
-          setPlayer2Data={setPlayer2Data}
-        />
-      </>
-    )
+  return screenSize >= 800 ? (
+    <>
+      <DesktopApp
+        handleSidebarOpen={handleSidebarOpen}
+        user={user}
+        users={users}
+        authenticated={authenticated}
+        game={game}
+        games={games}
+        setGame={setGame}
+        setGames={setGames}
+        isOpen={isOpen}
+        openInventory={openInventory}
+        handleOpenInventory={handleOpenInventory}
+        handleUser={handleUser}
+        handleLogout={handleLogout}
+        resize={resize}
+        socket={socket}
+        player1Data={player1Data}
+        player2Data={player2Data}
+        setPlayer1Data={setPlayer1Data}
+        setPlayer2Data={setPlayer2Data}
+      />
+    </>
   ) : (
-    <LandingPage handleUser={handleUser} users={users} />
+    <>
+      <MobileApp
+        handleSidebarOpen={handleSidebarOpen}
+        user={user}
+        users={users}
+        authenticated={authenticated}
+        game={game}
+        games={games}
+        setGame={setGame}
+        setGames={setGames}
+        isOpen={isOpen}
+        openInventory={openInventory}
+        handleOpenInventory={handleOpenInventory}
+        handleUser={handleUser}
+        handleLogout={handleLogout}
+        resize={resize}
+        socket={socket}
+        player1Data={player1Data}
+        player2Data={player2Data}
+        setPlayer1Data={setPlayer1Data}
+        setPlayer2Data={setPlayer2Data}
+      />
+    </>
   );
 };
 
