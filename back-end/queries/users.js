@@ -87,6 +87,14 @@ const checkIfEmailExists = async (email) => {
   }
 };
 
+const checkIfUserExists = async (email, password) => {
+  const user = await db.oneOrNone(
+    "SELECT id FROM users WHERE email = $1 AND password = $2",
+    [email, password]
+  );
+  return user;
+};
+
 module.exports = {
   getAllUsers,
   getUserByID,
@@ -94,4 +102,5 @@ module.exports = {
   updateUser,
   deleteUser,
   checkIfEmailExists,
+  checkIfUserExists,
 };

@@ -1,16 +1,45 @@
-.SignupSection {
-  height: 100vh;
-}
+.signup-modal-container {
+  // border: 5px solid red;
+  text-align: center;
+  // border-radius: 10em;
 
-.landing-modal-title-signup {
-  color: white;
-  background-color: #202020;
+  .signup-modal-title {
+    // border: 5px solid cyan;
+    color: white;
+    background-color: #202020;
 
-  h6 {
-    font-family: "Bungee Shade", cursive;
+    .closeButton {
+      // border: 5px solid cyan;
+      background-color: #dc3545;
+
+      &:hover {
+        cursor: pointer;
+        background-color: #ff3e51;
+      }
+    }
+
+    .logoImgModal {
+      width: 200px;
+    }
+
+    h1 {
+      text-decoration: underline;
+    }
+
+    h6 {
+      font-family: "Bungee Shade", cursive;
+      font-size: 35px;
+      text-shadow: 0 1px #808d93, -1px 0 #cdd2d5, -1px 2px #808d93,
+        -2px 1px #cdd2d5, -2px 3px #808d93, -3px 2px #cdd2d5, -3px 4px #808d93,
+        -4px 3px #cdd2d5, -4px 5px #808d93, -5px 4px #cdd2d5, -5px 6px #808d93,
+        -6px 5px #cdd2d5, -6px 7px #808d93, -7px 6px #cdd2d5, -7px 8px #808d93,
+        -8px 7px #cdd2d5;
+    }
   }
 
-  h1 {
-    text-decoration: underline;
+  .signup-modal-body {
+    label {
+      font-size: 30px;
+    }
   }
 }

@@ -10,7 +10,7 @@ import DesktopApp from "./Components/DesktopApp/DesktopApp";
 import MobileApp from "./Components/MobileApp/MobileApp";
 
 // Page stuff \\
-import LandingPage from "./Components/LandingPage/LandingPage";
+// import LandingPage from "./Components/LandingPage/LandingPage";
 
 // Custom function stuff \\
 import DetectScreenSize from "./CustomFunctions/DetectScreenSize";
@@ -34,6 +34,8 @@ const App = () => {
   const [openInventory, setOpenInventory] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
   const [resize, setResize] = useState("");
+
+  const [loading, setLoading] = useState(true);
   const [userError, setUserError] = useState("");
   const [gameError, setGameError] = useState("");
 
@@ -51,7 +53,7 @@ const App = () => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, []); // eslint-disable-line
 
   useEffect(() => {
     socket.emit("users-update-all-clients");
@@ -81,17 +83,6 @@ const App = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const checkLocalStorage = JSON.parse(
-      window.localStorage.getItem("Current_User")
-    );
-    if (checkLocalStorage.is_guest === false) {
-      handleUser();
-    } else {
-      handleGuest();
-    }
-  }, []); // eslint-disable-line
-
   const setLocalStorage = async () => {
     const data = window.localStorage.getItem("Current_User");
     const authenticated = window.localStorage.getItem("Authenticated");
@@ -99,7 +90,10 @@ const App = () => {
     if (data !== null && authenticated !== null) {
       setUser(JSON.parse(data));
       setAuthenticated(JSON.parse(authenticated));
+    } else {
+      await handleGuest();
     }
+    setLoading(false);
   };
 
   const resizeSidebar = () => {
@@ -141,33 +135,23 @@ const App = () => {
   };
 
   const handleGuest = async () => {
-    const userFromLocalStorage = JSON.parse(
-      window.localStorage.getItem("Current_User")
-    );
-
-    if (userFromLocalStorage) {
-      setUser(userFromLocalStorage);
-      setAuthenticated(true);
-      navigate(`/`);
-    } else {
-      const newGuest = {
-        profileimg: DefaultProfImg,
-        username: `Guest-${nanoid(5)}`,
-        is_guest: true,
-      };
-      await axios
-        .post(`${API}/guests`, newGuest)
-        .then((res) => {
-          setUser(res.data);
-          setAuthenticated(true);
-          window.localStorage.setItem("Current_User", JSON.stringify(res.data));
-          window.localStorage.setItem("Authenticated", JSON.stringify(true));
-          navigate(`/`);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
+    const newGuest = {
+      profileimg: DefaultProfImg,
+      username: `Guest-${nanoid(5)}`,
+      is_guest: true,
+    };
+    return axios
+      .post(`${API}/guests/signup`, newGuest)
+      .then((res) => {
+        setUser(res.data);
+        setAuthenticated(true);
+        window.localStorage.setItem("Current_User", JSON.stringify(res.data));
+        window.localStorage.setItem("Authenticated", JSON.stringify(true));
+        navigate(`/`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const handleLogout = () => {
@@ -177,10 +161,10 @@ const App = () => {
     const authenticated = window.localStorage.getItem("Authenticated");
 
     if (data !== null && authenticated !== null) {
-      window.localStorage.setItem("Current_User", JSON.stringify({}));
-      window.localStorage.setItem("Authenticated", JSON.stringify(false));
+      window.localStorage.removeItem("Current_User");
+      window.localStorage.removeItem("Authenticated");
     }
-    navigate("/");
+    handleGuest();
     setIsOpen(false);
   };
 
@@ -206,6 +190,7 @@ const App = () => {
         player2Data={player2Data}
         setPlayer1Data={setPlayer1Data}
         setPlayer2Data={setPlayer2Data}
+        loading={loading}
       />
     </>
   ) : (

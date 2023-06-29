@@ -45,6 +45,7 @@ const DesktopApp = ({
   player2Data,
   setPlayer1Data,
   setPlayer2Data,
+  loading,
 }) => {
   const [showSignIn, setShowSignIn] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
@@ -55,7 +56,10 @@ const DesktopApp = ({
       setShowSignIn(false);
     }
   };
-  return (
+
+  return loading ? (
+    <p>loading...</p>
+  ) : (
     <section id="desktop-outer-container" className="desktop-main-parent">
       <SidebarMenu
         outerContainerId={"desktop-outer-container"}

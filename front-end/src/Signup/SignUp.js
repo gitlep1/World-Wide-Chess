@@ -155,83 +155,77 @@ const Signup = ({ handleUser, showSignUp, handleClose }) => {
   };
 
   return (
-    <section className="SignupSection">
-      <Modal
-        show={showSignUp}
-        onHide={handleClose}
-        centered
-        className="landing-modal-container"
-      >
-        <Modal.Title className="landing-modal-title-signup">
-          <h3
-            className="closeButton"
-            onClick={() => {
-              handleClose();
-              clearFields();
-            }}
-          >
-            X
-          </h3>
-          <Image src={Logo} alt="Logo" id="logoImgModal" />
-          <h6>World Wide Chess</h6>
-          <h1>Sign Up</h1>
-        </Modal.Title>
-        <Modal.Body>
-          <Form onSubmit={handleSubmit}>
-            <h3 className="landing-modal-form-label">Username</h3>
-            <Form.Group controlId="formBasicUsername">
-              <Form.Control
-                type="text"
-                name="username"
-                placeholder="Username"
-                onChange={handleChange}
-                value={username}
-                className="landing-modal-form-control"
-              />
-            </Form.Group>
-            <h3 className="landing-modal-form-label">Email</h3>
-            <Form.Group controlId="formBasicEmail">
-              <Form.Control
-                type="email"
-                name="email"
-                placeholder="Email"
-                onChange={handleChange}
-                value={email}
-                className="landing-modal-form-control"
-              />
-            </Form.Group>
-            <h3 className="landing-modal-form-label">Password</h3>
-            <Form.Group controlId="formBasicPassword">
-              <Form.Control
-                type="password"
-                name="password"
-                placeholder="Password"
-                onChange={handleChange}
-                value={password}
-                className="landing-modal-form-control"
-              />
-            </Form.Group>
-            <h3 className="landing-modal-form-label">Password Confirmation</h3>
-            <Form.Group controlId="formPasswordConfirm">
-              <Form.Control
-                type="password"
-                name="passwordConfirm"
-                placeholder="Password Confirmation"
-                onChange={handleChange}
-                value={passwordConfirm}
-                className="landing-modal-form-control"
-              />
-            </Form.Group>
-            <br />
+    <Modal
+      show={showSignUp}
+      onHide={handleClose}
+      centered
+      className="signup-modal-container"
+    >
+      <Modal.Title className="signup-modal-title">
+        <h3
+          className="closeButton"
+          onClick={() => {
+            handleClose();
+            clearFields();
+          }}
+        >
+          X
+        </h3>
+        <Image src={Logo} alt="Logo" className="logoImgModal" />
+        <h6>World Wide Chess</h6>
+        <h1>Sign Up</h1>
+      </Modal.Title>
+      <Modal.Body className="signup-modal-body">
+        <Form onSubmit={handleSubmit}>
+          <Form.Group controlId="formBasicUsername">
+            <Form.Label>Username</Form.Label>
+            <Form.Control
+              type="text"
+              name="username"
+              placeholder="Username"
+              onChange={handleChange}
+              value={username}
+            />
+          </Form.Group>
+          <Form.Group controlId="formBasicEmail">
+            <Form.Label>Email address</Form.Label>
+            <Form.Control
+              type="email"
+              name="email"
+              placeholder="Email"
+              onChange={handleChange}
+              value={email}
+            />
+          </Form.Group>
+          <Form.Group controlId="formBasicPassword">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="password"
+              name="password"
+              placeholder="Password"
+              onChange={handleChange}
+              value={password}
+            />
+          </Form.Group>
+          <Form.Group controlId="formPasswordConfirm">
+            <Form.Label>Password Confirmation</Form.Label>
+            <Form.Control
+              type="password"
+              name="passwordConfirm"
+              placeholder="Password Confirmation"
+              onChange={handleChange}
+              value={passwordConfirm}
+            />
+          </Form.Group>
+          <br />
 
-            <Button variant="dark" type="submit" id="landing-modal-button">
-              Sign Up
-            </Button>
-          </Form>
-        </Modal.Body>
-      </Modal>
+          <Button variant="dark" type="submit" id="signup-modal-button">
+            Sign Up
+          </Button>
+        </Form>
+      </Modal.Body>
       <ToastContainer autoClose={3000} theme="dark" />
-    </section>
+    </Modal>
   );
 };
 

@@ -8,21 +8,20 @@ const {
 const { getShopItemsByID } = require("../queries/shop");
 
 const { requireAuth } = require("../validation/requireAuth");
-const myRequireAuth = requireAuth("inventory");
 
-inventory.get("/:uid", myRequireAuth, async (req, res) => {
+inventory.get("/:uid", requireAuth(), async (req, res) => {
   const { uid } = req.params;
   const getAInventory = await getInventoryItemsByUserID(uid);
 
   if (getAInventory.length > 0) {
     // console.log("=== GET inventory by ID", getAInventory, "===");
-    res.status(200).json(getAInventory);
+    res.status(200).json({ payload: getAInventory });
   } else {
     res.status(404).send(`inventory for user: ${uid} was not found`);
   }
 });
 
-inventory.post("/", myRequireAuth, async (req, res) => {
+inventory.post("/", requireAuth(), async (req, res) => {
   const newInventoryData = {
     user_id: req.body.user_id,
     item_id: req.body.item_id,
@@ -35,7 +34,7 @@ inventory.post("/", myRequireAuth, async (req, res) => {
 
     if (createdInventoryItem) {
       // console.log("=== POST inventory", createdInventoryItem, "===");
-      res.status(201).json(createdInventoryItem);
+      res.status(201).json({ payload: createdInventoryItem });
     } else {
       res.status(404).send("Inventory item not created.");
     }

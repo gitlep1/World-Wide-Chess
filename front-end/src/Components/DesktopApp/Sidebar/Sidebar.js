@@ -17,17 +17,17 @@ const Sidebar = ({
   return (
     <section className="desktop-menuSideBar-container">
       <div className="desktop-menuSideBar">
-        {user.is_guest === false && authenticated ? (
+        {user.payload.is_guest === false && authenticated ? (
           <>
             <aside className="desktop-menuSideBar-userInfo">
               <img
-                src={user.profileimg}
+                src={user.payload.profileimg}
                 alt="user profile"
                 className="profileImg"
               />
-              <h1>{user.username}</h1>
+              <h2>{user.payload.username}</h2>
               <h2>
-                <FaCoins /> {user.chess_coins}
+                <FaCoins /> {user.payload.chess_coins}
               </h2>
               <h3>Rating:</h3>
             </aside>
@@ -103,11 +103,11 @@ const Sidebar = ({
           <>
             <aside className="desktop-menuSideBar-guestInfo">
               <img
-                src={user.profileimg}
+                src={user.payload.profileimg}
                 alt="user profile"
                 className="profileImg"
               />
-              <h1>{user.username}</h1>
+              <h2>{user.payload.username}</h2>
             </aside>
 
             <Button
