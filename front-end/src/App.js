@@ -164,8 +164,8 @@ const App = () => {
       window.localStorage.removeItem("Current_User");
       window.localStorage.removeItem("Authenticated");
     }
-    handleGuest();
     setIsOpen(false);
+    setLocalStorage();
   };
 
   return screenSize >= 800 ? (

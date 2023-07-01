@@ -1,5 +1,5 @@
 import "./SignUp.scss";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Form, Button, Modal, Image } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
@@ -11,25 +11,12 @@ import GetApi from "../CustomFunctions/GetApi";
 const API = process.env.REACT_APP_API_URL;
 
 const Signup = ({ handleUser, showSignUp, handleClose }) => {
-  const [getData, cancelRequests] = GetApi();
-  const [users, setUsers] = useState([]);
-
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
 
   const [error, setError] = useState("");
-
-  useEffect(() => {
-    getUsers();
-  }, []); // eslint-disable-line
-
-  const getUsers = async () => {
-    await getData(`${API}/users`, setUsers);
-
-    return cancelRequests;
-  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -94,33 +81,35 @@ const Signup = ({ handleUser, showSignUp, handleClose }) => {
       });
     }
 
-    const checkUser = users.filter(
-      (user) => user.email === email || user.username === username
-    );
-
-    if (checkUser.length > 0) {
-      return toast.error("Email or Username already exists!", {
-        position: "top-right",
-        pauseOnFocusLoss: false,
-        closeOnClick: true,
-        pauseOnHover: false,
+    await axios
+      .post(`${API}/users/signup`, newUser)
+      .then((res) => {
+        // console.log("inside then: ", res.data);
+        notify(res.data);
+      })
+      .catch((err) => {
+        // console.log("inside catch: ", err);
+        // console.clear();
+        setError(err.response.data);
+        notify("error");
       });
-    } else {
-      await axios
-        .post(`${API}/users`, newUser)
-        .then((res) => {
-          notify(res.data);
-        })
-        .catch((err) => {
-          setError(err);
-          notify();
-        });
-    }
   };
 
   const notify = (newUser) => {
-    error !== ""
-      ? toast.error("There has been an unexpected error", {
+    if (newUser === "error") {
+      return toast.error("That Username/Email is taken.", {
+        position: "top-center",
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        pauseOnFocusLoss: false,
+        draggable: true,
+        progress: undefined,
+      });
+    } else {
+      toast.success(
+        "User account has been created. You have automatially been signed in.",
+        {
           position: "top-center",
           hideProgressBar: false,
           closeOnClick: false,
@@ -128,23 +117,15 @@ const Signup = ({ handleUser, showSignUp, handleClose }) => {
           pauseOnFocusLoss: false,
           draggable: true,
           progress: undefined,
-        })
-      : toast.success(
-          "User account has been created. You have automatially been signed in. \n You will be redirected in 3 seconds.",
-          {
-            position: "top-center",
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: false,
-            pauseOnFocusLoss: false,
-            draggable: true,
-            progress: undefined,
-          }
-        );
-    setTimeout(() => {
-      handleUser(newUser);
-    }, 4100);
-    clearFields();
+        }
+      );
+      setTimeout(() => {
+        // console.log("inside timeout");
+        handleClose();
+        handleUser(newUser);
+      }, 4100);
+      return clearFields();
+    }
   };
 
   const clearFields = () => {

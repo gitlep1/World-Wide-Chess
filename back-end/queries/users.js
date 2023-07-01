@@ -78,21 +78,28 @@ const deleteUser = async (id) => {
   }
 };
 
-const checkIfEmailExists = async (email) => {
-  const userEmail = await db.any("SELECT * FROM users WHERE email = $1", email);
-  if (userEmail.length > 0) {
-    return true;
-  } else {
-    return false;
+const checkUserCredentials = async (email, username) => {
+  try {
+    const userEmail = await db.oneOrNone(
+      "SELECT id FROM users WHERE email = $1 AND username = $2",
+      [email, username]
+    );
+    return userEmail ? true : false;
+  } catch (error) {
+    return error;
   }
 };
 
 const checkIfUserExists = async (email, password) => {
-  const user = await db.oneOrNone(
-    "SELECT id FROM users WHERE email = $1 AND password = $2",
-    [email, password]
-  );
-  return user;
+  try {
+    const user = await db.oneOrNone(
+      "SELECT id FROM users WHERE email = $1 AND password = $2",
+      [email, password]
+    );
+    return user;
+  } catch (error) {
+    return error;
+  }
 };
 
 module.exports = {
@@ -101,6 +108,6 @@ module.exports = {
   createUser,
   updateUser,
   deleteUser,
-  checkIfEmailExists,
+  checkUserCredentials,
   checkIfUserExists,
 };

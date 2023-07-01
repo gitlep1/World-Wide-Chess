@@ -8,7 +8,7 @@ const {
   createUser,
   updateUser,
   deleteUser,
-  checkIfEmailExists,
+  checkUserCredentials,
   checkIfUserExists,
 } = require("../queries/users");
 
@@ -56,12 +56,12 @@ user.post("/signup", checkValues, async (req, res) => {
     email: req.body.email,
   };
 
-  const checkUser = await checkIfUserExists(
+  const checkCreds = await checkUserCredentials(
     newUserData.email,
-    newUserData.password
+    newUserData.username
   );
 
-  if (checkUser) {
+  if (checkCreds) {
     res.status(409).send("User already exists!");
   } else {
     const createdUser = await createUser(newUserData);
@@ -78,7 +78,7 @@ user.post("/signup", checkValues, async (req, res) => {
         clientTokenPayload,
         "==="
       );
-      const token = jwt.sign({ id: createdUser.id }, JSK, { expiresIn: "30d" });
+      const token = jwt.sign(clientTokenPayload, JSK, { expiresIn: "30d" });
       res.status(201).json({ payload: createdUser, token });
     } else {
       res.status(404).send("user not created");
@@ -91,7 +91,7 @@ user.post("/signin", async (req, res) => {
 
   const checkUser = await checkIfUserExists(email, password);
 
-  if (checkUser) {
+  if (checkUser.id) {
     const getUserData = await getUserByID(checkUser.id);
 
     if (getUserData) {
