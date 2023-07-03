@@ -7,7 +7,7 @@ import axios from "axios";
 
 const API = process.env.REACT_APP_API_URL;
 
-const Signin = ({ handleUser, users, showSignIn, handleClose }) => {
+const Signin = ({ handleUser, showSignIn, handleClose }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -33,28 +33,34 @@ const Signin = ({ handleUser, users, showSignIn, handleClose }) => {
         notify(res.data);
       })
       .catch((err) => {
-        setError(err.message);
+        setError(err.response.data);
+        notify("error");
       });
   };
 
   const notify = (foundUser) => {
-    toast.success("You have been successfully signed in.", {
-      position: "top-center",
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: false,
-      pauseOnFocusLoss: false,
-      draggable: true,
-      progress: undefined,
-    });
-    setTimeout(() => {
-      handleClose();
-      handleUser(foundUser);
-    }, 4100);
+    if (foundUser === "error") {
+      return noUser();
+    } else {
+      toast.success("You have been successfully signed in.", {
+        position: "top-center",
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        pauseOnFocusLoss: false,
+        draggable: true,
+        progress: undefined,
+      });
+      setTimeout(() => {
+        handleClose();
+        handleUser(foundUser);
+      }, 4100);
+    }
+    return clearFields();
   };
 
   const noUser = () => {
-    toast.error(
+    return toast.error(
       "No user with these credentials have been found. \n Please make sure your email and password are correct.",
       {
         position: "top-center",
@@ -66,6 +72,11 @@ const Signin = ({ handleUser, users, showSignIn, handleClose }) => {
         progress: undefined,
       }
     );
+  };
+
+  const clearFields = () => {
+    setPassword("");
+    setEmail("");
   };
 
   return (

@@ -6,11 +6,11 @@ import { FaCoins } from "react-icons/fa";
 const Sidebar = ({
   user,
   authenticated,
-  handleLogout,
   handleSidebarOpen,
   handleOpenInventory,
   setShowSignIn,
   setShowSignUp,
+  setShowSignout,
 }) => {
   const navigate = useNavigate();
 
@@ -38,7 +38,7 @@ const Sidebar = ({
                 variant="dark"
                 onClick={() => {
                   handleOpenInventory();
-                  // handleSidebarOpen();
+                  handleSidebarOpen();
                 }}
               >
                 Inventory
@@ -59,7 +59,7 @@ const Sidebar = ({
                 className="desktop-menu-item1"
                 variant="light"
                 onClick={() => {
-                  navigate(`/Accounts/${user.id}/Inbox`);
+                  navigate(`/Accounts/${user.payload.id}/Inbox`);
                   handleSidebarOpen();
                 }}
               >
@@ -70,7 +70,7 @@ const Sidebar = ({
                 className="desktop-menu-item1"
                 variant="dark"
                 onClick={() => {
-                  navigate(`/Accounts/${user.id}/History`);
+                  navigate(`/Accounts/${user.payload.id}/History`);
                   handleSidebarOpen();
                 }}
               >
@@ -83,7 +83,7 @@ const Sidebar = ({
                 className="desktop-menu-item2"
                 variant="dark"
                 onClick={() => {
-                  navigate(`/Accounts/${user.id}/Settings`);
+                  navigate(`/Accounts/${user.payload.id}/Settings`);
                   handleSidebarOpen();
                 }}
               >
@@ -92,7 +92,10 @@ const Sidebar = ({
               <br />
               <Button
                 className="desktop-menu-item2"
-                onClick={handleLogout}
+                onClick={() => {
+                  setShowSignout(true);
+                  handleSidebarOpen();
+                }}
                 variant="danger"
               >
                 Sign Out
@@ -115,6 +118,7 @@ const Sidebar = ({
               variant="dark"
               onClick={() => {
                 handleOpenInventory();
+                handleSidebarOpen();
               }}
             >
               Inventory
@@ -123,7 +127,10 @@ const Sidebar = ({
             <aside className="desktop-menuSideBar-guest-buttons">
               <Button
                 className="desktop-menu-guest-signup"
-                onClick={() => setShowSignUp(true)}
+                onClick={() => {
+                  setShowSignUp(true);
+                  handleSidebarOpen();
+                }}
                 variant="success"
               >
                 Sign Up
@@ -131,7 +138,10 @@ const Sidebar = ({
 
               <Button
                 className="desktop-menu-guest-signin"
-                onClick={() => setShowSignIn(true)}
+                onClick={() => {
+                  setShowSignIn(true);
+                  handleSidebarOpen();
+                }}
                 variant="danger"
               >
                 Sign In

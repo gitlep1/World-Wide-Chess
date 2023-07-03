@@ -32,12 +32,14 @@ user.get("/", requireAuth(), scopeAuth(["read:user"]), async (req, res) => {
 });
 
 user.get(
-  "/:id",
+  "/user",
   requireAuth(),
   scopeAuth(["read:user", "write:user"]),
   async (req, res) => {
-    const { id } = req.params;
-    const getAUser = await getUserByID(id);
+    const { token } = req.user;
+    const decoded = jwt.decode(token);
+
+    const getAUser = await getUserByID(decoded.user.id);
 
     if (getAUser) {
       // console.log("=== GET user by ID", getAUser, "===");
@@ -117,12 +119,13 @@ user.post("/signin", async (req, res) => {
 });
 
 user.put(
-  "/:id",
+  "/update",
   checkValues,
   requireAuth(),
   scopeAuth(["read:user", "write:user"]),
   async (req, res) => {
-    const { id } = req.params;
+    const { token } = req.user;
+    const decoded = jwt.decode(token);
 
     const updatedUserData = {
       profileimg: req.body.profileimg,
@@ -138,7 +141,7 @@ user.put(
       last_online: req.body.last_online,
     };
 
-    const updatedUser = await updateUser(id, updatedUserData);
+    const updatedUser = await updateUser(decoded.user.id, updatedUserData);
 
     if (updatedUser) {
       console.log("=== PUT user", updatedUser, "===");
@@ -150,19 +153,25 @@ user.put(
 );
 
 user.delete(
-  "/:id",
+  "/delete",
   requireAuth(),
   scopeAuth(["read:user", "write:user"]),
   async (req, res) => {
-    const { id } = req.params;
+    const { token } = req.user;
+    const decoded = jwt.decode(token);
 
-    const deletedUser = await deleteUser(id);
-    console.log("=== DELETE user", deletedUser, "===");
+    const deletedUser = await deleteUser(decoded.user.id);
 
     if (deletedUser.id) {
-      res.status(200).json({ payload: deletedUser });
+      console.log("=== DELETE user", deletedUser, "===");
+      res.status(200).json(`User: ${deletedUser.username} \n 
+      with ID: ${deletedUser.id} has been deleted.`);
     } else {
-      res.status(404).send("user not found");
+      res
+        .status(404)
+        .send(
+          `User: ${decoded.user.username} with ID: ${decoded.user.id} was not deleted`
+        );
     }
   }
 );

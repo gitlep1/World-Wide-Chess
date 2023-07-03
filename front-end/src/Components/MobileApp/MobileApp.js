@@ -1,4 +1,5 @@
 import "./MobileApp.scss";
+import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import { bubble as SidebarMenu } from "react-burger-menu";
 
@@ -16,6 +17,9 @@ import FoF from "./FourOFour/FoF";
 import AccountPage from "./Accounts/AccountPage/AccountPage";
 import AccountSettings from "./Accounts/AccountSettings/AccountSettings";
 import Inventory from "./Accounts/Inventory/Inventory";
+import Signin from "../../Signin/SignIn";
+import Signup from "../../Signup/SignUp";
+import Signout from "../../Signout/Signout";
 
 // Game stuff \\
 import Lobby from "./Games/Lobby/Lobby";
@@ -42,10 +46,23 @@ const MobileApp = ({
   player2Data,
   setPlayer1Data,
   setPlayer2Data,
-  showSignIn,
-  showSignUp,
+  loading,
 }) => {
-  return (
+  const [showSignIn, setShowSignIn] = useState(false);
+  const [showSignUp, setShowSignUp] = useState(false);
+  const [showSignout, setShowSignout] = useState(false);
+
+  const handleClose = () => {
+    if (showSignUp || showSignIn || showSignout) {
+      setShowSignUp(false);
+      setShowSignIn(false);
+      setShowSignout(false);
+    }
+  };
+
+  return loading ? (
+    <p>loading...</p>
+  ) : (
     <section id="mobile-outer-container" className="mobile-main-parent">
       <SidebarMenu
         outerContainerId={"mobile-outer-container"}
@@ -64,8 +81,9 @@ const MobileApp = ({
           handleSidebarOpen={handleSidebarOpen}
           openInventory={openInventory}
           handleOpenInventory={handleOpenInventory}
-          showSignIn={showSignIn}
-          showSignUp={showSignUp}
+          setShowSignIn={setShowSignIn}
+          setShowSignUp={setShowSignUp}
+          setShowSignout={setShowSignout}
         />
       </SidebarMenu>
 
@@ -153,6 +171,32 @@ const MobileApp = ({
           openInventory={openInventory}
           handleOpenInventory={handleOpenInventory}
           user={user}
+        />
+      ) : null}
+
+      {showSignIn ? (
+        <Signin
+          handleUser={handleUser}
+          users={users}
+          showSignIn={showSignIn}
+          handleClose={handleClose}
+        />
+      ) : null}
+
+      {showSignUp ? (
+        <Signup
+          handleUser={handleUser}
+          users={users}
+          showSignUp={showSignUp}
+          handleClose={handleClose}
+        />
+      ) : null}
+
+      {showSignout ? (
+        <Signout
+          handleLogout={handleLogout}
+          showSignout={showSignout}
+          handleClose={handleClose}
         />
       ) : null}
     </section>

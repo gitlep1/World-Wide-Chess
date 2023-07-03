@@ -28,26 +28,20 @@ guest.get("/", requireAuth(), scopeAuth(["read:user"]), async (req, res) => {
 });
 
 guest.get(
-  "/:id",
+  "/guest",
   requireAuth(),
   scopeAuth(["read:user", "write:user"]),
   async (req, res) => {
-    const { id } = req.params;
     const { token } = req.user;
     const decoded = jwt.decode(token);
-    const { user } = decoded;
 
-    if (Number(user.id) === Number(id)) {
-      const getAGuest = await getGuestByID(id);
+    const getAGuest = await getGuestByID(decoded.user.id);
 
-      if (getAGuest) {
-        // console.log("=== GET guest by ID", getAGuest, "===");
-        res.status(200).json({ payload: getAGuest });
-      } else {
-        res.status(404).send("user not found");
-      }
+    if (getAGuest) {
+      // console.log("=== GET guest by ID", getAGuest, "===");
+      res.status(200).json({ payload: getAGuest });
     } else {
-      res.sendStatus(401);
+      res.status(404).send("user not found");
     }
   }
 );
@@ -81,19 +75,27 @@ guest.post("/signup", async (req, res) => {
 });
 
 guest.delete(
-  "/:id",
+  "/delete",
   requireAuth(),
   scopeAuth(["read:user", "write:user"]),
   async (req, res) => {
-    const { id } = req.params;
+    const { token } = req.user;
+    const decoded = jwt.decode(token);
 
-    const deletedGuest = await deleteGuest(id);
-    console.log("=== DELETE guest", deletedGuest, "===");
+    const deletedGuest = await deleteGuest(decoded.user.id);
 
     if (deletedGuest.id) {
-      res.status(200).json(deletedGuest);
+      console.log("=== DELETE guest", deletedGuest, "===");
+      res.status(200).json(
+        `Guest: ${deletedGuest.username} \n 
+          with ID: ${deletedGuest.id} has been deleted.`
+      );
     } else {
-      res.status(404).send("user not found");
+      res
+        .status(404)
+        .send(
+          `Guest: ${decoded.user.username} with ID: ${decoded.user.id} was not deleted`
+        );
     }
   }
 );

@@ -7,7 +7,9 @@ import MonthlyTasks from "./HomepageTasks/MonthlyTasks";
 
 import HomepageFacts from "./HomepageFacts/HomepageFacts";
 
-const Homepage = ({ users }) => {
+const Homepage = () => {
+  let topPlayer = {};
+
   const [dailyTaskSelected, setDailyTaskSelected] = useState(true);
   const [monthlyTaskSelected, setMonthlyTaskSelected] = useState(false);
 
@@ -21,32 +23,17 @@ const Homepage = ({ users }) => {
     }
   };
 
-  let topPlayer = {};
-
-  users.map((player) => {
-    if (player.id === 4) {
-      player["wins"] = 3;
-    }
-    return null;
-  });
-
-  users.filter((player) => {
-    if (player.wins > 0) {
-      topPlayer = player;
-    }
-    return topPlayer;
-  });
-
   return (
     <section className="mobile-homepage-container">
       <div>
         <h1>
-          * Top Player:
-          <span id="topPlayer-border">
-            <Image src={topPlayer.profileimg} alt="top-player" />
-            <span id="topPlayer-background"> {topPlayer.username}</span>
-          </span>
-          *
+          Top Player: WIP
+          {Object.keys(topPlayer).length > 0 ? (
+            <span id="topPlayer-border">
+              <Image src={topPlayer.profileimg} alt="top-player" />
+              <span id="topPlayer-background"> {topPlayer.username}</span>
+            </span>
+          ) : null}
         </h1>
       </div>
 

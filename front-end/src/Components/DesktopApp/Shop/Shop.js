@@ -23,7 +23,7 @@ const Shop = ({}) => {
     axios
       .get(`${API}/shop`)
       .then((res) => {
-        setShopItems(res.data);
+        setShopItems(res.data.payload);
       })
       .catch((err) => {
         console.log(err.message);
@@ -64,7 +64,7 @@ const Shop = ({}) => {
                 />
                 <Card.Body>
                   <Card.Title>{item.item_name}</Card.Title>
-                  <Card.Text>Value: {item.item_price}</Card.Text>
+                  <Card.Text>Price: {item.item_price}</Card.Text>
                   <Button variant="dark">Buy Now</Button>
                 </Card.Body>
               </Card>

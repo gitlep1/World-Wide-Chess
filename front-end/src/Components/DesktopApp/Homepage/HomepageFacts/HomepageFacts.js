@@ -59,7 +59,7 @@ const HomepageFacts = () => {
   };
 
   return (
-    <div className="homepage-facts">
+    <div className="desktop-homepage-facts">
       {!error ? (
         cards.map(({ fact_num, fact }, index) => (
           <div key={nanoid()}>

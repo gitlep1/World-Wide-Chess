@@ -19,6 +19,7 @@ import AccountSettings from "./Accounts/AccountSettings/AccountSettings";
 import Inventory from "./Accounts/Inventory/Inventory";
 import Signin from "../../Signin/SignIn";
 import Signup from "../../Signup/SignUp";
+import Signout from "../../Signout/Signout";
 
 // Game stuff \\
 import Lobby from "./Games/Lobby/Lobby";
@@ -49,11 +50,13 @@ const DesktopApp = ({
 }) => {
   const [showSignIn, setShowSignIn] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
+  const [showSignout, setShowSignout] = useState(false);
 
   const handleClose = () => {
-    if (showSignUp || showSignIn) {
+    if (showSignUp || showSignIn || showSignout) {
       setShowSignUp(false);
       setShowSignIn(false);
+      setShowSignout(false);
     }
   };
 
@@ -74,11 +77,11 @@ const DesktopApp = ({
         <Sidebar
           user={user}
           authenticated={authenticated}
-          handleLogout={handleLogout}
           handleSidebarOpen={handleSidebarOpen}
           handleOpenInventory={handleOpenInventory}
           setShowSignIn={setShowSignIn}
           setShowSignUp={setShowSignUp}
+          setShowSignout={setShowSignout}
         />
       </SidebarMenu>
 
@@ -172,7 +175,6 @@ const DesktopApp = ({
       {showSignIn ? (
         <Signin
           handleUser={handleUser}
-          users={users}
           showSignIn={showSignIn}
           handleClose={handleClose}
         />
@@ -181,8 +183,15 @@ const DesktopApp = ({
       {showSignUp ? (
         <Signup
           handleUser={handleUser}
-          users={users}
           showSignUp={showSignUp}
+          handleClose={handleClose}
+        />
+      ) : null}
+
+      {showSignout ? (
+        <Signout
+          handleLogout={handleLogout}
+          showSignout={showSignout}
           handleClose={handleClose}
         />
       ) : null}

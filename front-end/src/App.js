@@ -23,6 +23,8 @@ const socket = io(API);
 const App = () => {
   const navigate = useNavigate();
   const [screenSize, setScreenSize] = useState(0);
+  const userData = window.localStorage.getItem("Current_User");
+  const authenticatedData = window.localStorage.getItem("Authenticated");
 
   const [user, setUser] = useState({});
   const [users, setUsers] = useState([]);
@@ -36,6 +38,7 @@ const App = () => {
   const [resize, setResize] = useState("");
 
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [userError, setUserError] = useState("");
   const [gameError, setGameError] = useState("");
 
@@ -83,19 +86,6 @@ const App = () => {
     };
   }, []);
 
-  const setLocalStorage = async () => {
-    const data = window.localStorage.getItem("Current_User");
-    const authenticated = window.localStorage.getItem("Authenticated");
-
-    if (data !== null && authenticated !== null) {
-      setUser(JSON.parse(data));
-      setAuthenticated(JSON.parse(authenticated));
-    } else {
-      await handleGuest();
-    }
-    setLoading(false);
-  };
-
   const resizeSidebar = () => {
     if (window.innerWidth > 1000) {
       setResize("20%");
@@ -122,16 +112,38 @@ const App = () => {
     setOpenInventory((prev) => !prev);
   };
 
-  const handleUser = (user) => {
-    if (user) {
-      setUser(user);
-      setAuthenticated(true);
-      window.localStorage.setItem("Current_User", JSON.stringify(user));
-      window.localStorage.setItem("Authenticated", JSON.stringify(true));
-      navigate(`/`);
+  const setLocalStorage = async () => {
+    if (userData !== null && authenticatedData !== null) {
+      setUser(JSON.parse(userData));
+      setAuthenticated(JSON.parse(authenticatedData));
     } else {
-      return null;
+      await handleGuest();
     }
+    setLoading(false);
+  };
+
+  const handleUser = async (user) => {
+    let token = JSON.parse(window.localStorage.getItem("Current_User")).token;
+    await axios
+      .delete(`${API}/guests/delete`, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      })
+      .then(() => {
+        if (user) {
+          setUser(user);
+          setAuthenticated(true);
+          window.localStorage.setItem("Current_User", JSON.stringify(user));
+          window.localStorage.setItem("Authenticated", JSON.stringify(true));
+          navigate(`/`);
+        } else {
+          return null;
+        }
+      })
+      .catch((err) => {
+        setError(err.response.data);
+      });
   };
 
   const handleGuest = async () => {
@@ -150,22 +162,21 @@ const App = () => {
         navigate(`/`);
       })
       .catch((err) => {
-        console.log(err);
+        setError(err.response.data);
       });
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setUser({});
     setAuthenticated(false);
-    const data = window.localStorage.getItem("Current_User");
-    const authenticated = window.localStorage.getItem("Authenticated");
 
-    if (data !== null && authenticated !== null) {
+    if (userData !== null && authenticatedData !== null) {
       window.localStorage.removeItem("Current_User");
       window.localStorage.removeItem("Authenticated");
+      await setLocalStorage();
     }
     setIsOpen(false);
-    setLocalStorage();
+    window.location.reload();
   };
 
   return screenSize >= 800 ? (
@@ -215,6 +226,7 @@ const App = () => {
         player2Data={player2Data}
         setPlayer1Data={setPlayer1Data}
         setPlayer2Data={setPlayer2Data}
+        loading={loading}
       />
     </>
   );

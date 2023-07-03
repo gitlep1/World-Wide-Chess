@@ -5,7 +5,7 @@ const { getAllShopItems, getShopItemsByID } = require("../queries/shop");
 
 const { requireAuth } = require("../validation/requireAuth");
 
-shop.get("/", requireAuth(), async (req, res) => {
+shop.get("/", async (req, res) => {
   const shopItems = await getAllShopItems();
 
   if (shopItems.length > 0) {
@@ -16,7 +16,7 @@ shop.get("/", requireAuth(), async (req, res) => {
   }
 });
 
-shop.get("/:id", requireAuth(), async (req, res) => {
+shop.get("/:id", async (req, res) => {
   const { id } = req.params;
   const getAshopItem = await getShopItemsByID(id);
 

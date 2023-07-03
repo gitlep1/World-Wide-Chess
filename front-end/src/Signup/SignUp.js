@@ -6,8 +6,6 @@ import axios from "axios";
 import Logo from "../Images/Logo.png";
 import defaultProfImg from "../Images/DefaultProfImg.png";
 
-import GetApi from "../CustomFunctions/GetApi";
-
 const API = process.env.REACT_APP_API_URL;
 
 const Signup = ({ handleUser, showSignUp, handleClose }) => {
@@ -84,12 +82,9 @@ const Signup = ({ handleUser, showSignUp, handleClose }) => {
     await axios
       .post(`${API}/users/signup`, newUser)
       .then((res) => {
-        // console.log("inside then: ", res.data);
         notify(res.data);
       })
       .catch((err) => {
-        // console.log("inside catch: ", err);
-        // console.clear();
         setError(err.response.data);
         notify("error");
       });
@@ -120,12 +115,11 @@ const Signup = ({ handleUser, showSignUp, handleClose }) => {
         }
       );
       setTimeout(() => {
-        // console.log("inside timeout");
         handleClose();
         handleUser(newUser);
       }, 4100);
-      return clearFields();
     }
+    return clearFields();
   };
 
   const clearFields = () => {
