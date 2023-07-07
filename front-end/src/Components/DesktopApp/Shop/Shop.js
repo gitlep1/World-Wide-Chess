@@ -32,7 +32,7 @@ const Shop = ({}) => {
 
   if (shopSearchbar !== "") {
     shopItemsArr = shopItems.filter((item) =>
-      item.name.toLowerCase().includes(shopSearchbar)
+      item.item_name.toLowerCase().includes(shopSearchbar)
     );
   } else {
     shopItemsArr = [...shopItems];
