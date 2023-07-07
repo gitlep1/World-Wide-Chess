@@ -6,8 +6,8 @@ import io from "socket.io-client";
 import axios from "axios";
 
 // App stuff \\
-import DesktopApp from "./Components/DesktopApp/DesktopApp";
-import MobileApp from "./Components/MobileApp/MobileApp";
+import DesktopApp from "./Components/DesktopApp";
+import MobileApp from "./Components/MobileApp";
 
 // Page stuff \\
 // import LandingPage from "./Components/LandingPage/LandingPage";
@@ -27,7 +27,6 @@ const App = () => {
   const authenticatedData = window.localStorage.getItem("Authenticated");
 
   const [user, setUser] = useState({});
-  const [users, setUsers] = useState([]);
   const [game, setGame] = useState({});
   const [games, setGames] = useState([]);
   const [player1Data, setPlayer1Data] = useState({});
@@ -39,7 +38,6 @@ const App = () => {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [userError, setUserError] = useState("");
   const [gameError, setGameError] = useState("");
 
   useEffect(() => {
@@ -59,19 +57,10 @@ const App = () => {
   }, []); // eslint-disable-line
 
   useEffect(() => {
-    socket.emit("users-update-all-clients");
     socket.emit("games-update-all-clients");
-
-    socket.on("users", (users) => {
-      setUsers(users);
-    });
 
     socket.on("games", (games) => {
       setGames(games);
-    });
-
-    socket.on("users-update-all-clients-error", (error) => {
-      setUserError(error);
     });
 
     socket.on("games-update-all-clients-error", (error) => {
@@ -79,8 +68,6 @@ const App = () => {
     });
 
     return () => {
-      socket.off("users");
-      socket.off("users-update-all-clients-error");
       socket.off("games");
       socket.off("games-update-all-clients-error");
     };
@@ -184,7 +171,6 @@ const App = () => {
       <DesktopApp
         handleSidebarOpen={handleSidebarOpen}
         user={user}
-        users={users}
         authenticated={authenticated}
         game={game}
         games={games}
@@ -209,7 +195,6 @@ const App = () => {
       <MobileApp
         handleSidebarOpen={handleSidebarOpen}
         user={user}
-        users={users}
         authenticated={authenticated}
         game={game}
         games={games}

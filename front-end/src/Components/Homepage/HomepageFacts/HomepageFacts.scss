@@ -1,0 +1,25 @@
+@mixin homepage-facts {
+  width: 80%;
+  margin: 0 auto;
+
+  .homepage-facts-card {
+    cursor: grab;
+    user-select: none;
+    color: gold;
+    background-color: #111;
+    border-radius: 10px;
+    padding: 20px;
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+}
+
+.desktop-homepage-facts {
+  @include homepage-facts;
+}
+
+.mobile-homepage-facts {
+  @include homepage-facts;
+}
