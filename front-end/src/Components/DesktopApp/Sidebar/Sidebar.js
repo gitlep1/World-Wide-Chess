@@ -35,7 +35,7 @@ const Sidebar = ({
               variant="dark"
               onClick={() => {
                 handleOpenInventory();
-                // handleSidebarOpen();
+                handleSidebarOpen();
               }}
             >
               Inventory
@@ -78,7 +78,7 @@ const Sidebar = ({
           <aside className="desktop-menuSideBar-buttons-container2">
             <Button
               className="desktop-menu-item2"
-              variant="dark"
+              variant="success"
               onClick={() => {
                 navigate(`/Accounts/${user.id}/Settings`);
                 handleSidebarOpen();

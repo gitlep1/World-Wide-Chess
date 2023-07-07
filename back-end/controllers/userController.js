@@ -47,6 +47,7 @@ user.post("/", checkValues, async (req, res) => {
   if (checkEmail) {
     res.status(409).send("Email already exists!");
   } else {
+    // newUserData["profileimg"] = "../Images/DefaultProfImg.png";
     const createdUser = await createUser(newUserData);
 
     if (createdUser) {
