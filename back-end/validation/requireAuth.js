@@ -8,6 +8,10 @@ const requireAuth = () => {
       const token = authHeader.split(" ")[1];
       jwt.verify(token, JSK, (err) => {
         if (err) {
+          if (err.message === "jwt expired") {
+            const expired = err.message;
+            console.log(expired);
+          }
           return res.sendStatus(403);
         }
         req.user = {

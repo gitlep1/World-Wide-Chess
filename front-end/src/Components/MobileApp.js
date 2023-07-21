@@ -30,6 +30,7 @@ const MobileApp = ({
   handleSidebarOpen,
   user,
   authenticated,
+  token,
   game,
   games,
   setGame,
@@ -78,6 +79,7 @@ const MobileApp = ({
           screenVersion={screenVersion}
           user={user}
           authenticated={authenticated}
+          token={token}
           handleLogout={handleLogout}
           handleSidebarOpen={handleSidebarOpen}
           openInventory={openInventory}
@@ -101,12 +103,24 @@ const MobileApp = ({
             <Route
               path="/"
               index
-              element={<Homepage screenVersion={screenVersion} />}
+              element={
+                <Homepage
+                  screenVersion={screenVersion}
+                  user={user}
+                  authenticated={authenticated}
+                  token={token}
+                />
+              }
             />
             <Route
               path="Accounts/:userID"
               element={
-                <AccountPage screenVersion={screenVersion} user={user} />
+                <AccountPage
+                  screenVersion={screenVersion}
+                  user={user}
+                  authenticated={authenticated}
+                  token={token}
+                />
               }
             />
             <Route
@@ -115,6 +129,8 @@ const MobileApp = ({
                 <AccountSettings
                   screenVersion={screenVersion}
                   user={user}
+                  authenticated={authenticated}
+                  token={token}
                   handleUser={handleUser}
                   handleLogout={handleLogout}
                 />
@@ -127,6 +143,8 @@ const MobileApp = ({
                 <Lobby
                   screenVersion={screenVersion}
                   user={user}
+                  authenticated={authenticated}
+                  token={token}
                   games={games}
                   socket={socket}
                   setGames={setGames}
@@ -139,6 +157,8 @@ const MobileApp = ({
                 <GameSettings
                   screenVersion={screenVersion}
                   user={user}
+                  authenticated={authenticated}
+                  token={token}
                   socket={socket}
                   game={game}
                   setGame={setGame}
@@ -153,6 +173,8 @@ const MobileApp = ({
                 <GamePage
                   screenVersion={screenVersion}
                   user={user}
+                  authenticated={authenticated}
+                  token={token}
                   socket={socket}
                   game={game}
                   setGame={setGame}
@@ -170,6 +192,8 @@ const MobileApp = ({
                 <LeaderBoard
                   screenVersion={screenVersion}
                   user={user}
+                  authenticated={authenticated}
+                  token={token}
                   socket={socket}
                 />
               }
@@ -177,10 +201,20 @@ const MobileApp = ({
             {/* Shop Route */}
             <Route
               path="Shop"
-              element={<Shop screenVersion={screenVersion} />}
+              element={
+                <Shop
+                  screenVersion={screenVersion}
+                  user={user}
+                  authenticated={authenticated}
+                  token={token}
+                />
+              }
             />
             {/* FoF Route */}
-            <Route path="*" element={<FoF screenVersion={screenVersion} />} />
+            <Route
+              path="*"
+              element={<FoF screenVersion={screenVersion} user={user} />}
+            />
           </Route>
         </Routes>
       </main>
@@ -191,6 +225,8 @@ const MobileApp = ({
           openInventory={openInventory}
           handleOpenInventory={handleOpenInventory}
           user={user}
+          authenticated={authenticated}
+          token={token}
         />
       ) : null}
 

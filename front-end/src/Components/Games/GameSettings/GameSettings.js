@@ -13,6 +13,8 @@ const API = process.env.REACT_APP_API_URL;
 const GameSettings = ({
   screenVersion,
   user,
+  authenticated,
+  token,
   socket,
   game,
   setGame,
@@ -67,12 +69,15 @@ const GameSettings = ({
   };
 
   const handleEndPoint = async () => {
-    await axios.delete(`${API}/games/${gameID}`);
+    await axios.delete(`${API}/games/${gameID}`, {
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    });
     navigate("/Lobby");
   };
 
   const renderGameSettings = () => {
-    // if (user.id === game.player1id || user.id === game.player2id) {
     if (loading) {
       return <Loading />;
     } else if (error) {
@@ -91,6 +96,8 @@ const GameSettings = ({
                 game={game}
                 setGame={setGame}
                 user={user}
+                authenticated={authenticated}
+                token={token}
                 error={error}
                 socket={socket}
                 setPlayer1Data={setPlayer1Data}
@@ -110,9 +117,6 @@ const GameSettings = ({
         </section>
       );
     }
-    // } else {
-    //   navigate("/Lobby");
-    // }
   };
 
   return (

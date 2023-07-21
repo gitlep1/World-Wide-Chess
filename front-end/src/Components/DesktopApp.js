@@ -30,6 +30,7 @@ const DesktopApp = ({
   handleSidebarOpen,
   user,
   authenticated,
+  token,
   game,
   games,
   setGame,
@@ -78,6 +79,7 @@ const DesktopApp = ({
           screenVersion={screenVersion}
           user={user}
           authenticated={authenticated}
+          token={token}
           handleSidebarOpen={handleSidebarOpen}
           handleOpenInventory={handleOpenInventory}
           setShowSignIn={setShowSignIn}
@@ -99,12 +101,24 @@ const DesktopApp = ({
             <Route
               path="/"
               index
-              element={<Homepage screenVersion={screenVersion} />}
+              element={
+                <Homepage
+                  screenVersion={screenVersion}
+                  user={user}
+                  authenticated={authenticated}
+                  token={token}
+                />
+              }
             />
             <Route
               path="Accounts/:userID"
               element={
-                <AccountPage screenVersion={screenVersion} user={user} />
+                <AccountPage
+                  screenVersion={screenVersion}
+                  user={user}
+                  authenticated={authenticated}
+                  token={token}
+                />
               }
             />
             <Route
@@ -113,6 +127,8 @@ const DesktopApp = ({
                 <AccountSettings
                   screenVersion={screenVersion}
                   user={user}
+                  authenticated={authenticated}
+                  token={token}
                   handleUser={handleUser}
                   handleLogout={handleLogout}
                 />
@@ -125,6 +141,8 @@ const DesktopApp = ({
                 <Lobby
                   screenVersion={screenVersion}
                   user={user}
+                  authenticated={authenticated}
+                  token={token}
                   games={games}
                   socket={socket}
                   setGames={setGames}
@@ -137,6 +155,8 @@ const DesktopApp = ({
                 <GameSettings
                   screenVersion={screenVersion}
                   user={user}
+                  authenticated={authenticated}
+                  token={token}
                   socket={socket}
                   game={game}
                   setGame={setGame}
@@ -151,6 +171,8 @@ const DesktopApp = ({
                 <GamePage
                   screenVersion={screenVersion}
                   user={user}
+                  authenticated={authenticated}
+                  token={token}
                   socket={socket}
                   game={game}
                   setGame={setGame}
@@ -168,6 +190,8 @@ const DesktopApp = ({
                 <LeaderBoard
                   screenVersion={screenVersion}
                   user={user}
+                  authenticated={authenticated}
+                  token={token}
                   socket={socket}
                 />
               }
@@ -175,10 +199,19 @@ const DesktopApp = ({
             {/* Shop Route */}
             <Route
               path="Shop"
-              element={<Shop screenVersion={screenVersion} />}
+              element={
+                <Shop
+                  screenVersion={screenVersion}
+                  authenticated={authenticated}
+                  token={token}
+                />
+              }
             />
             {/* FoF Route */}
-            <Route path="*" element={<FoF screenVersion={screenVersion} />} />
+            <Route
+              path="*"
+              element={<FoF screenVersion={screenVersion} user={user} />}
+            />
           </Route>
         </Routes>
       </main>
@@ -189,6 +222,8 @@ const DesktopApp = ({
           openInventory={openInventory}
           handleOpenInventory={handleOpenInventory}
           user={user}
+          authenticated={authenticated}
+          token={token}
         />
       ) : null}
 

@@ -164,14 +164,21 @@ user.delete(
 
     if (deletedUser.id) {
       console.log("=== DELETE user", deletedUser, "===");
-      res.status(200).json(`User: ${deletedUser.username} \n 
-      with ID: ${deletedUser.id} has been deleted.`);
+      res.status(200).send(
+        `
+          ID: ${deletedUser.id}
+          User: ${deletedUser.username} 
+          SUCCESS: user has been deleted.
+        `
+      );
     } else {
-      res
-        .status(404)
-        .send(
-          `User: ${decoded.user.username} with ID: ${decoded.user.id} was not deleted`
-        );
+      res.status(404).send(
+        `
+          ID: ${decoded.user.id} 
+          User: ${decoded.user.username}
+          ERROR: user does not exist.
+        `
+      );
     }
   }
 );

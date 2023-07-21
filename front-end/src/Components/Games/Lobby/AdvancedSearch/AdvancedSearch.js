@@ -11,6 +11,7 @@ const FilterSearch = ({
   setGames,
   games,
   socket,
+  token,
 }) => {
   const [minEloRating, setMinEloRating] = useState("");
   const [maxEloRating, setMaxEloRating] = useState("");
@@ -87,9 +88,15 @@ const FilterSearch = ({
   };
 
   const revertSearch = async () => {
-    await axios.get(`${API}/games`).then((res) => {
-      setGames(res.data);
-    });
+    await axios
+      .get(`${API}/games`, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        setGames(res.data.payload);
+      });
 
     socket.on("games", (games) => {
       setGames(games);

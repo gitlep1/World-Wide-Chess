@@ -10,6 +10,8 @@ const PlayerGameSettings = ({
   game,
   setGame,
   user,
+  authenticated,
+  token,
   error,
   socket,
   setPlayer1Data,
@@ -22,7 +24,7 @@ const PlayerGameSettings = ({
       if (user.id === game.player1id) {
         return undefined;
       } else {
-        toast.success(`${game.player1}(Host) has cancelled the game.`, {
+        toast.success(`Host: ${game.player1} has cancelled the game.`, {
           toastId: "hostCancelledPlayerGame",
           position: "top-center",
           hideProgressBar: false,
@@ -94,7 +96,7 @@ const PlayerGameSettings = ({
     <section className="renderSection">
       {error ? (
         <h1>Host Cancelled Game</h1>
-      ) : user.id === game.player1id ? (
+      ) : user.payload.id === game.payload.player1id ? (
         <div>
           <Button onClick={handleStartGame} variant="dark">
             Start Game

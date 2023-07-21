@@ -14,35 +14,55 @@ import DetectScreenSize from "../../../CustomFunctions/DetectScreenSize";
 
 const API = process.env.REACT_APP_API_URL;
 
-const Lobbypage = ({ screenVersion, user, games, socket, setGames }) => {
+const Lobbypage = ({ screenVersion, user, authenticated, token, socket }) => {
   const navigate = useNavigate();
 
-  let [gamesCopy, setGamesCopy] = useState([]);
+  const [game, setGame] = useState({});
+  const [games, setGames] = useState([]);
+  const [gamesCopy, setGamesCopy] = useState([]);
+  const [player1Data, setPlayer1Data] = useState({});
+  const [player2Data, setPlayer2Data] = useState({});
   const [createRoomName, setCreateRoomName] = useState("");
   const [createRoomPassword, setCreateRoomPassword] = useState("");
   const [joinWithPassword, setJoinWithPassword] = useState("");
   const [searchbar, setSearchbar] = useState("");
   const [showCreate, setShowCreate] = useState(false);
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
-  const [screenSize, setScreenSize] = useState(0);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [gameError, setGameError] = useState("");
 
   useEffect(() => {
-    const intervalFunctions = setInterval(() => {
-      getScreenSize();
+    socket.emit("games-update-all-clients");
+
+    socket.on("games", (games) => {
+      setGames(games);
     });
 
-    return () => clearInterval(intervalFunctions);
-  }, []);
+    socket.on("games-update-all-clients-error", (error) => {
+      setGameError(error);
+    });
+
+    return () => {
+      socket.off("games");
+      socket.off("games-update-all-clients-error");
+    };
+  }, [socket]);
 
   useEffect(() => {
-    setGamesCopy([...games]);
-  }, [games]);
+    handleSearch();
+  }, [searchbar, games]); // eslint-disable-line
 
-  const getScreenSize = () => {
-    return setScreenSize(DetectScreenSize().width);
+  const handleSearch = () => {
+    if (searchbar !== "") {
+      const filteredGames = games.filter((game) =>
+        game.room_name.toLowerCase().includes(searchbar.toLowerCase())
+      );
+      setGamesCopy(filteredGames);
+    } else {
+      setGamesCopy(games);
+    }
   };
 
   const handleChange = (e) => {
@@ -76,15 +96,19 @@ const Lobbypage = ({ screenVersion, user, games, socket, setGames }) => {
     const newGameData = {
       room_name: createRoomName,
       room_password: createRoomPassword,
-      player1id: user.id,
+      player1id: user.payload.id,
     };
 
     await axios
-      .post(`${API}/games`, newGameData)
+      .post(`${API}/games`, newGameData, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      })
       .then((res) => {
         socket.emit("games-update-all-clients");
-        socket.emit("room-created", res.data);
-        navigate(`/Room/${res.data.id}/Settings`);
+        socket.emit("room-created", res.data.payload);
+        navigate(`/Room/${res.data.payload.id}/Settings`);
       })
       .catch((err) => {
         console.log(err.message);
@@ -94,7 +118,7 @@ const Lobbypage = ({ screenVersion, user, games, socket, setGames }) => {
   const handleJoin = async (gameID) => {
     let gameData = {};
     const updatePlayer2 = {
-      player2id: user.id,
+      player2id: user.payload.id,
     };
 
     for (const game of gamesCopy) {
@@ -105,7 +129,11 @@ const Lobbypage = ({ screenVersion, user, games, socket, setGames }) => {
 
     const addDataToGame = async () => {
       return axios
-        .put(`${API}/games/${gameData.id}`, updatePlayer2)
+        .put(`${API}/games/${gameData.id}`, updatePlayer2, {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        })
         .then((res) => {
           socket.emit("games-update-all-clients");
           socket.emit("room-joined", res.data.payload);
@@ -181,13 +209,6 @@ const Lobbypage = ({ screenVersion, user, games, socket, setGames }) => {
     setCreateRoomPassword("");
   };
 
-  if (searchbar !== "") {
-    const gamesList = [...games];
-    gamesCopy = gamesList.filter((game) =>
-      game.room_name.toLowerCase().includes(searchbar.toLowerCase())
-    );
-  }
-
   const advancedSearchAnimation = useSpring({
     height: showAdvancedSearch ? "25em" : "0",
     opacity: showAdvancedSearch ? 1 : 0,
@@ -238,10 +259,12 @@ const Lobbypage = ({ screenVersion, user, games, socket, setGames }) => {
             >
               {showAdvancedSearch && (
                 <AdvancedSearch
+                  screenVersion={screenVersion}
                   setGamesCopy={setGamesCopy}
                   setGames={setGames}
                   games={games}
                   socket={socket}
+                  token={token}
                 />
               )}
             </animated.div>
@@ -257,6 +280,7 @@ const Lobbypage = ({ screenVersion, user, games, socket, setGames }) => {
           </div>
           <div className="lobbyTable-body">
             <RenderLobby
+              screenVersion={screenVersion}
               gamesCopy={gamesCopy}
               joinWithPassword={joinWithPassword}
               setJoinWithPassword={setJoinWithPassword}

@@ -11,18 +11,6 @@ $extra-large-desktop: 1400px;
 $TestBorder: url("../../Images/testBorder.png");
 $TigerGif: url("../../Images/tigerRunning.gif");
 
-// $test: 15;
-
-// @if $test >= 10 {
-//   body {
-//     border: 5px solid red;
-//   }
-// } @else {
-//   body {
-//     border: 5px solid cyan;
-//   }
-// }
-
 @mixin homepage-container {
   height: 90vh;
   width: 95vw;

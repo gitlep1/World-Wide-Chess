@@ -4,15 +4,16 @@ import { useNavigate } from "react-router-dom";
 import { nanoid } from "nanoid";
 import io from "socket.io-client";
 import axios from "axios";
+import Cookies from "js-cookie";
 
-// App stuff \\
+// App components \\
 import DesktopApp from "./Components/DesktopApp";
 import MobileApp from "./Components/MobileApp";
 
-// Page stuff \\
+// Page components \\
 // import LandingPage from "./Components/LandingPage/LandingPage";
 
-// Custom function stuff \\
+// Custom functions \\
 import DetectScreenSize from "./CustomFunctions/DetectScreenSize";
 
 import DefaultProfImg from "./Images/DefaultProfImg.png";
@@ -23,14 +24,15 @@ const socket = io(API);
 const App = () => {
   const navigate = useNavigate();
   const [screenSize, setScreenSize] = useState(0);
-  const userData = window.localStorage.getItem("Current_User");
-  const authenticatedData = window.localStorage.getItem("Authenticated");
+  const userData = Cookies.get("Current_User") || null;
+  const authenticatedData = Cookies.get("Authenticated") || null;
+  const token = JSON.parse(Cookies.get("Current_User")).token || null;
 
   const [user, setUser] = useState({});
-  const [game, setGame] = useState({});
-  const [games, setGames] = useState([]);
-  const [player1Data, setPlayer1Data] = useState({});
-  const [player2Data, setPlayer2Data] = useState({});
+  // const [game, setGame] = useState({});
+  // const [games, setGames] = useState([]);
+  // const [player1Data, setPlayer1Data] = useState({});
+  // const [player2Data, setPlayer2Data] = useState({});
   const [isOpen, setIsOpen] = useState(false);
   const [openInventory, setOpenInventory] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
@@ -38,40 +40,21 @@ const App = () => {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [gameError, setGameError] = useState("");
 
   useEffect(() => {
-    setLocalStorage();
-    setScreenSize(DetectScreenSize().width);
-
-    const handleResize = () => {
-      resizeSidebar();
-      setScreenSize(DetectScreenSize().width);
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
+    checkCookies();
   }, []); // eslint-disable-line
 
   useEffect(() => {
-    socket.emit("games-update-all-clients");
-
-    socket.on("games", (games) => {
-      setGames(games);
-    });
-
-    socket.on("games-update-all-clients-error", (error) => {
-      setGameError(error);
-    });
+    const resizeSidebarInterval = setInterval(() => {
+      resizeSidebar();
+      setScreenSize(DetectScreenSize().width);
+    }, 500);
 
     return () => {
-      socket.off("games");
-      socket.off("games-update-all-clients-error");
+      clearInterval(resizeSidebarInterval);
     };
-  }, []);
+  }, []); // eslint-disable-line
 
   const resizeSidebar = () => {
     if (window.innerWidth > 1000) {
@@ -99,8 +82,8 @@ const App = () => {
     setOpenInventory((prev) => !prev);
   };
 
-  const setLocalStorage = async () => {
-    if (userData !== null && authenticatedData !== null) {
+  const checkCookies = async () => {
+    if (userData && authenticatedData) {
       setUser(JSON.parse(userData));
       setAuthenticated(JSON.parse(authenticatedData));
     } else {
@@ -110,7 +93,6 @@ const App = () => {
   };
 
   const handleUser = async (user) => {
-    let token = JSON.parse(window.localStorage.getItem("Current_User")).token;
     await axios
       .delete(`${API}/guests/delete`, {
         headers: {
@@ -119,10 +101,18 @@ const App = () => {
       })
       .then(() => {
         if (user) {
+          const expirationDate = new Date();
+          expirationDate.setDate(expirationDate.getDate() + 30);
+
           setUser(user);
           setAuthenticated(true);
-          window.localStorage.setItem("Current_User", JSON.stringify(user));
-          window.localStorage.setItem("Authenticated", JSON.stringify(true));
+
+          Cookies.set("Current_User", JSON.stringify(user), {
+            expires: expirationDate,
+            path: "/",
+          });
+          Cookies.set("Authenticated", JSON.stringify(true));
+
           navigate(`/`);
         } else {
           return null;
@@ -139,13 +129,22 @@ const App = () => {
       username: `Guest-${nanoid(5)}`,
       is_guest: true,
     };
+
     return axios
       .post(`${API}/guests/signup`, newGuest)
       .then((res) => {
+        const expirationDate = new Date();
+        expirationDate.setDate(expirationDate.getDate() + 1);
+
         setUser(res.data);
         setAuthenticated(true);
-        window.localStorage.setItem("Current_User", JSON.stringify(res.data));
-        window.localStorage.setItem("Authenticated", JSON.stringify(true));
+
+        Cookies.set("Current_User", JSON.stringify(res.data), {
+          expires: expirationDate,
+          path: "/",
+        });
+        Cookies.set("Authenticated", JSON.stringify(true));
+
         navigate(`/`);
       })
       .catch((err) => {
@@ -157,63 +156,63 @@ const App = () => {
     setUser({});
     setAuthenticated(false);
 
-    if (userData !== null && authenticatedData !== null) {
-      window.localStorage.removeItem("Current_User");
-      window.localStorage.removeItem("Authenticated");
-      await setLocalStorage();
+    if (userData && authenticatedData) {
+      Cookies.remove("Current_User");
+      Cookies.remove("Authenticated");
+    } else {
+      await handleGuest();
     }
+
     setIsOpen(false);
     window.location.reload();
   };
 
   return screenSize >= 800 ? (
-    <>
-      <DesktopApp
-        handleSidebarOpen={handleSidebarOpen}
-        user={user}
-        authenticated={authenticated}
-        game={game}
-        games={games}
-        setGame={setGame}
-        setGames={setGames}
-        isOpen={isOpen}
-        openInventory={openInventory}
-        handleOpenInventory={handleOpenInventory}
-        handleUser={handleUser}
-        handleLogout={handleLogout}
-        resize={resize}
-        socket={socket}
-        player1Data={player1Data}
-        player2Data={player2Data}
-        setPlayer1Data={setPlayer1Data}
-        setPlayer2Data={setPlayer2Data}
-        loading={loading}
-      />
-    </>
+    <DesktopApp
+      handleSidebarOpen={handleSidebarOpen}
+      user={user}
+      authenticated={authenticated}
+      token={token}
+      // game={game}
+      // games={games}
+      // setGame={setGame}
+      // setGames={setGames}
+      isOpen={isOpen}
+      openInventory={openInventory}
+      handleOpenInventory={handleOpenInventory}
+      handleUser={handleUser}
+      handleLogout={handleLogout}
+      resize={resize}
+      socket={socket}
+      // player1Data={player1Data}
+      // player2Data={player2Data}
+      // setPlayer1Data={setPlayer1Data}
+      // setPlayer2Data={setPlayer2Data}
+      loading={loading}
+    />
   ) : (
-    <>
-      <MobileApp
-        handleSidebarOpen={handleSidebarOpen}
-        user={user}
-        authenticated={authenticated}
-        game={game}
-        games={games}
-        setGame={setGame}
-        setGames={setGames}
-        isOpen={isOpen}
-        openInventory={openInventory}
-        handleOpenInventory={handleOpenInventory}
-        handleUser={handleUser}
-        handleLogout={handleLogout}
-        resize={resize}
-        socket={socket}
-        player1Data={player1Data}
-        player2Data={player2Data}
-        setPlayer1Data={setPlayer1Data}
-        setPlayer2Data={setPlayer2Data}
-        loading={loading}
-      />
-    </>
+    <MobileApp
+      handleSidebarOpen={handleSidebarOpen}
+      user={user}
+      authenticated={authenticated}
+      token={token}
+      // game={game}
+      // games={games}
+      // setGame={setGame}
+      // setGames={setGames}
+      isOpen={isOpen}
+      openInventory={openInventory}
+      handleOpenInventory={handleOpenInventory}
+      handleUser={handleUser}
+      handleLogout={handleLogout}
+      resize={resize}
+      socket={socket}
+      // player1Data={player1Data}
+      // player2Data={player2Data}
+      // setPlayer1Data={setPlayer1Data}
+      // setPlayer2Data={setPlayer2Data}
+      loading={loading}
+    />
   );
 };
 

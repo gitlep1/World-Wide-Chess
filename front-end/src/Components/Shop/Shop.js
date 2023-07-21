@@ -39,8 +39,8 @@ const Shop = ({ screenVersion }) => {
   }
 
   return (
-    <section className="desktop-shop-container">
-      <div className="desktop-shop-searchbar-container">
+    <section className={`${screenVersion}-shop-container`}>
+      <div className="shop-searchbar-container">
         <Form.Group controlId="basic-shopSearchbar">
           <Form.Control
             type="text"
@@ -51,7 +51,7 @@ const Shop = ({ screenVersion }) => {
           />
         </Form.Group>
       </div>
-      <div className="desktop-shop-items-container">
+      <div className="shop-items-container">
         {shopItemsArr.map((item) => {
           return (
             <div key={nanoid()} className="shop-item-card-container">

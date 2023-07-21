@@ -12,6 +12,7 @@
     "bootstrap": "^5.2.0",
     "chess.js": "^0.13.4",
     "cross-env": "^7.0.3",
+    "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.0",
     "lodash": "^4.17.21",
     "mdb-react-ui-kit": "^4.2.0",
