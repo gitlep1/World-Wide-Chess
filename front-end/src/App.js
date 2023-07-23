@@ -26,16 +26,12 @@ const App = () => {
   const [screenSize, setScreenSize] = useState(0);
   const userData = Cookies.get("Current_User") || null;
   const authenticatedData = Cookies.get("Authenticated") || null;
-  const token = JSON.parse(Cookies.get("Current_User")).token || null;
 
   const [user, setUser] = useState({});
-  // const [game, setGame] = useState({});
-  // const [games, setGames] = useState([]);
-  // const [player1Data, setPlayer1Data] = useState({});
-  // const [player2Data, setPlayer2Data] = useState({});
+  const [token, setToken] = useState("");
+  const [authenticated, setAuthenticated] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [openInventory, setOpenInventory] = useState(false);
-  const [authenticated, setAuthenticated] = useState(false);
   const [resize, setResize] = useState("");
 
   const [loading, setLoading] = useState(true);
@@ -84,8 +80,9 @@ const App = () => {
 
   const checkCookies = async () => {
     if (userData && authenticatedData) {
-      setUser(JSON.parse(userData));
+      setUser(JSON.parse(Cookies.get("Current_User")));
       setAuthenticated(JSON.parse(authenticatedData));
+      setToken(JSON.parse(Cookies.get("Current_User")).token);
     } else {
       await handleGuest();
     }
@@ -173,10 +170,6 @@ const App = () => {
       user={user}
       authenticated={authenticated}
       token={token}
-      // game={game}
-      // games={games}
-      // setGame={setGame}
-      // setGames={setGames}
       isOpen={isOpen}
       openInventory={openInventory}
       handleOpenInventory={handleOpenInventory}
@@ -184,10 +177,6 @@ const App = () => {
       handleLogout={handleLogout}
       resize={resize}
       socket={socket}
-      // player1Data={player1Data}
-      // player2Data={player2Data}
-      // setPlayer1Data={setPlayer1Data}
-      // setPlayer2Data={setPlayer2Data}
       loading={loading}
     />
   ) : (
@@ -196,10 +185,6 @@ const App = () => {
       user={user}
       authenticated={authenticated}
       token={token}
-      // game={game}
-      // games={games}
-      // setGame={setGame}
-      // setGames={setGames}
       isOpen={isOpen}
       openInventory={openInventory}
       handleOpenInventory={handleOpenInventory}
@@ -207,10 +192,6 @@ const App = () => {
       handleLogout={handleLogout}
       resize={resize}
       socket={socket}
-      // player1Data={player1Data}
-      // player2Data={player2Data}
-      // setPlayer1Data={setPlayer1Data}
-      // setPlayer2Data={setPlayer2Data}
       loading={loading}
     />
   );
