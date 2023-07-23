@@ -170,10 +170,6 @@ const App = () => {
       user={user}
       authenticated={authenticated}
       token={token}
-      // game={game}
-      // games={games}
-      // setGame={setGame}
-      // setGames={setGames}
       isOpen={isOpen}
       openInventory={openInventory}
       handleOpenInventory={handleOpenInventory}
@@ -181,10 +177,6 @@ const App = () => {
       handleLogout={handleLogout}
       resize={resize}
       socket={socket}
-      // player1Data={player1Data}
-      // player2Data={player2Data}
-      // setPlayer1Data={setPlayer1Data}
-      // setPlayer2Data={setPlayer2Data}
       loading={loading}
     />
   ) : (
@@ -193,10 +185,6 @@ const App = () => {
       user={user}
       authenticated={authenticated}
       token={token}
-      // game={game}
-      // games={games}
-      // setGame={setGame}
-      // setGames={setGames}
       isOpen={isOpen}
       openInventory={openInventory}
       handleOpenInventory={handleOpenInventory}
@@ -204,10 +192,6 @@ const App = () => {
       handleLogout={handleLogout}
       resize={resize}
       socket={socket}
-      // player1Data={player1Data}
-      // player2Data={player2Data}
-      // setPlayer1Data={setPlayer1Data}
-      // setPlayer2Data={setPlayer2Data}
       loading={loading}
     />
   );
