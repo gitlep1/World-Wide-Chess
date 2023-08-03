@@ -29,6 +29,8 @@ import GamePage from "./Games/GamePage/GamePage";
 const MobileApp = ({
   handleSidebarOpen,
   user,
+  gameMode,
+  setGameMode,
   authenticated,
   token,
   game,
@@ -143,6 +145,8 @@ const MobileApp = ({
                 <Lobby
                   screenVersion={screenVersion}
                   user={user}
+                  gameMode={gameMode}
+                  setGameMode={setGameMode}
                   authenticated={authenticated}
                   token={token}
                   games={games}
@@ -160,6 +164,8 @@ const MobileApp = ({
                   authenticated={authenticated}
                   token={token}
                   socket={socket}
+                  gameMode={gameMode}
+                  setGameMode={setGameMode}
                   game={game}
                   setGame={setGame}
                   setPlayer1Data={setPlayer1Data}
@@ -176,6 +182,8 @@ const MobileApp = ({
                   authenticated={authenticated}
                   token={token}
                   socket={socket}
+                  gameMode={gameMode}
+                  setGameMode={setGameMode}
                   game={game}
                   setGame={setGame}
                   player1Data={player1Data}

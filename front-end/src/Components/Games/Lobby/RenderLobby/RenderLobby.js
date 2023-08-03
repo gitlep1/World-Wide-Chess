@@ -4,7 +4,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 
 const RenderLobby = ({
   screenVersion,
-  gamesCopy,
+  game,
   joinWithPassword,
   setJoinWithPassword,
   handleJoin,
@@ -30,60 +30,52 @@ const RenderLobby = ({
     setJoinWithPassword("");
   };
 
-  const renderLobbyGames = () => {
-    return gamesCopy.map((game) => {
-      return (
-        <div key={game.id} className={`${screenVersion}-room-info`}>
-          <span className="room-name">{game.room_name}</span>
-          <span className="room-status">
-            <section className="lobby-status-buttons">
-              {game.player2 ? (
-                <>
-                  <div className="lobby-button-two">JOIN</div>
-
-                  <div
-                    // onClick={() => {
-                    //   game.room_password
-                    //     ? handleShowPasswordModal()
-                    //     : console.log("no password");
-                    //   // handleJoin(game.id);
-                    // }}
-                    className="lobby-button-one"
-                  >
-                    SPECTATE
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div
-                    className="lobby-button-one"
-                    onClick={() => {
-                      game.room_password ? (
-                        <>
-                          {handleShowPasswordModal()}
-                          {setPasswordGameId(game.id)}
-                        </>
-                      ) : (
-                        handleJoin(game.id)
-                      );
-                    }}
-                  >
-                    JOIN
-                  </div>
-
-                  <div className="lobby-button-two">SPECTATE</div>
-                </>
-              )}
-            </section>
-          </span>
-        </div>
-      );
-    });
-  };
-
   return (
     <>
-      {renderLobbyGames()}
+      <div className={`${screenVersion}-room-info`}>
+        <span className="room-name">{game.room_name}</span>
+        <span className="room-status">
+          <section className="lobby-status-buttons">
+            {game.player2 ? (
+              <>
+                <div className="lobby-button-two">JOIN</div>
+
+                <div
+                  // onClick={() => {
+                  //   game.room_password
+                  //     ? handleShowPasswordModal()
+                  //     : console.log("no password");
+                  //   // handleJoin(game.id);
+                  // }}
+                  className="lobby-button-one"
+                >
+                  SPECTATE
+                </div>
+              </>
+            ) : (
+              <>
+                <div
+                  className="lobby-button-one"
+                  onClick={() => {
+                    game.room_password ? (
+                      <>
+                        {handleShowPasswordModal()}
+                        {setPasswordGameId(game.id)}
+                      </>
+                    ) : (
+                      handleJoin(game.id)
+                    );
+                  }}
+                >
+                  JOIN
+                </div>
+
+                <div className="lobby-button-two">SPECTATE</div>
+              </>
+            )}
+          </section>
+        </span>
+      </div>
 
       <Modal
         show={showPasswordModal}

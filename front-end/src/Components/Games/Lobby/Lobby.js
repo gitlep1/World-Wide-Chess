@@ -1,12 +1,14 @@
 import "./Lobby.scss";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { nanoid } from "nanoid";
 import { useSpring, animated } from "react-spring";
 import { Modal, Button, Form } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import { MdManageSearch } from "react-icons/md";
 import { BiSearchAlt2 } from "react-icons/bi";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 import RenderLobby from "./RenderLobby/RenderLobby";
 import AdvancedSearch from "./AdvancedSearch/AdvancedSearch";
@@ -14,14 +16,19 @@ import DetectScreenSize from "../../../CustomFunctions/DetectScreenSize";
 
 const API = process.env.REACT_APP_API_URL;
 
-const Lobbypage = ({ screenVersion, user, authenticated, token, socket }) => {
+const Lobbypage = ({
+  screenVersion,
+  user,
+  gameMode,
+  setGameMode,
+  authenticated,
+  token,
+  socket,
+}) => {
   const navigate = useNavigate();
 
-  const [game, setGame] = useState({});
   const [games, setGames] = useState([]);
   const [gamesCopy, setGamesCopy] = useState([]);
-  const [player1Data, setPlayer1Data] = useState({});
-  const [player2Data, setPlayer2Data] = useState({});
   const [createRoomName, setCreateRoomName] = useState("");
   const [createRoomPassword, setCreateRoomPassword] = useState("");
   const [joinWithPassword, setJoinWithPassword] = useState("");
@@ -30,29 +37,69 @@ const Lobbypage = ({ screenVersion, user, authenticated, token, socket }) => {
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
 
   const [loading, setLoading] = useState(false);
+  const [refreshed, setRefreshed] = useState(false);
+  const [countdown, setCountdown] = useState(60);
   const [error, setError] = useState("");
   const [gameError, setGameError] = useState("");
 
   useEffect(() => {
-    socket.emit("games-update-all-clients");
+    socket.emit("get-updated-games-list");
 
     socket.on("games", (games) => {
       setGames(games);
     });
 
-    socket.on("games-update-all-clients-error", (error) => {
+    socket.on("get-updated-games-list-error", (error) => {
       setGameError(error);
     });
 
     return () => {
       socket.off("games");
-      socket.off("games-update-all-clients-error");
+      socket.off("get-updated-games-list-error");
     };
   }, [socket]);
 
   useEffect(() => {
     handleSearch();
   }, [searchbar, games]); // eslint-disable-line
+
+  useEffect(() => {
+    const checkCountdown = Cookies.get("countdown");
+
+    if (checkCountdown) {
+      setCountdown(JSON.parse(checkCountdown));
+      setRefreshed(true);
+    }
+
+    if (refreshed) {
+      const refreshInterval = setInterval(() => {
+        setCountdown((prevCountdown) => {
+          const newCountdown = prevCountdown - 1;
+
+          if (newCountdown <= 0) {
+            setCountdown(60);
+            setRefreshed(false);
+            Cookies.remove("countdown", { path: "/" });
+            clearInterval(refreshInterval);
+          } else {
+            const currentTime = new Date();
+            const expirationTime = new Date(currentTime.getTime() + 60000);
+
+            Cookies.set("countdown", JSON.stringify(newCountdown), {
+              path: "/",
+              expires: expirationTime,
+            });
+          }
+
+          return newCountdown;
+        });
+      }, 1000);
+
+      return () => {
+        clearInterval(refreshInterval);
+      };
+    }
+  }, [countdown, refreshed]);
 
   const handleSearch = () => {
     if (searchbar !== "") {
@@ -62,6 +109,43 @@ const Lobbypage = ({ screenVersion, user, authenticated, token, socket }) => {
       setGamesCopy(filteredGames);
     } else {
       setGamesCopy(games);
+    }
+  };
+
+  const handleRefresh = async () => {
+    try {
+      const singlePlayerGamesRequest = axios.get(`${API}/single-player-games`, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      });
+
+      const multiPlayerGamesRequest = axios.get(`${API}/multi-player-games`, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      });
+
+      const [singlePlayerGamesResponse, multiPlayerGamesResponse] =
+        await axios.all([singlePlayerGamesRequest, multiPlayerGamesRequest]);
+
+      const singlePlayerGames = singlePlayerGamesResponse.data.payload;
+      const multiPlayerGames = multiPlayerGamesResponse.data.payload;
+
+      const combinedGames = [...singlePlayerGames, ...multiPlayerGames];
+
+      setGames(combinedGames);
+      setRefreshed(true);
+
+      const currentTime = new Date();
+      const expirationTime = new Date(currentTime.getTime() + 60000);
+
+      Cookies.set("countdown", JSON.stringify(countdown), {
+        path: "/",
+        expires: expirationTime,
+      });
+    } catch (err) {
+      console.log(err.response.data);
     }
   };
 
@@ -93,32 +177,55 @@ const Lobbypage = ({ screenVersion, user, authenticated, token, socket }) => {
       });
     }
 
-    const newGameData = {
-      room_name: createRoomName,
-      room_password: createRoomPassword,
-      player1id: user.payload.id,
-    };
+    if (gameMode) {
+      const newMultiGameData = {
+        room_name: createRoomName,
+        room_password: createRoomPassword,
+        player1id: user.id,
+      };
 
-    await axios
-      .post(`${API}/games`, newGameData, {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => {
-        socket.emit("games-update-all-clients");
-        socket.emit("room-created", res.data.payload);
-        navigate(`/Room/${res.data.payload.id}/Settings`);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+      await axios
+        .post(`${API}/multi-player-games`, newMultiGameData, {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => {
+          socket.emit("get-updated-games-list");
+          socket.emit("room-created", res.data.payload);
+          navigate(`/Room/${res.data.payload.id}/Settings`);
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    } else {
+      const newSingleGameData = {
+        room_name: createRoomName,
+        room_password: createRoomPassword,
+        player_id: user.id,
+      };
+
+      await axios
+        .post(`${API}/single-player-games`, newSingleGameData, {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => {
+          socket.emit("get-updated-games-list");
+          socket.emit("room-created", res.data.payload);
+          navigate(`/Room/${res.data.payload.id}/Settings`);
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    }
   };
 
   const handleJoin = async (gameID) => {
     let gameData = {};
     const updatePlayer2 = {
-      player2id: user.payload.id,
+      player2id: user.id,
     };
 
     for (const game of gamesCopy) {
@@ -135,7 +242,7 @@ const Lobbypage = ({ screenVersion, user, authenticated, token, socket }) => {
           },
         })
         .then((res) => {
-          socket.emit("games-update-all-clients");
+          socket.emit("get-updated-games-list");
           socket.emit("room-joined", res.data.payload);
           navigate(`/Room/${res.data.payload.id}/Settings`);
         })
@@ -145,16 +252,15 @@ const Lobbypage = ({ screenVersion, user, authenticated, token, socket }) => {
     };
 
     if (gameData.room_password) {
-      if (
-        gameData.room_password.toLowerCase() === joinWithPassword.toLowerCase()
-      ) {
-        toast
+      if (gameData.room_password === joinWithPassword) {
+        await toast
           .promise(addDataToGame(), {
             pending: "Joining Game ...",
-            success: "Joining Game ...",
+            success: "Joined Game ...",
             error: "Error",
           })
           .then((res) => {
+            console.log(res.data);
             notify(res.data);
           })
           .catch((err) => {
@@ -223,10 +329,22 @@ const Lobbypage = ({ screenVersion, user, authenticated, token, socket }) => {
             onClick={() => {
               setShowCreate(true);
             }}
-            className="lobby-create-button"
+            className="lobby-button"
           >
             CREATE
           </div>
+          {refreshed ? (
+            <div className="lobby-button">{countdown}</div>
+          ) : (
+            <div
+              onClick={() => {
+                handleRefresh();
+              }}
+              className="lobby-button"
+            >
+              REFRESH
+            </div>
+          )}
           <div className="lobby-searchbar-container">
             <div className="lobby-searchbar-1">
               <div className="lobby-searchbar-icon-1">
@@ -279,13 +397,18 @@ const Lobbypage = ({ screenVersion, user, authenticated, token, socket }) => {
             <span id="room-status">Status</span>
           </div>
           <div className="lobbyTable-body">
-            <RenderLobby
-              screenVersion={screenVersion}
-              gamesCopy={gamesCopy}
-              joinWithPassword={joinWithPassword}
-              setJoinWithPassword={setJoinWithPassword}
-              handleJoin={handleJoin}
-            />
+            {gamesCopy.map((game) => {
+              return (
+                <RenderLobby
+                  key={nanoid()}
+                  screenVersion={screenVersion}
+                  game={game}
+                  joinWithPassword={joinWithPassword}
+                  setJoinWithPassword={setJoinWithPassword}
+                  handleJoin={handleJoin}
+                />
+              );
+            })}
           </div>
         </div>
       </section>
@@ -303,7 +426,7 @@ const Lobbypage = ({ screenVersion, user, authenticated, token, socket }) => {
         keyboard={false}
       >
         <Modal.Title className="lobbyModal-title">Game Settings</Modal.Title>
-        <Modal.Body>
+        <Modal.Body className="lobbyModal-body">
           <Form onSubmit={handleSubmit}>
             <h3>Room Name</h3>
             <Form.Group controlId="formcreateRoomName">
@@ -328,18 +451,48 @@ const Lobbypage = ({ screenVersion, user, authenticated, token, socket }) => {
                 className="lobbyModal-password-data"
               />
             </Form.Group>
+            <p
+              style={{
+                color: "red",
+              }}
+            >
+              * Leave blank if you don't want to set a password for this room.*
+            </p>
             <br />
             <div className="lobbyModal-buttons">
               <Button
+                className={gameMode ? null : "lobbyModal-mode-button"}
+                variant="primary"
+                onClick={() => {
+                  setGameMode(false);
+                }}
+              >
+                SinglePlayer
+              </Button>
+              <Button
+                className={gameMode ? "lobbyModal-mode-button" : null}
+                variant="success"
+                onClick={() => {
+                  setGameMode(true);
+                }}
+              >
+                MultiPlayer
+              </Button>
+              <Button
+                className="lobbyModal-create-button"
+                variant="dark"
+                type="submit"
+              >
+                Create
+              </Button>
+              <Button
+                className="lobbyModal-cancel-button"
                 variant="danger"
                 onClick={() => {
                   setShowCreate(false);
                 }}
               >
                 Cancel
-              </Button>{" "}
-              <Button variant="success" type="submit">
-                Create Room
               </Button>
             </div>
           </Form>

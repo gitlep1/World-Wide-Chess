@@ -26,8 +26,10 @@ const App = () => {
   const [screenSize, setScreenSize] = useState(0);
   const userData = Cookies.get("Current_User") || null;
   const authenticatedData = Cookies.get("Authenticated") || null;
+  const tokenData = Cookies.get("token") || null;
 
   const [user, setUser] = useState({});
+  const [gameMode, setGameMode] = useState(false);
   const [token, setToken] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -79,10 +81,10 @@ const App = () => {
   };
 
   const checkCookies = async () => {
-    if (userData && authenticatedData) {
+    if (userData && authenticatedData && tokenData) {
       setUser(JSON.parse(userData));
       setAuthenticated(JSON.parse(authenticatedData));
-      setToken(JSON.parse(Cookies.get("Current_User")).token);
+      setToken(JSON.parse(tokenData));
     } else {
       await handleGuest();
     }
@@ -101,14 +103,22 @@ const App = () => {
           const expirationDate = new Date();
           expirationDate.setDate(expirationDate.getDate() + 30);
 
-          setUser(user);
-          setAuthenticated(true);
-
-          Cookies.set("Current_User", JSON.stringify(user), {
+          Cookies.set("Current_User", JSON.stringify(user.payload), {
             expires: expirationDate,
             path: "/",
           });
-          Cookies.set("Authenticated", JSON.stringify(true));
+          Cookies.set("Authenticated", JSON.stringify(true), {
+            expires: expirationDate,
+            path: "/",
+          });
+          Cookies.set("token", JSON.stringify(user.token), {
+            expires: expirationDate,
+            path: "/",
+          });
+
+          setUser(user.payload);
+          setToken(user.token);
+          setAuthenticated(true);
 
           navigate(`/`);
         } else {
@@ -133,14 +143,22 @@ const App = () => {
         const expirationDate = new Date();
         expirationDate.setDate(expirationDate.getDate() + 1);
 
-        setUser(res.data);
-        setAuthenticated(true);
-
-        Cookies.set("Current_User", JSON.stringify(res.data), {
+        Cookies.set("Current_User", JSON.stringify(res.data.payload), {
           expires: expirationDate,
           path: "/",
         });
-        Cookies.set("Authenticated", JSON.stringify(true));
+        Cookies.set("Authenticated", JSON.stringify(true), {
+          expires: expirationDate,
+          path: "/",
+        });
+        Cookies.set("token", JSON.stringify(res.data.token), {
+          expires: expirationDate,
+          path: "/",
+        });
+
+        setUser(res.data.payload);
+        setToken(res.data.token);
+        setAuthenticated(true);
 
         navigate(`/`);
       })
@@ -156,6 +174,7 @@ const App = () => {
     if (userData && authenticatedData) {
       Cookies.remove("Current_User");
       Cookies.remove("Authenticated");
+      Cookies.remove("token");
     } else {
       await handleGuest();
     }
@@ -168,6 +187,8 @@ const App = () => {
     <DesktopApp
       handleSidebarOpen={handleSidebarOpen}
       user={user}
+      gameMode={gameMode}
+      setGameMode={setGameMode}
       authenticated={authenticated}
       token={token}
       isOpen={isOpen}
@@ -183,6 +204,8 @@ const App = () => {
     <MobileApp
       handleSidebarOpen={handleSidebarOpen}
       user={user}
+      gameMode={gameMode}
+      setGameMode={setGameMode}
       authenticated={authenticated}
       token={token}
       isOpen={isOpen}

@@ -2,7 +2,9 @@ const db = require("../db/dbConfig.js");
 
 const getAllUsers = async () => {
   try {
-    const users = await db.any("SELECT * FROM users");
+    const users = await db.any(
+      "SELECT * FROM users WHERE users.is_guest = false"
+    );
     return users;
   } catch (err) {
     return err;
@@ -12,7 +14,7 @@ const getAllUsers = async () => {
 const getUserByID = async (id) => {
   try {
     const user = await db.oneOrNone(
-      "SELECT * FROM users WHERE users.id = $1",
+      "SELECT * FROM users WHERE users.id = $1 AND users.is_guest = false",
       id
     );
     return user;
@@ -69,7 +71,7 @@ const deleteUser = async (id) => {
       return false;
     }
     const deletedUser = await db.one(
-      "DELETE FROM users WHERE id = $1 RETURNING *",
+      "DELETE FROM users WHERE id = $1 AND users.is_guest = false RETURNING *",
       id
     );
     return deletedUser;
@@ -81,7 +83,7 @@ const deleteUser = async (id) => {
 const checkUserCredentials = async (email, username) => {
   try {
     const userEmail = await db.oneOrNone(
-      "SELECT id FROM users WHERE email = $1 AND username = $2",
+      "SELECT id FROM users WHERE email = $1 AND username = $2 AND users.is_guest = false",
       [email, username]
     );
     return userEmail ? true : false;
@@ -93,7 +95,7 @@ const checkUserCredentials = async (email, username) => {
 const checkIfUserExists = async (email, password) => {
   try {
     const user = await db.oneOrNone(
-      "SELECT id FROM users WHERE email = $1 AND password = $2",
+      "SELECT id FROM users WHERE email = $1 AND password = $2 AND users.is_guest = false",
       [email, password]
     );
     return user;

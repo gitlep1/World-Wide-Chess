@@ -5,8 +5,10 @@ import { ToastContainer } from "react-toastify";
 import axios from "axios";
 
 import Loading from "../../Loading/Loading";
-import PlayerGameSettings from "./PlayerGameSettings";
-import BotGameSettings from "./BotGameSettings";
+import SinglePlayerGameSettings from "./SinglePlayer/SinglePlayerGameSettings";
+import MultiPlayerGameSettings from "./MultiPlayer/MultiPlayerGameSettings";
+
+import LeavingPage from "../../../CustomFunctions/LeavingPage";
 
 const API = process.env.REACT_APP_API_URL;
 
@@ -16,6 +18,8 @@ const GameSettings = ({
   authenticated,
   token,
   socket,
+  gameMode,
+  setGameMode,
   game,
   setGame,
   setPlayer1Data,
@@ -31,20 +35,14 @@ const GameSettings = ({
   // const [leftGame, setLeftGame] = useState(false);
 
   useEffect(() => {
-    const warnUserLeavingPage = () => {
-      window.addEventListener("beforeunload", alertUser);
-      window.addEventListener("unload", handleEndPoint);
-      return () => {
-        window.removeEventListener("beforeunload", alertUser);
-        window.removeEventListener("unload", handleEndPoint);
-      };
-    };
-    warnUserLeavingPage();
+    getRoomData();
   }, []); // eslint-disable-line
 
   useEffect(() => {
-    socket.emit("games-update-all-clients");
+    LeavingPage(gameID, token, navigate);
+  }, []); // eslint-disable-line
 
+  useEffect(() => {
     socket.on("room-settings", (gameData) => {
       setGame(gameData);
     });
@@ -62,19 +60,40 @@ const GameSettings = ({
     };
   }, [socket, navigate, setGame, setPlayer1Data, setPlayer2Data]);
 
-  const alertUser = (e) => {
-    e.preventDefault();
-    e.returnValue =
-      "Are you sure you want to leave this page? ** Doing so will REMOVE THE ROOM!**";
-  };
+  const getRoomData = async () => {
+    setLoading(true);
 
-  const handleEndPoint = async () => {
-    await axios.delete(`${API}/games/${gameID}`, {
-      headers: {
-        authorization: `Bearer ${token}`,
-      },
-    });
-    navigate("/Lobby");
+    if (gameMode) {
+      return axios
+        .get(`${API}/multi-player-games/${gameID}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => {
+          setLoading(false);
+          setGame(res.data.payload);
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoading(false);
+        });
+    } else {
+      return axios
+        .get(`${API}/single-player-games/${gameID}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => {
+          setLoading(false);
+          setGame(res.data.payload);
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoading(false);
+        });
+    }
   };
 
   const renderGameSettings = () => {
@@ -84,43 +103,39 @@ const GameSettings = ({
       return <h1>Error:</h1>;
     } else {
       return (
-        <section className="editGameRender">
-          <div className="editGameTitle">
-            <h1>{game.player1}'s Chess Match</h1>
-            <h4>Opponent:</h4>
-            {game.player2 ? <h3>{game.player2}</h3> : <h3>Searching...</h3>}
-          </div>
-          <div className="editGameSettings">
-            {game.player2 ? (
-              <PlayerGameSettings
-                game={game}
-                setGame={setGame}
-                user={user}
-                authenticated={authenticated}
-                token={token}
-                error={error}
-                socket={socket}
-                setPlayer1Data={setPlayer1Data}
-                setPlayer2Data={setPlayer2Data}
-              />
-            ) : (
-              <BotGameSettings
-                game={game}
-                setGame={setGame}
-                error={error}
-                socket={socket}
-                setPlayer1Data={setPlayer1Data}
-                setPlayer2Data={setPlayer2Data}
-              />
-            )}
-          </div>
+        <section className="game-settings-options">
+          {gameMode ? (
+            <MultiPlayerGameSettings
+              game={game}
+              setGame={setGame}
+              user={user}
+              authenticated={authenticated}
+              token={token}
+              error={error}
+              socket={socket}
+              setPlayer1Data={setPlayer1Data}
+              setPlayer2Data={setPlayer2Data}
+            />
+          ) : (
+            <SinglePlayerGameSettings
+              game={game}
+              setGame={setGame}
+              user={user}
+              authenticated={authenticated}
+              token={token}
+              error={error}
+              socket={socket}
+              setPlayer1Data={setPlayer1Data}
+              setPlayer2Data={setPlayer2Data}
+            />
+          )}
         </section>
       );
     }
   };
 
   return (
-    <section className={`${screenVersion}-editGameContainer`}>
+    <section className={`${screenVersion}-game-settings-container`}>
       {renderGameSettings()}
       <ToastContainer autoClose={3000} theme="dark" />
     </section>

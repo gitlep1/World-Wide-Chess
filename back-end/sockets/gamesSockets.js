@@ -1,33 +1,51 @@
 const { getUserByID } = require("../queries/users");
 const Chess = require("chess.js").Chess;
+
 const {
-  getAllGames,
-  getGameByID,
-  createGame,
-  updateGame,
-  updateGamePositions,
-  deleteGame,
-} = require("../queries/games");
+  getAllSingleGames,
+  getSingleGameByID,
+  createSingleGame,
+  updateSingleGame,
+  updateSingleGamePositions,
+  deleteSingleGame,
+} = require("../queries/singlePlayerGames");
+
+const {
+  getAllMultiGames,
+  getMultiGameByID,
+  createMultiGame,
+  updateMultiGame,
+  updateMultiGamePositions,
+  deleteMultiGame,
+} = require("../queries/multiPlayerGames");
 
 const addGamesSocketEventListeners = (io, socket, socketId) => {
-  socket.on("games-update-all-clients", async () => {
+  socket.on("get-updated-games-list", async () => {
     try {
-      const getGames = await getAllGames();
-      socket.emit("games", getGames);
-      socket.broadcast.emit("games", getGames);
+      const singleGames = await getAllSingleGames();
+      const multiGames = await getAllMultiGames();
+
+      const combinedGames = [...singleGames, ...multiGames];
+
+      socket.emit("games", combinedGames);
+      socket.broadcast.emit("games", combinedGames);
     } catch (err) {
       const errorMessage = "Could not get all games";
-      socket.emit("games-update-all-clients-error", new Error(errorMessage));
+      socket.emit("get-updated-games-list-error", new Error(errorMessage));
     }
   });
 
   socket.on("room-created", async (gameData) => {
-    const getGame = await getGameByID(gameData.id);
+    const singleGame = await getSingleGameByID(gameData.id);
+    const multiGame = await getMultiGameByID(gameData.id);
 
-    if (getGame) {
+    if (singleGame || multiGame) {
       socket.join(`/Room/${gameData.id}/Settings`);
       socket.join(`/Room/${gameData.id}`);
-      io.in(`/Room/${gameData.id}/Settings`).emit("room-settings", getGame);
+      io.in(`/Room/${gameData.id}/Settings`).emit(
+        "room-settings",
+        singleGame || multiGame
+      );
     } else {
       const errorMessage = `Could not get game with ID: ${gameData.id}`;
       socket.emit("room-created-error", new Error(errorMessage));
@@ -37,9 +55,10 @@ const addGamesSocketEventListeners = (io, socket, socketId) => {
   });
 
   socket.on("room-joined", async (gameData) => {
-    const getGame = await getGameByID(gameData.id);
+    const singleGame = await getSingleGameByID(gameData.id);
+    const multiGame = await getMultiGameByID(gameData.id);
 
-    if (getGame) {
+    if (singleGame || multiGame) {
       socket.join(`/Room/${gameData.id}/Settings`);
       socket.join(`/Room/${gameData.id}`);
       io.in(`/Room/${gameData.id}/Settings`).emit("room-settings", getGame);
@@ -52,8 +71,15 @@ const addGamesSocketEventListeners = (io, socket, socketId) => {
   });
 
   socket.on("start-game", async (gameData) => {
-    const [player1Data] = await getUserByID(gameData.player1id);
-    const [player2Data] = await getUserByID(gameData.player2id);
+    const player1Data = await getUserByID(
+      gameData.player1id || gameData.player_id
+    );
+    const player2Data = await getUserByID(
+      gameData.player2id || gameData.bot_id
+    );
+
+    console.log(player1Data);
+    console.log(player2Data);
 
     if (player1Data && player2Data) {
       io.in(`/Room/${gameData.id}/Settings`).emit(
@@ -72,11 +98,16 @@ const addGamesSocketEventListeners = (io, socket, socketId) => {
     socket.leave(`/Room/${gameId}`);
     socket.join(`/Room/${gameId}`);
 
-    const gameData = await getGameByID(gameId);
+    const singleGame = await getSingleGameByID(gameData.id);
+    const multiGame = await getMultiGameByID(gameData.id);
 
-    if (gameData) {
-      const [player1Data] = await getUserByID(gameData.player1id);
-      const [player2Data] = await getUserByID(gameData.player2id);
+    if (singleGame || multiGame) {
+      const [player1Data] = await getUserByID(
+        gameData.player1id || gameData.player_id
+      );
+      const [player2Data] = await getUserByID(
+        gameData.player2id || gameData.bot_id
+      );
 
       if (player1Data && player2Data) {
         io.in(`/Room/${gameId}`).emit(
@@ -97,20 +128,29 @@ const addGamesSocketEventListeners = (io, socket, socketId) => {
   });
 
   socket.on("move-piece", async (gameData, updatedGamePosition) => {
-    const oldGameData = await getGameByID(gameData.id);
-    const chessGame = new Chess(oldGameData.current_positions);
+    const oldSingleGameData = await getSingleGameByID(gameData.id);
+    const oldMultiGameData = await getMultiGameByID(gameData.id);
+
+    const chessGame = new Chess(
+      oldSingleGameData.current_positions || oldMultiGameData.current_positions
+    );
 
     const from = updatedGamePosition.from;
     const to = updatedGamePosition.to;
 
     const move = chessGame.move({ from, to });
     if (move) {
-      const gameUpdated = await updateGamePositions(
+      const singleGameUpdated = await updateSingleGamePositions(
         gameData.id,
         updatedGamePosition
       );
 
-      if (gameUpdated) {
+      const multiGameUpdated = await updateMultiGamePositions(
+        gameData.id,
+        updatedGamePosition
+      );
+
+      if (singleGameUpdated || multiGameUpdated) {
         console.log(
           "updated game ID: ",
           gameData.id,
@@ -118,16 +158,19 @@ const addGamesSocketEventListeners = (io, socket, socketId) => {
           gameUpdated
         );
 
-        io.in(`/Room/${gameData.id}`).emit("game-state-updated", gameUpdated);
+        io.in(`/Room/${gameData.id}`).emit(
+          "game-state-updated",
+          singleGameUpdated || multiGameUpdated
+        );
       } else {
         console.log(
           "could not update game ID: ",
           gameData.id,
           "with data: ",
-          gameUpdated
+          singleGameUpdated || multiGameUpdated
         );
 
-        const errorMessage = "ERROR: 409";
+        const errorMessage = "ERROR: could not update positions";
         io.in(`Room/${gameData.id}`).emit(
           "game-state-updated-error",
           errorMessage
@@ -137,8 +180,12 @@ const addGamesSocketEventListeners = (io, socket, socketId) => {
   });
 
   socket.on("piece-promo", async (gameData, updatedGamePosition) => {
-    const oldGameData = await getGameByID(gameData.id);
-    const chessGame = new Chess(oldGameData.current_positions);
+    const oldSingleGameData = await getSingleGameByID(gameData.id);
+    const oldMultiGameData = await getMultiGameByID(gameData.id);
+
+    const chessGame = new Chess(
+      oldSingleGameData.current_positions || oldMultiGameData.current_positions
+    );
 
     const from = updatedGamePosition.from;
     const to = updatedGamePosition.to;
@@ -146,17 +193,22 @@ const addGamesSocketEventListeners = (io, socket, socketId) => {
 
     const move = chessGame.move({ from, to, promotion });
     if (move) {
-      const gameUpdated = await updateGamePositions(
+      const singleGameUpdated = await updateSingleGamePositions(
         gameData.id,
         updatedGamePosition
       );
 
-      if (gameUpdated) {
+      const multiGameUpdated = await updateMultiGamePositions(
+        gameData.id,
+        updatedGamePosition
+      );
+
+      if (singleGameUpdated || multiGameUpdated) {
         console.log(
           "updated game ID: ",
           gameData.id,
           "with data: ",
-          gameUpdated
+          singleGameUpdated || multiGameUpdated
         );
 
         io.in(`/Room/${gameData.id}`).emit("game-state-updated", gameUpdated);
@@ -165,10 +217,10 @@ const addGamesSocketEventListeners = (io, socket, socketId) => {
           "could not update game ID: ",
           gameData.id,
           "with data: ",
-          gameUpdated
+          singleGameUpdated || multiGameUpdated
         );
 
-        const errorMessage = "ERROR: 409";
+        const errorMessage = "ERROR: could not update piece promotion position";
         io.in(`Room/${gameData.id}`).emit(
           "game-state-updated-error",
           errorMessage

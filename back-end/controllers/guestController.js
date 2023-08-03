@@ -23,7 +23,7 @@ guest.get("/", requireAuth(), scopeAuth(["read:user"]), async (req, res) => {
     // console.log("=== GET Users", allGuests, "===");
     res.status(200).json({ payload: allGuests });
   } else {
-    res.status(404).send("Cannot find any users");
+    res.status(404).send("Cannot find any guests");
   }
 });
 
@@ -41,7 +41,7 @@ guest.get(
       // console.log("=== GET guest by ID", getAGuest, "===");
       res.status(200).json({ payload: getAGuest });
     } else {
-      res.status(404).send("user not found");
+      res.status(404).send("guest not found");
     }
   }
 );
@@ -61,16 +61,14 @@ guest.post("/signup", async (req, res) => {
       scopes: ["read:user", "write:user"],
     };
     console.log(
-      "=== POST guest",
-      createdGuest,
-      ":::",
+      "=== POST guest (clientTokenPayload)",
       clientTokenPayload,
       "==="
     );
-    const token = jwt.sign(clientTokenPayload, JSK, { expiresIn: "1d" });
+    const token = jwt.sign(clientTokenPayload, JSK, { expiresIn: "1h" });
     res.status(201).json({ payload: createdGuest, token });
   } else {
-    res.status(404).send("user not created");
+    res.status(404).send("guest not created");
   }
 });
 

@@ -8,13 +8,13 @@ $giant: 1200px;
 
 @mixin lobbySection1 {
   display: grid;
-  grid-template-columns: 1fr;
-  row-gap: 1em;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1em;
   max-width: 70vw;
   margin: 0 auto;
 }
 
-@mixin lobby-create-button {
+@mixin lobby-button {
   color: aliceblue;
   background-color: black;
   width: 12em;
@@ -39,6 +39,7 @@ $giant: 1200px;
   border: 3px solid white;
   width: 95%;
   margin: 0 auto;
+  grid-column: 1 / -1;
 
   .lobby-searchbar-1 {
     display: grid;
@@ -146,11 +147,27 @@ $giant: 1200px;
     color: white;
   }
 
+  .lobbyModal-body {
+    background-color: aliceblue;
+  }
+
   .lobbyModal-buttons {
-    display: flex;
-    justify-content: space-evenly;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     align-items: center;
-    margin-top: 5%;
+    gap: 1em;
+
+    .lobbyModal-mode-button {
+      border: 5px solid black;
+    }
+
+    .lobbyModal-create-button {
+      grid-column: 1 / -1;
+    }
+
+    .lobbyModal-cancel-button {
+      grid-column: 1 / -1;
+    }
   }
 
   .lobbyModal-footer {
@@ -169,8 +186,8 @@ $giant: 1200px;
     .lobbySection1 {
       @include lobbySection1;
 
-      .lobby-create-button {
-        @include lobby-create-button;
+      .lobby-button {
+        @include lobby-button;
       }
 
       .lobby-searchbar-container {
@@ -181,10 +198,6 @@ $giant: 1200px;
 
   .lobbySection2 {
     @include lobbySection2;
-  }
-
-  .lobbyModal {
-    @include lobbyModal;
   }
 }
 
@@ -195,8 +208,8 @@ $giant: 1200px;
     .lobbySection1 {
       @include lobbySection1;
 
-      .lobby-create-button {
-        @include lobby-create-button;
+      .lobby-button {
+        @include lobby-button;
       }
 
       .lobby-searchbar-container {
@@ -208,8 +221,8 @@ $giant: 1200px;
   .lobbySection2 {
     @include lobbySection2;
   }
+}
 
-  .lobbyModal {
-    @include lobbyModal;
-  }
+.lobbyModal {
+  @include lobbyModal;
 }

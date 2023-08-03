@@ -1,3 +1,4 @@
+import "./MultiPlayerGameSettings.scss";
 import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
@@ -61,7 +62,11 @@ const PlayerGameSettings = ({
 
   const handleDelete = async (gameID) => {
     await axios
-      .put(`${API}/games/${gameID}`, { in_progress: false })
+      .delete(`${API}/games/${gameID}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then(() => {
         toast.success(
           "You have cancelled the game. \n You will be redirected in 3 seconds.",
@@ -77,11 +82,9 @@ const PlayerGameSettings = ({
           }
         );
       });
-    await axios.delete(`${API}/games/${gameID}`).then(() => {
-      setTimeout(() => {
-        navigate("/Lobby/");
-      }, 4100);
-    });
+    setTimeout(() => {
+      navigate("/Lobby/");
+    }, 4100);
   };
 
   const handleLeaveGame = async () => {
