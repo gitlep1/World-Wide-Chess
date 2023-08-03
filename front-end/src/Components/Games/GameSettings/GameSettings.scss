@@ -1,33 +1,23 @@
-@mixin editGameContainer {
+@mixin game-settings-container {
+  border: 5px solid red;
   height: 100vh;
 }
 
-@mixin editGameRender {
+@mixin game-settings-options {
+  border: 5px solid cyan;
   background-color: aliceblue;
   border: 3px solid black;
   margin: 0 auto;
   width: 50%;
   box-shadow: 1px 3px 8px 9px rgba(84, 65, 9, 0.84);
-
-  .editGameTitle {
-    text-align: center;
-  }
-
-  .editGameSettings {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 70%;
-    margin: 0 auto;
-  }
 }
 
-.desktop-editGameContainer {
-  @include editGameContainer;
-  @include editGameRender;
+.desktop-game-settings-container {
+  @include game-settings-container;
+  @include game-settings-options;
 }
 
-.mobile-editGameContainer {
-  @include editGameContainer;
-  @include editGameRender;
+.mobile-game-settings-container {
+  @include game-settings-container;
+  @include game-settings-options;
 }

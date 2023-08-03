@@ -7,8 +7,10 @@ const addSocketEventListeners = require("./socket");
 
 const userController = require("./controllers/userController");
 const guestController = require("./controllers/guestController");
-const gamesController = require("./controllers/gamesController");
-const previousGamesController = require("./controllers/previousGamesController");
+const botsController = require("./controllers/botsController");
+const singlePlayerGamesController = require("./controllers/singlePlayerGamesController");
+const multiPlayerGamesController = require("./controllers/multiPlayerGamesController");
+// const previousGamesController = require("./controllers/previousGamesController");
 const factsController = require("./controllers/factsController");
 const shopController = require("./controllers/shopController");
 const inventoryController = require("./controllers/inventoryController");
@@ -49,7 +51,9 @@ app.get("/csrf-token", (req, res) => {
 app.use(express.json());
 app.use("/users", userController);
 app.use("/guests", guestController);
-app.use("/games", gamesController);
+app.use("/bots", botsController);
+app.use("/single-player-games", singlePlayerGamesController);
+app.use("/multi-player-games", multiPlayerGamesController);
 // work on game history later \\
 // app.use("/previousGames", previousGamesController);
 app.use("/facts", factsController);

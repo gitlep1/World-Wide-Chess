@@ -74,13 +74,11 @@ user.post("/signup", checkValues, async (req, res) => {
         scopes: ["read:user", "write:user"],
       };
       console.log(
-        "=== POST user",
-        createdUser,
-        ":::",
+        "=== POST user (clientTokenPayload)",
         clientTokenPayload,
         "==="
       );
-      const token = jwt.sign(clientTokenPayload, JSK, { expiresIn: "30d" });
+      const token = jwt.sign(clientTokenPayload, JSK, { expiresIn: "2h" });
       res.status(201).json({ payload: createdUser, token });
     } else {
       res.status(404).send("user not created");
@@ -93,7 +91,7 @@ user.post("/signin", async (req, res) => {
 
   const checkUser = await checkIfUserExists(email, password);
 
-  if (checkUser.id) {
+  if (checkUser) {
     const getUserData = await getUserByID(checkUser.id);
 
     if (getUserData) {
@@ -102,9 +100,7 @@ user.post("/signin", async (req, res) => {
         scopes: ["read:user", "write:user"],
       };
       console.log(
-        "=== POST user",
-        getUserData,
-        ":::",
+        "=== POST user (clientTokenPayload)",
         clientTokenPayload,
         "==="
       );
@@ -162,7 +158,7 @@ user.delete(
 
     const deletedUser = await deleteUser(decoded.user.id);
 
-    if (deletedUser.id) {
+    if (deletedUser) {
       console.log("=== DELETE user", deletedUser, "===");
       res.status(200).send(
         `

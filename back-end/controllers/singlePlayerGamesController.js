@@ -4,18 +4,19 @@ const Chess = require("chess.js").Chess;
 const games = express.Router();
 
 const {
-  getAllGames,
-  getGameByID,
-  createGame,
-  updateGame,
-  deleteGame,
-} = require("../queries/games");
+  getAllSingleGames,
+  getSingleGameByID,
+  createSingleGame,
+  updateSingleGame,
+  updateSingleGamePositions,
+  deleteSingleGame,
+} = require("../queries/singlePlayerGames");
 
 const { requireAuth } = require("../validation/requireAuth");
 const { scopeAuth } = require("../validation/scopeAuth");
 
 games.get("/", requireAuth(), scopeAuth(["read:user"]), async (req, res) => {
-  const allGames = await getAllGames();
+  const allGames = await getAllSingleGames();
   if (allGames) {
     // console.log("=== GET games", allGames, "===");
     res.status(200).json({ payload: allGames });
@@ -30,7 +31,7 @@ games.get(
   scopeAuth(["read:user", "write:user"]),
   async (req, res) => {
     const id = _.escape(req.params.id);
-    const gotAGame = await getGameByID(id);
+    const gotAGame = await getSingleGameByID(id);
 
     if (gotAGame) {
       // console.log("=== GET game", gotAGame, "===");
@@ -51,11 +52,10 @@ games.post(
     const newGameData = {
       room_name: req.body.room_name,
       room_password: req.body.room_password,
-      player1id: req.body.player1id,
-      player2id: req.body.player2id,
+      player_id: req.body.player_id,
     };
 
-    const newGame = await createGame(newGameData);
+    const newGame = await createSingleGame(newGameData);
 
     if (newGame) {
       console.log("=== CREATE game", newGame, "===");
@@ -74,14 +74,14 @@ games.put(
     const { id } = req.params;
 
     const updatedGameData = {
-      player2id: req.body.player2id,
-      player1color: req.body.player1color,
-      player2color: req.body.player2color,
+      bot_id: req.body.bot_id,
+      player_color: req.body.player_color,
+      bot_color: req.body.bot_color,
       in_progress: req.body.in_progress,
       current_positions: req.body.current_positions,
     };
 
-    const updateGameData = await updateGame(id, updatedGameData);
+    const updateGameData = await updateSingleGame(id, updatedGameData);
 
     if (updateGameData) {
       console.log("=== UPDATE game", updateGameData, "===");
@@ -100,7 +100,7 @@ games.put(
     const { id } = req.params;
     const { from, to, promotion } = req.body;
 
-    const game = await getGameByID(id);
+    const game = await getSingleGameByID(id);
     const chessGame = new Chess(game[0].current_positions);
 
     const oldGameData = {
@@ -122,7 +122,7 @@ games.put(
           current_positions: move.after,
         };
 
-        const updatedGame = await updateGame(id, updatedGameData);
+        const updatedGame = await updateSingleGame(id, updatedGameData);
         console.log("updated game ID: ", id, "with data: ", updatedGame);
         res.status(200).json({ payload: updatedGame });
       } else {
@@ -140,7 +140,7 @@ games.put(
           current_positions: move.after,
         };
 
-        const updatedGame = await updateGame(id, updatedGameData);
+        const updatedGame = await updateSingleGame(id, updatedGameData);
         // console.log("updated game ID: ", id, "with data: ", updatedGame);
         res.status(200).json({ payload: updatedGame });
       } else {
@@ -157,7 +157,7 @@ games.delete(
   scopeAuth(["read:user", "write:user"]),
   async (req, res) => {
     const { id } = req.params;
-    const gameDelete = await deleteGame(id);
+    const gameDelete = await deleteSingleGame(id);
 
     if (gameDelete.id) {
       console.log("=== DESTROY game", gameDelete, "===");

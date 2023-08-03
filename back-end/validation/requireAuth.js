@@ -9,10 +9,22 @@ const requireAuth = () => {
       jwt.verify(token, JSK, (err) => {
         if (err) {
           if (err.message === "jwt expired") {
-            const expired = err.message;
-            console.log(expired);
+            const decoded = jwt.decode(token);
+
+            const newClientTokenPayload = {
+              user: decoded.user,
+              scopes: ["read:user", "write:user"],
+            };
+
+            const newToken = jwt.sign(newClientTokenPayload, JSK, {
+              expiresIn: "1h",
+            });
+
+            res.setHeader("Authorization", `Bearer ${newToken}`);
+          } else {
+            console.log(err);
+            return res.sendStatus(403);
           }
-          return res.sendStatus(403);
         }
         req.user = {
           token,

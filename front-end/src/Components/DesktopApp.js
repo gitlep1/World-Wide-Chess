@@ -29,12 +29,10 @@ import GamePage from "./Games/GamePage/GamePage";
 const DesktopApp = ({
   handleSidebarOpen,
   user,
+  gameMode,
+  setGameMode,
   authenticated,
   token,
-  game,
-  games,
-  setGame,
-  setGames,
   isOpen,
   openInventory,
   handleOpenInventory,
@@ -42,16 +40,16 @@ const DesktopApp = ({
   handleLogout,
   resize,
   socket,
-  player1Data,
-  player2Data,
-  setPlayer1Data,
-  setPlayer2Data,
   loading,
 }) => {
   const screenVersion = "desktop";
   const [showSignIn, setShowSignIn] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
   const [showSignout, setShowSignout] = useState(false);
+  const [game, setGame] = useState({});
+  const [games, setGames] = useState([]);
+  const [player1Data, setPlayer1Data] = useState({});
+  const [player2Data, setPlayer2Data] = useState({});
 
   const handleClose = () => {
     if (showSignUp || showSignIn || showSignout) {
@@ -141,11 +139,11 @@ const DesktopApp = ({
                 <Lobby
                   screenVersion={screenVersion}
                   user={user}
+                  gameMode={gameMode}
+                  setGameMode={setGameMode}
                   authenticated={authenticated}
                   token={token}
-                  games={games}
                   socket={socket}
-                  setGames={setGames}
                 />
               }
             />
@@ -158,6 +156,8 @@ const DesktopApp = ({
                   authenticated={authenticated}
                   token={token}
                   socket={socket}
+                  gameMode={gameMode}
+                  setGameMode={setGameMode}
                   game={game}
                   setGame={setGame}
                   setPlayer1Data={setPlayer1Data}
@@ -174,6 +174,8 @@ const DesktopApp = ({
                   authenticated={authenticated}
                   token={token}
                   socket={socket}
+                  gameMode={gameMode}
+                  setGameMode={setGameMode}
                   game={game}
                   setGame={setGame}
                   player1Data={player1Data}
