@@ -72,7 +72,6 @@ games.put(
   scopeAuth(["read:user", "write:user"]),
   async (req, res) => {
     const { id } = req.params;
-
     const updatedGameData = {
       bot_id: req.body.bot_id,
       player_color: req.body.player_color,

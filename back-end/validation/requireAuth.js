@@ -17,7 +17,7 @@ const requireAuth = () => {
             };
 
             const newToken = jwt.sign(newClientTokenPayload, JSK, {
-              expiresIn: "1h",
+              expiresIn: "30d",
             });
 
             res.setHeader("Authorization", `Bearer ${newToken}`);

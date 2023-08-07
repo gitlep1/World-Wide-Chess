@@ -78,8 +78,8 @@ const addGamesSocketEventListeners = (io, socket, socketId) => {
       gameData.player2id || gameData.bot_id
     );
 
-    console.log(player1Data);
-    console.log(player2Data);
+    // console.log(player1Data);
+    // console.log(player2Data);
 
     if (player1Data && player2Data) {
       io.in(`/Room/${gameData.id}/Settings`).emit(

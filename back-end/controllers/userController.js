@@ -78,7 +78,7 @@ user.post("/signup", checkValues, async (req, res) => {
         clientTokenPayload,
         "==="
       );
-      const token = jwt.sign(clientTokenPayload, JSK, { expiresIn: "2h" });
+      const token = jwt.sign(clientTokenPayload, JSK, { expiresIn: "30d" });
       res.status(201).json({ payload: createdUser, token });
     } else {
       res.status(404).send("user not created");
