@@ -75,7 +75,6 @@ const Lobbypage = ({
       const refreshInterval = setInterval(() => {
         setCountdown((prevCountdown) => {
           const newCountdown = prevCountdown - 1;
-
           if (newCountdown <= 0) {
             setCountdown(60);
             setRefreshed(false);
@@ -98,6 +97,8 @@ const Lobbypage = ({
       return () => {
         clearInterval(refreshInterval);
       };
+    } else {
+      setCountdown(60);
     }
   }, [countdown, refreshed]);
 
@@ -145,7 +146,7 @@ const Lobbypage = ({
         expires: expirationTime,
       });
     } catch (err) {
-      console.log(err.response.data);
+      setError(err.response.data);
     }
   };
 
@@ -196,7 +197,7 @@ const Lobbypage = ({
           navigate(`/Room/${res.data.payload.id}/Settings`);
         })
         .catch((err) => {
-          console.log(err.message);
+          setError(err.message);
         });
     } else {
       const newSingleGameData = {
@@ -217,7 +218,7 @@ const Lobbypage = ({
           navigate(`/Room/${res.data.payload.id}/Settings`);
         })
         .catch((err) => {
-          console.log(err.message);
+          setError(err.message);
         });
     }
   };
@@ -226,6 +227,7 @@ const Lobbypage = ({
     let gameData = {};
     const updatePlayer2 = {
       player2id: user.id,
+      in_progress: true,
     };
 
     for (const game of gamesCopy) {

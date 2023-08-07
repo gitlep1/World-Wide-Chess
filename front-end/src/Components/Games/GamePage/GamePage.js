@@ -4,8 +4,8 @@ import { ToastContainer, toast } from "react-toastify";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-import VsBot from "./BotGame/GamePageBot/GamePageBot";
-import VsPlayer from "./PlayerGame/GamePagePlayer";
+import SinglePlayerGame from "./SinglePlayerGame/SinglePlayerGame";
+import MultiPlayerGame from "./MultiPlayerGame/MultiPlayerGame";
 
 const API = process.env.REACT_APP_API_URL;
 
@@ -25,6 +25,8 @@ const GamePage = ({
   const navigate = useNavigate();
 
   const reloadPlayerAndGameData = async () => {
+    console.log("inside reloadPlayerAndGameData");
+
     return new Promise((resolve, reject) => {
       socket.emit("get-player-and-game-data", gameID);
 
@@ -39,6 +41,8 @@ const GamePage = ({
   };
 
   const reloadData = async () => {
+    console.log("inside reloadData");
+
     await toast.promise(reloadPlayerAndGameData(), {
       containerId: "loadChessMatchData",
       success: "Game Data Reloaded!",
@@ -67,6 +71,8 @@ const GamePage = ({
     };
 
     window.addEventListener("beforeunload", handleBeforeUnload);
+
+    console.log("inside useEffect before reloadData");
     reloadData();
 
     return () => {
@@ -158,10 +164,13 @@ const GamePage = ({
     // }
   };
 
-  const renderBotOrPlayerGame = () => {
+  const renderBotOrPlayerGame = async () => {
+    console.log("inside renderBotOrPlayerGame");
+    console.log(game);
+
     if (game.player2id === 1 || game.player2id === 2 || game.player2id === 3) {
       return (
-        <VsBot
+        <SinglePlayerGame
           screenVersion={screenVersion}
           user={user}
           game={game}
@@ -174,7 +183,7 @@ const GamePage = ({
       );
     } else if (game.player2id > 3) {
       return (
-        <VsPlayer
+        <MultiPlayerGame
           screenVersion={screenVersion}
           user={user}
           game={game}

@@ -1,27 +1,21 @@
-import "./GamePageBot.scss";
-import { useRef, useState, useEffect } from "react";
+import "./MultiPlayerGame.scss";
+import { useState, useRef, useEffect } from "react";
 import { Chessboard } from "react-chessboard";
-import { Chess } from "chess.js";
 import { Button, Modal, Image } from "react-bootstrap";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { Chess } from "chess.js";
+import axios from "axios";
+import io from "socket.io-client";
 
-import EasyBot from "./BotLogic/EasyBot";
-import MediumBot from "./BotLogic/MediumBot";
-import HardBot from "./BotLogic/HardBot";
+import DetectScreenSize from "../../../../CustomFunctions/DetectScreenSize";
+import controlWidth from "../../../../CustomFunctions/ControlWidth";
 
-import DetectScreenSize from "../../../../../CustomFunctions/DetectScreenSize";
-import controlWidth from "../../../../../CustomFunctions/ControlWidth";
+import spectatorDark1 from "../../../../Images/spectatorDark1.png";
+import spectatorDark2 from "../../../../Images/spectatorDark2.png";
+import spectatorDark3 from "../../../../Images/spectatorDark3.png";
 
-import spectatorLight1 from "../../../../../Images/spectatorLight1.png";
-import spectatorLight2 from "../../../../../Images/spectatorLight2.png";
-import spectatorLight3 from "../../../../../Images/spectatorLight3.png";
+const API = process.env.REACT_APP_API_URL;
 
-import spectatorDark1 from "../../../../../Images/spectatorDark1.png";
-import spectatorDark2 from "../../../../../Images/spectatorDark2.png";
-import spectatorDark3 from "../../../../../Images/spectatorDark3.png";
-
-const PlayVsBot = ({
+const MultiPlayerGame = ({
   screenVersion,
   user,
   game,
@@ -31,19 +25,21 @@ const PlayVsBot = ({
   endGame,
   socket,
 }) => {
-  const navigate = useNavigate();
   const [screenSize, setScreenSize] = useState(0);
   const prevBoard = useRef([]);
 
-  const [chessGame] = useState(new Chess());
-  const [fen, setFen] = useState(chessGame.fen());
+  const [chessGame, setChessGame] = useState(new Chess());
+  const [recentMoves, setRecentMoves] = useState(game.current_positions);
   const [promotionMove, setPromotionMove] = useState(null);
-  const [currentTimeout, setCurrentTimeout] = useState(null);
-  const [isThinking, setIsThinking] = useState(false);
   const [showPromotion, setShowPromotion] = useState(false);
-  const [stalemate, setStalemate] = useState(false);
+  const [showStalemate, setShowStalemate] = useState(false);
   const [showWinner, setShowWinner] = useState(false);
   const [winner, setWinner] = useState({});
+  const [error, setError] = useState("");
+
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   useEffect(() => {
     const intervalFunctions = setInterval(() => {
@@ -54,110 +50,111 @@ const PlayVsBot = ({
   }, []);
 
   useEffect(() => {
-    prevBoard.current.push(fen);
-  }, [fen]);
+    const game = new Chess(recentMoves);
+    setChessGame(game);
+  }, [recentMoves]);
 
   useEffect(() => {
-    checkForEndGame();
+    prevBoard.current.push(recentMoves);
+  }, [recentMoves]);
 
-    const intervalFunction = setInterval(() => {
-      checkForEndGame();
-    }, 1000);
+  const updateGameState = (newMoveData) => {
+    setRecentMoves(newMoveData.current_positions);
+  };
 
-    return () => clearInterval(intervalFunction);
-  }, []); // eslint-disable-line
+  useEffect(() => {
+    socket.on("game-state-updated", (moveData) => {
+      updateGameState(moveData);
+    });
 
-  const checkForEndGame = () => {
-    if (chessGame.in_checkmate()) {
-      if (chessGame.turn() === "w") {
-        if (game.player1color[0] === "w") {
-          setWinner(player2Data);
-        } else if (game.player2color[0] === "w") {
-          setWinner(player1Data);
-        }
-      } else if (chessGame.turn() === "b") {
-        if (game.player1color[0] === "b") {
-          setWinner(player2Data);
-        } else if (game.player2color[0] === "b") {
-          setWinner(player1Data);
-        }
-      }
-      setShowWinner(true);
+    // return () => {
+    //   socket.off("game-state-updated");
+    // };
+  }, [socket]);
+
+  const handleMove = async (from, to, piece) => {
+    if (chessGame.game_over()) {
+      console.log("game over!");
     }
-
     if (chessGame.in_stalemate()) {
-      setStalemate(true);
+      setShowStalemate(true);
     }
-  };
-
-  const makeRandomMove = () => {
-    if (game.player2id === 1) {
-      const depth = 2;
-      setIsThinking(true);
-      const delayedFunction = EasyBot(chessGame, setFen, depth, setIsThinking);
-      delayedFunction((bestMove) => {
-        chessGame.move(bestMove);
-        setFen(chessGame.fen());
-      });
-    } else if (game.player2id === 2) {
-      const depth = 3;
-      setIsThinking(true);
-      const delayedFunction = MediumBot(
-        chessGame,
-        setFen,
-        depth,
-        setIsThinking
-      );
-      delayedFunction((bestMove) => {
-        chessGame.move(bestMove);
-        setFen(chessGame.fen());
-      });
-    } else if (game.player2id === 3) {
-      const depth = 4;
-      setIsThinking(true);
-      const delayedFunction = HardBot(chessGame, setFen, depth, setIsThinking);
-      delayedFunction((bestMove) => {
-        chessGame.move(bestMove);
-        setFen(chessGame.fen());
-      });
-    }
-  };
-
-  const handleMove = (from, to, piece) => {
-    // Check if the move is a pawn promotion
-    const isPromotion = piece === "wP" && from[1] === "7" && to[1] === "8";
-
-    if (isPromotion) {
-      // Store the promotion move and wait for user choice
-      const promotion = { from, to };
-      setPromotionMove(promotion);
-      setShowPromotion(true);
-      return;
-    }
-
-    // Validate the move before making it
-    const move = chessGame.move({ from, to });
-    if (move) {
-      // Make the AI move after the user move
-      if (currentTimeout !== null) {
-        clearTimeout(currentTimeout);
+    if (chessGame.turn() === "w") {
+      if (chessGame.in_checkmate()) {
+        setShowWinner(true);
+        setWinner(player2Data);
       }
-      const timeout = setTimeout(() => {
-        makeRandomMove();
-        setFen(chessGame.fen());
-        setCurrentTimeout(null);
-      }, 200);
-      setCurrentTimeout(timeout);
-    } else {
-      // Invalid move, reset the promotion move
-      setPromotionMove(null);
+      if (user.id === game.player1id) {
+        if (piece[0] === "w") {
+          const isPromotion =
+            piece === "wP" && from[1] === "7" && to[1] === "8";
+
+          if (isPromotion) {
+            const promotion = { from, to };
+            setPromotionMove(promotion);
+            setShowPromotion(true);
+            return;
+          }
+
+          const move = chessGame.move({ from, to });
+          if (move) {
+            const updatedGameData = {
+              current_positions: chessGame.fen(),
+              from: from,
+              to: to,
+            };
+            socket.emit("move-piece", game, updatedGameData);
+          } else {
+            setPromotionMove(null);
+            return null;
+          }
+        } else {
+          return null;
+        }
+      } else {
+        return null;
+      }
+    } else if (chessGame.turn() === "b") {
+      if (chessGame.in_checkmate()) {
+        setShowWinner(true);
+        setWinner(player1Data);
+      }
+      if (user.id === game.player2id) {
+        if (piece[0] === "b") {
+          const isPromotion =
+            piece === "bP" && from[1] === "2" && to[1] === "1";
+
+          if (isPromotion) {
+            const promotion = { from, to };
+            setPromotionMove(promotion);
+            setShowPromotion(true);
+            return;
+          }
+
+          const move = chessGame.move({ from, to });
+          if (move) {
+            const updatedGameData = {
+              current_positions: chessGame.fen(),
+              from: from,
+              to: to,
+            };
+            socket.emit("move-piece", game, updatedGameData);
+          } else {
+            setPromotionMove(null);
+            return null;
+          }
+        } else {
+          return null;
+        }
+      } else {
+        return null;
+      }
     }
   };
 
   const handlePromotionChoice = (pieceType) => {
     const { from, to } = promotionMove;
 
-    // Update the promotion move with the chosen piece
     const newMove = chessGame.move({
       from: from,
       to: to,
@@ -165,43 +162,52 @@ const PlayVsBot = ({
     });
 
     if (newMove) {
+      handlePromotion(newMove);
       setShowPromotion(false);
-      // Make the AI move after the user move
-      if (currentTimeout !== null) {
-        clearTimeout(currentTimeout);
-      }
-      const timeout = setTimeout(() => {
-        makeRandomMove();
-        setFen(chessGame.fen());
-        setCurrentTimeout(null);
-      }, 200);
-      setCurrentTimeout(timeout);
-    } else {
-      // Invalid move, reset the promotion move
-      setPromotionMove(null);
     }
+  };
+
+  const handlePromotion = async (newMove) => {
+    const updatedGameData = {
+      current_positions: chessGame.fen(),
+      from: newMove.from,
+      to: newMove.to,
+      promotion: newMove.promotion,
+    };
+
+    socket.emit("piece-promo", game, updatedGameData);
   };
 
   game["spectators"] = 5;
 
   const renderSpectatorIcon = () => {
     if (game.spectators < 1) {
-      return spectatorLight1;
+      return spectatorDark1;
     } else if (game.spectators >= 1 && game.spectators <= 10) {
-      return spectatorLight2;
+      return spectatorDark2;
     } else if (game.spectators > 10) {
-      return spectatorLight3;
+      return spectatorDark3;
+    }
+  };
+
+  const controlBoardOrientation = () => {
+    if (user.id === game.player1id) {
+      return "white";
+    }
+    if (user.id === game.player2id) {
+      return "black";
     }
   };
 
   return (
-    <section className={`${screenVersion}-gamePageBot`}>
+    <section className={`${screenVersion}-gamePagePlayer`}>
       {!player1Data || !player2Data ? forfeitNotify() : null}
-      <div className="gamePageBot-header-container">
-        <div className="gamePageBot-header">
-          <h3 id="gamePageBot-roomName">Room Name: {game.room_name}</h3>
+
+      <div className="gamePagePlayer-header-container">
+        <div className="gamePagePlayer-header">
+          <h3 id="gamePagePlayer-roomName">Room Name: {game.room_name}</h3>
           <span
-            id="gamePageBot-spectatorCount"
+            id="gamePagePlayer-spectatorCount"
             style={
               game.spectators >= 1
                 ? { visibility: "visible" }
@@ -213,18 +219,18 @@ const PlayVsBot = ({
           <Image
             src={renderSpectatorIcon()}
             alt="spectator icon"
-            id="gamePageBot-spactatorIcon"
+            id="gamePagePlayer-spactatorIcon"
           ></Image>
         </div>
       </div>
 
-      <div className="gamePageBot-players-data">
-        {game.player1color === "white" ? (
+      <div className="gamePagePlayer-players-data">
+        {user.id === game.player1id ? (
           <>
-            <div className="gamePageBot-playerTwo-data square bg-secondary rounded-pill">
+            <div className="gamePagePlayer-playerTwo-data square bg-secondary rounded-pill">
               <Image
                 src={player2Data.profileimg}
-                className="gamePageBot-player-image"
+                className="gamePagePlayer-player-image"
                 alt="player 2"
               />
               <span
@@ -232,23 +238,14 @@ const PlayVsBot = ({
                   color: "white",
                 }}
               >
-                <h5
-                  style={
-                    isThinking
-                      ? { color: "yellow", visibility: "visible" }
-                      : { visibility: "hidden" }
-                  }
-                >
-                  Thinking
-                </h5>
                 {player2Data.username}
               </span>
             </div>
 
-            <div className="gamePageBot-playerOne-data square bg-secondary rounded-pill">
+            <div className="gamePagePlayer-playerOne-data square bg-secondary rounded-pill">
               <Image
                 src={player1Data.profileimg}
-                className="gamePageBot-player-image"
+                className="gamePagePlayer-player-image"
                 alt="player 1"
               />{" "}
               <span
@@ -262,29 +259,29 @@ const PlayVsBot = ({
           </>
         ) : (
           <>
-            <div className="gamePageBot-playerOne-data square bg-secondary rounded-pill">
+            <div className="gamePagePlayer-playerOne-data square bg-secondary rounded-pill">
               <Image
                 src={player1Data.profileimg}
-                className="gamePageBot-player-image"
+                className="gamePagePlayer-player-image"
                 alt="player 1"
               />{" "}
               <span
                 style={{
-                  color: "white",
+                  color: "black",
                 }}
               >
                 {player1Data.username}
               </span>
             </div>
-            <div className="gamePageBot-playerTwo-data square bg-secondary rounded-pill">
+            <div className="gamePagePlayer-playerTwo-data square bg-secondary rounded-pill">
               <Image
                 src={player2Data.profileimg}
-                className="gamePageBot-player-image"
+                className="gamePagePlayer-player-image"
                 alt="player 2"
               />
               <span
                 style={{
-                  color: "black",
+                  color: "white",
                 }}
               >
                 {player2Data.username}
@@ -294,11 +291,11 @@ const PlayVsBot = ({
         )}
       </div>
 
-      <div className="gamePageBot-chessboard-container">
+      <div className="gamePagePlayer-chessboard-container">
         <Chessboard
           id="PlayVsRandom"
-          boardOrientation={user.id === game.player1id ? "white" : "black"}
-          position={fen}
+          boardOrientation={controlBoardOrientation()}
+          position={recentMoves}
           onPieceDrop={(from, to, piece) => handleMove(from, to, piece)}
           customBoardStyle={{
             borderRadius: "15%",
@@ -364,7 +361,7 @@ const PlayVsBot = ({
           </Modal.Body>
         </Modal>
 
-        {winner && (
+        {winner ? (
           <Modal
             className="winner-modal-container"
             show={showWinner}
@@ -386,11 +383,11 @@ const PlayVsBot = ({
               </Button>
             </Modal.Footer>
           </Modal>
-        )}
+        ) : null}
 
         <Modal
           className="winner-modal-container"
-          show={stalemate}
+          show={showStalemate}
           centered
           backdrop="static"
         >
@@ -411,22 +408,45 @@ const PlayVsBot = ({
         </Modal>
       </div>
 
-      <div className="gamePageBot-buttons">
+      <div className="gamePagePlayer-buttons">
+        <Button variant="danger" onClick={handleShow}>
+          FORFEIT
+        </Button>
         <Button
+          variant="warning"
           onClick={() => {
-            endGame(game.id);
+            console.log("call for a draw");
           }}
-          variant="danger"
         >
-          End Game
+          DRAW
         </Button>
       </div>
 
-      <div className="gamePageBot-chatBox-container rounded-5">
-        <div className="gamePageBot-chatBox rounded-5">Chat Box</div>
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>FORFEITTING MATCH!</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure you want to forfeit?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            NO WAY!
+          </Button>
+          <Button
+            variant="danger"
+            onClick={() => {
+              endGame(game.id);
+            }}
+          >
+            GIVE UP!
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <div className="gamePagePlayer-chatBox-container rounded-5">
+        <div className="gamePagePlayer-chatBox rounded-5">Chat Box</div>
       </div>
     </section>
   );
 };
 
-export default PlayVsBot;
+export default MultiPlayerGame;

@@ -56,7 +56,7 @@ const PlayerGameSettings = ({
 
     await axios.put(`${API}/games/${game.id}`, updateGameData).then((res) => {
       socket.emit("games-update-all-clients");
-      socket.emit("start-game", res.data);
+      socket.emit("start-multi-player-game", res.data);
     });
   };
 
@@ -89,7 +89,10 @@ const PlayerGameSettings = ({
 
   const handleLeaveGame = async () => {
     await axios
-      .put(`${API}/games/${game.id}`, { [game.player2id]: null })
+      .put(`${API}/games/${game.id}`, {
+        [game.player2id]: null,
+        in_progress: false,
+      })
       .then(() => {
         navigate("/Lobby/");
       });

@@ -20,7 +20,7 @@ const BotGameSettings = ({
 }) => {
   const navigate = useNavigate();
 
-  const [easyBot, setEasyBot] = useState(false);
+  const [easyBot, setEasyBot] = useState(true);
   const [mediumBot, setMediumBot] = useState(false);
   const [hardBot, setHardBot] = useState(false);
 
@@ -79,7 +79,12 @@ const BotGameSettings = ({
       })
       .then((res) => {
         socket.emit("games-update-all-clients");
-        socket.emit("start-game", res.data);
+        socket.emit("start-single-player-game", res.data.payload);
+        // setGame(res.data.payload);
+        // navigate(`/Room/${res.data.payload.id}`);
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
 
@@ -107,14 +112,24 @@ const BotGameSettings = ({
       });
   };
 
+  const renderBot = () => {
+    if (easyBot) {
+      return "Easy Bot";
+    } else if (mediumBot) {
+      return "Medium Bot";
+    } else if (hardBot) {
+      return "Hard Bot";
+    }
+  };
+
   return error ? (
     <h1>Game Cancelled</h1>
   ) : (
     <section className="single-player-game-settings-container">
       <div className="single-player-game-settings-title">
-        <h1>{game.player1}'s Chess Match</h1>
+        <h1>{game.player1}'s</h1>
         <h4>Opponent:</h4>
-        {game.player2 ? <h3>{game.player2}</h3> : <h3>Searching...</h3>}
+        <h3>{renderBot()}</h3>
       </div>
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="formSelectOpponent">

@@ -36,7 +36,7 @@ const RenderLobby = ({
         <span className="room-name">{game.room_name}</span>
         <span className="room-status">
           <section className="lobby-status-buttons">
-            {game.player2 ? (
+            {game.in_progress ? (
               <>
                 <div className="lobby-button-two">JOIN</div>
 

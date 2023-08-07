@@ -34,9 +34,9 @@ const GameSettings = ({
 
   // const [leftGame, setLeftGame] = useState(false);
 
-  useEffect(() => {
-    getRoomData();
-  }, []); // eslint-disable-line
+  // useEffect(() => {
+  //   getRoomData();
+  // }, []); // eslint-disable-line
 
   useEffect(() => {
     LeavingPage(gameID, token, navigate);
@@ -47,7 +47,16 @@ const GameSettings = ({
       setGame(gameData);
     });
 
-    socket.on("host-started", (gameData, player1Data, player2Data) => {
+    socket.on("host-started-single", (gameData, player1Data, player2Data) => {
+      console.log("host-started-single");
+
+      setGame(gameData);
+      setPlayer1Data(player1Data);
+      setPlayer2Data(player2Data);
+      navigate(`/Room/${gameData.id}`);
+    });
+
+    socket.on("host-started-multi", (gameData, player1Data, player2Data) => {
       setGame(gameData);
       setPlayer1Data(player1Data);
       setPlayer2Data(player2Data);
@@ -56,45 +65,46 @@ const GameSettings = ({
 
     return () => {
       socket.off("room-settings");
-      socket.off("host-started");
+      socket.off("host-started-single");
+      socket.off("host-started-multi");
     };
   }, [socket, navigate, setGame, setPlayer1Data, setPlayer2Data]);
 
-  const getRoomData = async () => {
-    setLoading(true);
+  // const getRoomData = async () => {
+  //   setLoading(true);
 
-    if (gameMode) {
-      return axios
-        .get(`${API}/multi-player-games/${gameID}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res) => {
-          setLoading(false);
-          setGame(res.data.payload);
-        })
-        .catch((err) => {
-          console.log(err);
-          setLoading(false);
-        });
-    } else {
-      return axios
-        .get(`${API}/single-player-games/${gameID}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res) => {
-          setLoading(false);
-          setGame(res.data.payload);
-        })
-        .catch((err) => {
-          console.log(err);
-          setLoading(false);
-        });
-    }
-  };
+  //   if (gameMode) {
+  //     return axios
+  //       .get(`${API}/multi-player-games/${gameID}`, {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       })
+  //       .then((res) => {
+  //         setLoading(false);
+  //         setGame(res.data.payload);
+  //       })
+  //       .catch((err) => {
+  //         console.log(err);
+  //         setLoading(false);
+  //       });
+  //   } else {
+  //     return axios
+  //       .get(`${API}/single-player-games/${gameID}`, {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       })
+  //       .then((res) => {
+  //         setLoading(false);
+  //         setGame(res.data.payload);
+  //       })
+  //       .catch((err) => {
+  //         console.log(err);
+  //         setLoading(false);
+  //       });
+  //   }
+  // };
 
   const renderGameSettings = () => {
     if (loading) {
@@ -104,6 +114,13 @@ const GameSettings = ({
     } else {
       return (
         <section className="game-settings-options">
+          <h1
+            style={{
+              textAlign: "center",
+            }}
+          >
+            Room Name: {game.room_name}
+          </h1>
           {gameMode ? (
             <MultiPlayerGameSettings
               game={game}

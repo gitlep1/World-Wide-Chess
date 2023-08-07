@@ -9,4 +9,13 @@ const getAllBots = async () => {
   }
 };
 
-module.exports = { getAllBots };
+const getBotById = async (id) => {
+  try {
+    const bot = await db.one("SELECT * FROM bots WHERE id = $1", id);
+    return bot;
+  } catch (err) {
+    return err;
+  }
+};
+
+module.exports = { getAllBots, getBotById };

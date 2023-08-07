@@ -1,4 +1,6 @@
 const { getUserByID } = require("../queries/users");
+const { getGuestByID } = require("../queries/guests");
+const { getBotById } = require("../queries/bots");
 const Chess = require("chess.js").Chess;
 
 const {
@@ -36,12 +38,17 @@ const addGamesSocketEventListeners = (io, socket, socketId) => {
   });
 
   socket.on("room-created", async (gameData) => {
+    console.log(
+      `=== New room created by socketID: ${socketId} \n Game Data: `,
+      gameData,
+      "==="
+    );
+
     const singleGame = await getSingleGameByID(gameData.id);
     const multiGame = await getMultiGameByID(gameData.id);
 
     if (singleGame || multiGame) {
       socket.join(`/Room/${gameData.id}/Settings`);
-      socket.join(`/Room/${gameData.id}`);
       io.in(`/Room/${gameData.id}/Settings`).emit(
         "room-settings",
         singleGame || multiGame
@@ -49,12 +56,14 @@ const addGamesSocketEventListeners = (io, socket, socketId) => {
     } else {
       const errorMessage = `Could not get game with ID: ${gameData.id}`;
       socket.emit("room-created-error", new Error(errorMessage));
-      socket.leave(`/Room/${gameData.id}`);
       socket.leave(`/Room/${gameData.id}/Settings`);
     }
   });
 
   socket.on("room-joined", async (gameData) => {
+    console.log(`=== SocketID: ${socketId} joined room: ${gameData.payload.id} === \n
+    Game Data: ${gameData.payload}`);
+
     const singleGame = await getSingleGameByID(gameData.id);
     const multiGame = await getMultiGameByID(gameData.id);
 
@@ -70,26 +79,53 @@ const addGamesSocketEventListeners = (io, socket, socketId) => {
     }
   });
 
-  socket.on("start-game", async (gameData) => {
-    const player1Data = await getUserByID(
-      gameData.player1id || gameData.player_id
-    );
-    const player2Data = await getUserByID(
-      gameData.player2id || gameData.bot_id
+  socket.on("start-single-player-game", async (gameData) => {
+    console.log(
+      `=== start-single-player-game \n
+    Game Data: `,
+      gameData,
+      "==="
     );
 
-    console.log(player1Data);
-    console.log(player2Data);
+    const playerData = await getUserByID(gameData.player_id);
+    const guestData = await getGuestByID(gameData.player_id);
+    const botData = await getBotById(gameData.bot_id);
 
-    if (player1Data && player2Data) {
+    if ((playerData || guestData) && botData) {
       io.in(`/Room/${gameData.id}/Settings`).emit(
-        "host-started",
+        "host-started-single",
         gameData,
-        player1Data,
-        player2Data
+        playerData || guestData,
+        botData
       );
     } else {
-      const errorMessage = `Could not get player data: ${player1Data}, ${player2Data}`;
+      const errorMessage = `Could not get player data: ${
+        playerData || guestData
+      }`;
+      socket.emit("room-created-error", new Error(errorMessage));
+    }
+  });
+
+  socket.on("start-multi-player-game", async (gameData) => {
+    console.log(`=== start-multi-player-game === \n
+    Game Data: ${gameData.payload}`);
+
+    const player1Data = await getUserByID(gameData.payload.player1id);
+    const player2Data = await getUserByID(gameData.payload.player2id);
+    const guest1Data = await getGuestByID(gameData.payload.player1id);
+    const guest2Data = await getGuestByID(gameData.payload.player2id);
+
+    if ((player1Data || guest1Data) && (player2Data || guest2Data)) {
+      io.in(`/Room/${gameData.payload.id}/Settings`).emit(
+        "host-started-multi",
+        gameData,
+        player1Data || guest1Data,
+        player2Data || guest2Data
+      );
+    } else {
+      const errorMessage = `Could not get player data: ${
+        player1Data || guest1Data
+      }, ${player2Data || guest2Data}`;
       socket.emit("room-created-error", new Error(errorMessage));
     }
   });
@@ -98,16 +134,27 @@ const addGamesSocketEventListeners = (io, socket, socketId) => {
     socket.leave(`/Room/${gameId}`);
     socket.join(`/Room/${gameId}`);
 
-    const singleGame = await getSingleGameByID(gameData.id);
-    const multiGame = await getMultiGameByID(gameData.id);
+    const singleGame = await getSingleGameByID(gameId);
+    const multiGame = await getMultiGameByID(gameId);
 
-    if (singleGame || multiGame) {
-      const [player1Data] = await getUserByID(
-        gameData.player1id || gameData.player_id
-      );
-      const [player2Data] = await getUserByID(
-        gameData.player2id || gameData.bot_id
-      );
+    if (singleGame) {
+      const playerData = await getUserByID(singleGame.player_id);
+      const botData = await getBotById(singleGame.bot_id);
+
+      if (playerData && botData) {
+        io.in(`/Room/${gameId}`).emit(
+          "player-reconnected",
+          gameData,
+          playerData,
+          botData
+        );
+      } else {
+        const errorMessage = `Opponent has disconnected.`;
+        io.in(`/Room/${gameId}`).emit("opponent-disconnected", errorMessage);
+      }
+    } else if (multiGame) {
+      const player1Data = await getUserByID(multiGame.player1id);
+      const player2Data = await getUserByID(multiGame.player2id);
 
       if (player1Data && player2Data) {
         io.in(`/Room/${gameId}`).emit(
