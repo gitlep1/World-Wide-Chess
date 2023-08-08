@@ -80,8 +80,6 @@ const BotGameSettings = ({
       .then((res) => {
         socket.emit("games-update-all-clients");
         socket.emit("start-single-player-game", res.data.payload);
-        // setGame(res.data.payload);
-        // navigate(`/Room/${res.data.payload.id}`);
       })
       .catch((err) => {
         console.log(err);

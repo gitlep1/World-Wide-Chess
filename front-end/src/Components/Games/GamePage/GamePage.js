@@ -28,6 +28,8 @@ const GamePage = ({
     console.log("inside reloadPlayerAndGameData");
 
     return new Promise((resolve, reject) => {
+      console.log("inside new Promise");
+
       socket.emit("get-player-and-game-data", gameID);
 
       socket.on("player-reconnected", async (gameData, player1, player2) => {
@@ -43,11 +45,15 @@ const GamePage = ({
   const reloadData = async () => {
     console.log("inside reloadData");
 
-    await toast.promise(reloadPlayerAndGameData(), {
-      containerId: "loadChessMatchData",
-      success: "Game Data Reloaded!",
-      error: "Error loading game",
-    });
+    try {
+      await toast.promise(reloadPlayerAndGameData(), {
+        containerId: "loadChessMatchData",
+        success: "Game Data Reloaded!",
+        error: "Error loading game",
+      });
+    } catch (error) {
+      console.error("Error reloading game data:", error);
+    }
   };
 
   useEffect(() => {
@@ -169,6 +175,7 @@ const GamePage = ({
     console.log(game);
 
     if (game.player2id === 1 || game.player2id === 2 || game.player2id === 3) {
+      console.log("inside if");
       return (
         <SinglePlayerGame
           screenVersion={screenVersion}
