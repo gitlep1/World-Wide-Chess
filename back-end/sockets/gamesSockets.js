@@ -67,10 +67,14 @@ const addGamesSocketEventListeners = (io, socket, socketId) => {
     const singleGame = await getSingleGameByID(gameData.id);
     const multiGame = await getMultiGameByID(gameData.id);
 
-    if (singleGame || multiGame) {
+    if (singleGame) {
       socket.join(`/Room/${gameData.id}/Settings`);
       socket.join(`/Room/${gameData.id}`);
-      io.in(`/Room/${gameData.id}/Settings`).emit("room-settings", getGame);
+      io.in(`/Room/${gameData.id}/Settings`).emit("room-settings", singleGame);
+    } else if (multiGame) {
+      socket.join(`/Room/${gameData.id}/Settings`);
+      socket.join(`/Room/${gameData.id}`);
+      io.in(`/Room/${gameData.id}/Settings`).emit("room-settings", multiGame);
     } else {
       const errorMessage = `Could not get game with ID: ${gameData.id}`;
       socket.emit("room-created-error", new Error(errorMessage));
@@ -144,7 +148,7 @@ const addGamesSocketEventListeners = (io, socket, socketId) => {
       if (playerData && botData) {
         io.in(`/Room/${gameId}`).emit(
           "player-reconnected",
-          gameData,
+          singleGame,
           playerData,
           botData
         );
@@ -159,7 +163,7 @@ const addGamesSocketEventListeners = (io, socket, socketId) => {
       if (player1Data && player2Data) {
         io.in(`/Room/${gameId}`).emit(
           "player-reconnected",
-          gameData,
+          multiGame,
           player1Data,
           player2Data
         );

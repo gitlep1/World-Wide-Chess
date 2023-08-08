@@ -48,8 +48,6 @@ const GameSettings = ({
     });
 
     socket.on("host-started-single", (gameData, player1Data, player2Data) => {
-      console.log("host-started-single");
-
       setGame(gameData);
       setPlayer1Data(player1Data);
       setPlayer2Data(player2Data);
