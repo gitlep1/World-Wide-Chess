@@ -33,10 +33,6 @@ const MobileApp = ({
   setGameMode,
   authenticated,
   token,
-  game,
-  games,
-  setGame,
-  setGames,
   isOpen,
   openInventory,
   handleOpenInventory,
@@ -44,12 +40,9 @@ const MobileApp = ({
   handleLogout,
   resize,
   socket,
-  player1Data,
-  player2Data,
-  setPlayer1Data,
-  setPlayer2Data,
   loading,
 }) => {
+  console.log("inside mobileapp");
   const screenVersion = "mobile";
   const [showSignIn, setShowSignIn] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
@@ -149,9 +142,7 @@ const MobileApp = ({
                   setGameMode={setGameMode}
                   authenticated={authenticated}
                   token={token}
-                  games={games}
                   socket={socket}
-                  setGames={setGames}
                 />
               }
             />
@@ -166,10 +157,6 @@ const MobileApp = ({
                   socket={socket}
                   gameMode={gameMode}
                   setGameMode={setGameMode}
-                  game={game}
-                  setGame={setGame}
-                  setPlayer1Data={setPlayer1Data}
-                  setPlayer2Data={setPlayer2Data}
                 />
               }
             />
@@ -184,12 +171,6 @@ const MobileApp = ({
                   socket={socket}
                   gameMode={gameMode}
                   setGameMode={setGameMode}
-                  game={game}
-                  setGame={setGame}
-                  player1Data={player1Data}
-                  player2Data={player2Data}
-                  setPlayer1Data={setPlayer1Data}
-                  setPlayer2Data={setPlayer2Data}
                 />
               }
             />

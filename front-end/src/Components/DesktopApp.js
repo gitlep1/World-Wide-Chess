@@ -47,7 +47,7 @@ const DesktopApp = ({
   const [showSignUp, setShowSignUp] = useState(false);
   const [showSignout, setShowSignout] = useState(false);
   const [game, setGame] = useState({});
-  const [games, setGames] = useState([]);
+  // const [games, setGames] = useState([]);
   const [player1Data, setPlayer1Data] = useState({});
   const [player2Data, setPlayer2Data] = useState({});
 

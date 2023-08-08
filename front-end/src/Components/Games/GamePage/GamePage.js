@@ -12,8 +12,11 @@ const API = process.env.REACT_APP_API_URL;
 const GamePage = ({
   screenVersion,
   user,
-  users,
+  authenticated,
+  token,
   socket,
+  gameMode,
+  setGameMode,
   game,
   setGame,
   player1Data,
@@ -25,8 +28,6 @@ const GamePage = ({
   const navigate = useNavigate();
 
   const reloadPlayerAndGameData = async () => {
-    console.log("inside reloadPlayerAndGameData");
-
     return new Promise((resolve, reject) => {
       socket.emit("get-player-and-game-data", gameID);
 
@@ -41,14 +42,16 @@ const GamePage = ({
   };
 
   const reloadData = async () => {
-    console.log("inside reloadData");
-
     await toast.promise(reloadPlayerAndGameData(), {
       containerId: "loadChessMatchData",
       success: "Game Data Reloaded!",
       error: "Error loading game",
     });
   };
+
+  useEffect(() => {
+    reloadData();
+  }, []); // eslint-disable-line
 
   useEffect(() => {
     socket.on("game-ended", (errorMessage) => {
@@ -71,9 +74,6 @@ const GamePage = ({
     };
 
     window.addEventListener("beforeunload", handleBeforeUnload);
-
-    console.log("inside useEffect before reloadData");
-    reloadData();
 
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
@@ -164,11 +164,8 @@ const GamePage = ({
     // }
   };
 
-  const renderBotOrPlayerGame = async () => {
-    console.log("inside renderBotOrPlayerGame");
-    console.log(game);
-
-    if (game.player2id === 1 || game.player2id === 2 || game.player2id === 3) {
+  const renderBotOrPlayerGame = () => {
+    if (!gameMode) {
       return (
         <SinglePlayerGame
           screenVersion={screenVersion}
@@ -181,7 +178,7 @@ const GamePage = ({
           socket={socket}
         />
       );
-    } else if (game.player2id > 3) {
+    } else {
       return (
         <MultiPlayerGame
           screenVersion={screenVersion}
