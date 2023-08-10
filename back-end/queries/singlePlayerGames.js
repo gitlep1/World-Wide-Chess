@@ -89,6 +89,7 @@ const updateSingleGame = async (id, updatedGameData) => {
         updatedGameData.game_time,
       ]
     );
+    console.log(updatedGame);
     return updatedGame;
   } catch (error) {
     return error;

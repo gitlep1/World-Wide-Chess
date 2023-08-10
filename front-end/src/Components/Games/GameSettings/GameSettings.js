@@ -18,10 +18,12 @@ const GameSettings = ({
   authenticated,
   token,
   socket,
-  gameMode,
-  setGameMode,
+  isMultiplayer,
+  setIsMultiplayer,
   game,
   setGame,
+  player1Data,
+  player2Data,
   setPlayer1Data,
   setPlayer2Data,
 }) => {
@@ -31,12 +33,6 @@ const GameSettings = ({
   const [loading, setLoading] = useState(false);
 
   const [error, setError] = useState("");
-
-  // const [leftGame, setLeftGame] = useState(false);
-
-  // useEffect(() => {
-  //   getRoomData();
-  // }, []); // eslint-disable-line
 
   useEffect(() => {
     LeavingPage(gameID, token, navigate);
@@ -71,7 +67,7 @@ const GameSettings = ({
   // const getRoomData = async () => {
   //   setLoading(true);
 
-  //   if (gameMode) {
+  //   if (isMultiplayer) {
   //     return axios
   //       .get(`${API}/multi-player-games/${gameID}`, {
   //         headers: {
@@ -111,39 +107,42 @@ const GameSettings = ({
       return <h1>Error:</h1>;
     } else {
       return (
-        <section className="game-settings-options">
-          <h1
-            style={{
-              textAlign: "center",
-            }}
-          >
+        <section className="game-settings-options-container">
+          <h1 className="game-settings-room-name">
             Room Name: {game.room_name}
           </h1>
-          {gameMode ? (
-            <MultiPlayerGameSettings
-              game={game}
-              setGame={setGame}
-              user={user}
-              authenticated={authenticated}
-              token={token}
-              error={error}
-              socket={socket}
-              setPlayer1Data={setPlayer1Data}
-              setPlayer2Data={setPlayer2Data}
-            />
-          ) : (
-            <SinglePlayerGameSettings
-              game={game}
-              setGame={setGame}
-              user={user}
-              authenticated={authenticated}
-              token={token}
-              error={error}
-              socket={socket}
-              setPlayer1Data={setPlayer1Data}
-              setPlayer2Data={setPlayer2Data}
-            />
-          )}
+
+          <div className="game-settings-options">
+            {isMultiplayer ? (
+              <MultiPlayerGameSettings
+                game={game}
+                setGame={setGame}
+                user={user}
+                authenticated={authenticated}
+                token={token}
+                error={error}
+                socket={socket}
+                player1Data={player1Data}
+                player2Data={player2Data}
+                setPlayer1Data={setPlayer1Data}
+                setPlayer2Data={setPlayer2Data}
+              />
+            ) : (
+              <SinglePlayerGameSettings
+                game={game}
+                setGame={setGame}
+                user={user}
+                authenticated={authenticated}
+                token={token}
+                error={error}
+                socket={socket}
+                player1Data={player1Data}
+                player2Data={player2Data}
+                setPlayer1Data={setPlayer1Data}
+                setPlayer2Data={setPlayer2Data}
+              />
+            )}
+          </div>
         </section>
       );
     }

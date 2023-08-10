@@ -1,7 +1,7 @@
 import { useSpring, animated } from "react-spring";
 import { useDrag } from "@use-gesture/react";
 
-function HomepageFactsDraggable({ children, onSwipe }) {
+const HomepageFactsDraggable = ({ children, onSwipe }) => {
   const [{ x }, api] = useSpring(() => ({ x: 0 }));
 
   const bind = useDrag(({ down, movement: [mx] }) => {
@@ -26,6 +26,6 @@ function HomepageFactsDraggable({ children, onSwipe }) {
       </animated.div>
     </div>
   );
-}
+};
 
 export default HomepageFactsDraggable;

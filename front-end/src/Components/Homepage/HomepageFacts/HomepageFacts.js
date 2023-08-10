@@ -7,27 +7,31 @@ import axios from "axios";
 const API = process.env.REACT_APP_API_URL;
 
 const HomepageFacts = ({ screenVersion }) => {
-  const [cards, setCards] = useState([]);
-  const [error, setError] = useState(null);
+  const [facts, setFacts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     getAllFacts();
   }, []);
 
   const getAllFacts = async () => {
+    setLoading(true);
     return axios
       .get(`${API}/facts`)
       .then((res) => {
-        setCards(res.data.payload);
+        setFacts(res.data.payload);
+        setLoading(false);
       })
       .catch((err) => {
         setError(err.message);
+        setLoading(false);
       });
   };
 
   const handleCardSwipe = (cardIndex) => {
-    setCards((prevCards) => {
-      const newCards = [...prevCards];
+    setFacts((prevFacts) => {
+      const newCards = [...prevFacts];
       const [removed] = newCards.splice(cardIndex, 1);
       newCards.push(removed);
 
@@ -35,26 +39,34 @@ const HomepageFacts = ({ screenVersion }) => {
     });
   };
 
+  const renderFacts = () => {
+    if (loading) {
+      return (
+        <div className="loading-container">
+          <div className="loading-bar">Loading...</div>
+        </div>
+      );
+    } else if (error) {
+      return <h1>Error: {error}</h1>;
+    } else {
+      return facts.map(({ fact_num, fact }, index) => (
+        <div key={nanoid()}>
+          <HomepageFactsDraggable onSwipe={() => handleCardSwipe(index)}>
+            <div>
+              <h1>
+                {fact_num}/{facts.length}
+              </h1>
+              <p>{fact}</p>
+            </div>
+          </HomepageFactsDraggable>
+          <br />
+        </div>
+      ));
+    }
+  };
+
   return (
-    <div className={`${screenVersion}-homepage-facts`}>
-      {!error ? (
-        cards.map(({ fact_num, fact }, index) => (
-          <div key={nanoid()}>
-            <HomepageFactsDraggable onSwipe={() => handleCardSwipe(index)}>
-              <div>
-                <h1>
-                  {fact_num}/{cards.length}
-                </h1>
-                <p>{fact}</p>
-              </div>
-            </HomepageFactsDraggable>
-            <br />
-          </div>
-        ))
-      ) : (
-        <h1>{error}</h1>
-      )}
-    </div>
+    <div className={`${screenVersion}-homepage-facts`}>{renderFacts()}</div>
   );
 };
 

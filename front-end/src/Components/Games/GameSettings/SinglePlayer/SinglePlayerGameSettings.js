@@ -1,13 +1,16 @@
 import "./SinglePlayerGameSettings.scss";
 import { useEffect, useState } from "react";
-import { Form, Button } from "react-bootstrap";
+import { useNavigate, useParams } from "react-router-dom";
+import { Button, Image } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { nanoid } from "nanoid";
 import axios from "axios";
+
+import BotCard from "./BotCard/BotCard";
 
 const API = process.env.REACT_APP_API_URL;
 
-const BotGameSettings = ({
+const SinglePlayerGameSettings = ({
   game,
   setGame,
   user,
@@ -15,55 +18,60 @@ const BotGameSettings = ({
   token,
   error,
   socket,
+  player1Data,
+  player2Data,
   setPlayer1Data,
   setPlayer2Data,
 }) => {
+  const { gameID } = useParams();
   const navigate = useNavigate();
 
-  const [easyBot, setEasyBot] = useState(true);
-  const [mediumBot, setMediumBot] = useState(false);
-  const [hardBot, setHardBot] = useState(false);
+  const [bots, setBots] = useState([]);
+  const [botData, setBotData] = useState({});
 
-  const handleChange = (e) => {
-    const { value } = e.target;
+  useEffect(() => {
+    fetchBotsData();
 
-    if (value === "Easy Bot") {
-      setEasyBot(true);
-      setMediumBot(false);
-      setHardBot(false);
-    } else if (value === "Medium Bot") {
-      setMediumBot(true);
-      setEasyBot(false);
-      setHardBot(false);
-    } else if (value === "Hard Bot") {
-      setHardBot(true);
-      setMediumBot(false);
-      setEasyBot(false);
-    }
+    socket.emit("get-player-and-game-data", gameID);
+
+    socket.on("player-reconnected", (gameData, playerData, backendBotData) => {
+      setGame(gameData);
+      setPlayer1Data(playerData);
+      setPlayer2Data(backendBotData);
+    });
+
+    // socket.on("update-bot-difficulty", (botData) => {
+    //   console.log("inside update bot frontend");
+    //   setPlayer2Data(botData);
+    // });
+
+    return () => {
+      socket.off("player-reconnected");
+      // socket.off("update-bot-difficulty");
+    };
+  }, []); // eslint-disable-line
+
+  const fetchBotsData = async () => {
+    return axios
+      .get(`${API}/bots`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        setBots(res.data.payload);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const easyBotID = 1;
-    const mediumBotID = 2;
-    const hardBotID = 3;
-
-    let choosenBot = null;
-
-    if (easyBot) {
-      choosenBot = easyBotID;
-    } else if (mediumBot) {
-      choosenBot = mediumBotID;
-    } else if (hardBotID) {
-      choosenBot = hardBotID;
-    }
-
+  const handleStartGame = async () => {
     const startingPositions =
       "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
     const updateGameData = {
-      bot_id: choosenBot,
+      bot_id: botData.id,
       winner: null,
       in_progress: true,
       current_positions: startingPositions,
@@ -110,67 +118,74 @@ const BotGameSettings = ({
       });
   };
 
-  const renderBot = () => {
-    if (easyBot) {
-      return "Easy Bot";
-    } else if (mediumBot) {
-      return "Medium Bot";
-    } else if (hardBot) {
-      return "Hard Bot";
-    }
-  };
-
   return error ? (
     <h1>Game Cancelled</h1>
   ) : (
     <section className="single-player-game-settings-container">
       <div className="single-player-game-settings-title">
-        <h1>{game.player1}'s</h1>
-        <h4>Opponent:</h4>
-        <h3>{renderBot()}</h3>
+        <div className="single-player-game-settings-playerData">
+          <Image
+            src={player1Data.profileimg}
+            alt="player profile info"
+            className="single-player-game-settings-title-profile-image"
+          />
+          <h1>{player1Data.username}</h1>
+          <h3>Rating: {player1Data.rating}</h3>
+          {!player1Data.is_guest ? (
+            <div className="playerData-stats">
+              <h3 className="wins">Wins: {player1Data.wins}</h3>
+              <h3 className="loss">Loss: {player1Data.loss}</h3>
+              <h3 className="ties">Ties: {player1Data.ties}</h3>
+            </div>
+          ) : null}
+        </div>
+        <h4>VS</h4>
+        <div className="single-player-game-settings-botData">
+          {Object.keys(botData).length !== 0 ? (
+            <>
+              <Image
+                src={botData.profileimg}
+                alt="bot profile info"
+                className="single-player-game-settings-title-profile-image"
+              />
+              <h1>{botData.username}</h1>
+              <div className="botData-stats">
+                <h3 className="wins">Wins: {botData.wins}</h3>
+                <h3 className="loss">Loss: {botData.loss}</h3>
+                <h3 className="ties">Ties: {botData.ties}</h3>
+              </div>
+            </>
+          ) : (
+            <h1>Please select a bot difficulty</h1>
+          )}
+        </div>
+
+        <div className="single-player-game-settings-buttons">
+          <Button
+            onClick={() => {
+              handleStartGame();
+            }}
+            variant="light"
+          >
+            Start Game
+          </Button>{" "}
+          <Button
+            variant="danger"
+            onClick={() => {
+              handleDelete(game.id);
+            }}
+          >
+            Cancel
+          </Button>
+        </div>
       </div>
-      <Form onSubmit={handleSubmit}>
-        <Form.Group controlId="formSelectOpponent">
-          <Form.Label>Bot Difficulty</Form.Label>
-          <Form.Check
-            value="Easy Bot"
-            type="radio"
-            id="easy-bot"
-            label="Easy"
-            onChange={handleChange}
-            checked={easyBot}
-          />
-          <Form.Check
-            value="Medium Bot"
-            type="radio"
-            id="medium-bot"
-            label="Medium"
-            onChange={handleChange}
-            checked={mediumBot}
-          />
-          <Form.Check
-            value="Hard Bot"
-            type="radio"
-            id="hard-bot"
-            label="Hard"
-            onChange={handleChange}
-            checked={hardBot}
-          />
-        </Form.Group>
-        <Button type="submit" variant="dark">
-          Start Game
-        </Button>{" "}
-        <Button
-          variant="danger"
-          onClick={() => {
-            handleDelete(game.id);
-          }}
-        >
-          Cancel
-        </Button>
-      </Form>
+      <div className="single-player-game-settings-bot-roster">
+        {bots.map((bot) => {
+          return <BotCard key={nanoid()} bot={bot} setBotData={setBotData} />;
+        })}
+      </div>
     </section>
   );
 };
 
-export default BotGameSettings;
+export default SinglePlayerGameSettings;

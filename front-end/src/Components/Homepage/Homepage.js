@@ -76,7 +76,7 @@ const Homepage = ({ screenVersion }) => {
         </div>
 
         <div className="homepage-facts-container">
-          <h1>Daily Chess Facts</h1>
+          <h1>Chess Facts</h1>
           <HomepageFacts screenVersion={screenVersion} />
         </div>
       </div>

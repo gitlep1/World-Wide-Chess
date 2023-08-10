@@ -1,7 +1,71 @@
 .single-player-game-settings-container {
   text-align: center;
+  height: 100%;
 
   .single-player-game-settings-title {
-    // text-align: center;
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    grid-template-columns: 1fr 100px 1fr;
+    height: 50%;
+    margin-bottom: 1.5em;
+
+    .single-player-game-settings-playerData {
+      .playerData-stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        justify-content: center;
+        align-items: center;
+
+        .ties {
+          grid-column: 1 / -1;
+        }
+      }
+    }
+
+    h4 {
+      color: red;
+      font-size: 35px;
+    }
+
+    .single-player-game-settings-botData {
+      .botData-stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        justify-content: center;
+        align-items: center;
+
+        .ties {
+          grid-column: 1 / -1;
+        }
+      }
+    }
+
+    .single-player-game-settings-title-profile-image {
+      width: 100px;
+    }
+
+    .single-player-game-settings-buttons {
+      grid-column: 1 / -1;
+      width: 50%;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      align-items: center;
+      justify-content: center;
+      gap: 1em;
+
+      button {
+        font-size: 23px;
+      }
+    }
+  }
+
+  .single-player-game-settings-bot-roster {
+    height: 50%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3em;
+    overflow: auto;
   }
 }

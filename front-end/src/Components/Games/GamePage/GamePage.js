@@ -15,8 +15,8 @@ const GamePage = ({
   authenticated,
   token,
   socket,
-  gameMode,
-  setGameMode,
+  isMultiplayer,
+  setIsMultiplayer,
   game,
   setGame,
   player1Data,
@@ -167,7 +167,7 @@ const GamePage = ({
   };
 
   const renderBotOrPlayerGame = () => {
-    if (!gameMode) {
+    if (!isMultiplayer) {
       return (
         <SinglePlayerGame
           screenVersion={screenVersion}

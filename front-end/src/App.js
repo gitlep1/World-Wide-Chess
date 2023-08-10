@@ -24,13 +24,13 @@ const socket = io(API);
 const App = () => {
   const navigate = useNavigate();
   const [screenSize, setScreenSize] = useState(DetectScreenSize().width);
+
   const userData = Cookies.get("Current_User") || null;
   const authenticatedData = Cookies.get("Authenticated") || null;
   const tokenData = Cookies.get("token") || null;
 
   const [user, setUser] = useState({});
-  // change to isMultiplayer later
-  const [gameMode, setGameMode] = useState(false);
+  const [isMultiplayer, setIsMultiplayer] = useState(false);
   const [token, setToken] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -188,8 +188,8 @@ const App = () => {
     <DesktopApp
       handleSidebarOpen={handleSidebarOpen}
       user={user}
-      gameMode={gameMode}
-      setGameMode={setGameMode}
+      isMultiplayer={isMultiplayer}
+      setIsMultiplayer={setIsMultiplayer}
       authenticated={authenticated}
       token={token}
       isOpen={isOpen}
@@ -205,8 +205,8 @@ const App = () => {
     <MobileApp
       handleSidebarOpen={handleSidebarOpen}
       user={user}
-      gameMode={gameMode}
-      setGameMode={setGameMode}
+      isMultiplayer={isMultiplayer}
+      setIsMultiplayer={setIsMultiplayer}
       authenticated={authenticated}
       token={token}
       isOpen={isOpen}

@@ -135,17 +135,28 @@ const addGamesSocketEventListeners = (io, socket, socketId) => {
   });
 
   socket.on("get-player-and-game-data", async (gameId) => {
+    socket.leave(`/Room/${gameId}/Settings`);
     socket.leave(`/Room/${gameId}`);
+    socket.join(`/Room/${gameId}/Settings`);
     socket.join(`/Room/${gameId}`);
 
     const singleGame = await getSingleGameByID(gameId);
     const multiGame = await getMultiGameByID(gameId);
 
     if (singleGame) {
-      const playerData = await getUserByID(singleGame.player_id);
+      const playerData =
+        (await getUserByID(singleGame.player_id)) ||
+        (await getGuestByID(singleGame.player_id));
+
       const botData = await getBotById(singleGame.bot_id);
 
       if (playerData && botData) {
+        io.in(`/Room/${gameId}/Settings`).emit(
+          "player-reconnected",
+          singleGame,
+          playerData,
+          botData
+        );
         io.in(`/Room/${gameId}`).emit(
           "player-reconnected",
           singleGame,
@@ -157,10 +168,21 @@ const addGamesSocketEventListeners = (io, socket, socketId) => {
         io.in(`/Room/${gameId}`).emit("opponent-disconnected", errorMessage);
       }
     } else if (multiGame) {
-      const player1Data = await getUserByID(multiGame.player1id);
-      const player2Data = await getUserByID(multiGame.player2id);
+      const player1Data =
+        (await getUserByID(singleGame.player1id)) ||
+        (await getGuestByID(singleGame.player1id));
+
+      const player2Data =
+        (await getUserByID(singleGame.player2id)) ||
+        (await getGuestByID(singleGame.player2id));
 
       if (player1Data && player2Data) {
+        io.in(`/Room/${gameId}/Settings`).emit(
+          "player-reconnected",
+          multiGame,
+          player1Data,
+          player2Data
+        );
         io.in(`/Room/${gameId}`).emit(
           "player-reconnected",
           multiGame,
@@ -175,6 +197,27 @@ const addGamesSocketEventListeners = (io, socket, socketId) => {
       const errorMessage = `Game has ended.`;
       io.in(`/Room/${gameId}`).emit("game-ended", errorMessage);
       socket.leave(`/Room/${gameId}`);
+    }
+  });
+
+  socket.on("change-bot-difficulty", async (gameID, choosenBotID) => {
+    try {
+      const botData = await getBotById(choosenBotID);
+      console.log(botData);
+      io.in(`/Room/${gameID}/Settings`).emit("update-bot-difficulty", botData);
+
+      const updatedGameData = {
+        bot_id: choosenBotID,
+        in_progress: false,
+      };
+      await updateSingleGame(gameID, updatedGameData);
+    } catch (err) {
+      const errorMessage = err.message;
+      io.in(`/Room/${gameID}/Settings`).emit(
+        "game-settings-error",
+        errorMessage
+      );
+      socket.leave(`/Room/${gameID}/Settings`);
     }
   });
 
