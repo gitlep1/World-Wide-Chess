@@ -19,8 +19,8 @@ const API = process.env.REACT_APP_API_URL;
 const Lobbypage = ({
   screenVersion,
   user,
-  gameMode,
-  setGameMode,
+  isMultiplayer,
+  setIsMultiplayer,
   authenticated,
   token,
   socket,
@@ -36,7 +36,7 @@ const Lobbypage = ({
   const [showCreate, setShowCreate] = useState(false);
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [refreshed, setRefreshed] = useState(false);
   const [countdown, setCountdown] = useState(60);
   const [error, setError] = useState("");
@@ -75,7 +75,6 @@ const Lobbypage = ({
       const refreshInterval = setInterval(() => {
         setCountdown((prevCountdown) => {
           const newCountdown = prevCountdown - 1;
-
           if (newCountdown <= 0) {
             setCountdown(60);
             setRefreshed(false);
@@ -98,6 +97,8 @@ const Lobbypage = ({
       return () => {
         clearInterval(refreshInterval);
       };
+    } else {
+      setCountdown(60);
     }
   }, [countdown, refreshed]);
 
@@ -113,6 +114,7 @@ const Lobbypage = ({
   };
 
   const handleRefresh = async () => {
+    setLoading(true);
     try {
       const singlePlayerGamesRequest = axios.get(`${API}/single-player-games`, {
         headers: {
@@ -136,6 +138,7 @@ const Lobbypage = ({
 
       setGames(combinedGames);
       setRefreshed(true);
+      setLoading(false);
 
       const currentTime = new Date();
       const expirationTime = new Date(currentTime.getTime() + 60000);
@@ -145,7 +148,8 @@ const Lobbypage = ({
         expires: expirationTime,
       });
     } catch (err) {
-      console.log(err.response.data);
+      setError(err.response.data);
+      setLoading(false);
     }
   };
 
@@ -177,7 +181,7 @@ const Lobbypage = ({
       });
     }
 
-    if (gameMode) {
+    if (isMultiplayer) {
       const newMultiGameData = {
         room_name: createRoomName,
         room_password: createRoomPassword,
@@ -196,7 +200,7 @@ const Lobbypage = ({
           navigate(`/Room/${res.data.payload.id}/Settings`);
         })
         .catch((err) => {
-          console.log(err.message);
+          setError(err.message);
         });
     } else {
       const newSingleGameData = {
@@ -217,7 +221,7 @@ const Lobbypage = ({
           navigate(`/Room/${res.data.payload.id}/Settings`);
         })
         .catch((err) => {
-          console.log(err.message);
+          setError(err.message);
         });
     }
   };
@@ -226,6 +230,7 @@ const Lobbypage = ({
     let gameData = {};
     const updatePlayer2 = {
       player2id: user.id,
+      in_progress: true,
     };
 
     for (const game of gamesCopy) {
@@ -461,19 +466,19 @@ const Lobbypage = ({
             <br />
             <div className="lobbyModal-buttons">
               <Button
-                className={gameMode ? null : "lobbyModal-mode-button"}
+                className={isMultiplayer ? null : "lobbyModal-mode-button"}
                 variant="primary"
                 onClick={() => {
-                  setGameMode(false);
+                  setIsMultiplayer(false);
                 }}
               >
                 SinglePlayer
               </Button>
               <Button
-                className={gameMode ? "lobbyModal-mode-button" : null}
+                className={isMultiplayer ? "lobbyModal-mode-button" : null}
                 variant="success"
                 onClick={() => {
-                  setGameMode(true);
+                  setIsMultiplayer(true);
                 }}
               >
                 MultiPlayer

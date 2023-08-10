@@ -1,13 +1,13 @@
 import "./MultiPlayerGameSettings.scss";
 import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 
 const API = process.env.REACT_APP_API_URL;
 
-const PlayerGameSettings = ({
+const MultiPlayerGameSettings = ({
   game,
   setGame,
   user,
@@ -15,10 +15,27 @@ const PlayerGameSettings = ({
   token,
   error,
   socket,
+  player1Data,
+  player2Data,
   setPlayer1Data,
   setPlayer2Data,
 }) => {
+  const { gameID } = useParams();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    socket.emit("get-player-and-game-data", gameID);
+
+    socket.on("player-reconnected", (gameData, playerData, botData) => {
+      setGame(gameData);
+      setPlayer1Data(playerData);
+      setPlayer2Data(botData);
+    });
+
+    return () => {
+      socket.off("player-reconnected");
+    };
+  }, []); // eslint-disable-line
 
   useEffect(() => {
     if (error) {
@@ -54,10 +71,16 @@ const PlayerGameSettings = ({
       player2color: "b",
     };
 
-    await axios.put(`${API}/games/${game.id}`, updateGameData).then((res) => {
-      socket.emit("games-update-all-clients");
-      socket.emit("start-game", res.data);
-    });
+    await axios
+      .put(`${API}/games/${game.id}`, updateGameData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        socket.emit("games-update-all-clients");
+        socket.emit("start-multi-player-game", res.data);
+      });
   };
 
   const handleDelete = async (gameID) => {
@@ -89,7 +112,13 @@ const PlayerGameSettings = ({
 
   const handleLeaveGame = async () => {
     await axios
-      .put(`${API}/games/${game.id}`, { [game.player2id]: null })
+      .put(`${API}/games/${game.id}`, {
+        [game.player2id]: null,
+        in_progress: false,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then(() => {
         navigate("/Lobby/");
       });
@@ -131,4 +160,4 @@ const PlayerGameSettings = ({
   );
 };
 
-export default PlayerGameSettings;
+export default MultiPlayerGameSettings;

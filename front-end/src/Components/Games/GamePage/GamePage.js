@@ -4,16 +4,19 @@ import { ToastContainer, toast } from "react-toastify";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-import VsBot from "./BotGame/GamePageBot/GamePageBot";
-import VsPlayer from "./PlayerGame/GamePagePlayer";
+import SinglePlayerGame from "./SinglePlayerGame/SinglePlayerGame";
+import MultiPlayerGame from "./MultiPlayerGame/MultiPlayerGame";
 
 const API = process.env.REACT_APP_API_URL;
 
 const GamePage = ({
   screenVersion,
   user,
-  users,
+  authenticated,
+  token,
   socket,
+  isMultiplayer,
+  setIsMultiplayer,
   game,
   setGame,
   player1Data,
@@ -26,6 +29,8 @@ const GamePage = ({
 
   const reloadPlayerAndGameData = async () => {
     return new Promise((resolve, reject) => {
+      console.log("inside new Promise");
+
       socket.emit("get-player-and-game-data", gameID);
 
       socket.on("player-reconnected", async (gameData, player1, player2) => {
@@ -45,6 +50,10 @@ const GamePage = ({
       error: "Error loading game",
     });
   };
+
+  useEffect(() => {
+    reloadData();
+  }, []); // eslint-disable-line
 
   useEffect(() => {
     socket.on("game-ended", (errorMessage) => {
@@ -67,7 +76,6 @@ const GamePage = ({
     };
 
     window.addEventListener("beforeunload", handleBeforeUnload);
-    reloadData();
 
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
@@ -159,9 +167,9 @@ const GamePage = ({
   };
 
   const renderBotOrPlayerGame = () => {
-    if (game.player2id === 1 || game.player2id === 2 || game.player2id === 3) {
+    if (!isMultiplayer) {
       return (
-        <VsBot
+        <SinglePlayerGame
           screenVersion={screenVersion}
           user={user}
           game={game}
@@ -172,9 +180,9 @@ const GamePage = ({
           socket={socket}
         />
       );
-    } else if (game.player2id > 3) {
+    } else {
       return (
-        <VsPlayer
+        <MultiPlayerGame
           screenVersion={screenVersion}
           user={user}
           game={game}

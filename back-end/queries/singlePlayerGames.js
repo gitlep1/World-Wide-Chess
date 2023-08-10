@@ -75,24 +75,22 @@ const createSingleGame = async (newGameData) => {
 
 const updateSingleGame = async (id, updatedGameData) => {
   try {
-    // const updatedGame = await db.one(
-    //   `
-    //   UPDATE single_player_games SET bot_id = 2, player_color = 'black', bot_color = 'white', in_progress = true, current_positions = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
-    //   WHERE single_player_games.id = 9 RETURNING *`
-    //   // [
-    //   //   id,
-    //   //   updatedGameData.bot_id,
-    //   //   updatedGameData.player_color,
-    //   //   updatedGameData.bot_color,
-    //   //   updatedGameData.in_progress,
-    //   //   updatedGameData.current_positions,
-    //   // ]
-    // );
-    const test = await db.one(`
-    select * from single_player_games where id = 9
-    `);
-    console.log(test);
-    return test;
+    const updatedGame = await db.one(
+      `
+      UPDATE single_player_games SET bot_id = $2, player_color = $3, bot_color = $4, in_progress = $5, current_positions = $6, game_time = $7
+      WHERE single_player_games.id = $1 RETURNING *`,
+      [
+        id,
+        updatedGameData.bot_id,
+        updatedGameData.player_color,
+        updatedGameData.bot_color,
+        updatedGameData.in_progress,
+        updatedGameData.current_positions,
+        updatedGameData.game_time,
+      ]
+    );
+    console.log(updatedGame);
+    return updatedGame;
   } catch (error) {
     return error;
   }
