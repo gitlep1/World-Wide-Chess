@@ -26,6 +26,9 @@ import Lobby from "./Games/Lobby/Lobby";
 import GameSettings from "./Games/GameSettings/GameSettings";
 import GamePage from "./Games/GamePage/GamePage";
 
+// Chat stuff \\
+import ChatBox from "./ChatBox/ChatBox";
+
 const DesktopApp = ({
   handleSidebarOpen,
   user,
@@ -219,6 +222,8 @@ const DesktopApp = ({
             />
           </Route>
         </Routes>
+
+        <ChatBox />
       </main>
 
       {openInventory ? (
