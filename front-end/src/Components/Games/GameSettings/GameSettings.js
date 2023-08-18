@@ -8,8 +8,6 @@ import Loading from "../../Loading/Loading";
 import SinglePlayerGameSettings from "./SinglePlayer/SinglePlayerGameSettings";
 import MultiPlayerGameSettings from "./MultiPlayer/MultiPlayerGameSettings";
 
-import LeavingPage from "../../../CustomFunctions/LeavingPage";
-
 const API = process.env.REACT_APP_API_URL;
 
 const GameSettings = ({
@@ -33,10 +31,6 @@ const GameSettings = ({
   const [loading, setLoading] = useState(false);
 
   const [error, setError] = useState("");
-
-  useEffect(() => {
-    LeavingPage(gameID, token, navigate);
-  }, []); // eslint-disable-line
 
   useEffect(() => {
     socket.on("room-settings", (gameData) => {

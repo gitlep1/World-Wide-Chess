@@ -18,12 +18,13 @@ const LeavingPage = async (gameID, token, navigate) => {
   };
 
   const handleEndPoint = async () => {
-    await axios.delete(`${API}/games/${gameID}`, {
-      headers: {
-        authorization: `Bearer ${token}`,
-      },
-    });
-    navigate("/Lobby");
+    console.log("user left page");
+    // await axios.delete(`${API}/single-player-games/${gameID}`, {
+    //   headers: {
+    //     authorization: `Bearer ${token}`,
+    //   },
+    // });
+    // navigate("/Lobby");
   };
 
   return warnUserLeavingPage();

@@ -168,7 +168,7 @@ const Lobbypage = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (createRoomName.length < 3 || createRoomName.length > 10) {
+    if (createRoomName.length < 3 || createRoomName.length > 15) {
       return toast.error("Room Name must be between 3-10 characters.", {
         toastId: "createRoomNameError",
         position: "top-center",

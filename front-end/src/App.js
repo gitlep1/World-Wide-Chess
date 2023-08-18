@@ -15,6 +15,7 @@ import MobileApp from "./Components/MobileApp";
 
 // Custom functions \\
 import DetectScreenSize from "./CustomFunctions/DetectScreenSize";
+import LeavingPage from "./CustomFunctions/LeavingPage";
 
 import DefaultProfImg from "./Images/DefaultProfImg.png";
 
@@ -42,6 +43,7 @@ const App = () => {
 
   useEffect(() => {
     checkCookies();
+    LeavingPage();
   }, []); // eslint-disable-line
 
   useEffect(() => {
