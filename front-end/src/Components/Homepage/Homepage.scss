@@ -13,7 +13,7 @@ $TigerGif: url("../../Images/tigerRunning.gif");
 
 @mixin homepage-container {
   height: 90vh;
-  width: 95vw;
+  width: 99vw;
   text-align: center;
   color: rgb(215, 215, 215);
   margin: 0 auto;
@@ -42,7 +42,7 @@ $TigerGif: url("../../Images/tigerRunning.gif");
 
 @mixin homepage-content($gap, $gapSize, $columnValues...) {
   display: grid;
-  grid-template-columns: $columnValues;
+  grid-template-columns: #{$columnValues};
   #{$gap}: $gapSize;
   overflow: auto;
   align-items: center;
@@ -55,9 +55,6 @@ $TigerGif: url("../../Images/tigerRunning.gif");
   width: $widthValue;
   margin: 0 auto;
   margin-top: 1.5em;
-  // box-shadow: 0px 0px 0px 8px #000000, 0px 0px 0px 16px #4b4c4b,
-  //   0px 0px 0px 24px #828482, 0px 0px 0px 31px #b2b5b2, 0px 0px 0px 39px #daddda,
-  //   5px -2px 15px 5px rgba(0, 0, 0, 0);
   box-shadow: 0px 0px 0px 0.5em #000000, 0px 0px 0px 1em #4b4c4b,
     0px 0px 0px 1.5em #828482;
   border-radius: 1em;
@@ -66,43 +63,17 @@ $TigerGif: url("../../Images/tigerRunning.gif");
 @mixin homepage-facts-container {
   height: 80vh;
   overflow: auto;
-  overflow-x: hidden;
-  width: 95%;
-  margin: 0 auto;
 }
 
 .desktop-homepage-container {
-  // border: 5px solid red;
   @include homepage-container;
 
   .homepage-content {
-    // border: 5px solid cyan;
-    @include homepage-content(column-gap, 1em, 300px, 1fr);
+    @include homepage-content(column-gap, 3em, 900px, 1fr);
 
     .homepage-tasks-container {
-      // border: 5px solid green;
       @include homepage-tasks-container(1, 35vw);
-      margin-left: 3vw;
-
-      .homepage-tasks {
-        // @include homepage-tasks;
-
-        .dailyTasks-button {
-          // @include dailyTasks-button;
-        }
-
-        .dailyTasks-button-selected {
-          // @include dailyTasks-button-selected;
-        }
-
-        .monthlyTasks-button {
-          // @include monthlyTasks-button;
-        }
-
-        .monthlyTasks-button-selected {
-          // @include monthlyTasks-button-selected;
-        }
-      }
+      margin-left: 2em;
     }
 
     .homepage-facts-container {
@@ -123,7 +94,6 @@ $TigerGif: url("../../Images/tigerRunning.gif");
     }
 
     .homepage-facts-container {
-      grid-column: 1;
       @include homepage-facts-container;
     }
   }

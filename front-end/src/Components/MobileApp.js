@@ -224,6 +224,8 @@ const MobileApp = ({
             />
           </Route>
         </Routes>
+
+        <ChatBox />
       </main>
 
       {openInventory ? (
