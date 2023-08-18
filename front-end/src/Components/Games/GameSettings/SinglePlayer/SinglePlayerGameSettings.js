@@ -77,6 +77,7 @@ const SinglePlayerGameSettings = ({
       current_positions: startingPositions,
       player_color: "white",
       bot_color: "black",
+      game_time: Date.now(),
     };
 
     await axios

@@ -3,7 +3,7 @@ const db = require("../db/dbConfig.js");
 const getAllUsers = async () => {
   try {
     const users = await db.any(
-      "SELECT * FROM users WHERE users.is_guest = false"
+      "SELECT username, rating, wins, ties, loss, chess_coins, profileimg, preferred_color, last_online FROM users WHERE users.is_guest = false"
     );
     return users;
   } catch (err) {

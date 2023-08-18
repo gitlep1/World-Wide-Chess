@@ -1,0 +1,19 @@
+.chat-box-container {
+  // background-color: white;
+  width: 10%;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+
+  .chat-box-icon {
+    font-size: 100px;
+    color: white;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
+
+  .chat-box {
+    border: 5px solid red;
+  }
+}

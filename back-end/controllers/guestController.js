@@ -65,7 +65,7 @@ guest.post("/signup", async (req, res) => {
       clientTokenPayload,
       "==="
     );
-    const token = jwt.sign(clientTokenPayload, JSK, { expiresIn: "1h" });
+    const token = jwt.sign(clientTokenPayload, JSK, { expiresIn: "1d" });
     res.status(201).json({ payload: createdGuest, token });
   } else {
     res.status(404).send("guest not created");
