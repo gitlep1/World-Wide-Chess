@@ -23,10 +23,10 @@ INSERT INTO spectators (spec_id, single_player_room_id, multi_player_room_id) VA
 (2, null, 1),
 (3, 1, null);
 
-INSERT INTO messages (user_id, message) VALUES
-(1, 'hello'),
-(2, 'noooobs'),
-(3, 'lol');
+INSERT INTO messages (user_id, username, message) VALUES
+(1, 'test1', 'hello'),
+(2, 'test2', 'noooobs'),
+(3, 'test3', 'lol');
 
 INSERT INTO shop (item_img, item_name, item_price) VALUES
 ('https://picsum.photos/150/150', 'Dragon Border', 1000),

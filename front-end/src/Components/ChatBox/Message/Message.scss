@@ -1,0 +1,18 @@
+.message-container {
+  border-radius: 1em;
+  height: 100%;
+
+  #formBasicInput {
+    border-radius: 1em;
+    resize: none;
+    overflow-y: auto;
+    background-color: #282e33;
+    border: 1px solid gray;
+    outline: none;
+    box-shadow: none;
+
+    &:focus {
+      background-color: white;
+    }
+  }
+}
