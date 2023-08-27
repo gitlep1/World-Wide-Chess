@@ -74,18 +74,51 @@
   }
 }
 
-.desktop-room-info {
-  @include room-info;
+.desktop-render-lobby-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+
+  .single-game-container {
+    height: 99%;
+    overflow-y: auto;
+
+    .room-info {
+      @include room-info;
+    }
+  }
+
+  .multi-game-container {
+    height: 99%;
+    overflow-y: auto;
+
+    .room-info {
+      @include room-info;
+    }
+  }
+
+  .lobbyModalPassword-container {
+    @include lobbyModalPassword-container;
+  }
 }
 
-.desktop-lobbyModalPassword-container {
-  @include lobbyModalPassword-container;
-}
+.mobile-render-lobby-container {
+  .single-game-container {
+    border: 5px solid red;
+    height: 100%;
+    width: 50%;
 
-.mobile-room-info {
-  @include room-info;
-}
+    .room-info {
+      @include room-info;
+    }
+  }
 
-.mobile-lobbyModalPassword-container {
-  @include lobbyModalPassword-container;
+  .multi-game-container {
+    .room-info {
+      @include room-info;
+    }
+  }
+
+  .lobbyModalPassword-container {
+    @include lobbyModalPassword-container;
+  }
 }

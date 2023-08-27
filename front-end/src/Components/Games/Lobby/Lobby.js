@@ -12,7 +12,6 @@ import Cookies from "js-cookie";
 
 import RenderLobby from "./RenderLobby/RenderLobby";
 import AdvancedSearch from "./AdvancedSearch/AdvancedSearch";
-import DetectScreenSize from "../../../CustomFunctions/DetectScreenSize";
 
 const API = process.env.REACT_APP_API_URL;
 
@@ -27,12 +26,17 @@ const Lobbypage = ({
 }) => {
   const navigate = useNavigate();
 
-  const [games, setGames] = useState([]);
-  const [gamesCopy, setGamesCopy] = useState([]);
+  const [singleGames, setSingleGames] = useState([]);
+  const [singleGamesCopy, setSingleGamesCopy] = useState([]);
+  const [multiGames, setMultiGames] = useState([]);
+  const [multiGamesCopy, setMultiGamesCopy] = useState([]);
+
   const [createRoomName, setCreateRoomName] = useState("");
   const [createRoomPassword, setCreateRoomPassword] = useState("");
   const [joinWithPassword, setJoinWithPassword] = useState("");
+
   const [searchbar, setSearchbar] = useState("");
+
   const [showCreate, setShowCreate] = useState(false);
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
 
@@ -40,28 +44,40 @@ const Lobbypage = ({
   const [refreshed, setRefreshed] = useState(false);
   const [countdown, setCountdown] = useState(60);
   const [error, setError] = useState("");
-  const [gameError, setGameError] = useState("");
 
   useEffect(() => {
-    socket.emit("get-updated-games-list");
+    socket.emit("get-single-games");
+    socket.emit("get-multi-games");
 
-    socket.on("games", (games) => {
-      setGames(games);
+    socket.on("single-games", (singleGames) => {
+      setSingleGames(singleGames);
+      setSingleGamesCopy(singleGames);
     });
 
-    socket.on("get-updated-games-list-error", (error) => {
-      setGameError(error);
+    socket.on("multi-games", (multiGames) => {
+      setMultiGames(multiGames);
+      setMultiGamesCopy(multiGames);
+    });
+
+    socket.on("get-single-games-error", (error) => {
+      setError(error);
+    });
+
+    socket.on("get-multi-games-error", (error) => {
+      setError(error);
     });
 
     return () => {
-      socket.off("games");
-      socket.off("get-updated-games-list-error");
+      socket.off("single-games");
+      socket.off("get-single-games-error");
+      socket.off("multi-games");
+      socket.off("get-multi-games-error");
     };
   }, [socket]);
 
   useEffect(() => {
     handleSearch();
-  }, [searchbar, games]); // eslint-disable-line
+  }, [searchbar]); // eslint-disable-line
 
   useEffect(() => {
     const checkCountdown = Cookies.get("countdown");
@@ -104,12 +120,19 @@ const Lobbypage = ({
 
   const handleSearch = () => {
     if (searchbar !== "") {
-      const filteredGames = games.filter((game) =>
+      const filteredGamesSingle = singleGames.filter((game) =>
         game.room_name.toLowerCase().includes(searchbar.toLowerCase())
       );
-      setGamesCopy(filteredGames);
+
+      const filteredGamesMulti = multiGames.filter((game) =>
+        game.room_name.toLowerCase().includes(searchbar.toLowerCase())
+      );
+
+      setSingleGamesCopy(filteredGamesSingle);
+      setMultiGamesCopy(filteredGamesMulti);
     } else {
-      setGamesCopy(games);
+      setSingleGamesCopy(singleGames);
+      setMultiGamesCopy(multiGames);
     }
   };
 
@@ -134,9 +157,8 @@ const Lobbypage = ({
       const singlePlayerGames = singlePlayerGamesResponse.data.payload;
       const multiPlayerGames = multiPlayerGamesResponse.data.payload;
 
-      const combinedGames = [...singlePlayerGames, ...multiPlayerGames];
-
-      setGames(combinedGames);
+      setSingleGamesCopy(singlePlayerGames);
+      setMultiGamesCopy(multiPlayerGames);
       setRefreshed(true);
       setLoading(false);
 
@@ -195,8 +217,8 @@ const Lobbypage = ({
           },
         })
         .then((res) => {
-          socket.emit("get-updated-games-list");
-          socket.emit("room-created", res.data.payload);
+          socket.emit("get-multi-games");
+          socket.emit("multi-room-created", res.data.payload);
           navigate(`/Room/${res.data.payload.id}/Settings`);
         })
         .catch((err) => {
@@ -216,8 +238,8 @@ const Lobbypage = ({
           },
         })
         .then((res) => {
-          socket.emit("get-updated-games-list");
-          socket.emit("room-created", res.data.payload);
+          socket.emit("get-single-games");
+          socket.emit("single-room-created", res.data.payload);
           navigate(`/Room/${res.data.payload.id}/Settings`);
         })
         .catch((err) => {
@@ -228,12 +250,13 @@ const Lobbypage = ({
 
   const handleJoin = async (gameID) => {
     let gameData = {};
+
     const updatePlayer2 = {
       player2id: user.id,
       in_progress: true,
     };
 
-    for (const game of gamesCopy) {
+    for (const game of singleGamesCopy) {
       if (game.id === gameID) {
         gameData = game;
       }
@@ -247,8 +270,8 @@ const Lobbypage = ({
           },
         })
         .then((res) => {
-          socket.emit("get-updated-games-list");
-          socket.emit("room-joined", res.data.payload);
+          socket.emit("get-multi-games");
+          socket.emit("multi-room-joined", res.data.payload);
           navigate(`/Room/${res.data.payload.id}/Settings`);
         })
         .catch((err) => {
@@ -383,9 +406,10 @@ const Lobbypage = ({
               {showAdvancedSearch && (
                 <AdvancedSearch
                   screenVersion={screenVersion}
-                  setGamesCopy={setGamesCopy}
-                  setGames={setGames}
-                  games={games}
+                  singleGames={singleGames}
+                  setSingleGamesCopy={setSingleGamesCopy}
+                  multiGames={multiGames}
+                  setMultiGamesCopy={setMultiGamesCopy}
                   socket={socket}
                   token={token}
                 />
@@ -398,22 +422,20 @@ const Lobbypage = ({
       <section className="lobbySection2">
         <div className="lobbyTable-container">
           <div className="lobbyTable-header">
-            <span id="room-name">Room Name</span>
-            <span id="room-status">Status</span>
+            <h1 className="lobby-Table-header-title">Single Player</h1>
+            <h1 className="lobby-Table-header-title">MultiPlayer</h1>
           </div>
           <div className="lobbyTable-body">
-            {gamesCopy.map((game) => {
-              return (
-                <RenderLobby
-                  key={nanoid()}
-                  screenVersion={screenVersion}
-                  game={game}
-                  joinWithPassword={joinWithPassword}
-                  setJoinWithPassword={setJoinWithPassword}
-                  handleJoin={handleJoin}
-                />
-              );
-            })}
+            <RenderLobby
+              screenVersion={screenVersion}
+              singleGames={singleGames}
+              singleGamesCopy={singleGamesCopy}
+              multiGamesCopy={multiGamesCopy}
+              multiGames={multiGames}
+              joinWithPassword={joinWithPassword}
+              setJoinWithPassword={setJoinWithPassword}
+              handleJoin={handleJoin}
+            />
           </div>
         </div>
       </section>

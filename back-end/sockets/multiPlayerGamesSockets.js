@@ -4,15 +4,6 @@ const { getBotById } = require("../queries/bots");
 const Chess = require("chess.js").Chess;
 
 const {
-  getAllSingleGames,
-  getSingleGameByID,
-  createSingleGame,
-  updateSingleGame,
-  updateSingleGamePositions,
-  deleteSingleGame,
-} = require("../queries/singlePlayerGames");
-
-const {
   getAllMultiGames,
   getMultiGameByID,
   createMultiGame,
@@ -21,92 +12,55 @@ const {
   deleteMultiGame,
 } = require("../queries/multiPlayerGames");
 
-const addGamesSocketEventListeners = (io, socket, socketId) => {
-  socket.on("get-updated-games-list", async () => {
+const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
+  socket.on("get-multi-games", async () => {
     try {
-      const singleGames = await getAllSingleGames();
       const multiGames = await getAllMultiGames();
-
-      const combinedGames = [...singleGames, ...multiGames];
-
-      socket.emit("games", combinedGames);
-      socket.broadcast.emit("games", combinedGames);
+      socket.emit("multi-games", multiGames);
     } catch (err) {
       const errorMessage = "Could not get all games";
-      socket.emit("get-updated-games-list-error", new Error(errorMessage));
+      socket.emit("get-multi-games-error", new Error(errorMessage));
     }
   });
 
-  socket.on("room-created", async (gameData) => {
+  socket.on("multi-room-created", async (gameData) => {
     console.log(
       `=== New room created by socketID: ${socketId} \n Game Data: `,
       gameData,
       "==="
     );
 
-    const singleGame = await getSingleGameByID(gameData.id);
     const multiGame = await getMultiGameByID(gameData.id);
 
-    if (singleGame || multiGame) {
+    if (multiGame) {
       socket.join(`/Room/${gameData.id}/Settings`);
       io.in(`/Room/${gameData.id}/Settings`).emit(
-        "room-settings",
-        singleGame || multiGame
+        "multi-room-settings",
+        multiGame
       );
     } else {
       const errorMessage = `Could not get game with ID: ${gameData.id}`;
-      socket.emit("room-created-error", new Error(errorMessage));
+      socket.emit("multi-room-created-error", new Error(errorMessage));
       socket.leave(`/Room/${gameData.id}/Settings`);
     }
   });
 
-  socket.on("room-joined", async (gameData) => {
+  socket.on("multi-room-joined", async (gameData) => {
     console.log(`=== SocketID: ${socketId} joined room: ${gameData.payload.id} === \n
     Game Data: ${gameData.payload}`);
 
-    const singleGame = await getSingleGameByID(gameData.id);
     const multiGame = await getMultiGameByID(gameData.id);
 
-    if (singleGame) {
+    if (multiGame) {
       socket.join(`/Room/${gameData.id}/Settings`);
-      socket.join(`/Room/${gameData.id}`);
-      io.in(`/Room/${gameData.id}/Settings`).emit("room-settings", singleGame);
-    } else if (multiGame) {
-      socket.join(`/Room/${gameData.id}/Settings`);
-      socket.join(`/Room/${gameData.id}`);
-      io.in(`/Room/${gameData.id}/Settings`).emit("room-settings", multiGame);
-    } else {
-      const errorMessage = `Could not get game with ID: ${gameData.id}`;
-      socket.emit("room-created-error", new Error(errorMessage));
-      socket.leave(`/Room/${gameData.id}`);
-      socket.leave(`/Room/${gameData.id}/Settings`);
-    }
-  });
-
-  socket.on("start-single-player-game", async (gameData) => {
-    console.log(
-      `=== start-single-player-game \n
-    Game Data: `,
-      gameData,
-      "==="
-    );
-
-    const playerData = await getUserByID(gameData.player_id);
-    const guestData = await getGuestByID(gameData.player_id);
-    const botData = await getBotById(gameData.bot_id);
-
-    if ((playerData || guestData) && botData) {
       io.in(`/Room/${gameData.id}/Settings`).emit(
-        "host-started-single",
-        gameData,
-        playerData || guestData,
-        botData
+        "multi-room-settings",
+        multiGame
       );
     } else {
-      const errorMessage = `Could not get player data: ${
-        playerData || guestData
-      }`;
-      socket.emit("room-created-error", new Error(errorMessage));
+      const errorMessage = `Could not get game with ID: ${gameData.id}`;
+      socket.emit("multi-room-created-error", new Error(errorMessage));
+      socket.leave(`/Room/${gameData.id}/Settings`);
     }
   });
 
@@ -114,60 +68,36 @@ const addGamesSocketEventListeners = (io, socket, socketId) => {
     console.log(`=== start-multi-player-game === \n
     Game Data: ${gameData.payload}`);
 
-    const player1Data = await getUserByID(gameData.payload.player1id);
-    const player2Data = await getUserByID(gameData.payload.player2id);
-    const guest1Data = await getGuestByID(gameData.payload.player1id);
-    const guest2Data = await getGuestByID(gameData.payload.player2id);
+    const player1Data =
+      (await getUserByID(singleGame.player1id)) ||
+      (await getGuestByID(singleGame.player1id));
 
-    if ((player1Data || guest1Data) && (player2Data || guest2Data)) {
+    const player2Data =
+      (await getUserByID(singleGame.player2id)) ||
+      (await getGuestByID(singleGame.player2id));
+
+    if (player1Data && player2Data) {
       io.in(`/Room/${gameData.payload.id}/Settings`).emit(
-        "host-started-multi",
+        "multi-started",
         gameData,
-        player1Data || guest1Data,
-        player2Data || guest2Data
+        player1Data,
+        player2Data
       );
     } else {
-      const errorMessage = `Could not get player data: ${
-        player1Data || guest1Data
-      }, ${player2Data || guest2Data}`;
-      socket.emit("room-created-error", new Error(errorMessage));
+      const errorMessage = `Could not get player data: ${player1Data}, ${player2Data}`;
+      socket.emit("multi-room-started-error", new Error(errorMessage));
     }
   });
 
-  socket.on("get-player-and-game-data", async (gameId) => {
+  socket.on("get-multi-game-data", async (gameId) => {
     socket.leave(`/Room/${gameId}/Settings`);
     socket.leave(`/Room/${gameId}`);
     socket.join(`/Room/${gameId}/Settings`);
     socket.join(`/Room/${gameId}`);
 
-    const singleGame = await getSingleGameByID(gameId);
     const multiGame = await getMultiGameByID(gameId);
 
-    if (singleGame) {
-      const playerData =
-        (await getUserByID(singleGame.player_id)) ||
-        (await getGuestByID(singleGame.player_id));
-
-      const botData = await getBotById(singleGame.bot_id);
-
-      if (playerData && botData) {
-        io.in(`/Room/${gameId}/Settings`).emit(
-          "player-reconnected",
-          singleGame,
-          playerData,
-          botData
-        );
-        io.in(`/Room/${gameId}`).emit(
-          "player-reconnected",
-          singleGame,
-          playerData,
-          botData
-        );
-      } else {
-        const errorMessage = `Opponent has disconnected.`;
-        io.in(`/Room/${gameId}`).emit("opponent-disconnected", errorMessage);
-      }
-    } else if (multiGame) {
+    if (multiGame) {
       const player1Data =
         (await getUserByID(singleGame.player1id)) ||
         (await getGuestByID(singleGame.player1id));
@@ -178,73 +108,47 @@ const addGamesSocketEventListeners = (io, socket, socketId) => {
 
       if (player1Data && player2Data) {
         io.in(`/Room/${gameId}/Settings`).emit(
-          "player-reconnected",
+          "multi-player-reconnected",
           multiGame,
           player1Data,
           player2Data
         );
         io.in(`/Room/${gameId}`).emit(
-          "player-reconnected",
+          "multi-player-reconnected",
           multiGame,
           player1Data,
           player2Data
         );
       } else {
         const errorMessage = `Opponent has disconnected.`;
-        io.in(`/Room/${gameId}`).emit("opponent-disconnected", errorMessage);
+        io.in(`/Room/${gameId}`).emit(
+          "multi-opponent-disconnected",
+          errorMessage
+        );
       }
     } else {
       const errorMessage = `Game has ended.`;
-      io.in(`/Room/${gameId}`).emit("game-ended", errorMessage);
+      io.in(`/Room/${gameId}`).emit("multi-game-ended", errorMessage);
       socket.leave(`/Room/${gameId}`);
     }
   });
 
-  socket.on("change-bot-difficulty", async (gameID, choosenBotID) => {
-    try {
-      const botData = await getBotById(choosenBotID);
-      console.log(botData);
-      io.in(`/Room/${gameID}/Settings`).emit("update-bot-difficulty", botData);
-
-      const updatedGameData = {
-        bot_id: choosenBotID,
-        in_progress: false,
-      };
-      await updateSingleGame(gameID, updatedGameData);
-    } catch (err) {
-      const errorMessage = err.message;
-      io.in(`/Room/${gameID}/Settings`).emit(
-        "game-settings-error",
-        errorMessage
-      );
-      socket.leave(`/Room/${gameID}/Settings`);
-    }
-  });
-
-  socket.on("move-piece", async (gameData, updatedGamePosition) => {
-    const oldSingleGameData = await getSingleGameByID(gameData.id);
+  socket.on("multi-move-piece", async (gameData, updatedGamePosition) => {
     const oldMultiGameData = await getMultiGameByID(gameData.id);
 
-    const chessGame = new Chess(
-      oldSingleGameData.current_positions || oldMultiGameData.current_positions
-    );
+    const chessGame = new Chess(oldMultiGameData.current_positions);
 
     const from = updatedGamePosition.from;
     const to = updatedGamePosition.to;
 
     const move = chessGame.move({ from, to });
     if (move) {
-      const singleGameUpdated = await updateSingleGamePositions(
-        gameData.id,
-        updatedGamePosition
-      );
-
       const multiGameUpdated = await updateMultiGamePositions(
         gameData.id,
         updatedGamePosition
       );
 
-      if (singleGameUpdated || multiGameUpdated) {
+      if (multiGameUpdated) {
         console.log(
           "updated game ID: ",
           gameData.id,
@@ -253,33 +157,30 @@ const addGamesSocketEventListeners = (io, socket, socketId) => {
         );
 
         io.in(`/Room/${gameData.id}`).emit(
-          "game-state-updated",
-          singleGameUpdated || multiGameUpdated
+          "multi-game-state-updated",
+          multiGameUpdated
         );
       } else {
         console.log(
           "could not update game ID: ",
           gameData.id,
           "with data: ",
-          singleGameUpdated || multiGameUpdated
+          multiGameUpdated
         );
 
         const errorMessage = "ERROR: could not update positions";
         io.in(`Room/${gameData.id}`).emit(
-          "game-state-updated-error",
+          "multi-game-state-updated-error",
           errorMessage
         );
       }
     }
   });
 
-  socket.on("piece-promo", async (gameData, updatedGamePosition) => {
-    const oldSingleGameData = await getSingleGameByID(gameData.id);
+  socket.on("multi-piece-promo", async (gameData, updatedGamePosition) => {
     const oldMultiGameData = await getMultiGameByID(gameData.id);
 
-    const chessGame = new Chess(
-      oldSingleGameData.current_positions || oldMultiGameData.current_positions
-    );
+    const chessGame = new Chess(oldMultiGameData.current_positions);
 
     const from = updatedGamePosition.from;
     const to = updatedGamePosition.to;
@@ -287,36 +188,34 @@ const addGamesSocketEventListeners = (io, socket, socketId) => {
 
     const move = chessGame.move({ from, to, promotion });
     if (move) {
-      const singleGameUpdated = await updateSingleGamePositions(
-        gameData.id,
-        updatedGamePosition
-      );
-
       const multiGameUpdated = await updateMultiGamePositions(
         gameData.id,
         updatedGamePosition
       );
 
-      if (singleGameUpdated || multiGameUpdated) {
+      if (multiGameUpdated) {
         console.log(
           "updated game ID: ",
           gameData.id,
           "with data: ",
-          singleGameUpdated || multiGameUpdated
+          multiGameUpdated
         );
 
-        io.in(`/Room/${gameData.id}`).emit("game-state-updated", gameUpdated);
+        io.in(`/Room/${gameData.id}`).emit(
+          "multi-game-state-updated",
+          gameUpdated
+        );
       } else {
         console.log(
           "could not update game ID: ",
           gameData.id,
           "with data: ",
-          singleGameUpdated || multiGameUpdated
+          multiGameUpdated
         );
 
         const errorMessage = "ERROR: could not update piece promotion position";
         io.in(`Room/${gameData.id}`).emit(
-          "game-state-updated-error",
+          "multi-game-state-updated-error",
           errorMessage
         );
       }
@@ -324,7 +223,7 @@ const addGamesSocketEventListeners = (io, socket, socketId) => {
   });
 };
 
-module.exports = addGamesSocketEventListeners;
+module.exports = addMultiGamesSocketEventListeners;
 
 // console.log(
 //   chessGame.move({

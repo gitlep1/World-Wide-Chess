@@ -24,16 +24,16 @@ const MultiPlayerGameSettings = ({
   const navigate = useNavigate();
 
   useEffect(() => {
-    socket.emit("get-player-and-game-data", gameID);
+    socket.emit("get-multi-games", gameID);
 
-    socket.on("player-reconnected", (gameData, playerData, botData) => {
+    socket.on("multi-player-reconnected", (gameData, playerData, botData) => {
       setGame(gameData);
       setPlayer1Data(playerData);
       setPlayer2Data(botData);
     });
 
     return () => {
-      socket.off("player-reconnected");
+      socket.off("multi-player-reconnected");
     };
   }, []); // eslint-disable-line
 
@@ -72,20 +72,19 @@ const MultiPlayerGameSettings = ({
     };
 
     await axios
-      .put(`${API}/games/${game.id}`, updateGameData, {
+      .put(`${API}/multi-player-games/${game.id}`, updateGameData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then((res) => {
-        socket.emit("games-update-all-clients");
         socket.emit("start-multi-player-game", res.data);
       });
   };
 
   const handleDelete = async (gameID) => {
     await axios
-      .delete(`${API}/games/${gameID}`, {
+      .delete(`${API}/multi-player-games/${gameID}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -112,7 +111,7 @@ const MultiPlayerGameSettings = ({
 
   const handleLeaveGame = async () => {
     await axios
-      .put(`${API}/games/${game.id}`, {
+      .put(`${API}/multi-player-games/${game.id}`, {
         [game.player2id]: null,
         in_progress: false,
         headers: {

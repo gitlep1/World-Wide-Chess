@@ -32,13 +32,16 @@ const SinglePlayerGameSettings = ({
   useEffect(() => {
     fetchBotsData();
 
-    socket.emit("get-player-and-game-data", gameID);
+    socket.emit("get-single-game-data", gameID);
 
-    socket.on("player-reconnected", (gameData, playerData, backendBotData) => {
-      setGame(gameData);
-      setPlayer1Data(playerData);
-      setPlayer2Data(backendBotData);
-    });
+    socket.on(
+      "single-player-reconnected",
+      (gameData, playerData, backendBotData) => {
+        setGame(gameData);
+        setPlayer1Data(playerData);
+        setPlayer2Data(backendBotData);
+      }
+    );
 
     // socket.on("update-bot-difficulty", (botData) => {
     //   console.log("inside update bot frontend");
@@ -46,7 +49,7 @@ const SinglePlayerGameSettings = ({
     // });
 
     return () => {
-      socket.off("player-reconnected");
+      socket.off("single-player-reconnected");
       // socket.off("update-bot-difficulty");
     };
   }, []); // eslint-disable-line
@@ -87,7 +90,6 @@ const SinglePlayerGameSettings = ({
         },
       })
       .then((res) => {
-        socket.emit("games-update-all-clients");
         socket.emit("start-single-player-game", res.data.payload);
       })
       .catch((err) => {
