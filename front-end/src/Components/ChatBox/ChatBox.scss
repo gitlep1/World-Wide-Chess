@@ -40,7 +40,7 @@
 }
 
 .chat-box-container {
-  width: 100vw;
+  width: 55vw;
   height: 50vh;
   position: fixed;
   bottom: 0%;
@@ -53,7 +53,6 @@
     color: white;
     display: grid;
     grid-template-columns: 1fr 50px;
-    justify-content: center;
     border-bottom: 1px solid gray;
 
     h1 {
@@ -69,18 +68,49 @@
     display: grid;
     grid-template-columns: 1fr 150px;
 
+    &.scrollBar-style {
+      scrollbar-width: thin;
+      scrollbar-color: white #282e33;
+
+      ::-moz-scrollbar-thumb {
+        background-color: white;
+        border-radius: 1em;
+      }
+
+      ::-moz-scrollbar-track {
+        background-color: #282e33;
+      }
+
+      ::-webkit-scrollbar {
+        display: block;
+        width: 5px;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background-color: white;
+        border-radius: 1em;
+      }
+
+      ::-webkit-scrollbar-track {
+        background-color: #282e33;
+      }
+    }
+
     .chat-box-messages {
+      height: 100vh;
+
       .messages {
         padding-left: 3%;
-        height: 30%;
-        overflow-y: auto;
         border-radius: 1em;
+        height: 40%;
+        overflow-y: auto;
       }
     }
 
     .chat-box-players-online {
       border-left: 1px solid gray;
       border-radius: 1em;
+      height: 100vh;
 
       h1 {
         border-bottom: 1px solid gray;
@@ -89,14 +119,14 @@
 
       .players-online {
         padding-left: 5%;
-        height: 25%;
+        height: 35%;
         overflow-y: auto;
       }
     }
 
     .chat-box-message {
       grid-column: 1 / -1;
-      width: 100%;
+      width: 55vw;
       border-radius: 1em;
       position: fixed;
       bottom: 0%;
@@ -113,7 +143,7 @@
         .messages {
           padding-left: 3%;
           // height: calc(100% - 70%); // how to use calc to start at 30% and increment by 1% until reaching the max-height
-          height: 25%;
+          // height: 25%;
           overflow-y: auto;
           border-radius: 1em;
         }
@@ -122,7 +152,7 @@
       .chat-box-players-online {
         .players-online {
           padding-left: 5%;
-          height: 20%;
+          height: 50%;
           overflow-y: auto;
         }
       }
@@ -137,7 +167,7 @@
         // border: 5px solid cyan;
         .messages {
           padding-left: 3%;
-          height: 30%;
+          // height: 30%;
           overflow-y: auto;
           border-radius: 1em;
         }
@@ -146,7 +176,7 @@
       .chat-box-players-online {
         .players-online {
           padding-left: 5%;
-          height: 23%;
+          // height: 23%;
           overflow-y: auto;
         }
       }
@@ -158,10 +188,9 @@
   .chat-box-container {
     .chat-box-body {
       .chat-box-messages {
-        // border: 5px solid green;
         .messages {
           padding-left: 3%;
-          height: 40%;
+          // height: 30%;
           overflow-y: auto;
           border-radius: 1em;
         }
@@ -170,7 +199,7 @@
       .chat-box-players-online {
         .players-online {
           padding-left: 5%;
-          height: 30%;
+          // height: 30%;
           overflow-y: auto;
         }
       }
@@ -185,7 +214,7 @@
         // border: 5px solid purple;
         .messages {
           padding-left: 3%;
-          height: 65%;
+          // height: 65%;
           overflow-y: auto;
           border-radius: 1em;
         }
@@ -194,7 +223,7 @@
       .chat-box-players-online {
         .players-online {
           padding-left: 5%;
-          height: 58%;
+          // height: 58%;
           overflow-y: auto;
         }
       }

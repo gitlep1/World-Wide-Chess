@@ -72,6 +72,7 @@ CREATE TABLE messages (
   id SERIAL UNIQUE NOT NULL PRIMARY KEY,
   user_id INT NOT NULL REFERENCES users(id),
   username TEXT NOT NULL REFERENCES users(username),
+  profileimg TEXT NOT NULL,
   message TEXT
 );
 

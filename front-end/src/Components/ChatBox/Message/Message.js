@@ -1,8 +1,12 @@
 import "./Message.scss";
 import { useState } from "react";
-import { Form } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
+import { toast } from "react-toastify";
+import axios from "axios";
 
-const Message = ({ user, token, socket }) => {
+const API = process.env.REACT_APP_API_URL;
+
+const Message = ({ user, token, socket, onMessageCreated }) => {
   const [input, setInput] = useState("");
 
   const onChange = (e) => {
@@ -10,22 +14,52 @@ const Message = ({ user, token, socket }) => {
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      sendMessage();
+    if (
+      e.key === "Enter" &&
+      !e.shiftKey &&
+      !e.altKey &&
+      !e.ctrlKey &&
+      !e.metaKey
+    ) {
+      handleSubmit(e);
     }
-  };
-
-  const sendMessage = () => {
-    // Implement your logic to send the message
-    console.log("Sending message:", input);
-    setInput("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("inside");
+    if (input === "") {
+      toast.error("Please enter a message.", {
+        position: "top-center",
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        pauseOnFocusLoss: false,
+        draggable: true,
+        progress: undefined,
+      });
+    } else {
+      const messageData = {
+        user_id: user.id,
+        username: user.username,
+        profileimg: user.profileimg,
+        message: input,
+      };
+      // socket.emit("create-message", messageData);
+      await axios
+        .post(`${API}/messages`, messageData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => {
+          socket.emit("get-all-messages");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+    setInput("");
   };
 
   return (
@@ -40,6 +74,10 @@ const Message = ({ user, token, socket }) => {
           onKeyDown={handleKeyPress}
         />
       </Form.Group>
+
+      <Button className="message-button" variant="dark" type="submit">
+        Send
+      </Button>
     </Form>
   );
 };

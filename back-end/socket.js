@@ -1,5 +1,7 @@
 const usersSocket = require("./sockets/usersSockets");
 const gamesSocket = require("./sockets/gamesSockets");
+const messagesSocket = require("./sockets/messagesSockets");
+
 const { requireAuth } = require("./validation/requireAuth");
 const { scopeAuth } = require("./validation/scopeAuth");
 
@@ -17,6 +19,7 @@ const addSocketEventListeners = (io) => {
 
     usersSocket(io, socket, socket.id);
     gamesSocket(io, socket, socket.id);
+    messagesSocket(io, socket, socket.id);
   });
 };
 

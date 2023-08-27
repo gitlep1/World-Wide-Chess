@@ -4,31 +4,11 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  scrollbar-width: thin;
   scrollbar-color: transparent transparent;
-}
-
-*::-moz-scrollbar-thumb {
-  background-color: white;
-  border-radius: 1em;
-}
-
-*::-moz-scrollbar-track {
-  background-color: #282e33;
 }
 
 ::-webkit-scrollbar {
   display: none;
-  width: 5px;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: white;
-  border-radius: 1em;
-}
-
-::-webkit-scrollbar-track {
-  background-color: #282e33;
 }
 
 #page-wrap {

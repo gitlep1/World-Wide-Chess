@@ -1,18 +1,24 @@
 .message-container {
-  border-radius: 1em;
-  height: 100%;
+  border: 1px solid gray;
+  border-radius: 40px 40px 40px 40px;
+  display: grid;
+  grid-template-columns: 1fr 100px;
 
   #formBasicInput {
-    border-radius: 1em;
+    border-radius: 40px 0px 0px 40px;
     resize: none;
     overflow-y: auto;
+    border: none;
     background-color: #282e33;
-    border: 1px solid gray;
     outline: none;
     box-shadow: none;
 
     &:focus {
-      background-color: white;
+      background-color: aliceblue;
     }
+  }
+
+  .message-button {
+    border-radius: 0px 40px 40px 0px;
   }
 }
