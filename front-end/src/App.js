@@ -15,6 +15,7 @@ import MobileApp from "./Components/MobileApp";
 
 // Custom functions \\
 import DetectScreenSize from "./CustomFunctions/DetectScreenSize";
+import LeavingPage from "./CustomFunctions/LeavingPage";
 
 import DefaultProfImg from "./Images/DefaultProfImg.png";
 
@@ -42,6 +43,7 @@ const App = () => {
 
   useEffect(() => {
     checkCookies();
+    LeavingPage();
   }, []); // eslint-disable-line
 
   useEffect(() => {
@@ -93,38 +95,37 @@ const App = () => {
   };
 
   const handleUser = async (user) => {
+    if (user) {
+      const expirationDate = new Date();
+      expirationDate.setDate(expirationDate.getDate() + 30);
+
+      Cookies.set("Current_User", JSON.stringify(user.payload), {
+        expires: expirationDate,
+        path: "/",
+      });
+      Cookies.set("Authenticated", JSON.stringify(true), {
+        expires: expirationDate,
+        path: "/",
+      });
+      Cookies.set("token", JSON.stringify(user.token), {
+        expires: expirationDate,
+        path: "/",
+      });
+
+      setUser(user.payload);
+      setToken(user.token);
+      setAuthenticated(true);
+
+      navigate(`/`);
+    } else {
+      return null;
+    }
+
     await axios
       .delete(`${API}/guests/delete`, {
         headers: {
           authorization: `Bearer ${token}`,
         },
-      })
-      .then(() => {
-        if (user) {
-          const expirationDate = new Date();
-          expirationDate.setDate(expirationDate.getDate() + 30);
-
-          Cookies.set("Current_User", JSON.stringify(user.payload), {
-            expires: expirationDate,
-            path: "/",
-          });
-          Cookies.set("Authenticated", JSON.stringify(true), {
-            expires: expirationDate,
-            path: "/",
-          });
-          Cookies.set("token", JSON.stringify(user.token), {
-            expires: expirationDate,
-            path: "/",
-          });
-
-          setUser(user.payload);
-          setToken(user.token);
-          setAuthenticated(true);
-
-          navigate(`/`);
-        } else {
-          return null;
-        }
       })
       .catch((err) => {
         setError(err.response.data);

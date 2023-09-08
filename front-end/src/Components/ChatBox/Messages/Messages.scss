@@ -1,0 +1,17 @@
+.message-card {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  margin-bottom: 1em;
+  // border-bottom: 1px solid gray;
+
+  .userProfileImg {
+    width: 80px;
+  }
+
+  .message-card-content {
+    margin-left: 1.5%;
+    .message-text {
+      margin-left: 1%;
+    }
+  }
+}

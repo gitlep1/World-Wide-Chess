@@ -224,6 +224,8 @@ const MobileApp = ({
             />
           </Route>
         </Routes>
+
+        <ChatBox token={token} socket={socket} user={user} />
       </main>
 
       {openInventory ? (

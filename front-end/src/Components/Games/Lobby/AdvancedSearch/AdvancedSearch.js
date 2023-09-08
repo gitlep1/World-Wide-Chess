@@ -7,9 +7,10 @@ const API = process.env.REACT_APP_API_URL;
 
 const FilterSearch = ({
   screenVersion,
-  setGamesCopy,
-  setGames,
-  games,
+  singleGames,
+  setSingleGamesCopy,
+  multiGames,
+  setMultiGamesCopy,
   socket,
   token,
 }) => {
@@ -17,8 +18,9 @@ const FilterSearch = ({
   const [maxEloRating, setMaxEloRating] = useState("");
   const [roomsWithPasswords, setRoomsWithPasswords] = useState(false);
   const [fullRooms, setFullRooms] = useState(false);
-  const [singlePlayer, setSinglePlayer] = useState(false);
-  const [multiPlayer, setMultiPlayer] = useState(false);
+
+  const [singleGamesError, setSingleGamesError] = useState("");
+  const [multiGamesError, setMultiGamesError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -31,44 +33,27 @@ const FilterSearch = ({
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    socket.off("games");
+    socket.off("get-single-games");
+    socket.off("get-multi-games");
 
-    let gamesList = [];
+    let singleGamesList = [];
+    let multiGamesList = [];
 
-    if (roomsWithPasswords || fullRooms || singlePlayer || multiPlayer) {
+    if (roomsWithPasswords || fullRooms) {
       if (roomsWithPasswords) {
-        gamesList = games.filter((game) => game.room_password);
+        singleGamesList = singleGames.filter((game) => game.room_password);
+
+        multiGamesList = multiGames.filter((game) => game.room_password);
       }
 
       if (fullRooms) {
-        gamesList = games.filter((game) => game.in_progress);
+        singleGamesList = singleGames.filter((game) => game.in_progress);
+
+        multiGamesList = multiGames.filter((game) => game.in_progress);
       }
 
-      if (singlePlayer) {
-        gamesList = games.filter(
-          (game) =>
-            game.player1id !== 1 &&
-            game.player1id !== 2 &&
-            game.player1id !== 3 &&
-            (game.player2id === 1 ||
-              game.player2id === 2 ||
-              game.player2id === 3)
-        );
-      }
-
-      if (multiPlayer) {
-        gamesList = games.filter(
-          (game) =>
-            game.player1id !== 1 &&
-            game.player1id !== 2 &&
-            game.player1id !== 3 &&
-            game.player2id !== 1 &&
-            game.player2id !== 2 &&
-            game.player2id !== 3
-        );
-      }
-
-      setGamesCopy(gamesList);
+      setSingleGamesCopy(singleGamesList);
+      setMultiGamesCopy(multiGamesList);
     } else {
       revertSearch();
     }
@@ -88,19 +73,37 @@ const FilterSearch = ({
   };
 
   const revertSearch = async () => {
-    await axios
-      .get(`${API}/games`, {
+    const singlePlayerGamesRequest = axios
+      .get(`${API}/single-player-games`, {
         headers: {
           authorization: `Bearer ${token}`,
         },
       })
-      .then((res) => {
-        setGames(res.data.payload);
+      .catch((err) => {
+        setSingleGamesError(err);
       });
 
-    socket.on("games", (games) => {
-      setGames(games);
-    });
+    const multiPlayerGamesRequest = axios
+      .get(`${API}/multi-player-games`, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      })
+      .catch((err) => {
+        setMultiGamesError(err);
+      });
+
+    const [singlePlayerGamesResponse, multiPlayerGamesResponse] =
+      await axios.all([singlePlayerGamesRequest, multiPlayerGamesRequest]);
+
+    const singlePlayerGames = singlePlayerGamesResponse.data.payload;
+    const multiPlayerGames = multiPlayerGamesResponse.data.payload;
+
+    setSingleGamesCopy(singlePlayerGames);
+    setMultiGamesCopy(multiPlayerGames);
+
+    socket.emit("get-single-games");
+    socket.emit("get-multi-games");
   };
 
   return (
@@ -109,30 +112,7 @@ const FilterSearch = ({
 
       <Form onSubmit={handleSubmit} className="advancedSearch-form">
         <div className="bg-dark advancedSearch-singleOrMulti">
-          <div className="singleOrMultiButtons">
-            <Form.Check
-              label="Single Player"
-              name="singleOrMultiCheckbox"
-              type="checkbox"
-              id="checkbox-1"
-              value="single-player"
-              checked={singlePlayer}
-              onChange={() => {
-                setSinglePlayer(!singlePlayer);
-              }}
-            />
-            <Form.Check
-              label="Multi Player"
-              name="singleOrMultiCheckbox"
-              type="checkbox"
-              id="checkbox-2"
-              value="multi-player"
-              checked={multiPlayer}
-              onChange={() => {
-                setMultiPlayer(!multiPlayer);
-              }}
-            />
-          </div>
+          <div className="singleOrMultiButtons">placeholder</div>
         </div>
         <div className="bg-dark advancedSearch-roomPassword-container">
           password

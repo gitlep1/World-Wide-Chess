@@ -128,13 +128,22 @@ $giant: 1200px;
     font-size: 20px;
 
     .lobbyTable-header {
-      // border: 3px solid white;
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       justify-content: center;
       align-items: center;
+      column-gap: 1em;
       height: 2em;
       margin: 0 0.5em;
+
+      .lobby-Table-header-title {
+        // border: 5px solid white;
+        width: 70%;
+        margin: 0 auto;
+        &:hover {
+          cursor: pointer;
+        }
+      }
     }
   }
 }

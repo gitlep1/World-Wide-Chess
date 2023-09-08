@@ -223,7 +223,7 @@ const DesktopApp = ({
           </Route>
         </Routes>
 
-        <ChatBox />
+        <ChatBox token={token} socket={socket} user={user} />
       </main>
 
       {openInventory ? (

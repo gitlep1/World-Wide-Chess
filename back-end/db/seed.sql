@@ -2,8 +2,8 @@
 
 INSERT INTO users (profileimg, username, password, email, theme, chess_coins, wins, ties, loss, rating, preferred_color, is_guest, last_online) VALUES
 ('https://www.randomlists.com/img/animals/tiger.webp', 'test1', 'test1', 'test1@test.com', 'default', 100, 3, 2, 1, 1050, 'white', false, NOW()),
-('https://brianrushwriter.files.wordpress.com/2014/11/27566315_s.jpg', 'test2', 'password2', 'test2@example.com', 'light', 300, 3, 2, 5, 1000, 'black', false, NOW()),
-('https://i.natgeofe.com/k/02444b59-a50d-48e6-939b-4db10f895e66/5-reasons-eagle_4x3.jpg', 'test3', 'password3', 'test3@example.com', 'dark', 500, 5, 5, 5, 0, 'white', false, NOW());
+('https://brianrushwriter.files.wordpress.com/2014/11/27566315_s.jpg', 'test2', 'test', 'test2@test.com', 'light', 300, 3, 2, 5, 1000, 'black', false, NOW()),
+('https://i.natgeofe.com/k/02444b59-a50d-48e6-939b-4db10f895e66/5-reasons-eagle_4x3.jpg', 'test3', 'test3', 'test3@test.com', 'dark', 500, 5, 5, 5, 0, 'white', false, NOW());
 
 INSERT INTO bots (profileimg, username, wins, ties, loss) VALUES 
 ('https://i.imgur.com/8puTSd9.png', 'Easy Bot', 10, 1, 1),
@@ -23,10 +23,10 @@ INSERT INTO spectators (spec_id, single_player_room_id, multi_player_room_id) VA
 (2, null, 1),
 (3, 1, null);
 
-INSERT INTO messages (user_id, message) VALUES
-(1, 'hello'),
-(2, 'noooobs'),
-(3, 'lol');
+INSERT INTO messages (user_id, username, profileimg, message) VALUES
+(1, 'test1', 'https://www.randomlists.com/img/animals/tiger.webp', 'hello'),
+(2, 'test2', 'https://brianrushwriter.files.wordpress.com/2014/11/27566315_s.jpg', 'noooobs'),
+(3, 'test3', 'https://i.natgeofe.com/k/02444b59-a50d-48e6-939b-4db10f895e66/5-reasons-eagle_4x3.jpg', 'lol');
 
 INSERT INTO shop (item_img, item_name, item_price) VALUES
 ('https://picsum.photos/150/150', 'Dragon Border', 1000),

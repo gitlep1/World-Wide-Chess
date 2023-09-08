@@ -50,6 +50,8 @@ message.get("/:id", requireAuth(), async (req, res) => {
 message.post("/", requireAuth(), async (req, res) => {
   const newMessageData = {
     user_id: req.body.user_id,
+    username: req.body.username,
+    profileimg: req.body.profileimg,
     message: req.body.message,
   };
 

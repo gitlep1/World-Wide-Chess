@@ -8,8 +8,6 @@ import Loading from "../../Loading/Loading";
 import SinglePlayerGameSettings from "./SinglePlayer/SinglePlayerGameSettings";
 import MultiPlayerGameSettings from "./MultiPlayer/MultiPlayerGameSettings";
 
-import LeavingPage from "../../../CustomFunctions/LeavingPage";
-
 const API = process.env.REACT_APP_API_URL;
 
 const GameSettings = ({
@@ -35,22 +33,23 @@ const GameSettings = ({
   const [error, setError] = useState("");
 
   useEffect(() => {
-    LeavingPage(gameID, token, navigate);
-  }, []); // eslint-disable-line
-
-  useEffect(() => {
-    socket.on("room-settings", (gameData) => {
+    socket.on("single-room-settings", (gameData) => {
       setGame(gameData);
     });
 
-    socket.on("host-started-single", (gameData, player1Data, player2Data) => {
+    socket.on("multi-room-settings", (gameData) => {
+      setGame(gameData);
+    });
+
+    socket.on("single-started", (gameData, player1Data, player2Data) => {
+      console.log("started single");
       setGame(gameData);
       setPlayer1Data(player1Data);
       setPlayer2Data(player2Data);
       navigate(`/Room/${gameData.id}`);
     });
 
-    socket.on("host-started-multi", (gameData, player1Data, player2Data) => {
+    socket.on("multi-started", (gameData, player1Data, player2Data) => {
       setGame(gameData);
       setPlayer1Data(player1Data);
       setPlayer2Data(player2Data);
@@ -58,7 +57,8 @@ const GameSettings = ({
     });
 
     return () => {
-      socket.off("room-settings");
+      socket.off("single-room-settings");
+      socket.off("multi-room-settings");
       socket.off("host-started-single");
       socket.off("host-started-multi");
     };
