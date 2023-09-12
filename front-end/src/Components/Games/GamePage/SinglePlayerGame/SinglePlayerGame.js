@@ -90,7 +90,7 @@ const SinglePlayerGame = ({
 
   const reloadPlayerAndGameData = async () => {
     return new Promise((resolve, reject) => {
-      console.log("inside new Promise");
+      // console.log("inside new Promise");
 
       socket.emit("get-single-game-data", gameID);
 
