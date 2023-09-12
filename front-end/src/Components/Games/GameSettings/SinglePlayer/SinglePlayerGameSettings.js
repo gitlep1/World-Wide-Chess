@@ -90,7 +90,7 @@ const SinglePlayerGameSettings = ({
       game_time: 0,
     };
 
-    console.log("updateGameData: ", updateGameData);
+    // console.log("updateGameData: ", updateGameData);
 
     if (Object.keys(botData).length === 0) {
       return toast.error("Please select a bot", {
@@ -112,7 +112,7 @@ const SinglePlayerGameSettings = ({
         },
       })
       .then((res) => {
-        console.log("inside start game: ", res.data.payload);
+        // console.log("inside start game: ", res.data.payload);
         socket.emit("start-single-player-game", res.data.payload);
       })
       .catch((err) => {

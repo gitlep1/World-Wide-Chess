@@ -288,8 +288,6 @@ const SinglePlayerGame = ({
     }
   };
 
-  console.log(game);
-
   return (
     <section className={`${screenVersion}-gamePageBot`}>
       {!player1Data || !player2Data ? forfeitNotify() : null}
