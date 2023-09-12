@@ -1,0 +1,188 @@
+$small-mobile: 350px;
+$medium-mobile: 400px;
+$large-mobile: 600px;
+$extra-large-mobile: 799px;
+
+$small-desktop: 800px;
+$medium-desktop: 1100px;
+$large-desktop: 1300px;
+$extra-large-desktop: 1400px;
+
+@mixin Navbar-container($gridTemplateColumnsValues) {
+  display: grid;
+  grid-template-columns: $gridTemplateColumnsValues;
+  background-color: #212529;
+}
+
+@mixin Navbar-header($gridColumn) {
+  grid-column: $gridColumn;
+  color: aliceblue;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-family: "Bungee Shade", cursive;
+
+  h1 {
+    font-size: 18px;
+  }
+}
+
+@mixin grid-template($gridTemplateVersion) {
+  display: grid;
+  #{$gridTemplateVersion}: repeat(2, 1fr);
+  align-items: center;
+  // justify-content: center;
+  text-align: center;
+}
+
+@mixin Navbar-button-style {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: 0.5em;
+  color: white;
+  background-color: #383838;
+  opacity: 85%;
+  height: 3em;
+  // margin-left: 0.3em;
+
+  &:hover {
+    cursor: pointer;
+    opacity: 100%;
+  }
+}
+
+.desktop-NavBar-container {
+  .Navbar {
+    @include Navbar-container(1fr 250px 1fr);
+
+    #Navbar-header {
+      @include Navbar-header(2);
+    }
+
+    #HomeAndLobby-container {
+      // background-color: green;
+      grid-column: 1;
+      grid-row: 1;
+      @include grid-template(grid-template-columns);
+      font-size: 25px;
+      column-gap: 1em;
+      margin-left: 0.5em;
+
+      .Navbar-home {
+        grid-column: 1;
+        @include Navbar-button-style;
+      }
+
+      .Navbar-lobby {
+        grid-column: 2;
+        @include Navbar-button-style;
+      }
+    }
+
+    #ShopAndMenu-container {
+      // background-color: yellow;
+      grid-column: 3;
+      grid-row: 1;
+      @include grid-template(grid-template-columns);
+      font-size: 25px;
+      column-gap: 1em;
+      margin-right: 0.5em;
+
+      .Navbar-shop {
+        grid-column: 1;
+        @include Navbar-button-style;
+      }
+
+      .Navbar-menu {
+        grid-column: 2;
+        @include Navbar-button-style;
+      }
+    }
+  }
+
+  .hide-navbar {
+    border: 5px solid red;
+    display: none;
+  }
+}
+
+.mobile-NavBar-container {
+  // border: 5px solid red;
+  .Navbar {
+    // border: 5px solid cyan;
+    @include Navbar-container(repeat(2, 1fr));
+    column-gap: 1em;
+
+    #Navbar-header {
+      // border: 5px solid green;
+      @include Navbar-header(1 / span 2);
+    }
+
+    #HomeAndLobby-container {
+      // border: 5px solid yellow;
+      @include grid-template(grid-template-rows);
+      row-gap: 1em;
+
+      .Navbar-home {
+        @include Navbar-button-style;
+      }
+
+      .Navbar-lobby {
+        grid-row: 2;
+        @include Navbar-button-style;
+      }
+    }
+
+    #ShopAndMenu-container {
+      // border: 5px solid orange;
+      @include grid-template(grid-template-rows);
+      row-gap: 1em;
+
+      .Navbar-shop {
+        grid-row: 1;
+        @include Navbar-button-style;
+      }
+
+      .Navbar-menu {
+        grid-row: 2;
+        @include Navbar-button-style;
+      }
+    }
+  }
+
+  .hide-navbar {
+    border: 5px solid red;
+    display: none;
+  }
+}
+
+.Navbar-active {
+  border: 3px solid aliceblue;
+  transition-duration: 0.1s;
+}
+
+.Navbar-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  background-color: black;
+  font-size: 20px;
+  width: 3em;
+  height: 1.5em;
+  box-shadow: 0px 0px 5px 2.5px #000000;
+  margin: 0 auto 3% auto;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+#logoImg {
+  width: 110px;
+}

@@ -1,28 +1,30 @@
 \c world_wide_chess;
 
-INSERT INTO users (profileimg, username, password, email, theme, chess_coins, wins, ties, loss, rating, preferred_color, last_online) VALUES
-('https://i.imgur.com/8puTSd9.png', 'Easy Bot', 'o5b21e*F6Wan', 'easybot@bot.com', 'default', 10, 1, 1, 1, 950, 'black', NOW()),
-('https://i.imgur.com/MmLQSDV.png', 'Medium Bot', 'e%*m9ZW1ZZ64', 'mediumbot@bot.com', 'default', 50, 2, 2, 2, 1200, 'white', NOW()),
-('https://i.imgur.com/ZlrcYvd.png', 'Hard Bot', '30m5&Ce^Tnbb', 'hardbot@bot.com', 'default', 100, 3, 3, 3, 2000,'black', NOW()),
-('https://www.randomlists.com/img/animals/tiger.webp', 'test1', 'test1', 'test1@test.com', 'dark', 100, 3, 2, 1, 1050, 'white', NOW());
+INSERT INTO users (profileimg, username, password, email, theme, chess_coins, wins, ties, loss, rating, preferred_color, is_guest, last_online) VALUES
+('https://www.randomlists.com/img/animals/tiger.webp', 'test1', 'test1', 'test1@test.com', 'default', 100, 3, 2, 1, 1050, 'w', false, NOW()),
+('https://brianrushwriter.files.wordpress.com/2014/11/27566315_s.jpg', 'test2', 'test', 'test2@test.com', 'light', 300, 3, 2, 5, 1000, 'b', false, NOW()),
+('https://i.natgeofe.com/k/02444b59-a50d-48e6-939b-4db10f895e66/5-reasons-eagle_4x3.jpg', 'test3', 'test3', 'test3@test.com', 'dark', 500, 5, 5, 5, 0, 'w', false, NOW());
 
-INSERT INTO games (room_name, room_password, player1id, player2id, player1color, player2color, in_progress, current_positions) VALUES 
-('come fight me', null, 1, 2, 'white', 'black', true, 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'),
-('ima lose', null, 1, null, 'white', 'black', false, 'n6k/2q1r3/3NP1P1/7p/p1Q1q3/6P1/1K4pp/n7 b - - 0 1'),
-('easy win', 'lol', 2, 3, 'black', 'white', true, '8/r1p1q1P1/p7/3rP2R/8/R2Q1K2/1P1qP2p/4k3 w - - 35 1'),
-('pro', 'pro', 2, 3, 'black', 'white', true, '3k1K2/8/2p1p1Q1/RB2P2q/1Qq1r1p1/7R/5N2/B7 b - - 0 1'),
-('g54ett4gtdr', null, 3, 1, 'white', 'black', true, '1nb1kbn1/ppp1pp1p/3p4/r2q3r/6p1/Q1PB2PP/PP1PPP11/RNB1K1NR w KQkq - 40 1'),
-('how do i delete this', 'test', 3, null, 'black', 'white', false, 'n7/p3N3/Rn2R3/4K1Qp/1kp4N/3P4/5P1P/3q4 b - - 0 1');
+INSERT INTO bots (profileimg, username, wins, ties, loss) VALUES 
+('https://i.imgur.com/8puTSd9.png', 'Easy Bot', 10, 1, 1),
+('https://i.imgur.com/MmLQSDV.png', 'Medium Bot', 50, 2, 2),
+('https://i.imgur.com/ZlrcYvd.png', 'Hard Bot', 100, 3, 3);
 
-INSERT INTO spectators (spec_id, room_id) VALUES
+INSERT INTO games (room_name, room_password, botId, player1id, player2id, player1color, player2color, botColor, current_positions, allow_specs, in_progress, is_multiplayer, game_time) VALUES
+('come watch', null, 1, 1, null, 'w', null, 'b', 'rnbqkbnr/pp1ppppp/8/2p5/8/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0', false, true, false, 100000),
+('lol noobs', 'noobs', null, 2, null, 'b', null, null, 'rnbqkbnr/pp2pppp/3p4/8/3P4/8/PPP2PPP/RNBQKBNR w KQkq - 0', false, false, true, 200000),
+('easy game', 'hard game', 3, 3, null, 'w', null, 'b', '2kr3r/ppp1bppp/3q1n2/3p4/2PP4/2N2N2/PP2QPPP/R1B1K2R w KQ - 0', true, true, false, 300000),
+('the best', null, null, 1, 3, 'w', 'b', null, 'r1bqkbnr/ppp1pppp/2n5/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0', true, true, true, 400000);
+
+INSERT INTO spectators (spec_id, games_id) VALUES
 (1, 1),
-(2, 1),
-(3, 1);
+(2, 2),
+(3, 3);
 
-INSERT INTO messages (user_id, message) VALUES
-(1, 'hello'),
-(2, 'noooobs'),
-(3, 'lol');
+INSERT INTO messages (user_id, username, profileimg, message) VALUES
+(1, 'test1', 'https://www.randomlists.com/img/animals/tiger.webp', 'hello'),
+(2, 'test2', 'https://brianrushwriter.files.wordpress.com/2014/11/27566315_s.jpg', 'noooobs'),
+(3, 'test3', 'https://i.natgeofe.com/k/02444b59-a50d-48e6-939b-4db10f895e66/5-reasons-eagle_4x3.jpg', 'lol');
 
 INSERT INTO shop (item_img, item_name, item_price) VALUES
 ('https://picsum.photos/150/150', 'Dragon Border', 1000),
@@ -42,11 +44,8 @@ INSERT INTO shop (item_img, item_name, item_price) VALUES
 ('https://picsum.photos/150/150', 'Rainbow Chat Effects', 2000),
 ('https://picsum.photos/150/150', 'Monochronic Chat Effects', 4000);
 
-INSERT INTO inventory (user_id,  item_id) VALUES
-(1, 3), (1, 8), (1, 11),
-(2, 2), (2, 6), (2, 12),
-(3, 4), (3, 7), (3, 15),
-(4, 1), (4, 9), (4, 14);
+INSERT INTO guest_inventory (item_id) VALUES
+(5), (8), (11);
 
 INSERT INTO facts (fact_num, fact) VALUES
 (1, 'Legend has it that chess was invented around 200 B. C. by a commander, Hán Xin, who invented the game as a battle simulator. Soon after winning the battle, the game was forgotten, but it resurfaced in the 7th century.'),

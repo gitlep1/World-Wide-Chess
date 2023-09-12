@@ -36,8 +36,13 @@ const getallUserMessagesByID = async (uid) => {
 const createMessage = async (newMessageData) => {
   try {
     const newMessage = await db.one(
-      "INSERT INTO messages (user_id, message) VALUES($1, $2) RETURNING *",
-      [newMessageData.user_id, newMessageData.message]
+      "INSERT INTO messages (user_id, username, profileimg, message) VALUES($1, $2, $3, $4) RETURNING *",
+      [
+        newMessageData.user_id,
+        newMessageData.username,
+        newMessageData.profileimg,
+        newMessageData.message,
+      ]
     );
     return newMessage;
   } catch (error) {

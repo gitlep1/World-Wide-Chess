@@ -1,0 +1,241 @@
+$medium: 800px;
+$large: 1000px;
+$giant: 1200px;
+
+@mixin lobby-container {
+  height: 100vh;
+}
+
+@mixin lobbySection1 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1em;
+  max-width: 70vw;
+  margin: 0 auto;
+}
+
+@mixin lobby-button {
+  color: aliceblue;
+  background-color: black;
+  width: 12em;
+  height: 2.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  justify-self: center;
+  opacity: 85%;
+
+  &:hover {
+    opacity: 100%;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+  }
+}
+
+@mixin lobby-searchbar-container {
+  color: white;
+  background-color: #1b1b1b;
+  border-radius: 1em;
+  border: 3px solid white;
+  width: 95%;
+  margin: 0 auto;
+  grid-column: 1 / -1;
+
+  .lobby-searchbar-1 {
+    display: grid;
+    grid-template-columns: 35px 1fr 35px;
+    column-gap: 0.5em;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border-radius: 1em;
+
+    .lobby-searchbar-icon-1 {
+      font-size: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .lobby-searchbar-icon-2 {
+      font-size: 35px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #lobby-searchbar {
+      border: none;
+      border-radius: 1em;
+      background-color: #1b1b1b;
+      color: white;
+
+      &::placeholder {
+        color: white;
+      }
+    }
+  }
+
+  .lobby-searchbar-2 {
+    border-radius: 1em;
+    position: relative;
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.lobby-advanced-search-button {
+  color: aliceblue;
+  background-color: black;
+  width: 12em;
+  height: 2.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  justify-self: center;
+  opacity: 85%;
+
+  &:hover {
+    opacity: 100%;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+  }
+}
+
+@mixin lobbySection2 {
+  display: flex;
+  text-align: center;
+  flex-direction: column;
+  height: 95vh;
+  width: 85vw;
+  max-width: $giant;
+  margin: 0 auto;
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  .lobbyTable-container {
+    border: 3px solid white;
+    border-radius: 1em;
+    margin: 0 auto;
+    width: 90%;
+    color: aliceblue;
+    background-color: #1b1b1b;
+    font-size: 20px;
+
+    .lobbyTable-header {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      justify-content: center;
+      align-items: center;
+      column-gap: 1em;
+      height: 2em;
+      margin: 0 0.5em;
+
+      .lobby-Table-header-title {
+        // border: 5px solid white;
+        width: 70%;
+        margin: 0 auto;
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+
+@mixin lobbyModal {
+  text-align: center;
+
+  .lobbyModal-title {
+    background-color: black;
+    color: white;
+  }
+
+  .lobbyModal-body {
+    background-color: aliceblue;
+  }
+
+  .lobbyModal-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: center;
+    gap: 1em;
+
+    .lobbyModal-mode-button {
+      border: 5px solid black;
+    }
+
+    .lobbyModal-allowSpecs {
+      grid-column: 1 / -1;
+    }
+
+    .lobbyModal-create-button {
+      grid-column: 1 / -1;
+    }
+
+    .lobbyModal-cancel-button {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .lobbyModal-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    background-color: black;
+  }
+}
+
+.desktop-lobby-container {
+  @include lobby-container;
+
+  .lobbySection1-container {
+    .lobbySection1 {
+      @include lobbySection1;
+
+      .lobby-button {
+        @include lobby-button;
+      }
+
+      .lobby-searchbar-container {
+        @include lobby-searchbar-container;
+      }
+    }
+  }
+
+  .lobbySection2 {
+    @include lobbySection2;
+  }
+}
+
+.mobile-lobby-container {
+  @include lobby-container;
+
+  .lobbySection1-container {
+    .lobbySection1 {
+      @include lobbySection1;
+
+      .lobby-button {
+        @include lobby-button;
+      }
+
+      .lobby-searchbar-container {
+        @include lobby-searchbar-container;
+      }
+    }
+  }
+
+  .lobbySection2 {
+    @include lobbySection2;
+  }
+}
+
+.lobbyModal {
+  @include lobbyModal;
+}

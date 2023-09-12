@@ -1,0 +1,12 @@
+@mixin signout-modal-footer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: center;
+  justify-content: center;
+}
+
+.desktop-signout-modal {
+  .signout-modal-footer {
+    @include signout-modal-footer;
+  }
+}

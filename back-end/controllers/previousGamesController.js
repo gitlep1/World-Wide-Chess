@@ -9,25 +9,27 @@ const {
   deletePreviousGames,
 } = require("../queries/previousGames");
 
-games.get("/:userID", async (req, res) => {
+const { requireAuth } = require("../validation/requireAuth");
+
+games.get("/:userID", requireAuth(), async (req, res) => {
   const { userID } = req.params;
 
   const userPreviousGames = await getAllPreviousGames(userID);
   if (userPreviousGames) {
     console.log("=== GET games", userPreviousGames, "===");
-    res.status(200).json(userPreviousGames);
+    res.status(200).json({ payload: userPreviousGames });
   } else {
     res.status(404).send("No chess games found.");
   }
 });
 
-games.get("/:userID/:id", async (req, res) => {
+games.get("/:userID/:id", requireAuth(), async (req, res) => {
   const { userID, id } = req.params;
   const previousGame = await getPreviousGamesByID(userID, id);
 
   if (previousGame.length > 0) {
     console.log("=== GET game", previousGame, "===");
-    res.status(200).json(previousGame[0]);
+    res.status(200).json({ payload: previousGame[0] });
   } else {
     res.status(404).send(`Cannot get chess game with ID: ${id}`);
   }
@@ -81,13 +83,13 @@ games.get("/:userID/:id", async (req, res) => {
 //   }
 // });
 
-games.delete("/:userID/:id", async (req, res) => {
+games.delete("/:userID/:id", requireAuth(), async (req, res) => {
   const { userID, id } = req.params;
   const deletePreviousGame = await deletePreviousGames(userID, id);
 
   if (deletePreviousGame.id) {
     console.log("=== DESTROY game", deletePreviousGame, "===");
-    res.status(200).json(deletePreviousGame);
+    res.status(200).json({ payload: deletePreviousGame });
   } else {
     res.status(404).send(`Game with the ID: ${id} could not be deleted.`);
   }

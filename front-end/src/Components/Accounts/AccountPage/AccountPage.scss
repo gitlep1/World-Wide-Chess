@@ -1,0 +1,17 @@
+@mixin account-page-container {
+  height: 100%;
+  text-align: center;
+  color: aliceblue;
+
+  img {
+    width: 50%;
+  }
+}
+
+.desktop-account-page-container {
+  @include account-page-container;
+}
+
+.mobile-account-page-container {
+  @include account-page-container;
+}
