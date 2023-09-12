@@ -29,7 +29,7 @@ const MultiPlayerGameSettings = ({
     socket.on(
       "multi-player-reconnected",
       (gameData, playerOneData, playerTwoData) => {
-        console.log("inside multi-player-reconnected");
+        // console.log("inside multi-player-reconnected");
         setGame(gameData);
         setPlayer1Data(playerOneData);
         setPlayer2Data(playerTwoData);

@@ -90,7 +90,7 @@ const SinglePlayerGame = ({
 
   const reloadPlayerAndGameData = async () => {
     return new Promise((resolve, reject) => {
-      console.log("inside new Promise");
+      // console.log("inside new Promise");
 
       socket.emit("get-single-game-data", gameID);
 
@@ -182,7 +182,8 @@ const SinglePlayerGame = ({
   };
 
   const makeRandomMove = () => {
-    if (player2Data.id === 1) {
+    if (game.botid === 1) {
+      console.log("eas");
       const depth = 2;
       setIsThinking(true);
       const delayedFunction = EasyBot(chessGame, setFen, depth, setIsThinking);
@@ -190,7 +191,7 @@ const SinglePlayerGame = ({
         chessGame.move(bestMove);
         setFen(chessGame.fen());
       });
-    } else if (player2Data.id === 2) {
+    } else if (game.botid === 2) {
       const depth = 3;
       setIsThinking(true);
       const delayedFunction = MediumBot(
@@ -203,7 +204,7 @@ const SinglePlayerGame = ({
         chessGame.move(bestMove);
         setFen(chessGame.fen());
       });
-    } else if (player2Data.id === 3) {
+    } else if (game.botid === 3) {
       const depth = 4;
       setIsThinking(true);
       const delayedFunction = HardBot(chessGame, setFen, depth, setIsThinking);
@@ -229,11 +230,13 @@ const SinglePlayerGame = ({
     // Validate the move before making it
     const move = chessGame.move({ from, to });
     if (move) {
+      console.log("player moved");
       // Make the AI move after the user move
       if (currentTimeout !== null) {
         clearTimeout(currentTimeout);
       }
       const timeout = setTimeout(() => {
+        console.log("bots move");
         makeRandomMove();
         setFen(chessGame.fen());
         setCurrentTimeout(null);
@@ -284,6 +287,8 @@ const SinglePlayerGame = ({
       return spectatorLight3;
     }
   };
+
+  console.log(game);
 
   return (
     <section className={`${screenVersion}-gamePageBot`}>
