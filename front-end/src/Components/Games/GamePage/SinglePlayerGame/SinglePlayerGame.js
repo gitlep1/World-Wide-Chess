@@ -183,7 +183,6 @@ const SinglePlayerGame = ({
 
   const makeRandomMove = () => {
     if (game.botid === 1) {
-      console.log("eas");
       const depth = 2;
       setIsThinking(true);
       const delayedFunction = EasyBot(chessGame, setFen, depth, setIsThinking);
@@ -230,13 +229,11 @@ const SinglePlayerGame = ({
     // Validate the move before making it
     const move = chessGame.move({ from, to });
     if (move) {
-      console.log("player moved");
       // Make the AI move after the user move
       if (currentTimeout !== null) {
         clearTimeout(currentTimeout);
       }
       const timeout = setTimeout(() => {
-        console.log("bots move");
         makeRandomMove();
         setFen(chessGame.fen());
         setCurrentTimeout(null);
