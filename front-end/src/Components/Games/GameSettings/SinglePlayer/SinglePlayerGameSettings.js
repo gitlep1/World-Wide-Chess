@@ -74,17 +74,30 @@ const SinglePlayerGameSettings = ({
       "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
     const updateGameData = {
-      bot_id: botData.id,
+      botid: botData.id,
       winner: null,
       in_progress: true,
       current_positions: startingPositions,
-      player_color: "white",
-      bot_color: "black",
-      game_time: Date.now(),
+      player_color: "w",
+      bot_color: "b",
+      game_time: 0,
     };
 
+    if (Object.keys(botData).length === 0) {
+      return toast.error("Please select a bot", {
+        toastId: "selectBot",
+        position: "top-center",
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        pauseOnFocusLoss: false,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+
     await axios
-      .put(`${API}/single-player-games/${game.id}`, updateGameData, {
+      .put(`${API}/single-games/${game.id}`, updateGameData, {
         headers: {
           authorization: `Bearer ${token}`,
         },
@@ -99,7 +112,7 @@ const SinglePlayerGameSettings = ({
 
   const handleDelete = async (gameID) => {
     await axios
-      .delete(`${API}/single-player-games/${gameID}`, {
+      .delete(`${API}/single-games/${gameID}`, {
         headers: {
           authorization: `Bearer ${token}`,
         },

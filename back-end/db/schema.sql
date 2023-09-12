@@ -31,40 +31,29 @@ CREATE TABLE bots (
   loss INT DEFAULT 0
 );
 
-DROP TABLE IF EXISTS single_player_games;
-CREATE TABLE single_player_games (
+DROP TABLE IF EXISTS games;
+CREATE TABLE games (
   id SERIAL UNIQUE NOT NULL PRIMARY KEY,
   room_name TEXT NOT NULL,
   room_password TEXT,
-  player_id INT NOT NULL REFERENCES users(id),
-  bot_id INT REFERENCES bots(id) DEFAULT 1,
-  player_color TEXT,
-  bot_color TEXT,
-  in_progress BOOLEAN DEFAULT false,
-  current_positions TEXT,
-  game_time TIMESTAMP DEFAULT NOW()
-);
-
-DROP TABLE IF EXISTS multi_player_games;
-CREATE TABLE multi_player_games (
-  id SERIAL UNIQUE NOT NULL PRIMARY KEY,
-  room_name TEXT NOT NULL,
-  room_password TEXT,
+  botId INT REFERENCES bots(id) DEFAULT NULL,
   player1id INT NOT NULL REFERENCES users(id),
   player2id INT REFERENCES users(id) DEFAULT NULL,
-  player1color TEXT,
-  player2color TEXT,
-  in_progress BOOLEAN DEFAULT false,
+  player1color TEXT DEFAULT 'w',
+  player2color TEXT DEFAULT 'b',
+  botColor TEXT DEFAULT 'b',
   current_positions TEXT,
-  game_time TIMESTAMP DEFAULT NOW()
+  allow_specs BOOLEAN DEFAULT false,
+  in_progress BOOLEAN DEFAULT false,
+  is_multiplayer BOOLEAN DEFAULT false,
+  game_time INT DEFAULT 0
 );
 
 DROP TABLE IF EXISTS spectators;
 CREATE TABLE spectators (
   id SERIAL UNIQUE NOT NULL PRIMARY KEY,
   spec_id INT REFERENCES users(id),
-  single_player_room_id INT REFERENCES single_player_games(id),
-  multi_player_room_id INT REFERENCES multi_player_games(id)
+  games_id INT REFERENCES games(id)
 );
 
 DROP TABLE IF EXISTS messages;

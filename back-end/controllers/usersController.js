@@ -1,6 +1,6 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
-const user = express.Router();
+const users = express.Router();
 
 const {
   getAllUsers,
@@ -20,7 +20,7 @@ const JSK = process.env.JWT_SECRET;
 
 const DefaultProfImg = "../Images/DefaultProfImg.png";
 
-user.get("/", requireAuth(), scopeAuth(["read:user"]), async (req, res) => {
+users.get("/", requireAuth(), scopeAuth(["read:user"]), async (req, res) => {
   const allUsers = await getAllUsers();
 
   if (allUsers) {
@@ -31,7 +31,7 @@ user.get("/", requireAuth(), scopeAuth(["read:user"]), async (req, res) => {
   }
 });
 
-user.get(
+users.get(
   "/user",
   requireAuth(),
   scopeAuth(["read:user", "write:user"]),
@@ -50,7 +50,7 @@ user.get(
   }
 );
 
-user.post("/signup", checkValues, async (req, res) => {
+users.post("/signup", checkValues, async (req, res) => {
   const newUserData = {
     profileimg: req.body.profileimg,
     username: req.body.username,
@@ -86,7 +86,7 @@ user.post("/signup", checkValues, async (req, res) => {
   }
 });
 
-user.post("/signin", async (req, res) => {
+users.post("/signin", async (req, res) => {
   const { email, password } = req.body;
 
   const checkUser = await checkIfUserExists(email, password);
@@ -114,7 +114,7 @@ user.post("/signin", async (req, res) => {
   }
 });
 
-user.put(
+users.put(
   "/update",
   checkValues,
   requireAuth(),
@@ -148,7 +148,7 @@ user.put(
   }
 );
 
-user.delete(
+users.delete(
   "/delete",
   requireAuth(),
   scopeAuth(["read:user", "write:user"]),
@@ -179,4 +179,4 @@ user.delete(
   }
 );
 
-module.exports = user;
+module.exports = users;

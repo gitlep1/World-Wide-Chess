@@ -3,7 +3,9 @@ import { useRef, useState, useEffect } from "react";
 import { Chessboard } from "react-chessboard";
 import { Chess } from "chess.js";
 import { Button, Modal, Image } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 import EasyBot from "./BotLogic/EasyBot";
 import MediumBot from "./BotLogic/MediumBot";
@@ -20,16 +22,22 @@ import spectatorDark1 from "../../../../Images/spectatorDark1.png";
 import spectatorDark2 from "../../../../Images/spectatorDark2.png";
 import spectatorDark3 from "../../../../Images/spectatorDark3.png";
 
+const API = process.env.REACT_APP_API_URL;
+
 const SinglePlayerGame = ({
   screenVersion,
   user,
   game,
+  setGame,
   player1Data,
   player2Data,
+  setPlayer1Data,
+  setPlayer2Data,
   forfeitNotify,
-  endGame,
   socket,
+  token,
 }) => {
+  const { gameID } = useParams();
   const navigate = useNavigate();
   const [screenSize, setScreenSize] = useState(0);
   const prevBoard = useRef([]);
@@ -53,6 +61,90 @@ const SinglePlayerGame = ({
   }, []);
 
   useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      e.preventDefault();
+      e.returnValue = "";
+
+      return "Are you sure you want to leave? Your progress will be lost.";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []); // eslint-disable-line
+
+  useEffect(() => {
+    reloadData();
+  }, []); // eslint-disable-line
+
+  const reloadData = async () => {
+    await toast.promise(reloadPlayerAndGameData(), {
+      containerId: "loadChessMatchData",
+      // pending: "Loading Game Data...",
+      success: "Game Data Reloaded!",
+      error: "Error loading game",
+    });
+  };
+
+  const reloadPlayerAndGameData = async () => {
+    return new Promise((resolve, reject) => {
+      console.log("inside new Promise");
+
+      socket.emit("get-single-game-data", gameID);
+
+      socket.on(
+        "single-player-reconnected",
+        async (gameData, player1, player2) => {
+          setGame(gameData);
+          setPlayer1Data(player1);
+          setPlayer2Data(player2);
+        }
+      );
+
+      resolve();
+    });
+  };
+
+  useEffect(() => {
+    socket.on("single-game-ended", (errorMessage) => {
+      toast.error(errorMessage);
+      socket.off("single-player-reconnected");
+      navigate("/Lobby");
+    });
+
+    return () => {
+      socket.off("single-game-ended");
+    };
+  }, [navigate, socket]);
+
+  const endGame = async (gameID) => {
+    await axios
+      .delete(`${API}/single-games/${gameID}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(() => {
+        toast.success("Game Ended", {
+          containerId: "GameEnded",
+          position: "top-center",
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          pauseOnFocusLoss: false,
+          draggable: true,
+          progress: undefined,
+        });
+        socket.emit("get-single-game-data");
+        setTimeout(() => {
+          navigate("/Lobby");
+        }, 4100);
+      });
+  };
+
+  useEffect(() => {
     prevBoard.current.push(fen);
   }, [fen]);
 
@@ -69,7 +161,7 @@ const SinglePlayerGame = ({
   const checkForEndGame = () => {
     if (chessGame.in_checkmate()) {
       if (chessGame.turn() === "w") {
-        if (game.player1color[0] === "w") {
+        if (game.player_color === "w") {
           setWinner(player2Data);
         } else if (game.player2color[0] === "w") {
           setWinner(player1Data);
@@ -90,7 +182,7 @@ const SinglePlayerGame = ({
   };
 
   const makeRandomMove = () => {
-    if (game.player2id === 1) {
+    if (player2Data.id === 1) {
       const depth = 2;
       setIsThinking(true);
       const delayedFunction = EasyBot(chessGame, setFen, depth, setIsThinking);
@@ -98,7 +190,7 @@ const SinglePlayerGame = ({
         chessGame.move(bestMove);
         setFen(chessGame.fen());
       });
-    } else if (game.player2id === 2) {
+    } else if (player2Data.id === 2) {
       const depth = 3;
       setIsThinking(true);
       const delayedFunction = MediumBot(
@@ -111,7 +203,7 @@ const SinglePlayerGame = ({
         chessGame.move(bestMove);
         setFen(chessGame.fen());
       });
-    } else if (game.player2id === 3) {
+    } else if (player2Data.id === 3) {
       const depth = 4;
       setIsThinking(true);
       const delayedFunction = HardBot(chessGame, setFen, depth, setIsThinking);
@@ -218,7 +310,7 @@ const SinglePlayerGame = ({
       </div>
 
       <div className="gamePageBot-players-data">
-        {game.player1color === "white" ? (
+        {game.player1color === "w" ? (
           <>
             <div className="gamePageBot-playerTwo-data square bg-secondary rounded-pill">
               <Image
@@ -296,7 +388,7 @@ const SinglePlayerGame = ({
       <div className="gamePageBot-chessboard-container">
         <Chessboard
           id="PlayVsRandom"
-          boardOrientation={user.id === game.player1id ? "white" : "black"}
+          boardOrientation={user.id === player1Data.id ? "white" : "black"}
           position={fen}
           onPieceDrop={(from, to, piece) => handleMove(from, to, piece)}
           customBoardStyle={{
@@ -307,12 +399,12 @@ const SinglePlayerGame = ({
           animationDuration={500}
           boardWidth={controlWidth(screenSize)}
           customLightSquareStyle={{
-            borderRadius: "15%",
+            borderRadius: "1em",
             boxShadow: "0 0 15px rgba(255, 255, 255, 1)",
             backgroundColor: "rgba(225, 225, 225, 1)",
           }}
           customDarkSquareStyle={{
-            borderRadius: "15%",
+            borderRadius: "1em",
             boxShadow: "0 0 15px rgba(0, 0, 0, 1)",
             backgroundColor: "rgba(70, 70, 70, 1)",
           }}

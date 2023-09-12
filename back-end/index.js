@@ -5,11 +5,11 @@ const csurf = require("csurf");
 const socketIO = require("socket.io");
 const addSocketEventListeners = require("./socket");
 
-const userController = require("./controllers/userController");
+const usersController = require("./controllers/usersController");
 const guestController = require("./controllers/guestController");
 const botsController = require("./controllers/botsController");
-const singlePlayerGamesController = require("./controllers/singlePlayerGamesController");
-const multiPlayerGamesController = require("./controllers/multiPlayerGamesController");
+const singleGamesController = require("./controllers/singleGamesController");
+const multiGamesController = require("./controllers/multiGamesController");
 // const previousGamesController = require("./controllers/previousGamesController");
 const factsController = require("./controllers/factsController");
 const shopController = require("./controllers/shopController");
@@ -49,13 +49,15 @@ app.get("/csrf-token", (req, res) => {
 });
 // app.use(csrfProtection);
 app.use(express.json());
-app.use("/users", userController);
+
+app.use("/users", usersController);
 app.use("/guests", guestController);
 app.use("/bots", botsController);
-app.use("/single-player-games", singlePlayerGamesController);
-app.use("/multi-player-games", multiPlayerGamesController);
+app.use("/single-games", singleGamesController);
+app.use("/multi-games", multiGamesController);
 // work on game history later \\
 // app.use("/previousGames", previousGamesController);
+
 app.use("/facts", factsController);
 app.use("/shop", shopController);
 app.use("/inventory", inventoryController);

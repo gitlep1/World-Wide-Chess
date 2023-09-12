@@ -2,6 +2,8 @@ import "./DesktopApp.scss";
 import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import { scaleRotate as SidebarMenu } from "react-burger-menu";
+import io from "socket.io-client";
+import Cookies from "js-cookie";
 
 // Page stuff \\
 import Homepage from "./Homepage/Homepage";
@@ -29,11 +31,18 @@ import GamePage from "./Games/GamePage/GamePage";
 // Chat stuff \\
 import ChatBox from "./ChatBox/ChatBox";
 
+// add socket token checking later idea 2 \\
+
+// const API = process.env.REACT_APP_API_URL;
+// const socket = io(API, {
+//   auth: {
+//     token: JSON.parse(Cookies.get("token")),
+//   },
+// });
+
 const DesktopApp = ({
   handleSidebarOpen,
   user,
-  isMultiplayer,
-  setIsMultiplayer,
   authenticated,
   token,
   isOpen,
@@ -47,6 +56,7 @@ const DesktopApp = ({
 }) => {
   const screenVersion = "desktop";
 
+  const [isMultiplayer, setIsMultiplayer] = useState(false);
   const [showSignIn, setShowSignIn] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
   const [showSignout, setShowSignout] = useState(false);

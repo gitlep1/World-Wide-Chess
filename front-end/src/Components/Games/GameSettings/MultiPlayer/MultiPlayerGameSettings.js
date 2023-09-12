@@ -24,25 +24,37 @@ const MultiPlayerGameSettings = ({
   const navigate = useNavigate();
 
   useEffect(() => {
-    socket.emit("get-multi-games", gameID);
+    socket.emit("get-multi-game-data", gameID);
 
-    socket.on("multi-player-reconnected", (gameData, playerData, botData) => {
+    socket.on(
+      "multi-player-reconnected",
+      (gameData, playerOneData, playerTwoData) => {
+        console.log("inside multi-player-reconnected");
+        setGame(gameData);
+        setPlayer1Data(playerOneData);
+        setPlayer2Data(playerTwoData);
+      }
+    );
+
+    socket.on("multi-started", (gameData, playerOneData, playerTwoData) => {
       setGame(gameData);
-      setPlayer1Data(playerData);
-      setPlayer2Data(botData);
+      setPlayer1Data(playerOneData);
+      setPlayer2Data(playerTwoData);
+      navigate(`/Room/${gameData.id}`);
     });
 
     return () => {
       socket.off("multi-player-reconnected");
+      socket.off("multi-started");
     };
   }, []); // eslint-disable-line
 
   useEffect(() => {
     if (error) {
-      if (user.id === game.player1id) {
+      if (user.id === player1Data.id) {
         return undefined;
       } else {
-        toast.success(`Host: ${game.player1} has cancelled the game.`, {
+        toast.success(`Host: ${player1Data.username} has cancelled the game.`, {
           toastId: "hostCancelledPlayerGame",
           position: "top-center",
           hideProgressBar: false,
@@ -57,34 +69,30 @@ const MultiPlayerGameSettings = ({
         }, 4100);
       }
     }
-  }, [error, game.player1, game.player1id, navigate, user.id]);
+  }, [error, navigate, player1Data.id, player1Data.username, user.id]);
 
   const handleStartGame = async () => {
-    const startingPosition =
-      "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-
     const updateGameData = {
-      player2id: game.player2id,
+      player2id: player2Data.id,
       in_progress: true,
-      current_positions: startingPosition,
       player1color: "w",
       player2color: "b",
     };
 
     await axios
-      .put(`${API}/multi-player-games/${game.id}`, updateGameData, {
+      .put(`${API}/multi-games/${game.id}`, updateGameData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then((res) => {
-        socket.emit("start-multi-player-game", res.data);
+        socket.emit("start-multi-player-game", res.data.payload);
       });
   };
 
   const handleDelete = async (gameID) => {
     await axios
-      .delete(`${API}/multi-player-games/${gameID}`, {
+      .delete(`${API}/multi-games/${gameID}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -105,13 +113,13 @@ const MultiPlayerGameSettings = ({
         );
       });
     setTimeout(() => {
-      navigate("/Lobby/");
+      navigate("/Lobby");
     }, 4100);
   };
 
   const handleLeaveGame = async () => {
     await axios
-      .put(`${API}/multi-player-games/${game.id}`, {
+      .put(`${API}/multi-games/${game.id}`, {
         [game.player2id]: null,
         in_progress: false,
         headers: {
@@ -119,7 +127,7 @@ const MultiPlayerGameSettings = ({
         },
       })
       .then(() => {
-        navigate("/Lobby/");
+        navigate("/Lobby");
       });
   };
 
@@ -127,7 +135,7 @@ const MultiPlayerGameSettings = ({
     <section className="renderSection">
       {error ? (
         <h1>Host Cancelled Game</h1>
-      ) : user.payload.id === game.payload.player1id ? (
+      ) : user.id === game.player1id ? (
         <div>
           <Button onClick={handleStartGame} variant="dark">
             Start Game

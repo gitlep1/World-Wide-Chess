@@ -22,6 +22,12 @@ import DefaultProfImg from "./Images/DefaultProfImg.png";
 const API = process.env.REACT_APP_API_URL;
 const socket = io(API);
 
+// const socket = io(API, {
+//   auth: {
+//     token: JSON.parse(Cookies.get("token")),
+//   },
+// });
+
 const App = () => {
   const navigate = useNavigate();
   const [screenSize, setScreenSize] = useState(DetectScreenSize().width);
@@ -31,7 +37,6 @@ const App = () => {
   const tokenData = Cookies.get("token") || null;
 
   const [user, setUser] = useState({});
-  const [isMultiplayer, setIsMultiplayer] = useState(false);
   const [token, setToken] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -42,8 +47,12 @@ const App = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    checkCookies();
-    LeavingPage();
+    const handleStuff = async () => {
+      await checkCookies();
+      // handleSockets();
+      LeavingPage();
+    };
+    handleStuff();
   }, []); // eslint-disable-line
 
   useEffect(() => {
@@ -93,6 +102,30 @@ const App = () => {
     }
     setLoading(false);
   };
+
+  // add socket token checking later idea 1 \\
+
+  // const handleSockets = () => {
+  //   socket.emit("check-token", token);
+
+  //   // console.log(token);
+  //   // console.log(tokenData);
+
+  //   socket.on("invalid-token-error", (err) => {
+  //     setError(err);
+  //     setLoading(false);
+  //   });
+
+  //   socket.on("invalid-scope-error", (err) => {
+  //     setError(err);
+  //     setLoading(false);
+  //   });
+
+  //   return () => {
+  //     socket.off("invalid-token-error");
+  //     socket.off("invalid-scope-error");
+  //   };
+  // };
 
   const handleUser = async (user) => {
     if (user) {
@@ -189,8 +222,6 @@ const App = () => {
     <DesktopApp
       handleSidebarOpen={handleSidebarOpen}
       user={user}
-      isMultiplayer={isMultiplayer}
-      setIsMultiplayer={setIsMultiplayer}
       authenticated={authenticated}
       token={token}
       isOpen={isOpen}
@@ -206,8 +237,6 @@ const App = () => {
     <MobileApp
       handleSidebarOpen={handleSidebarOpen}
       user={user}
-      isMultiplayer={isMultiplayer}
-      setIsMultiplayer={setIsMultiplayer}
       authenticated={authenticated}
       token={token}
       isOpen={isOpen}
