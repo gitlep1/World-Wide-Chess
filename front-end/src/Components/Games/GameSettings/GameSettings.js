@@ -33,6 +33,9 @@ const GameSettings = ({
   const [error, setError] = useState("");
 
   useEffect(() => {
+    socket.emit("get-single-game-data", gameID);
+    socket.emit("get-multi-game-data", gameID);
+
     socket.on("single-room-settings", (gameData) => {
       setGame(gameData);
     });
@@ -62,7 +65,7 @@ const GameSettings = ({
       socket.off("host-started-single");
       socket.off("host-started-multi");
     };
-  }, [socket, navigate, setGame, setPlayer1Data, setPlayer2Data]);
+  }, []); // eslint-disable-line
 
   // const getRoomData = async () => {
   //   setLoading(true);
@@ -110,10 +113,12 @@ const GameSettings = ({
         <section className="game-settings-options-container">
           <h1 className="game-settings-room-name">
             Room Name: {game.room_name}
+            <br />
+            Host: {game.player1}
           </h1>
 
           <div className="game-settings-options">
-            {isMultiplayer ? (
+            {game.is_multiplayer ? (
               <MultiPlayerGameSettings
                 game={game}
                 setGame={setGame}

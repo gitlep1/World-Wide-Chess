@@ -1,27 +1,25 @@
 \c world_wide_chess;
 
 INSERT INTO users (profileimg, username, password, email, theme, chess_coins, wins, ties, loss, rating, preferred_color, is_guest, last_online) VALUES
-('https://www.randomlists.com/img/animals/tiger.webp', 'test1', 'test1', 'test1@test.com', 'default', 100, 3, 2, 1, 1050, 'white', false, NOW()),
-('https://brianrushwriter.files.wordpress.com/2014/11/27566315_s.jpg', 'test2', 'test', 'test2@test.com', 'light', 300, 3, 2, 5, 1000, 'black', false, NOW()),
-('https://i.natgeofe.com/k/02444b59-a50d-48e6-939b-4db10f895e66/5-reasons-eagle_4x3.jpg', 'test3', 'test3', 'test3@test.com', 'dark', 500, 5, 5, 5, 0, 'white', false, NOW());
+('https://www.randomlists.com/img/animals/tiger.webp', 'test1', 'test1', 'test1@test.com', 'default', 100, 3, 2, 1, 1050, 'w', false, NOW()),
+('https://brianrushwriter.files.wordpress.com/2014/11/27566315_s.jpg', 'test2', 'test', 'test2@test.com', 'light', 300, 3, 2, 5, 1000, 'b', false, NOW()),
+('https://i.natgeofe.com/k/02444b59-a50d-48e6-939b-4db10f895e66/5-reasons-eagle_4x3.jpg', 'test3', 'test3', 'test3@test.com', 'dark', 500, 5, 5, 5, 0, 'w', false, NOW());
 
 INSERT INTO bots (profileimg, username, wins, ties, loss) VALUES 
 ('https://i.imgur.com/8puTSd9.png', 'Easy Bot', 10, 1, 1),
 ('https://i.imgur.com/MmLQSDV.png', 'Medium Bot', 50, 2, 2),
 ('https://i.imgur.com/ZlrcYvd.png', 'Hard Bot', 100, 3, 3);
 
-INSERT INTO single_player_games (room_name, room_password, player_id, bot_id, player_color, bot_color, in_progress, current_positions, game_time) VALUES
-('Game 1', null, 1, 1, 'white', 'black', true, 'rnbqkbnr/pp1ppppp/8/2p5/8/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0 4', CURRENT_TIMESTAMP - (RANDOM() * 60 * 60 * 24 * 30)::INT * '1 second'::INTERVAL),
-('Game 2', null, 2, 1, 'black', 'white', false, 'rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0 3', CURRENT_TIMESTAMP - (RANDOM() * 60 * 60 * 24 * 30)::INT * '1 second'::INTERVAL),
-('Game 3', null, 3, 1, 'white', 'black', true, 'rnb1kbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', CURRENT_TIMESTAMP - (RANDOM() * 60 * 60 * 24 * 30)::INT * '1 second'::INTERVAL);
+INSERT INTO games (room_name, room_password, botId, player1id, player2id, player1color, player2color, botColor, current_positions, allow_specs, in_progress, is_multiplayer, game_time) VALUES
+('come watch', null, 1, 1, null, 'w', null, 'b', 'rnbqkbnr/pp1ppppp/8/2p5/8/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0', false, true, false, 100000),
+('lol noobs', 'noobs', null, 2, null, 'b', null, null, 'rnbqkbnr/pp2pppp/3p4/8/3P4/8/PPP2PPP/RNBQKBNR w KQkq - 0', false, false, true, 200000),
+('easy game', 'hard game', 3, 3, null, 'w', null, 'b', '2kr3r/ppp1bppp/3q1n2/3p4/2PP4/2N2N2/PP2QPPP/R1B1K2R w KQ - 0', true, true, false, 300000),
+('the best', null, null, 1, 3, 'w', 'b', null, 'r1bqkbnr/ppp1pppp/2n5/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0', true, true, true, 400000);
 
-INSERT INTO multi_player_games (room_name, room_password, player1id, player2id, player1color, player2color, in_progress, current_positions, game_time) VALUES 
-('Game 1', null, 1, 2, 'white', 'black', true, 'rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0 4', CURRENT_TIMESTAMP - (RANDOM() * 60 * 60 * 24 * 30)::INT * '1 second'::INTERVAL);
-
-INSERT INTO spectators (spec_id, single_player_room_id, multi_player_room_id) VALUES
-(1, 1, null),
-(2, null, 1),
-(3, 1, null);
+INSERT INTO spectators (spec_id, games_id) VALUES
+(1, 1),
+(2, 2),
+(3, 3);
 
 INSERT INTO messages (user_id, username, profileimg, message) VALUES
 (1, 'test1', 'https://www.randomlists.com/img/animals/tiger.webp', 'hello'),

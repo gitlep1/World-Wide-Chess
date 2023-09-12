@@ -12,6 +12,7 @@ import Cookies from "js-cookie";
 
 import RenderLobby from "./RenderLobby/RenderLobby";
 import AdvancedSearch from "./AdvancedSearch/AdvancedSearch";
+import CustomToasts from "../../../CustomFunctions/CustomToasts";
 
 const API = process.env.REACT_APP_API_URL;
 
@@ -34,6 +35,7 @@ const Lobbypage = ({
   const [createRoomName, setCreateRoomName] = useState("");
   const [createRoomPassword, setCreateRoomPassword] = useState("");
   const [joinWithPassword, setJoinWithPassword] = useState("");
+  const [allowSpecs, setAllowSpecs] = useState(false);
 
   const [searchbar, setSearchbar] = useState("");
 
@@ -139,13 +141,13 @@ const Lobbypage = ({
   const handleRefresh = async () => {
     setLoading(true);
     try {
-      const singlePlayerGamesRequest = axios.get(`${API}/single-player-games`, {
+      const singlePlayerGamesRequest = axios.get(`${API}/single-games`, {
         headers: {
           authorization: `Bearer ${token}`,
         },
       });
 
-      const multiPlayerGamesRequest = axios.get(`${API}/multi-player-games`, {
+      const multiPlayerGamesRequest = axios.get(`${API}/multi-games`, {
         headers: {
           authorization: `Bearer ${token}`,
         },
@@ -184,6 +186,8 @@ const Lobbypage = ({
       setCreateRoomPassword(value);
     } else if (name === "searchbar") {
       setSearchbar(value);
+    } else if (name === "allowSpecs") {
+      setAllowSpecs(!allowSpecs);
     }
   };
 
@@ -191,7 +195,7 @@ const Lobbypage = ({
     e.preventDefault();
 
     if (createRoomName.length < 3 || createRoomName.length > 15) {
-      return toast.error("Room Name must be between 3-10 characters.", {
+      return toast.error("Room Name must be between 3-15 characters.", {
         toastId: "createRoomNameError",
         position: "top-center",
         hideProgressBar: false,
@@ -208,10 +212,12 @@ const Lobbypage = ({
         room_name: createRoomName,
         room_password: createRoomPassword,
         player1id: user.id,
+        allow_specs: allowSpecs,
+        is_multiplayer: true,
       };
 
       await axios
-        .post(`${API}/multi-player-games`, newMultiGameData, {
+        .post(`${API}/multi-games`, newMultiGameData, {
           headers: {
             authorization: `Bearer ${token}`,
           },
@@ -228,11 +234,13 @@ const Lobbypage = ({
       const newSingleGameData = {
         room_name: createRoomName,
         room_password: createRoomPassword,
-        player_id: user.id,
+        player1id: user.id,
+        allow_specs: allowSpecs,
+        is_multiplayer: false,
       };
 
       await axios
-        .post(`${API}/single-player-games`, newSingleGameData, {
+        .post(`${API}/single-games`, newSingleGameData, {
           headers: {
             authorization: `Bearer ${token}`,
           },
@@ -256,7 +264,7 @@ const Lobbypage = ({
       in_progress: true,
     };
 
-    for (const game of singleGamesCopy) {
+    for (const game of multiGamesCopy) {
       if (game.id === gameID) {
         gameData = game;
       }
@@ -264,7 +272,7 @@ const Lobbypage = ({
 
     const addDataToGame = async () => {
       return axios
-        .put(`${API}/games/${gameData.id}`, updatePlayer2, {
+        .put(`${API}/multi-games/${gameData.id}`, updatePlayer2, {
           headers: {
             authorization: `Bearer ${token}`,
           },
@@ -505,6 +513,16 @@ const Lobbypage = ({
               >
                 MultiPlayer
               </Button>
+
+              <Form.Check
+                type="checkbox"
+                label="Allow Spectators?"
+                name="allowSpecs"
+                checked={allowSpecs}
+                onChange={handleChange}
+                className="lobbyModal-allowSpecs"
+              />
+
               <Button
                 className="lobbyModal-create-button"
                 variant="dark"

@@ -170,6 +170,10 @@ $giant: 1200px;
       border: 5px solid black;
     }
 
+    .lobbyModal-allowSpecs {
+      grid-column: 1 / -1;
+    }
+
     .lobbyModal-create-button {
       grid-column: 1 / -1;
     }

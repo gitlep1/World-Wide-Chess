@@ -4,19 +4,22 @@ const { getBotById } = require("../queries/bots");
 const Chess = require("chess.js").Chess;
 
 const {
-  getAllSingleGames,
-  getSingleGameByID,
-  createSingleGame,
-  updateSingleGame,
-  updateSingleGamePositions,
-  deleteSingleGame,
-} = require("../queries/singlePlayerGames");
+  getAllGames,
+  getGameByID,
+  createGame,
+  updateGame,
+  updateGamePositions,
+  deleteGame,
+} = require("../queries/singleGames");
 
 const addSingleGamesSocketEventListeners = (io, socket, socketId) => {
+  const token = socket.handshake.auth.token;
+
   socket.on("get-single-games", async () => {
     try {
-      const singleGames = await getAllSingleGames();
+      const singleGames = await getAllGames();
       socket.emit("single-games", singleGames);
+      socket.broadcast.emit("single-games", singleGames);
     } catch (err) {
       const errorMessage = "Could not get all games";
       socket.emit("get-single-games-error", new Error(errorMessage));
@@ -30,7 +33,7 @@ const addSingleGamesSocketEventListeners = (io, socket, socketId) => {
       "==="
     );
 
-    const singleGame = await getSingleGameByID(gameData.id);
+    const singleGame = await getGameByID(gameData.id);
 
     if (singleGame) {
       socket.join(`/Room/${gameData.id}/Settings`);
@@ -49,7 +52,7 @@ const addSingleGamesSocketEventListeners = (io, socket, socketId) => {
     console.log(`=== SocketID: ${socketId} joined room: ${gameData.payload.id} === \n
     Game Data: ${gameData.payload}`);
 
-    const singleGame = await getSingleGameByID(gameData.id);
+    const singleGame = await getGameByID(gameData.id);
 
     if (singleGame) {
       socket.join(`/Room/${gameData.id}/Settings`);
@@ -72,21 +75,21 @@ const addSingleGamesSocketEventListeners = (io, socket, socketId) => {
       "==="
     );
 
-    const playerData = await getUserByID(gameData.player_id);
-    const guestData = await getGuestByID(gameData.player_id);
-    const botData = await getBotById(gameData.bot_id);
+    const playerData =
+      (await getUserByID(gameData.playerid)) ||
+      (await getGuestByID(gameData.playerid));
 
-    if ((playerData || guestData) && botData) {
+    const botData = await getBotById(gameData.botid);
+
+    if (playerData && botData) {
       io.in(`/Room/${gameData.id}/Settings`).emit(
         "single-started",
         gameData,
-        playerData || guestData,
+        playerData,
         botData
       );
     } else {
-      const errorMessage = `Could not get player data: ${
-        playerData || guestData
-      }`;
+      const errorMessage = `Could not get player data: ${playerData}`;
       socket.emit("single-room-created-error", new Error(errorMessage));
     }
   });
@@ -97,14 +100,14 @@ const addSingleGamesSocketEventListeners = (io, socket, socketId) => {
     socket.join(`/Room/${gameId}/Settings`);
     socket.join(`/Room/${gameId}`);
 
-    const singleGame = await getSingleGameByID(gameId);
+    const singleGame = await getGameByID(gameId);
 
     if (singleGame) {
       const playerData =
-        (await getUserByID(singleGame.player_id)) ||
-        (await getGuestByID(singleGame.player_id));
+        (await getUserByID(singleGame.player1id)) ||
+        (await getGuestByID(singleGame.player1id));
 
-      const botData = await getBotById(singleGame.bot_id);
+      const botData = await getBotById(singleGame.botid);
 
       if (playerData && botData) {
         io.in(`/Room/${gameId}/Settings`).emit(
@@ -140,10 +143,10 @@ const addSingleGamesSocketEventListeners = (io, socket, socketId) => {
       io.in(`/Room/${gameID}/Settings`).emit("update-bot-difficulty", botData);
 
       const updatedGameData = {
-        bot_id: choosenBotID,
+        botid: choosenBotID,
         in_progress: false,
       };
-      await updateSingleGame(gameID, updatedGameData);
+      await updateGame(gameID, updatedGameData);
     } catch (err) {
       const errorMessage = err.message;
       io.in(`/Room/${gameID}/Settings`).emit(
@@ -155,7 +158,7 @@ const addSingleGamesSocketEventListeners = (io, socket, socketId) => {
   });
 
   socket.on("single-move-piece", async (gameData, updatedGamePosition) => {
-    const oldSingleGameData = await getSingleGameByID(gameData.id);
+    const oldSingleGameData = await getGameByID(gameData.id);
 
     const chessGame = new Chess(oldSingleGameData.current_positions);
 
@@ -164,7 +167,7 @@ const addSingleGamesSocketEventListeners = (io, socket, socketId) => {
 
     const move = chessGame.move({ from, to });
     if (move) {
-      const singleGameUpdated = await updateSingleGamePositions(
+      const singleGameUpdated = await updateGamePositions(
         gameData.id,
         updatedGamePosition
       );
@@ -199,7 +202,7 @@ const addSingleGamesSocketEventListeners = (io, socket, socketId) => {
   });
 
   socket.on("single-piece-promo", async (gameData, updatedGamePosition) => {
-    const oldSingleGameData = await getSingleGameByID(gameData.id);
+    const oldSingleGameData = await getGameByID(gameData.id);
 
     const chessGame = new Chess(oldSingleGameData.current_positions);
 
@@ -209,7 +212,7 @@ const addSingleGamesSocketEventListeners = (io, socket, socketId) => {
 
     const move = chessGame.move({ from, to, promotion });
     if (move) {
-      const singleGameUpdated = await updateSingleGamePositions(
+      const singleGameUpdated = await updateGamePositions(
         gameData.id,
         updatedGamePosition
       );
@@ -236,7 +239,7 @@ const addSingleGamesSocketEventListeners = (io, socket, socketId) => {
 
         const errorMessage = "ERROR: could not update piece promotion position";
         io.in(`Room/${gameData.id}`).emit(
-          "single-game-state-updated-error",
+          "single-piece-promo-error",
           errorMessage
         );
       }

@@ -1,22 +1,24 @@
 const { getUserByID } = require("../queries/users");
 const { getGuestByID } = require("../queries/guests");
-const { getBotById } = require("../queries/bots");
 const Chess = require("chess.js").Chess;
 
 const {
-  getAllMultiGames,
-  getMultiGameByID,
-  createMultiGame,
-  updateMultiGame,
-  updateMultiGamePositions,
-  deleteMultiGame,
-} = require("../queries/multiPlayerGames");
+  getAllGames,
+  getGameByID,
+  createGame,
+  updateGame,
+  updateGamePositions,
+  deleteGame,
+} = require("../queries/multiGames");
 
 const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
+  const token = socket.handshake.auth.token;
+
   socket.on("get-multi-games", async () => {
     try {
-      const multiGames = await getAllMultiGames();
+      const multiGames = await getAllGames();
       socket.emit("multi-games", multiGames);
+      socket.broadcast.emit("multi-games", multiGames);
     } catch (err) {
       const errorMessage = "Could not get all games";
       socket.emit("get-multi-games-error", new Error(errorMessage));
@@ -30,7 +32,7 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
       "==="
     );
 
-    const multiGame = await getMultiGameByID(gameData.id);
+    const multiGame = await getGameByID(gameData.id);
 
     if (multiGame) {
       socket.join(`/Room/${gameData.id}/Settings`);
@@ -46,10 +48,10 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
   });
 
   socket.on("multi-room-joined", async (gameData) => {
-    console.log(`=== SocketID: ${socketId} joined room: ${gameData.payload.id} === \n
-    Game Data: ${gameData.payload}`);
+    console.log(`=== SocketID: ${socketId} joined room: ${gameData.id} === \n
+    Game Data: ${gameData}`);
 
-    const multiGame = await getMultiGameByID(gameData.id);
+    const multiGame = await getGameByID(gameData.id);
 
     if (multiGame) {
       socket.join(`/Room/${gameData.id}/Settings`);
@@ -66,18 +68,18 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
 
   socket.on("start-multi-player-game", async (gameData) => {
     console.log(`=== start-multi-player-game === \n
-    Game Data: ${gameData.payload}`);
+    Game Data: ${gameData}`);
 
     const player1Data =
-      (await getUserByID(singleGame.player1id)) ||
-      (await getGuestByID(singleGame.player1id));
+      (await getUserByID(gameData.player1id)) ||
+      (await getGuestByID(gameData.player1id));
 
     const player2Data =
-      (await getUserByID(singleGame.player2id)) ||
-      (await getGuestByID(singleGame.player2id));
+      (await getUserByID(gameData.player2id)) ||
+      (await getGuestByID(gameData.player2id));
 
     if (player1Data && player2Data) {
-      io.in(`/Room/${gameData.payload.id}/Settings`).emit(
+      io.in(`/Room/${gameData.id}/Settings`).emit(
         "multi-started",
         gameData,
         player1Data,
@@ -95,16 +97,16 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
     socket.join(`/Room/${gameId}/Settings`);
     socket.join(`/Room/${gameId}`);
 
-    const multiGame = await getMultiGameByID(gameId);
+    const multiGame = await getGameByID(gameId);
 
     if (multiGame) {
       const player1Data =
-        (await getUserByID(singleGame.player1id)) ||
-        (await getGuestByID(singleGame.player1id));
+        (await getUserByID(multiGame.player1id)) ||
+        (await getGuestByID(multiGame.player1id));
 
       const player2Data =
-        (await getUserByID(singleGame.player2id)) ||
-        (await getGuestByID(singleGame.player2id));
+        (await getUserByID(multiGame.player2id)) ||
+        (await getGuestByID(multiGame.player2id));
 
       if (player1Data && player2Data) {
         io.in(`/Room/${gameId}/Settings`).emit(
@@ -134,7 +136,7 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
   });
 
   socket.on("multi-move-piece", async (gameData, updatedGamePosition) => {
-    const oldMultiGameData = await getMultiGameByID(gameData.id);
+    const oldMultiGameData = await getGameByID(gameData.id);
 
     const chessGame = new Chess(oldMultiGameData.current_positions);
 
@@ -143,7 +145,7 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
 
     const move = chessGame.move({ from, to });
     if (move) {
-      const multiGameUpdated = await updateMultiGamePositions(
+      const multiGameUpdated = await updateGamePositions(
         gameData.id,
         updatedGamePosition
       );
@@ -178,7 +180,7 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
   });
 
   socket.on("multi-piece-promo", async (gameData, updatedGamePosition) => {
-    const oldMultiGameData = await getMultiGameByID(gameData.id);
+    const oldMultiGameData = await getGameByID(gameData.id);
 
     const chessGame = new Chess(oldMultiGameData.current_positions);
 
@@ -188,7 +190,7 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
 
     const move = chessGame.move({ from, to, promotion });
     if (move) {
-      const multiGameUpdated = await updateMultiGamePositions(
+      const multiGameUpdated = await updateGamePositions(
         gameData.id,
         updatedGamePosition
       );
