@@ -58,6 +58,7 @@ const App = () => {
     });
 
     socket.on("games", (games) => {
+      console.log(games);
       setGames(games);
     });
 
