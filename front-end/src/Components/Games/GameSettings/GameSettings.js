@@ -45,7 +45,7 @@ const GameSettings = ({
     });
 
     socket.on("single-started", (gameData, player1Data, player2Data) => {
-      console.log("started single");
+      // console.log("started single");
       setGame(gameData);
       setPlayer1Data(player1Data);
       setPlayer2Data(player2Data);

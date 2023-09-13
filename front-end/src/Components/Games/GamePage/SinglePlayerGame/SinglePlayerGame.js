@@ -182,7 +182,7 @@ const SinglePlayerGame = ({
   };
 
   const makeRandomMove = () => {
-    if (player2Data.id === 1) {
+    if (game.botid === 1) {
       const depth = 2;
       setIsThinking(true);
       const delayedFunction = EasyBot(chessGame, setFen, depth, setIsThinking);
@@ -190,7 +190,7 @@ const SinglePlayerGame = ({
         chessGame.move(bestMove);
         setFen(chessGame.fen());
       });
-    } else if (player2Data.id === 2) {
+    } else if (game.botid === 2) {
       const depth = 3;
       setIsThinking(true);
       const delayedFunction = MediumBot(
@@ -203,7 +203,7 @@ const SinglePlayerGame = ({
         chessGame.move(bestMove);
         setFen(chessGame.fen());
       });
-    } else if (player2Data.id === 3) {
+    } else if (game.botid === 3) {
       const depth = 4;
       setIsThinking(true);
       const delayedFunction = HardBot(chessGame, setFen, depth, setIsThinking);

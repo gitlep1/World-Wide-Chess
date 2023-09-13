@@ -39,9 +39,19 @@ const SinglePlayerGameSettings = ({
       (gameData, playerData, backendBotData) => {
         setGame(gameData);
         setPlayer1Data(playerData);
+        setBotData(backendBotData);
         setPlayer2Data(backendBotData);
       }
     );
+
+    socket.on("single-started", (gameData, playerData, backendBotData) => {
+      // console.log("inside single started");
+      setGame(gameData);
+      setPlayer1Data(playerData);
+      setBotData(backendBotData);
+      setPlayer2Data(backendBotData);
+      navigate(`/room/${gameID}`);
+    });
 
     // socket.on("update-bot-difficulty", (botData) => {
     //   console.log("inside update bot frontend");
@@ -50,6 +60,7 @@ const SinglePlayerGameSettings = ({
 
     return () => {
       socket.off("single-player-reconnected");
+      socket.off("single-started");
       // socket.off("update-bot-difficulty");
     };
   }, []); // eslint-disable-line
@@ -70,18 +81,16 @@ const SinglePlayerGameSettings = ({
   };
 
   const handleStartGame = async () => {
-    const startingPositions =
-      "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-
     const updateGameData = {
       botid: botData.id,
       winner: null,
       in_progress: true,
-      current_positions: startingPositions,
       player_color: "w",
       bot_color: "b",
       game_time: 0,
     };
+
+    // console.log("updateGameData: ", updateGameData);
 
     if (Object.keys(botData).length === 0) {
       return toast.error("Please select a bot", {
@@ -103,6 +112,7 @@ const SinglePlayerGameSettings = ({
         },
       })
       .then((res) => {
+        // console.log("inside start game: ", res.data.payload);
         socket.emit("start-single-player-game", res.data.payload);
       })
       .catch((err) => {

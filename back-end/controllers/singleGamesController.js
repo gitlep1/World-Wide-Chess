@@ -87,32 +87,32 @@ games.put(
 
     const checkGameData = await getGameByID(id);
 
-    if (checkIfHost.id !== checkGameData.player1id) {
-      return res.status(401).json({ error: "Unauthorized" });
+    // if (checkIfHost.id !== checkGameData.player1id) {
+    //   return res.status(401).json({ error: "Unauthorized" });
+    // } else {
+    const startingPositions =
+      "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
+    const updatedGameData = {
+      botId: req.body.botid,
+      player2id: req.body.player2id,
+      player1color: req.body.player1color,
+      player2color: req.body.player2color,
+      botColor: req.body.botColor,
+      current_positions: startingPositions,
+      in_progress: true,
+      game_time: 0,
+    };
+
+    const updateGameData = await updateGame(id, updatedGameData);
+
+    if (updateGameData) {
+      console.log("=== UPDATE game", updateGameData, "===");
+      res.status(200).json({ payload: updateGameData });
     } else {
-      const startingPositions =
-        "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-
-      const updatedGameData = {
-        botId: req.body.botId,
-        player2id: req.body.player2id,
-        player1color: req.body.player1color,
-        player2color: req.body.player2color,
-        botColor: req.body.botColor,
-        current_positions: startingPositions,
-        in_progress: req.body.in_progress,
-        game_time: req.body.game_time,
-      };
-
-      const updateGameData = await updateGame(id, updatedGameData);
-
-      if (updateGameData) {
-        console.log("=== UPDATE game", updateGameData, "===");
-        res.status(200).json({ payload: updateGameData });
-      } else {
-        res.status(404).json({ error: "Couldn't update game." });
-      }
+      res.status(404).json({ error: "Couldn't update game." });
     }
+    // }
   }
 );
 
