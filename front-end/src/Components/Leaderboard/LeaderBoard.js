@@ -5,11 +5,18 @@ import DetectScreenSize from "../../CustomFunctions/DetectScreenSize";
 import LeaderBoardLowerResolution from "./LeaderBoardLowerResolution/LeaderBoardLowerResolution";
 import LeaderBoardHigherResolution from "./LeaderBoardHigherResolution/LeaderBoardHigherResolution";
 
-const LeaderBoard = ({ screenVersion, user, users }) => {
-  let usersCopy = [];
+import axios from "axios";
 
+const API = process.env.REACT_APP_API_URL;
+
+const LeaderBoard = ({ screenVersion, user, authenticated, token, socket }) => {
+  let usersCopy = [];
   const [searchbar, setSearchbar] = useState("");
   const [screenSize, setScreenSize] = useState(0);
+
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   /* Hooks that control arrows showing on hover and
     ascending/descending order
@@ -44,6 +51,25 @@ const LeaderBoard = ({ screenVersion, user, users }) => {
 
   const getScreenSize = () => {
     return setScreenSize(DetectScreenSize().width);
+  };
+
+  useEffect(() => {
+    getAllUsers();
+  }, []); // eslint-disable-line
+
+  const getAllUsers = async () => {
+    await axios
+      .get(`${API}/users`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        setUsers(res.data.payload);
+      })
+      .catch((err) => {
+        setError(err.message);
+      });
   };
 
   const handleChange = (e) => {

@@ -234,6 +234,8 @@ const SinglePlayerGame = ({
   };
 
   const makeRandomMove = async () => {
+    checkForEndGame();
+
     let depth = 0;
     setIsThinking(true);
 
