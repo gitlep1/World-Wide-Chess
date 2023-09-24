@@ -74,7 +74,7 @@ const FilterSearch = ({
 
   const revertSearch = async () => {
     const singlePlayerGamesRequest = axios
-      .get(`${API}/single-player-games`, {
+      .get(`${API}/single-games`, {
         headers: {
           authorization: `Bearer ${token}`,
         },
@@ -84,7 +84,7 @@ const FilterSearch = ({
       });
 
     const multiPlayerGamesRequest = axios
-      .get(`${API}/multi-player-games`, {
+      .get(`${API}/multi-games`, {
         headers: {
           authorization: `Bearer ${token}`,
         },
