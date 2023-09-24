@@ -15,6 +15,7 @@ const {
 
 const { getUserByID } = require("../queries/users");
 const { getGuestByID } = require("../queries/guests");
+const { getBotById } = require("../queries/bots");
 
 const { requireAuth } = require("../validation/requireAuth");
 const { scopeAuth } = require("../validation/scopeAuth");
@@ -98,7 +99,7 @@ games.put(
       player2id: req.body.player2id,
       player1color: req.body.player1color,
       player2color: req.body.player2color,
-      botColor: req.body.botColor,
+      botColor: req.body.botcolor,
       current_positions: startingPositions,
       in_progress: true,
       game_time: 0,
@@ -125,22 +126,24 @@ games.put(
     const { token } = req.user;
     const decoded = jwt.decode(token);
 
-    const checkIfHost =
+    const playerData =
       (await getUserByID(decoded.user.id)) ||
       (await getGuestByID(decoded.user.id));
 
-    const checkGameData = await getGameByID(id);
+    const gameData = await getGameByID(id);
+
+    const botData = await getBotById(gameData.botId);
 
     if (
-      checkIfHost.id !== checkGameData.player1id ||
-      checkIfHost.id !== checkGameData.player2id
+      playerData.id !== gameData.player1id ||
+      playerData.id !== gameData.player2id ||
+      !botData.id
     ) {
       return res.status(401).json({ error: "Unauthorized" });
     } else {
       const { from, to, promotion } = req.body;
 
-      const game = await getGameByID(id);
-      const chessGame = new Chess(game.current_positions);
+      const chessGame = new Chess(gameData.current_positions);
 
       if (promotion !== "") {
         const move = chessGame.move({ from, to, promotion });

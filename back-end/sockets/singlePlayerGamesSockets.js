@@ -157,47 +157,100 @@ const addSingleGamesSocketEventListeners = (io, socket, socketId) => {
     }
   });
 
-  socket.on("single-move-piece", async (gameData, updatedGamePosition) => {
+  socket.on("player-single-move-piece", async (gameData, updatedPositions) => {
     const oldSingleGameData = await getGameByID(gameData.id);
 
     const chessGame = new Chess(oldSingleGameData.current_positions);
 
-    const from = updatedGamePosition.from;
-    const to = updatedGamePosition.to;
+    const fenData = chessGame.fen();
 
-    const move = chessGame.move({ from, to });
-    if (move) {
-      const singleGameUpdated = await updateGamePositions(
+    if (fenData !== oldSingleGameData.current_positions) {
+      console.log("inside if statement");
+      const errorMessage = "ERROR: Invalid FEN data";
+      io.in(`/Room/${gameData.id}`).emit(
+        "single-game-state-updated-error",
+        errorMessage
+      );
+      return;
+    }
+
+    // fix move checker later \\
+
+    // const from = updatedPositions.from;
+    // const to = updatedPositions.to;
+
+    // const move = chessGame.move({ from, to });
+
+    // if (move) {
+    const singleGameUpdated = await updateGamePositions(
+      gameData.id,
+      updatedPositions.current_positions
+    );
+
+    if (singleGameUpdated) {
+      console.log(
+        "player updated postions for game: ",
         gameData.id,
-        updatedGamePosition
+        "with data: ",
+        singleGameUpdated
       );
 
-      if (singleGameUpdated) {
-        console.log(
-          "updated game ID: ",
-          gameData.id,
-          "with data: ",
-          gameUpdated
-        );
+      io.in(`/Room/${gameData.id}`).emit(
+        "single-game-state-updated",
+        singleGameUpdated
+      );
+    } else {
+      console.log(
+        "could not update game ID: ",
+        gameData.id,
+        "with data: ",
+        singleGameUpdated
+      );
 
-        io.in(`/Room/${gameData.id}`).emit(
-          "single-game-state-updated",
-          singleGameUpdated
-        );
-      } else {
-        console.log(
-          "could not update game ID: ",
-          gameData.id,
-          "with data: ",
-          singleGameUpdated
-        );
+      const errorMessage = "ERROR: could not update positions";
+      io.in(`Room/${gameData.id}`).emit(
+        "single-game-state-updated-error",
+        errorMessage
+      );
+    }
+    // }
+  });
 
-        const errorMessage = "ERROR: could not update positions";
-        io.in(`Room/${gameData.id}`).emit(
-          "single-game-state-updated-error",
-          errorMessage
-        );
-      }
+  socket.on("bot-single-move-piece", async (gameId, updatedPositions) => {
+    const getGame = await getGameByID(gameId);
+    console.log("updatedPositions: ", updatedPositions);
+
+    const singleGameUpdated = await updateGamePositions(
+      getGame.id,
+      updatedPositions
+    );
+
+    console.log("singleGameUpdated: ", singleGameUpdated);
+    if (singleGameUpdated) {
+      console.log(
+        "bot updated postions for game: ",
+        getGame.id,
+        "with data: ",
+        singleGameUpdated
+      );
+
+      io.in(`/Room/${getGame.id}`).emit(
+        "single-game-state-updated",
+        singleGameUpdated
+      );
+    } else {
+      console.log(
+        "could not update game ID: ",
+        getGame.id,
+        "with data: ",
+        singleGameUpdated
+      );
+
+      const errorMessage = "ERROR: could not update positions";
+      io.in(`Room/${getGame.id}`).emit(
+        "single-game-state-updated-error",
+        errorMessage
+      );
     }
   });
 
