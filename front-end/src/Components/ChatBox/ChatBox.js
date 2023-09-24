@@ -1,12 +1,13 @@
 import "./ChatBox.scss";
 import { useState, useEffect, useRef } from "react";
-import { Button } from "react-bootstrap";
+import { Button, Image } from "react-bootstrap";
 import { nanoid } from "nanoid";
 import { ToastContainer } from "react-toastify";
 import axios from "axios";
 
 import Messages from "./Messages/Messages";
 import Message from "./Message/Message";
+import PlayersOnline from "./PlayersOnline/PlayersOnline";
 
 const API = process.env.REACT_APP_API_URL;
 
@@ -15,6 +16,7 @@ const ChatBox = ({ token, socket, user }) => {
 
   const [messages, setMessages] = useState([]);
   const [openChat, setOpenChat] = useState(false);
+  const [users, setUsers] = useState([]);
 
   const [error, setError] = useState("");
 
@@ -39,6 +41,35 @@ const ChatBox = ({ token, socket, user }) => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    getAllUsers();
+  }, []); // eslint-disable-line
+
+  const getAllUsers = async () => {
+    try {
+      const allUsers = axios.get(`${API}/users`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const allGuests = axios.get(`${API}/guests`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const [allUsersData, allGuestsData] = await axios.all([
+        allUsers,
+        allGuests,
+      ]);
+
+      setUsers([...allUsersData.data.payload, ...allGuestsData.data.payload]);
+    } catch (error) {
+      setError(error.message);
+    }
+  };
 
   const scrollToBottom = () => {
     if (chatBoxRef.current) {
@@ -100,39 +131,9 @@ const ChatBox = ({ token, socket, user }) => {
             <div className="chat-box-players-online">
               <h1>Online</h1>
               <div className="players-online">
-                <p>test1</p>
-                <p>test2</p>
-                <p>test3</p>
-                <p>test4</p>
-                <p>test5</p>
-                <p>test6</p>
-                <p>test7</p>
-                <p>test8</p>
-                <p>test9</p>
-                <p>test10</p>
-                <p>test11</p>
-                <p>test12</p>
-                <p>test13</p>
-                <p>test14</p>
-                <p>test15</p>
-                <p>test16</p>
-                <p>test17</p>
-                <p>test18</p>
-                <p>test19</p>
-                <p>test20</p>
-                <p>test21</p>
-                <p>test22</p>
-                <p>test23</p>
-                <p>test24</p>
-                <p>test25</p>
-                <p>test26</p>
-                <p>test27</p>
-                <p>test28</p>
-                <p>test29</p>
-                <p>test30</p>
-                <p>test31</p>
-                <p>test32</p>
-                <p>test33</p>
+                {users.map((user) => {
+                  return <PlayersOnline player={user} key={nanoid()} />;
+                })}
               </div>
             </div>
 
