@@ -460,7 +460,7 @@ const Lobbypage = ({
         backdrop="static"
         keyboard={false}
       >
-        <Modal.Title className="lobbyModal-title">Game Settings</Modal.Title>
+        <Modal.Title className="lobbyModal-title">Room Settings</Modal.Title>
         <Modal.Body className="lobbyModal-body">
           <Form onSubmit={handleSubmit}>
             <h3>Room Name</h3>
