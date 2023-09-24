@@ -195,33 +195,33 @@ const SinglePlayerGame = ({
     prevBoard.current.push(fen);
   }, [fen]);
 
-  useEffect(() => {
-    checkForEndGame();
+  // useEffect(() => {
+  //   checkForEndGame();
 
-    const intervalFunction = setInterval(() => {
-      checkForEndGame();
-    }, 1000);
+  //   const intervalFunction = setInterval(() => {
+  //     checkForEndGame();
+  //   }, 1000);
 
-    return () => clearInterval(intervalFunction);
-  }, []); // eslint-disable-line
+  //   return () => clearInterval(intervalFunction);
+  // }, []); // eslint-disable-line
 
   const checkForEndGame = () => {
     if (chessGame.in_checkmate()) {
       if (chessGame.turn() === "w") {
         if (game.player1color === "w") {
-          console.log("player 2 won");
           setWinner(player2Data);
+          loserSound.play();
         } else if (game.botcolor === "w") {
-          console.log("player 1 won");
           setWinner(player1Data);
+          winnerSound.play();
         }
       } else if (chessGame.turn() === "b") {
         if (game.player1color === "b") {
-          console.log("player 2 won");
           setWinner(player2Data);
+          loserSound.play();
         } else if (game.botcolor === "b") {
-          console.log("player 1 won");
           setWinner(player1Data);
+          winnerSound.play();
         }
       }
       setShowWinner(true);
@@ -229,6 +229,7 @@ const SinglePlayerGame = ({
 
     if (chessGame.in_stalemate()) {
       setStalemate(true);
+      tieSound.play();
     }
   };
 
@@ -249,10 +250,12 @@ const SinglePlayerGame = ({
     delayedFunction((bestMove) => {
       chessGame.move(bestMove);
       setFen(chessGame.fen());
+      moveSound.play();
     });
   };
 
   const handleMove = async (from, to, piece) => {
+    checkForEndGame();
     // Check if the move is a pawn promotion
     const isPromotion = piece === "wP" && from[1] === "7" && to[1] === "8";
     const isPromotion2 = piece === "bP" && from[1] === "2" && to[1] === "1";
@@ -262,12 +265,14 @@ const SinglePlayerGame = ({
       const promotion = { from, to };
       setPromotionMove(promotion);
       setShowPromotion(true);
+      promoteSound.play();
       return;
     }
 
     // Validate the move before making it
     const move = chessGame.move({ from, to });
     if (move) {
+      moveSound.play();
       const updatedPositions = {
         current_positions: chessGame.fen(),
         from: from,
@@ -289,11 +294,6 @@ const SinglePlayerGame = ({
       // Invalid move, reset the promotion move
       setPromotionMove(null);
     }
-    playSound();
-  };
-
-  const playSound = () => {
-    winnerSound.play();
   };
 
   const handlePromotionChoice = (pieceType) => {
@@ -571,10 +571,6 @@ const SinglePlayerGame = ({
           variant="danger"
         >
           End Game
-        </Button>
-
-        <Button variant="dark" onClick={playSound}>
-          test sound
         </Button>
       </div>
 
