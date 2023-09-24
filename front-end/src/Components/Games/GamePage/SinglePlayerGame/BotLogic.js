@@ -218,9 +218,9 @@ const BotLogic = (chessGame, setFen, maxDepth, setIsThinking) => {
       }
     }
 
-    console.log("bestMoveVar: ", bestMoveVar);
+    // console.log("bestMoveVar: ", bestMoveVar);
     const result = chessGame.move(bestMoveVar);
-    console.log("result: ", result);
+    // console.log("result: ", result);
     setFen(chessGame.fen());
 
     setIsThinking(false);

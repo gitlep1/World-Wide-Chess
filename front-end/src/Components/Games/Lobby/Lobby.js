@@ -296,7 +296,7 @@ const Lobbypage = ({
             error: "Error",
           })
           .then((res) => {
-            console.log(res.data);
+            // console.log(res.data);
             notify(res.data);
           })
           .catch((err) => {

@@ -114,7 +114,7 @@ const SinglePlayerGameSettings = ({
         socket.emit("start-single-player-game", res.data.payload);
       })
       .catch((err) => {
-        console.log(err);
+        console.log(err.message);
       });
   };
 

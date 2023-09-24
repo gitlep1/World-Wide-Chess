@@ -127,7 +127,7 @@ const SinglePlayerGame = ({
           },
         })
         .then((res) => {
-          console.log(res.data.payload.current_positions);
+          // console.log(res.data.payload.current_positions);
           setGame(res.data.payload);
           setFen(res.data.payload.current_positions);
 
@@ -144,7 +144,7 @@ const SinglePlayerGame = ({
 
   useEffect(() => {
     socket.on("single-game-state-updated", async (singleGameUpdated) => {
-      console.log("singleGameUpdated: ", singleGameUpdated);
+      // console.log("singleGameUpdated: ", singleGameUpdated);
       setGame(singleGameUpdated);
       setFen(singleGameUpdated.current_positions);
     });
