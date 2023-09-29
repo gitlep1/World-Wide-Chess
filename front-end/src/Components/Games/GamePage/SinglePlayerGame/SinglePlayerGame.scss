@@ -28,7 +28,7 @@ $Knight: "../../../../../../Images/Knight.png";
     justify-content: center;
 
     .singlePlayerGame-header {
-      border: 5px solid cyan;
+      // border: 5px solid cyan;
       color: white;
       font-size: 30px;
       height: 100%;
@@ -41,7 +41,7 @@ $Knight: "../../../../../../Images/Knight.png";
       margin: 0 auto;
 
       .singlePlayerGame-spectatorCount {
-        border: 5px solid yellow;
+        // border: 5px solid yellow;
         grid-row: 1;
         grid-column: 2;
         text-align: center;
@@ -50,14 +50,14 @@ $Knight: "../../../../../../Images/Knight.png";
       }
 
       .singlePlayerGame-spactatorIcon {
-        border: 5px solid orange;
+        // border: 5px solid orange;
         width: 50px;
         grid-row: 2;
         margin-bottom: 0.5em;
       }
 
       .singlePlayerGame-roomName {
-        border: 5px solid purple;
+        // border: 5px solid purple;
         grid-row: 3;
         text-align: center;
       }
@@ -65,7 +65,7 @@ $Knight: "../../../../../../Images/Knight.png";
   }
 
   .singlePlayerGame-players-data {
-    border: 5px solid green;
+    // border: 5px solid green;
     grid-row: 2;
     grid-column: 1 / -1;
     display: grid;
