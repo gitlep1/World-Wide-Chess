@@ -1,4 +1,4 @@
-const MediumBot = (chessGame, setFen, maxDepth, setIsThinking) => {
+const BotLogic = (chessGame, setFen, maxDepth, setIsThinking) => {
   const evaluateBoard = (board) => {
     let score = 0;
 
@@ -218,7 +218,9 @@ const MediumBot = (chessGame, setFen, maxDepth, setIsThinking) => {
       }
     }
 
+    // console.log("bestMoveVar: ", bestMoveVar);
     const result = chessGame.move(bestMoveVar);
+    // console.log("result: ", result);
     setFen(chessGame.fen());
 
     setIsThinking(false);
@@ -235,4 +237,4 @@ const MediumBot = (chessGame, setFen, maxDepth, setIsThinking) => {
   };
 };
 
-export default MediumBot;
+export default BotLogic;

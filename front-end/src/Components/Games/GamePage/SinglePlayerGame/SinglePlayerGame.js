@@ -7,20 +7,29 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 
-import EasyBot from "./BotLogic/EasyBot";
-import MediumBot from "./BotLogic/MediumBot";
-import HardBot from "./BotLogic/HardBot";
-
 import DetectScreenSize from "../../../../CustomFunctions/DetectScreenSize";
 import controlWidth from "../../../../CustomFunctions/ControlWidth";
+import {
+  captureSound,
+  castleSound,
+  winnerSound,
+  loserSound,
+  tieSound,
+  moveSound,
+  checkSound,
+  promoteSound,
+  notifySound,
+} from "../../../../CustomFunctions/SoundEffects";
 
 import spectatorLight1 from "../../../../Images/spectatorLight1.png";
 import spectatorLight2 from "../../../../Images/spectatorLight2.png";
 import spectatorLight3 from "../../../../Images/spectatorLight3.png";
 
-import spectatorDark1 from "../../../../Images/spectatorDark1.png";
-import spectatorDark2 from "../../../../Images/spectatorDark2.png";
-import spectatorDark3 from "../../../../Images/spectatorDark3.png";
+// import spectatorDark1 from "../../../../Images/spectatorDark1.png";
+// import spectatorDark2 from "../../../../Images/spectatorDark2.png";
+// import spectatorDark3 from "../../../../Images/spectatorDark3.png";
+
+import BotLogic from "./BotLogic";
 
 const API = process.env.REACT_APP_API_URL;
 
@@ -42,12 +51,13 @@ const SinglePlayerGame = ({
   const [screenSize, setScreenSize] = useState(0);
   const prevBoard = useRef([]);
 
-  const [chessGame] = useState(new Chess());
+  const [chessGame, setChessGame] = useState(new Chess(game.current_positions));
   const [fen, setFen] = useState(chessGame.fen());
   const [promotionMove, setPromotionMove] = useState(null);
+  const [showPromotion, setShowPromotion] = useState(false);
   const [currentTimeout, setCurrentTimeout] = useState(null);
   const [isThinking, setIsThinking] = useState(false);
-  const [showPromotion, setShowPromotion] = useState(false);
+
   const [stalemate, setStalemate] = useState(false);
   const [showWinner, setShowWinner] = useState(false);
   const [winner, setWinner] = useState({});
@@ -89,35 +99,72 @@ const SinglePlayerGame = ({
   };
 
   const reloadPlayerAndGameData = async () => {
-    return new Promise((resolve, reject) => {
-      // console.log("inside new Promise");
-
+    return new Promise(async (resolve, reject) => {
       socket.emit("get-single-game-data", gameID);
 
       socket.on(
         "single-player-reconnected",
         async (gameData, player1, player2) => {
-          setGame(gameData);
+          // setGame(gameData);
           setPlayer1Data(player1);
           setPlayer2Data(player2);
+          // setFen(gameData.current_positions);
+
+          // console.log(fen);
+          // console.log(gameData.current_positions);
+
+          // const checkIfBotsTurn = gameData.current_positions.split(" ")[1];
+          // if (checkIfBotsTurn === "b") {
+          //   await makeRandomMove();
+          // }
         }
       );
+
+      await axios
+        .get(`${API}/single-games/${gameID}`, {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => {
+          // console.log(res.data.payload.current_positions);
+          setGame(res.data.payload);
+          setFen(res.data.payload.current_positions);
+
+          const checkIfBotsTurn =
+            res.data.payload.current_positions.split(" ")[1];
+          if (checkIfBotsTurn === "b") {
+            makeRandomMove();
+          }
+        });
 
       resolve();
     });
   };
 
   useEffect(() => {
+    socket.on("single-game-state-updated", async (singleGameUpdated) => {
+      // console.log("singleGameUpdated: ", singleGameUpdated);
+      setGame(singleGameUpdated);
+      setFen(singleGameUpdated.current_positions);
+    });
+
     socket.on("single-game-ended", (errorMessage) => {
       toast.error(errorMessage);
       socket.off("single-player-reconnected");
       navigate("/Lobby");
     });
 
+    socket.on("single-game-state-updated-error", async (errorMessage) => {
+      console.log(errorMessage);
+    });
+
     return () => {
+      socket.off("single-game-state-updated");
       socket.off("single-game-ended");
+      socket.off("single-game-state-updated-error");
     };
-  }, [navigate, socket]);
+  }, [navigate, setGame, socket]);
 
   const endGame = async (gameID) => {
     await axios
@@ -148,29 +195,33 @@ const SinglePlayerGame = ({
     prevBoard.current.push(fen);
   }, [fen]);
 
-  useEffect(() => {
-    checkForEndGame();
+  // useEffect(() => {
+  //   checkForEndGame();
 
-    const intervalFunction = setInterval(() => {
-      checkForEndGame();
-    }, 1000);
+  //   const intervalFunction = setInterval(() => {
+  //     checkForEndGame();
+  //   }, 1000);
 
-    return () => clearInterval(intervalFunction);
-  }, []); // eslint-disable-line
+  //   return () => clearInterval(intervalFunction);
+  // }, []); // eslint-disable-line
 
   const checkForEndGame = () => {
     if (chessGame.in_checkmate()) {
       if (chessGame.turn() === "w") {
         if (game.player1color === "w") {
           setWinner(player2Data);
-        } else if (game.player2color === "w") {
+          loserSound.play();
+        } else if (game.botcolor === "w") {
           setWinner(player1Data);
+          winnerSound.play();
         }
       } else if (chessGame.turn() === "b") {
         if (game.player1color === "b") {
           setWinner(player2Data);
-        } else if (game.player2color === "b") {
+          loserSound.play();
+        } else if (game.botcolor === "b") {
           setWinner(player1Data);
+          winnerSound.play();
         }
       }
       setShowWinner(true);
@@ -178,67 +229,66 @@ const SinglePlayerGame = ({
 
     if (chessGame.in_stalemate()) {
       setStalemate(true);
+      tieSound.play();
     }
   };
 
-  const makeRandomMove = () => {
+  const makeRandomMove = async () => {
+    checkForEndGame();
+
+    let depth = 0;
+    setIsThinking(true);
+
     if (game.botid === 1) {
-      console.log("eas");
-      const depth = 2;
-      setIsThinking(true);
-      const delayedFunction = EasyBot(chessGame, setFen, depth, setIsThinking);
-      delayedFunction((bestMove) => {
-        chessGame.move(bestMove);
-        setFen(chessGame.fen());
-      });
+      depth = 2;
     } else if (game.botid === 2) {
-      const depth = 3;
-      setIsThinking(true);
-      const delayedFunction = MediumBot(
-        chessGame,
-        setFen,
-        depth,
-        setIsThinking
-      );
-      delayedFunction((bestMove) => {
-        chessGame.move(bestMove);
-        setFen(chessGame.fen());
-      });
+      depth = 3;
     } else if (game.botid === 3) {
-      const depth = 4;
-      setIsThinking(true);
-      const delayedFunction = HardBot(chessGame, setFen, depth, setIsThinking);
-      delayedFunction((bestMove) => {
-        chessGame.move(bestMove);
-        setFen(chessGame.fen());
-      });
+      depth = 4;
     }
+
+    const delayedFunction = BotLogic(chessGame, setFen, depth, setIsThinking);
+
+    delayedFunction((bestMove) => {
+      chessGame.move(bestMove);
+      setFen(chessGame.fen());
+      moveSound.play();
+    });
   };
 
-  const handleMove = (from, to, piece) => {
+  const handleMove = async (from, to, piece) => {
+    checkForEndGame();
     // Check if the move is a pawn promotion
     const isPromotion = piece === "wP" && from[1] === "7" && to[1] === "8";
+    const isPromotion2 = piece === "bP" && from[1] === "2" && to[1] === "1";
 
-    if (isPromotion) {
+    if (isPromotion || isPromotion2) {
       // Store the promotion move and wait for user choice
       const promotion = { from, to };
       setPromotionMove(promotion);
       setShowPromotion(true);
+      promoteSound.play();
       return;
     }
 
     // Validate the move before making it
     const move = chessGame.move({ from, to });
     if (move) {
-      console.log("player moved");
+      moveSound.play();
+      const updatedPositions = {
+        current_positions: chessGame.fen(),
+        from: from,
+        to: to,
+      };
+      await socket.emit("player-single-move-piece", game, updatedPositions);
+
       // Make the AI move after the user move
       if (currentTimeout !== null) {
         clearTimeout(currentTimeout);
       }
-      const timeout = setTimeout(() => {
-        console.log("bots move");
-        makeRandomMove();
-        setFen(chessGame.fen());
+      const timeout = setTimeout(async () => {
+        await makeRandomMove();
+        socket.emit("bot-single-move-piece", gameID, chessGame.fen());
         setCurrentTimeout(null);
       }, 200);
       setCurrentTimeout(timeout);
@@ -288,16 +338,25 @@ const SinglePlayerGame = ({
     }
   };
 
-  console.log(game);
+  const handleBoardOrientation = () => {
+    if (user.id === game.player1id) {
+      if (game.player1color === "w") {
+        return "white";
+      } else {
+        return "black";
+      }
+    } else {
+      return "white";
+    }
+  };
 
   return (
-    <section className={`${screenVersion}-gamePageBot`}>
+    <section className={`${screenVersion}-singlePlayerGame`}>
       {!player1Data || !player2Data ? forfeitNotify() : null}
-      <div className="gamePageBot-header-container">
-        <div className="gamePageBot-header">
-          <h3 id="gamePageBot-roomName">Room Name: {game.room_name}</h3>
+      <div className="singlePlayerGame-header-container">
+        <div className="singlePlayerGame-header">
           <span
-            id="gamePageBot-spectatorCount"
+            className="singlePlayerGame-spectatorCount"
             style={
               game.spectators >= 1
                 ? { visibility: "visible" }
@@ -305,95 +364,53 @@ const SinglePlayerGame = ({
             }
           >
             {game.spectators >= 1 ? game.spectators : null}
+            <Image
+              src={renderSpectatorIcon()}
+              alt="spectator icon"
+              className="singlePlayerGame-spactatorIcon"
+            />
           </span>
-          <Image
-            src={renderSpectatorIcon()}
-            alt="spectator icon"
-            id="gamePageBot-spactatorIcon"
-          ></Image>
+          <h3 className="singlePlayerGame-roomName">
+            Room Name: {game.room_name}
+          </h3>
+        </div>
+
+        <div className="singlePlayerGame-players-data">
+          <div className="singlePlayerGame-playerOne-data square bg-secondary rounded-pill">
+            <Image
+              src={player1Data.profileimg}
+              className="singlePlayerGame-player-image"
+              alt="player 1"
+            />{" "}
+            <span
+              style={{
+                color: "white",
+              }}
+            >
+              {player1Data.username}
+            </span>
+          </div>
+          <div className="singlePlayerGame-playerTwo-data square bg-secondary rounded-pill">
+            <Image
+              src={player2Data.profileimg}
+              className="singlePlayerGame-player-image"
+              alt="player 2"
+            />
+            <span
+              style={{
+                color: "black",
+              }}
+            >
+              {player2Data.username}
+            </span>
+          </div>
         </div>
       </div>
 
-      <div className="gamePageBot-players-data">
-        {game.player1color === "w" ? (
-          <>
-            <div className="gamePageBot-playerTwo-data square bg-secondary rounded-pill">
-              <Image
-                src={player2Data.profileimg}
-                className="gamePageBot-player-image"
-                alt="player 2"
-              />
-              <span
-                style={{
-                  color: "white",
-                }}
-              >
-                <h5
-                  style={
-                    isThinking
-                      ? { color: "yellow", visibility: "visible" }
-                      : { visibility: "hidden" }
-                  }
-                >
-                  Thinking
-                </h5>
-                {player2Data.username}
-              </span>
-            </div>
-
-            <div className="gamePageBot-playerOne-data square bg-secondary rounded-pill">
-              <Image
-                src={player1Data.profileimg}
-                className="gamePageBot-player-image"
-                alt="player 1"
-              />{" "}
-              <span
-                style={{
-                  color: "black",
-                }}
-              >
-                {player1Data.username}
-              </span>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="gamePageBot-playerOne-data square bg-secondary rounded-pill">
-              <Image
-                src={player1Data.profileimg}
-                className="gamePageBot-player-image"
-                alt="player 1"
-              />{" "}
-              <span
-                style={{
-                  color: "white",
-                }}
-              >
-                {player1Data.username}
-              </span>
-            </div>
-            <div className="gamePageBot-playerTwo-data square bg-secondary rounded-pill">
-              <Image
-                src={player2Data.profileimg}
-                className="gamePageBot-player-image"
-                alt="player 2"
-              />
-              <span
-                style={{
-                  color: "black",
-                }}
-              >
-                {player2Data.username}
-              </span>
-            </div>
-          </>
-        )}
-      </div>
-
-      <div className="gamePageBot-chessboard-container">
+      <div className="singlePlayerGame-chessboard-container">
         <Chessboard
           id="PlayVsRandom"
-          boardOrientation={user.id === player1Data.id ? "white" : "black"}
+          boardOrientation={handleBoardOrientation()}
           position={fen}
           onPieceDrop={(from, to, piece) => handleMove(from, to, piece)}
           customBoardStyle={{
@@ -460,29 +477,27 @@ const SinglePlayerGame = ({
           </Modal.Body>
         </Modal>
 
-        {winner && (
-          <Modal
-            className="winner-modal-container"
-            show={showWinner}
-            centered
-            backdrop="static"
-          >
-            <Modal.Header className="winner-modal-header">
-              <Modal.Title>
-                Winner: <h1>{winner.username}</h1>
-              </Modal.Title>
-            </Modal.Header>
-            <Modal.Footer className="winner-modal-footer">
-              <Button
-                onClick={() => {
-                  endGame(game.id);
-                }}
-              >
-                End Game
-              </Button>
-            </Modal.Footer>
-          </Modal>
-        )}
+        <Modal
+          className="winner-modal-container"
+          show={showWinner}
+          centered
+          backdrop="static"
+        >
+          <Modal.Header className="winner-modal-header">
+            <Modal.Title>
+              Winner: <h1>{winner.username}</h1>
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Footer className="winner-modal-footer">
+            <Button
+              onClick={() => {
+                endGame(game.id);
+              }}
+            >
+              End Game
+            </Button>
+          </Modal.Footer>
+        </Modal>
 
         <Modal
           className="winner-modal-container"
@@ -507,7 +522,7 @@ const SinglePlayerGame = ({
         </Modal>
       </div>
 
-      <div className="gamePageBot-buttons">
+      <div className="singlePlayerGame-buttons">
         <Button
           onClick={() => {
             endGame(game.id);
@@ -518,8 +533,8 @@ const SinglePlayerGame = ({
         </Button>
       </div>
 
-      <div className="gamePageBot-chatBox-container rounded-5">
-        <div className="gamePageBot-chatBox rounded-5">Chat Box</div>
+      <div className="singlePlayerGame-chatBox-container rounded-5">
+        <div className="singlePlayerGame-chatBox rounded-5">Chat Box</div>
       </div>
     </section>
   );

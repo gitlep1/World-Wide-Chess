@@ -11,20 +11,20 @@ INSERT INTO bots (profileimg, username, wins, ties, loss) VALUES
 ('https://i.imgur.com/ZlrcYvd.png', 'Hard Bot', 100, 3, 3);
 
 INSERT INTO games (room_name, room_password, botId, player1id, player2id, player1color, player2color, botColor, current_positions, allow_specs, in_progress, is_multiplayer, game_time) VALUES
-('come watch', null, 1, 1, null, 'w', null, 'b', 'rnbqkbnr/pp1ppppp/8/2p5/8/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0', false, true, false, 100000),
-('lol noobs', 'noobs', null, 2, null, 'b', null, null, 'rnbqkbnr/pp2pppp/3p4/8/3P4/8/PPP2PPP/RNBQKBNR w KQkq - 0', false, false, true, 200000),
-('easy game', 'hard game', 3, 3, null, 'w', null, 'b', '2kr3r/ppp1bppp/3q1n2/3p4/2PP4/2N2N2/PP2QPPP/R1B1K2R w KQ - 0', true, true, false, 300000),
-('the best', null, null, 1, 3, 'w', 'b', null, 'r1bqkbnr/ppp1pppp/2n5/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0', true, true, true, 400000);
+('come watch', null, 1, '56fe4069-616e-4351-9a85-c720521dcfea', null, 'w', null, 'b', 'rnbqkbnr/pp1ppppp/8/2p5/8/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0', false, true, false, 100000),
+('lol noobs', 'noobs', null, '12ab1853-81aa-4d05-9873-7b2a71f89755', null, 'b', null, null, 'rnbqkbnr/pp2pppp/3p4/8/3P4/8/PPP2PPP/RNBQKBNR w KQkq - 0', false, false, true, 200000),
+('easy game', 'hard game', 3, '1c7651a4-7f15-4a18-adf5-8de319a74940', null, 'w', null, 'b', '2kr3r/ppp1bppp/3q1n2/3p4/2PP4/2N2N2/PP2QPPP/R1B1K2R w KQ - 0', true, true, false, 300000),
+('the best', null, null, '56fe4069-616e-4351-9a85-c720521dcfea', '1c7651a4-7f15-4a18-adf5-8de319a74940', 'w', 'b', null, 'r1bqkbnr/ppp1pppp/2n5/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0', true, true, true, 400000);
 
 INSERT INTO spectators (spec_id, games_id) VALUES
-(1, 1),
-(2, 2),
-(3, 3);
+('56fe4069-616e-4351-9a85-c720521dcfea', 1),
+('12ab1853-81aa-4d05-9873-7b2a71f89755', 2),
+('1c7651a4-7f15-4a18-adf5-8de319a74940', 3);
 
 INSERT INTO messages (user_id, username, profileimg, message) VALUES
-(1, 'test1', 'https://www.randomlists.com/img/animals/tiger.webp', 'hello'),
-(2, 'test2', 'https://brianrushwriter.files.wordpress.com/2014/11/27566315_s.jpg', 'noooobs'),
-(3, 'test3', 'https://i.natgeofe.com/k/02444b59-a50d-48e6-939b-4db10f895e66/5-reasons-eagle_4x3.jpg', 'lol');
+('56fe4069-616e-4351-9a85-c720521dcfea', 'test1', 'https://www.randomlists.com/img/animals/tiger.webp', 'hello'),
+('12ab1853-81aa-4d05-9873-7b2a71f89755', 'test2', 'https://brianrushwriter.files.wordpress.com/2014/11/27566315_s.jpg', 'noooobs'),
+('1c7651a4-7f15-4a18-adf5-8de319a74940', 'test3', 'https://i.natgeofe.com/k/02444b59-a50d-48e6-939b-4db10f895e66/5-reasons-eagle_4x3.jpg', 'lol');
 
 INSERT INTO shop (item_img, item_name, item_price) VALUES
 ('https://picsum.photos/150/150', 'Dragon Border', 1000),

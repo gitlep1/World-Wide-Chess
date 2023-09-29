@@ -85,12 +85,10 @@ const SinglePlayerGameSettings = ({
       botid: botData.id,
       winner: null,
       in_progress: true,
-      player_color: "w",
-      bot_color: "b",
+      player1color: "w",
+      botcolor: "b",
       game_time: 0,
     };
-
-    console.log("updateGameData: ", updateGameData);
 
     if (Object.keys(botData).length === 0) {
       return toast.error("Please select a bot", {
@@ -112,11 +110,11 @@ const SinglePlayerGameSettings = ({
         },
       })
       .then((res) => {
-        console.log("inside start game: ", res.data.payload);
+        // console.log("inside start game: ", res.data.payload);
         socket.emit("start-single-player-game", res.data.payload);
       })
       .catch((err) => {
-        console.log(err);
+        console.log(err.message);
       });
   };
 
