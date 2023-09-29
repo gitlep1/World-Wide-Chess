@@ -89,6 +89,14 @@ const Lobbypage = ({
       setRefreshed(true);
     }
 
+    // idea 1: \\
+    // store timestamp
+    // lobby checks how much time has passed sine the timestamp
+
+    // idea 2: \\
+    // store timestamp + 60 secs
+    // lobby checks how much more secs until expiration time
+
     if (refreshed) {
       const refreshInterval = setInterval(() => {
         setCountdown((prevCountdown) => {

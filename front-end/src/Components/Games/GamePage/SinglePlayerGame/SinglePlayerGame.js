@@ -161,15 +161,15 @@ const SinglePlayerGame = ({
   const checkForEndGame = () => {
     if (chessGame.in_checkmate()) {
       if (chessGame.turn() === "w") {
-        if (game.player_color === "w") {
+        if (game.player1color === "w") {
           setWinner(player2Data);
-        } else if (game.player2color[0] === "w") {
+        } else if (game.player2color === "w") {
           setWinner(player1Data);
         }
       } else if (chessGame.turn() === "b") {
-        if (game.player1color[0] === "b") {
+        if (game.player1color === "b") {
           setWinner(player2Data);
-        } else if (game.player2color[0] === "b") {
+        } else if (game.player2color === "b") {
           setWinner(player1Data);
         }
       }
