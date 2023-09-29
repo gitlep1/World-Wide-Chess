@@ -7,16 +7,18 @@ $Rook: "../../../../../../Images/Rook.png";
 $Bishop: "../../../../../../Images/Bishop.png";
 $Knight: "../../../../../../Images/Knight.png";
 
-@mixin gamePageBot {
-  // border: 5px solid cyan;
+@mixin singlePlayerGame {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(2, 1fr);
   row-gap: 3%;
+  width: 95%;
+  margin: 0 auto;
 
-  .gamePageBot-header-container {
-    // border: 5px solid red;
+  .singlePlayerGame-header-container {
+    border: 5px solid black;
+    background-color: #1b1b1b;
     grid-row: 1;
-    grid-column: 1 / span 3;
+    grid-column: 1 / -1;
     width: 50%;
     height: 95%;
     margin: 0 auto;
@@ -25,26 +27,21 @@ $Knight: "../../../../../../Images/Knight.png";
     align-items: center;
     justify-content: center;
 
-    .gamePageBot-header {
-      // border: 5px solid cyan;
+    .singlePlayerGame-header {
+      border: 5px solid cyan;
+      color: white;
       font-size: 30px;
       height: 100%;
-      width: 70%;
+      // width: 70%;
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       align-items: center;
-      justify-content: center;
-      column-gap: 5%;
-      margin-left: 3em;
+      justify-content: space-evenly;
+      // column-gap: 5%;
+      margin: 0 auto;
 
-      #gamePageBot-roomName {
-        // border: 5px solid purple;
-        grid-row: 1 / span 2;
-        text-align: center;
-      }
-
-      #gamePageBot-spectatorCount {
-        // border: 5px solid yellow;
+      .singlePlayerGame-spectatorCount {
+        border: 5px solid yellow;
         grid-row: 1;
         grid-column: 2;
         text-align: center;
@@ -52,23 +49,33 @@ $Knight: "../../../../../../Images/Knight.png";
         margin-bottom: -1em;
       }
 
-      #gamePageBot-spactatorIcon {
-        // border: 5px solid orange;
+      .singlePlayerGame-spactatorIcon {
+        border: 5px solid orange;
         width: 50px;
         grid-row: 2;
         margin-bottom: 0.5em;
       }
+
+      .singlePlayerGame-roomName {
+        border: 5px solid purple;
+        grid-row: 3;
+        text-align: center;
+      }
     }
   }
 
-  .gamePageBot-players-data {
-    // border: 5px solid red;
+  .singlePlayerGame-players-data {
+    border: 5px solid green;
     grid-row: 2;
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 1em;
     width: 90%;
     font-size: 30px;
     margin: 0 auto;
 
-    .gamePageBot-playerOne-data {
+    .singlePlayerGame-playerOne-data {
       border: 5px solid white;
       box-shadow: 0 5px 23px rgba(0, 0, 0, 1);
       height: 12vh;
@@ -76,7 +83,7 @@ $Knight: "../../../../../../Images/Knight.png";
       align-items: center;
     }
 
-    .gamePageBot-playerTwo-data {
+    .singlePlayerGame-playerTwo-data {
       border: 5px solid black;
       box-shadow: 0 5px 23px rgba(0, 0, 0, 1);
       height: 12vh;
@@ -84,27 +91,27 @@ $Knight: "../../../../../../Images/Knight.png";
       align-items: center;
     }
 
-    .gamePageBot-player-image {
+    .singlePlayerGame-player-image {
       // border: 5px solid red;
       width: 100px;
     }
   }
 
-  .gamePageBot-chessboard-container {
+  .singlePlayerGame-chessboard-container {
     // border: 5px solid blue;
     grid-row: 3;
     display: flex;
     justify-content: center;
   }
 
-  .gamePageBot-buttons {
+  .singlePlayerGame-buttons {
     // border: 5px solid red;
     grid-row: 4;
     display: flex;
     justify-content: center;
   }
 
-  .gamePageBot-chatBox-container {
+  .singlePlayerGame-chatBox-container {
     // border: 5px solid green;
     grid-row: 5;
     margin: 0 auto;
@@ -115,7 +122,7 @@ $Knight: "../../../../../../Images/Knight.png";
     width: 90%;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 1);
 
-    .gamePageBot-chatBox {
+    .singlePlayerGame-chatBox {
       font-size: 35px;
       width: 95%;
       height: 95%;
@@ -172,8 +179,8 @@ $Knight: "../../../../../../Images/Knight.png";
   }
 }
 
-.desktop-gamePageBot {
-  @include gamePageBot;
+.desktop-singlePlayerGame {
+  @include singlePlayerGame;
 }
 
 .desktop-promotion-modal-container {
@@ -184,8 +191,8 @@ $Knight: "../../../../../../Images/Knight.png";
   @include winner-modal-container;
 }
 
-.mobile-gamePageBot {
-  @include gamePageBot;
+.mobile-singlePlayerGame {
+  @include singlePlayerGame;
 }
 
 .mobile-promotion-modal-container {

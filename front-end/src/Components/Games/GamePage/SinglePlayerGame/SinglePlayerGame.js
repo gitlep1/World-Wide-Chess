@@ -351,13 +351,12 @@ const SinglePlayerGame = ({
   };
 
   return (
-    <section className={`${screenVersion}-gamePageBot`}>
+    <section className={`${screenVersion}-singlePlayerGame`}>
       {!player1Data || !player2Data ? forfeitNotify() : null}
-      <div className="gamePageBot-header-container">
-        <div className="gamePageBot-header">
-          <h3 id="gamePageBot-roomName">Room Name: {game.room_name}</h3>
+      <div className="singlePlayerGame-header-container">
+        <div className="singlePlayerGame-header">
           <span
-            id="gamePageBot-spectatorCount"
+            className="singlePlayerGame-spectatorCount"
             style={
               game.spectators >= 1
                 ? { visibility: "visible" }
@@ -365,92 +364,50 @@ const SinglePlayerGame = ({
             }
           >
             {game.spectators >= 1 ? game.spectators : null}
+            <Image
+              src={renderSpectatorIcon()}
+              alt="spectator icon"
+              className="singlePlayerGame-spactatorIcon"
+            />
           </span>
-          <Image
-            src={renderSpectatorIcon()}
-            alt="spectator icon"
-            id="gamePageBot-spactatorIcon"
-          />
+          <h3 className="singlePlayerGame-roomName">
+            Room Name: {game.room_name}
+          </h3>
+        </div>
+
+        <div className="singlePlayerGame-players-data">
+          <div className="singlePlayerGame-playerOne-data square bg-secondary rounded-pill">
+            <Image
+              src={player1Data.profileimg}
+              className="singlePlayerGame-player-image"
+              alt="player 1"
+            />{" "}
+            <span
+              style={{
+                color: "white",
+              }}
+            >
+              {player1Data.username}
+            </span>
+          </div>
+          <div className="singlePlayerGame-playerTwo-data square bg-secondary rounded-pill">
+            <Image
+              src={player2Data.profileimg}
+              className="singlePlayerGame-player-image"
+              alt="player 2"
+            />
+            <span
+              style={{
+                color: "black",
+              }}
+            >
+              {player2Data.username}
+            </span>
+          </div>
         </div>
       </div>
 
-      <div className="gamePageBot-players-data">
-        {game.player1color === "w" ? (
-          <>
-            <div className="gamePageBot-playerTwo-data square bg-secondary rounded-pill">
-              <Image
-                src={player2Data.profileimg}
-                className="gamePageBot-player-image"
-                alt="player 2"
-              />
-              <span
-                style={{
-                  color: "white",
-                }}
-              >
-                <h5
-                  style={
-                    isThinking
-                      ? { color: "yellow", visibility: "visible" }
-                      : { visibility: "hidden" }
-                  }
-                >
-                  Thinking
-                </h5>
-                {player2Data.username}
-              </span>
-            </div>
-
-            <div className="gamePageBot-playerOne-data square bg-secondary rounded-pill">
-              <Image
-                src={player1Data.profileimg}
-                className="gamePageBot-player-image"
-                alt="player 1"
-              />{" "}
-              <span
-                style={{
-                  color: "black",
-                }}
-              >
-                {player1Data.username}
-              </span>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="gamePageBot-playerOne-data square bg-secondary rounded-pill">
-              <Image
-                src={player1Data.profileimg}
-                className="gamePageBot-player-image"
-                alt="player 1"
-              />{" "}
-              <span
-                style={{
-                  color: "white",
-                }}
-              >
-                {player1Data.username}
-              </span>
-            </div>
-            <div className="gamePageBot-playerTwo-data square bg-secondary rounded-pill">
-              <Image
-                src={player2Data.profileimg}
-                className="gamePageBot-player-image"
-                alt="player 2"
-              />
-              <span
-                style={{
-                  color: "black",
-                }}
-              >
-                {player2Data.username}
-              </span>
-            </div>
-          </>
-        )}
-      </div>
-
-      <div className="gamePageBot-chessboard-container">
+      <div className="singlePlayerGame-chessboard-container">
         <Chessboard
           id="PlayVsRandom"
           boardOrientation={handleBoardOrientation()}
@@ -565,7 +522,7 @@ const SinglePlayerGame = ({
         </Modal>
       </div>
 
-      <div className="gamePageBot-buttons">
+      <div className="singlePlayerGame-buttons">
         <Button
           onClick={() => {
             endGame(game.id);
@@ -576,8 +533,8 @@ const SinglePlayerGame = ({
         </Button>
       </div>
 
-      <div className="gamePageBot-chatBox-container rounded-5">
-        <div className="gamePageBot-chatBox rounded-5">Chat Box</div>
+      <div className="singlePlayerGame-chatBox-container rounded-5">
+        <div className="singlePlayerGame-chatBox rounded-5">Chat Box</div>
       </div>
     </section>
   );

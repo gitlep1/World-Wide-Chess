@@ -3,9 +3,11 @@ CREATE DATABASE world_wide_chess;
 
 \c world_wide_chess;
 
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (
-  id SERIAL UNIQUE NOT NULL PRIMARY KEY,
+  id UUID DEFAULT uuid_generate_v4() NOT NULL PRIMARY KEY,
   profileimg TEXT,
   username TEXT UNIQUE NOT NULL,
   password TEXT,
@@ -37,8 +39,8 @@ CREATE TABLE games (
   room_name TEXT NOT NULL,
   room_password TEXT,
   botId INT REFERENCES bots(id) DEFAULT NULL,
-  player1id INT NOT NULL REFERENCES users(id),
-  player2id INT REFERENCES users(id) DEFAULT NULL,
+  player1id UUID NOT NULL REFERENCES users(id),
+  player2id UUID REFERENCES users(id) DEFAULT NULL,
   player1color TEXT DEFAULT 'w',
   player2color TEXT DEFAULT 'b',
   botColor TEXT DEFAULT 'b',
@@ -52,14 +54,14 @@ CREATE TABLE games (
 DROP TABLE IF EXISTS spectators;
 CREATE TABLE spectators (
   id SERIAL UNIQUE NOT NULL PRIMARY KEY,
-  spec_id INT REFERENCES users(id),
+  spec_id UUID REFERENCES users(id),
   games_id INT REFERENCES games(id)
 );
 
 DROP TABLE IF EXISTS messages;
 CREATE TABLE messages (
   id SERIAL UNIQUE NOT NULL PRIMARY KEY,
-  user_id INT NOT NULL REFERENCES users(id),
+  user_id UUID NOT NULL REFERENCES users(id),
   username TEXT NOT NULL REFERENCES users(username),
   profileimg TEXT NOT NULL,
   message TEXT
@@ -76,7 +78,7 @@ CREATE TABLE shop (
 DROP TABLE IF EXISTS user_inventory;
 CREATE TABLE user_inventory (
   id SERIAL UNIQUE NOT NULL PRIMARY KEY,
-  user_id INT NOT NULL REFERENCES users(id),
+  user_id UUID NOT NULL REFERENCES users(id),
   item_id INT REFERENCES shop(id)
 );
 
