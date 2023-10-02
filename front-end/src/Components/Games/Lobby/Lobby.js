@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { nanoid } from "nanoid";
 import { useSpring, animated } from "react-spring";
 import { Modal, Button, Form } from "react-bootstrap";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { MdManageSearch } from "react-icons/md";
 import { BiSearchAlt2 } from "react-icons/bi";
 import axios from "axios";
@@ -61,6 +61,16 @@ const Lobbypage = ({
       setMultiGamesCopy(multiGames);
     });
 
+    socket.on("host-accepted", (gameData) => {
+      console.log(gameData);
+      // navigate(`/Room/${gameData.id}`);
+    });
+
+    socket.on("host-denied", () => {
+      console.log("denied");
+      // navigate(`/Room/${gameData.id}`);
+    });
+
     socket.on("get-single-games-error", (error) => {
       setError(error);
     });
@@ -74,6 +84,8 @@ const Lobbypage = ({
       socket.off("get-single-games-error");
       socket.off("multi-games");
       socket.off("get-multi-games-error");
+      socket.off("host-accepted");
+      socket.off("host-denied");
     };
   }, [socket]);
 
@@ -196,14 +208,7 @@ const Lobbypage = ({
 
     if (createRoomName.length < 3 || createRoomName.length > 15) {
       return toast.error("Room Name must be between 3-15 characters.", {
-        toastId: "createRoomNameError",
-        position: "top-center",
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        pauseOnFocusLoss: false,
-        draggable: true,
-        progress: undefined,
+        containerId: "toast-notify",
       });
     }
 
@@ -259,10 +264,7 @@ const Lobbypage = ({
   const handleJoin = async (gameID) => {
     let gameData = {};
 
-    const updatePlayer2 = {
-      player2id: user.id,
-      in_progress: true,
-    };
+    const player2ID = user.id;
 
     for (const game of multiGamesCopy) {
       if (game.id === gameID) {
@@ -270,9 +272,9 @@ const Lobbypage = ({
       }
     }
 
-    const addDataToGame = async () => {
-      return axios
-        .put(`${API}/multi-games/${gameData.id}`, updatePlayer2, {
+    const addDataToGame = async (UpdatedMultiGameData) => {
+      await axios
+        .put(`${API}/multi-games/${gameData.id}`, UpdatedMultiGameData, {
           headers: {
             authorization: `Bearer ${token}`,
           },
@@ -289,49 +291,46 @@ const Lobbypage = ({
 
     if (gameData.room_password) {
       if (gameData.room_password === joinWithPassword) {
-        await toast
-          .promise(addDataToGame(), {
-            pending: "Joining Game ...",
-            success: "Joined Game ...",
-            error: "Error",
-          })
-          .then((res) => {
-            // console.log(res.data);
-            notify(res.data);
-          })
-          .catch((err) => {
-            setError(err.message);
-          });
+        socket.emit("ask-to-join", gameData, player2ID);
+        // await toast
+        //   .promise(addDataToGame(), {
+        //     pending: "Joining Game ...",
+        //     success: "Joined Game ...",
+        //     error: "Error",
+        //   })
+        //   .then((res) => {
+        //     // console.log(res.data);
+        //     notify(res.data);
+        //   })
+        //   .catch((err) => {
+        //     setError(err.message);
+        //   });
       } else {
         return toast.error("Incorrect room password.", {
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          pauseOnFocusLoss: false,
-          draggable: true,
-          progress: undefined,
+          containerId: "toast-notify",
         });
       }
     } else {
-      toast
-        .promise(addDataToGame(), {
-          pending: "Asking host ...",
-          success: "Joining Game ...",
-          error: "Error",
-        })
-        .then((res) => {
-          notify(res.data);
-        })
-        .catch((err) => {
-          setError(err.message);
-        });
+      socket.emit("ask-to-join", gameData, player2ID);
+
+      // await toast
+      //   .promise(addDataToGame(), {
+      //     pending: "Asking host ...",
+      //     success: "Joining Game ...",
+      //     error: "Error",
+      //   })
+      //   .then((res) => {
+      //     notify(res.data);
+      //   })
+      //   .catch((err) => {
+      //     setError(err.message);
+      //   });
     }
   };
 
   const notify = (gameData) => {
     toast.success({
-      toastId: "notify-success",
+      containerId: "notify-success",
       position: "top-center",
       hideProgressBar: false,
       closeOnClick: false,
@@ -447,8 +446,6 @@ const Lobbypage = ({
           </div>
         </div>
       </section>
-
-      <ToastContainer autoClose={3000} theme="dark" limit={3} />
 
       <Modal
         show={showCreate}

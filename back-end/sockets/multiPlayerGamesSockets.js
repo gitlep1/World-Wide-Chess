@@ -47,6 +47,25 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
     }
   });
 
+  socket.on("ask-to-join", async (gameData, player2ID) => {
+    const checkIfGameExists = await getGameByID(gameData.id);
+
+    const checkIfUserExists =
+      (await getUserByID(player2ID)) || (await getGuestByID(player2ID));
+
+    if (!checkIfUserExists && !checkIfGameExists) {
+      return;
+    }
+
+    const player2Data = {
+      username: checkIfUserExists.username,
+      wins: checkIfUserExists.wins,
+      loss: checkIfUserExists.loss,
+    };
+
+    io.in(`/Room/${gameData.id}/Settings`).emit("request-to-join", player2Data);
+  });
+
   socket.on("multi-room-joined", async (gameData) => {
     console.log(`=== SocketID: ${socketId} joined room: ${gameData.id} === \n
     Game Data: ${gameData}`);

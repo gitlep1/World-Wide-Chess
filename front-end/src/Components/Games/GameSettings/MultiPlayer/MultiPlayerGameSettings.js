@@ -5,6 +5,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 
+import { ToastAskToJoin } from "../../../../CustomFunctions/CustomToasts";
+
 const API = process.env.REACT_APP_API_URL;
 
 const MultiPlayerGameSettings = ({
@@ -36,6 +38,10 @@ const MultiPlayerGameSettings = ({
       }
     );
 
+    socket.on("request-to-join", (player2Data) => {
+      handleAskToJoin(player2Data);
+    });
+
     socket.on("multi-started", (gameData, playerOneData, playerTwoData) => {
       setGame(gameData);
       setPlayer1Data(playerOneData);
@@ -45,6 +51,7 @@ const MultiPlayerGameSettings = ({
 
     return () => {
       socket.off("multi-player-reconnected");
+      socket.off("request-to-join");
       socket.off("multi-started");
     };
   }, []); // eslint-disable-line
@@ -55,14 +62,7 @@ const MultiPlayerGameSettings = ({
         return undefined;
       } else {
         toast.success(`Host: ${player1Data.username} has cancelled the game.`, {
-          toastId: "hostCancelledPlayerGame",
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          pauseOnFocusLoss: false,
-          draggable: true,
-          progress: undefined,
+          containerId: "toast-notify",
         });
         setTimeout(() => {
           navigate("/Lobby/");
@@ -70,6 +70,20 @@ const MultiPlayerGameSettings = ({
       }
     }
   }, [error, navigate, player1Data.id, player1Data.username, user.id]);
+
+  const handleAskToJoin = (player2Data) => {
+    toast(
+      <ToastAskToJoin
+        socket={socket}
+        token={token}
+        player2Data={player2Data}
+      />,
+      {
+        containerId: "askToJoin",
+      }
+    );
+    return toast.clearWaitingQueue();
+  };
 
   const handleStartGame = async () => {
     const updateGameData = {
@@ -101,17 +115,11 @@ const MultiPlayerGameSettings = ({
         toast.success(
           "You have cancelled the game. \n You will be redirected in 3 seconds.",
           {
-            toastId: "delete",
-            position: "top-center",
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: false,
-            pauseOnFocusLoss: false,
-            draggable: true,
-            progress: undefined,
+            containerId: "toast-notify",
           }
         );
       });
+    toast.clearWaitingQueue();
     setTimeout(() => {
       navigate("/Lobby");
     }, 4100);

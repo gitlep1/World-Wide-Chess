@@ -1,7 +1,7 @@
 import "./AccountSettings.scss";
 import { useEffect, useState } from "react";
 import { Form, Button, Modal } from "react-bootstrap";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import axios from "axios";
 
 const API = process.env.REACT_APP_API_URL;
@@ -60,13 +60,7 @@ const AccountSettings = ({
       return toast.error(
         `Your current username:(${editUser.username}) is ${editUser.username.length} characters long. \n The max character length allowed is 20.`,
         {
-          position: "top-right",
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          pauseOnFocusLoss: false,
-          draggable: true,
-          progress: undefined,
+          containerId: "toast-notify",
         }
       );
     }
@@ -77,13 +71,7 @@ const AccountSettings = ({
       editUser.email === ""
     ) {
       return toast.error("Please make sure to fill out all fields.", {
-        position: "top-center",
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        pauseOnFocusLoss: false,
-        draggable: true,
-        progress: undefined,
+        containerId: "toast-notify",
       });
     }
 
@@ -107,10 +95,7 @@ const AccountSettings = ({
 
     if (checkUser.length > 0) {
       return toast.error("Email or Username already exists!", {
-        position: "top-right",
-        pauseOnFocusLoss: false,
-        closeOnClick: true,
-        pauseOnHover: false,
+        containerId: "toast-notify",
       });
     } else {
       axios
@@ -128,13 +113,7 @@ const AccountSettings = ({
     toast.success(
       `${user.username} your account has been updated. You will be redirected back to the lobby in 3 seconds.`,
       {
-        position: "top-center",
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        pauseOnFocusLoss: false,
-        draggable: true,
-        progress: undefined,
+        containerId: "toast-notify",
       }
     );
     setTimeout(() => {
@@ -148,13 +127,7 @@ const AccountSettings = ({
       toast.success(
         "Your account has been successfully deleted you will be redirected back to the homepage in 3 seconds.",
         {
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          pauseOnFocusLoss: false,
-          draggable: true,
-          progress: undefined,
+          containerId: "toast-notify",
         }
       );
       // setTimeout(() => {
@@ -231,8 +204,6 @@ const AccountSettings = ({
           </Button>
         </div>
       </Form>
-
-      <ToastContainer autoClose={3000} theme="dark" />
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>

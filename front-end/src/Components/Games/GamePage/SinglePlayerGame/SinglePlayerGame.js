@@ -150,7 +150,9 @@ const SinglePlayerGame = ({
     });
 
     socket.on("single-game-ended", (errorMessage) => {
-      toast.error(errorMessage);
+      toast.error(errorMessage, {
+        containerId: "toast-notify",
+      });
       socket.off("single-player-reconnected");
       navigate("/Lobby");
     });
@@ -176,13 +178,6 @@ const SinglePlayerGame = ({
       .then(() => {
         toast.success("Game Ended", {
           containerId: "GameEnded",
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          pauseOnFocusLoss: false,
-          draggable: true,
-          progress: undefined,
         });
         socket.emit("get-single-game-data");
         setTimeout(() => {

@@ -1,7 +1,7 @@
 import "./Signin.scss";
 import { useState } from "react";
 import { Form, Button, Modal, Image } from "react-bootstrap";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import Logo from "../../../Images/Logo.png";
 import axios from "axios";
 
@@ -43,13 +43,7 @@ const Signin = ({ screenVersion, handleUser, showSignIn, handleClose }) => {
       return noUser();
     } else {
       toast.success("You have been successfully signed in.", {
-        position: "top-center",
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        pauseOnFocusLoss: false,
-        draggable: true,
-        progress: undefined,
+        containerId: "toast-notify",
       });
       setTimeout(() => {
         handleClose();
@@ -63,13 +57,7 @@ const Signin = ({ screenVersion, handleUser, showSignIn, handleClose }) => {
     return toast.error(
       "No user with these credentials have been found. \n Please make sure your email and password are correct.",
       {
-        position: "top-center",
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        pauseOnFocusLoss: false,
-        draggable: true,
-        progress: undefined,
+        containerId: "toast-notify",
       }
     );
   };
@@ -124,7 +112,6 @@ const Signin = ({ screenVersion, handleUser, showSignIn, handleClose }) => {
           </Button>
         </Form>
       </Modal.Body>
-      <ToastContainer autoClose={3000} theme="dark" />
     </Modal>
   );
 };
