@@ -1,6 +1,6 @@
 import "./MultiPlayerGameSettings.scss";
 import { useEffect, useState } from "react";
-import { Button } from "react-bootstrap";
+import { Button, Image } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -167,7 +167,33 @@ const MultiPlayerGameSettings = ({
   };
 
   return (
-    <section className="renderSection">
+    <section className="multi-player-game-settings-container">
+      <div className="game-settings-player1-info">
+        <h2>Host</h2>
+        <h3>{player1Data.username}</h3>
+        <Image
+          src={player1Data.profileimg}
+          alt="player 1"
+          className="playerImg"
+        />
+        <h4>Wins: {player1Data.wins}</h4>
+        <h4>Loss: {player1Data.loss}</h4>
+        <h4>Ties: {player1Data.ties}</h4>
+      </div>
+
+      <div className="game-settings-player2-info">
+        <h2>Opponent</h2>
+        <h3>{player2Data.username}</h3>
+        <Image
+          src={player2Data.profileimg}
+          alt="player 2"
+          className="playerImg"
+        />
+        <h4>Wins: {player2Data.wins}</h4>
+        <h4>Loss: {player2Data.loss}</h4>
+        <h4>Ties: {player2Data.ties}</h4>
+      </div>
+
       {error ? (
         <h1>Host Cancelled Game</h1>
       ) : user.id === game.player1id ? (

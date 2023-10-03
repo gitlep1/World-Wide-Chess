@@ -1,0 +1,8 @@
+.multi-player-game-settings-container {
+  border: 5px solid brown;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}

@@ -6,6 +6,7 @@ import axios from "axios";
 import Loading from "../../Loading/Loading";
 import SinglePlayerGameSettings from "./SinglePlayer/SinglePlayerGameSettings";
 import MultiPlayerGameSettings from "./MultiPlayer/MultiPlayerGameSettings";
+import { Image } from "react-bootstrap";
 
 const API = process.env.REACT_APP_API_URL;
 
@@ -110,13 +111,9 @@ const GameSettings = ({
     } else {
       return (
         <section className="game-settings-options-container">
-          <div className="game-settings-room-header">
-            <h1>Room Name: {game.room_name}</h1>
-
-            <h3>Host: {player1Data.username}</h3>
-
-            <h3>Opponent: {player2Data.username}</h3>
-          </div>
+          <h1 className="game-settings-room-name">
+            Room Name: {game.room_name}
+          </h1>
 
           <div className="game-settings-options">
             {game.is_multiplayer ? (
