@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { nanoid } from "nanoid";
 import { useSpring, animated } from "react-spring";
 import { Modal, Button, Form } from "react-bootstrap";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { MdManageSearch } from "react-icons/md";
 import { BiSearchAlt2 } from "react-icons/bi";
 import axios from "axios";
@@ -61,6 +61,11 @@ const Lobbypage = ({
       setMultiGamesCopy(multiGames);
     });
 
+    socket.on("asking-host", async () => {
+      console.log("asked host");
+      handlePlayerJoining();
+    });
+
     socket.on("get-single-games-error", (error) => {
       setError(error);
     });
@@ -74,6 +79,9 @@ const Lobbypage = ({
       socket.off("get-single-games-error");
       socket.off("multi-games");
       socket.off("get-multi-games-error");
+      socket.off("asking-host");
+      socket.off("host-accepted");
+      socket.off("host-denied");
     };
   }, [socket]);
 
@@ -204,14 +212,7 @@ const Lobbypage = ({
 
     if (createRoomName.length < 3 || createRoomName.length > 15) {
       return toast.error("Room Name must be between 3-15 characters.", {
-        toastId: "createRoomNameError",
-        position: "top-center",
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        pauseOnFocusLoss: false,
-        draggable: true,
-        progress: undefined,
+        containerId: "toast-notify",
       });
     }
 
@@ -267,10 +268,7 @@ const Lobbypage = ({
   const handleJoin = async (gameID) => {
     let gameData = {};
 
-    const updatePlayer2 = {
-      player2id: user.id,
-      in_progress: true,
-    };
+    const player2ID = user.id;
 
     for (const game of multiGamesCopy) {
       if (game.id === gameID) {
@@ -278,75 +276,105 @@ const Lobbypage = ({
       }
     }
 
-    const addDataToGame = async () => {
-      return axios
-        .put(`${API}/multi-games/${gameData.id}`, updatePlayer2, {
-          headers: {
-            authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res) => {
-          socket.emit("get-multi-games");
-          socket.emit("multi-room-joined", res.data.payload);
-          navigate(`/Room/${res.data.payload.id}/Settings`);
-        })
-        .catch((err) => {
-          setError(err.response.data);
-        });
-    };
-
     if (gameData.room_password) {
       if (gameData.room_password === joinWithPassword) {
-        await toast
-          .promise(addDataToGame(), {
-            pending: "Joining Game ...",
-            success: "Joined Game ...",
-            error: "Error",
-          })
-          .then((res) => {
-            // console.log(res.data);
-            notify(res.data);
-          })
-          .catch((err) => {
-            setError(err.message);
-          });
+        socket.emit("ask-to-join", gameData, player2ID);
       } else {
         return toast.error("Incorrect room password.", {
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          pauseOnFocusLoss: false,
-          draggable: true,
-          progress: undefined,
+          containerId: "toast-notify",
         });
       }
     } else {
-      toast
-        .promise(addDataToGame(), {
-          pending: "Asking host ...",
-          success: "Joining Game ...",
-          error: "Error",
-        })
-        .then((res) => {
-          notify(res.data);
-        })
-        .catch((err) => {
-          setError(err.message);
-        });
+      socket.emit("ask-to-join", gameData, player2ID);
     }
   };
 
+  const handlePlayerJoining = async () => {
+    const timeoutPromise = new Promise((resolve, reject) => {
+      setTimeout(() => {
+        reject(new Error("Timeout"));
+      }, 5000); // Set a 5-second timeout
+    });
+
+    const handlePlayerJoiningPromise = new Promise(async (resolve, reject) => {
+      console.log("inside promise");
+
+      socket.on("host-accepted", (gameData) => {
+        console.log(gameData);
+        resolve({ data: gameData });
+      });
+
+      socket.on("host-denied", () => {
+        console.log("denied");
+        reject(new Error("Host denied the request"));
+      });
+    });
+
+    try {
+      // Use Promise.race to resolve when either promise resolves or rejects.
+      const result = await Promise.race([
+        handlePlayerJoiningPromise,
+        timeoutPromise,
+      ]);
+
+      // Notify using React-Toastify based on the result.
+      toast.success("Joining Game ...", {
+        containerId: "askToJoin",
+      });
+      console.log(result.data);
+    } catch (err) {
+      // Notify an error using React-Toastify.
+      toast.error("Host did not decide in time", {
+        containerId: "askToJoin",
+      });
+      setError(err.message);
+    }
+  };
+
+  // const handlePlayerJoining = async () => {
+  //   await toast
+  //     .promise(handlePlayerJoiningPromise(), {
+  //       containerId: "askToJoin",
+  //       pending: "Asking Host ...",
+  //       success: "Joining Game ...",
+  //       error: "Error",
+  //     })
+  //     .then((res) => {
+  //       console.log(res.data);
+  //       // notify(res.data);
+  //     })
+  //     .catch((err) => {
+  //       setError(err.message);
+  //     });
+  // };
+
+  // const handlePlayerJoiningPromise = async () => {
+  //   console.log("inside promise func");
+  //   return new Promise(async (resolve, reject) => {
+  //     const timeoutId = setTimeout(() => {
+  //       console.log("timeout");
+  //       clearTimeout(timeoutId);
+  //       reject(new Error("Timeout"));
+  //     }, 5000);
+
+  //     socket.on("host-accepted", (gameData) => {
+  //       console.log("accepted");
+  //       console.log(gameData);
+  //       // navigate(`/Room/${gameData.id}`);
+  //       resolve({ data: gameData });
+  //     });
+
+  //     socket.on("host-denied", () => {
+  //       console.log("denied");
+  //       // navigate(`/Room/${gameData.id}`);
+  //       reject(new Error("Host denied the request"));
+  //     });
+  //   });
+  // };
+
   const notify = (gameData) => {
     toast.success({
-      toastId: "notify-success",
-      position: "top-center",
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: false,
-      pauseOnFocusLoss: false,
-      draggable: true,
-      progress: undefined,
+      containerId: "notify-success",
     });
     setTimeout(() => {
       navigate(`/Room/${gameData.id}/Settings`);
@@ -455,8 +483,6 @@ const Lobbypage = ({
           </div>
         </div>
       </section>
-
-      <ToastContainer autoClose={3000} theme="dark" limit={3} />
 
       <Modal
         show={showCreate}

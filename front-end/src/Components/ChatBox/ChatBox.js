@@ -1,8 +1,7 @@
 import "./ChatBox.scss";
 import { useState, useEffect, useRef } from "react";
-import { Button, Image } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { nanoid } from "nanoid";
-import { ToastContainer } from "react-toastify";
 import axios from "axios";
 
 import Messages from "./Messages/Messages";
@@ -148,8 +147,6 @@ const ChatBox = ({ token, socket, user }) => {
           </div>
         </div>
       )}
-
-      <ToastContainer autoClose={3000} theme="dark" limit={3} />
     </section>
   );
 };

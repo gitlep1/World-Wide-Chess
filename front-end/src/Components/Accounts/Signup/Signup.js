@@ -1,7 +1,7 @@
 import "./Signup.scss";
 import { useState } from "react";
 import { Form, Button, Modal, Image } from "react-bootstrap";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import axios from "axios";
 import Logo from "../../../Images/Logo.png";
 import defaultProfImg from "../../../Images/DefaultProfImg.png";
@@ -43,13 +43,7 @@ const Signup = ({ screenVersion, handleUser, showSignUp, handleClose }) => {
       return toast.error(
         `Your current username:(${newUser.username}) is ${newUser.username.length} characters long. \n The max chracter length allowed is 12.`,
         {
-          position: "top-right",
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          pauseOnFocusLoss: false,
-          draggable: true,
-          progress: undefined,
+          containerId: "toast-notify",
         }
       );
     }
@@ -60,22 +54,13 @@ const Signup = ({ screenVersion, handleUser, showSignUp, handleClose }) => {
       newUser.email === ""
     ) {
       return toast.error("Please make sure to fill out all fields.", {
-        position: "top-center",
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        pauseOnFocusLoss: false,
-        draggable: true,
-        progress: undefined,
+        containerId: "toast-notify",
       });
     }
 
     if (passwordConfirm !== password) {
       return toast.error("Passwords do not match", {
-        position: "top-right",
-        pauseOnFocusLoss: false,
-        closeOnClick: true,
-        pauseOnHover: false,
+        containerId: "toast-notify",
       });
     }
 
@@ -93,25 +78,13 @@ const Signup = ({ screenVersion, handleUser, showSignUp, handleClose }) => {
   const notify = (newUser) => {
     if (newUser === "error") {
       return toast.error("That Username/Email is taken.", {
-        position: "top-center",
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        pauseOnFocusLoss: false,
-        draggable: true,
-        progress: undefined,
+        containerId: "toast-notify",
       });
     } else {
       toast.success(
         "User account has been created. You have automatially been signed in.",
         {
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          pauseOnFocusLoss: false,
-          draggable: true,
-          progress: undefined,
+          containerId: "toast-notify",
         }
       );
       setTimeout(() => {
@@ -199,7 +172,6 @@ const Signup = ({ screenVersion, handleUser, showSignUp, handleClose }) => {
           </Button>
         </Form>
       </Modal.Body>
-      <ToastContainer autoClose={3000} theme="dark" />
     </Modal>
   );
 };

@@ -92,14 +92,7 @@ const SinglePlayerGameSettings = ({
 
     if (Object.keys(botData).length === 0) {
       return toast.error("Please select a bot", {
-        toastId: "selectBot",
-        position: "top-center",
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        pauseOnFocusLoss: false,
-        draggable: true,
-        progress: undefined,
+        containerId: "selectBot",
       });
     }
 
@@ -127,14 +120,7 @@ const SinglePlayerGameSettings = ({
       })
       .then(() => {
         toast.success("Game has been cancelled", {
-          toastId: "hostCancelledBotGame",
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          pauseOnFocusLoss: false,
-          draggable: true,
-          progress: undefined,
+          containerId: "toast-notify",
         });
         setTimeout(() => {
           navigate("/Lobby/");

@@ -19,6 +19,8 @@ import LeavingPage from "./CustomFunctions/LeavingPage";
 
 import DefaultProfImg from "./Images/DefaultProfImg.png";
 
+import CustomToastContainers from "./CustomFunctions/CustomToastContainers";
+
 const API = process.env.REACT_APP_API_URL;
 const socket = io(API);
 
@@ -135,14 +137,17 @@ const App = () => {
       Cookies.set("Current_User", JSON.stringify(user.payload), {
         expires: expirationDate,
         path: "/",
+        sameSite: "strict",
       });
       Cookies.set("Authenticated", JSON.stringify(true), {
         expires: expirationDate,
         path: "/",
+        sameSite: "strict",
       });
       Cookies.set("token", JSON.stringify(user.token), {
         expires: expirationDate,
         path: "/",
+        sameSite: "strict",
       });
 
       setUser(user.payload);
@@ -181,14 +186,17 @@ const App = () => {
         Cookies.set("Current_User", JSON.stringify(res.data.payload), {
           expires: expirationDate,
           path: "/",
+          sameSite: "strict",
         });
         Cookies.set("Authenticated", JSON.stringify(true), {
           expires: expirationDate,
           path: "/",
+          sameSite: "strict",
         });
         Cookies.set("token", JSON.stringify(res.data.token), {
           expires: expirationDate,
           path: "/",
+          sameSite: "strict",
         });
 
         setUser(res.data.payload);
@@ -218,36 +226,42 @@ const App = () => {
     window.location.reload();
   };
 
-  return screenSize >= 800 ? (
-    <DesktopApp
-      handleSidebarOpen={handleSidebarOpen}
-      user={user}
-      authenticated={authenticated}
-      token={token}
-      isOpen={isOpen}
-      openInventory={openInventory}
-      handleOpenInventory={handleOpenInventory}
-      handleUser={handleUser}
-      handleLogout={handleLogout}
-      resize={resize}
-      socket={socket}
-      loading={loading}
-    />
-  ) : (
-    <MobileApp
-      handleSidebarOpen={handleSidebarOpen}
-      user={user}
-      authenticated={authenticated}
-      token={token}
-      isOpen={isOpen}
-      openInventory={openInventory}
-      handleOpenInventory={handleOpenInventory}
-      handleUser={handleUser}
-      handleLogout={handleLogout}
-      resize={resize}
-      socket={socket}
-      loading={loading}
-    />
+  return (
+    <section>
+      <CustomToastContainers />
+      {screenSize >= 800 ? (
+        <DesktopApp
+          handleSidebarOpen={handleSidebarOpen}
+          user={user}
+          authenticated={authenticated}
+          token={token}
+          isOpen={isOpen}
+          openInventory={openInventory}
+          handleOpenInventory={handleOpenInventory}
+          handleUser={handleUser}
+          handleLogout={handleLogout}
+          resize={resize}
+          socket={socket}
+          loading={loading}
+        />
+      ) : (
+        <MobileApp
+          handleSidebarOpen={handleSidebarOpen}
+          user={user}
+          authenticated={authenticated}
+          token={token}
+          isOpen={isOpen}
+          openInventory={openInventory}
+          handleOpenInventory={handleOpenInventory}
+          handleUser={handleUser}
+          handleLogout={handleLogout}
+          resize={resize}
+          socket={socket}
+          loading={loading}
+        />
+      )}
+      ;
+    </section>
   );
 };
 

@@ -30,13 +30,7 @@ const Message = ({ user, token, socket, onMessageCreated }) => {
 
     if (input === "") {
       toast.error("Please enter a message.", {
-        position: "top-center",
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        pauseOnFocusLoss: false,
-        draggable: true,
-        progress: undefined,
+        containerId: "nonEmptyMsg",
       });
     } else {
       const messageData = {

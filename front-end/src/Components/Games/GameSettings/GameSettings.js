@@ -1,7 +1,6 @@
 import "./GameSettings.scss";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 import axios from "axios";
 
 import Loading from "../../Loading/Loading";
@@ -156,7 +155,6 @@ const GameSettings = ({
   return (
     <section className={`${screenVersion}-game-settings-container`}>
       {renderGameSettings()}
-      <ToastContainer autoClose={3000} theme="dark" />
     </section>
   );
 };
