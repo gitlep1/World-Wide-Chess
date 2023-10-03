@@ -128,6 +128,10 @@ const MultiPlayerGameSettings = ({
   };
 
   const handleDelete = async (gameID) => {
+    setPlayer1Data({});
+    setPlayer2Data({});
+    setGame({});
+
     await axios
       .delete(`${API}/multi-games/${gameID}`, {
         headers: {

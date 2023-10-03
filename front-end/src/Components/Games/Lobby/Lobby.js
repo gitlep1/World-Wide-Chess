@@ -369,7 +369,7 @@ const Lobbypage = ({
         result = "The host accepted the challenge.";
         toast.dismiss(toastId);
         clearTimeout(timeoutId);
-        hostAccepted(gameData);
+        navigate(`/Room/${gameData.id}/Settings`);
         resolve(result);
       });
 
@@ -380,11 +380,6 @@ const Lobbypage = ({
         reject(result);
       });
     });
-  };
-
-  const hostAccepted = (gameData) => {
-    console.log(gameData);
-    navigate(`/Room/${gameData.id}/Settings`);
   };
 
   const notify = (gameData) => {
