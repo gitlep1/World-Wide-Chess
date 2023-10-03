@@ -25,6 +25,8 @@ const MultiPlayerGameSettings = ({
   const { gameID } = useParams();
   const navigate = useNavigate();
 
+  const [toastId, setToastId] = useState("");
+
   useEffect(() => {
     socket.emit("get-multi-game-data", gameID);
 
@@ -40,6 +42,12 @@ const MultiPlayerGameSettings = ({
 
     socket.on("request-to-join", (player2Data) => {
       handleAskToJoin(player2Data);
+    });
+
+    socket.on("player-joined", (gameData, player1, player2) => {
+      setGame(gameData);
+      setPlayer1Data(player1);
+      setPlayer2Data(player2);
     });
 
     socket.on("multi-started", (gameData, playerOneData, playerTwoData) => {
@@ -72,18 +80,32 @@ const MultiPlayerGameSettings = ({
   }, [error, navigate, player1Data.id, player1Data.username, user.id]);
 
   const handleAskToJoin = (player2Data) => {
-    toast(
+    const toastid = toast(
       <ToastAskToJoin
         socket={socket}
         token={token}
         game={game}
+        user={user}
         player2Data={player2Data}
+        onAccept={handleAccept}
+        onDeny={handleDeny}
       />,
       {
         containerId: "askToJoin",
       }
     );
-    return toast.clearWaitingQueue();
+    setToastId(toastid);
+    toast.clearWaitingQueue();
+  };
+
+  const handleAccept = (game, player1Data, player2Data) => {
+    socket.emit("accept-game", game, player1Data, player2Data);
+    toast.dismiss(toastId);
+  };
+
+  const handleDeny = (player2Data) => {
+    socket.emit("deny-game", player2Data);
+    toast.dismiss(toastId);
   };
 
   const handleStartGame = async () => {

@@ -48,8 +48,11 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
   });
 
   socket.on("ask-to-join", async (gameData, player2ID) => {
-    const checkIfGameExists = await getGameByID(gameData.id);
+    console.log(
+      `=== SocketID: ${socketId} asked to join room: ${gameData.id} ===`
+    );
 
+    const checkIfGameExists = await getGameByID(gameData.id);
     const checkIfUserExists =
       (await getUserByID(player2ID)) || (await getGuestByID(player2ID));
 
@@ -62,6 +65,7 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
       username: checkIfUserExists.username,
       wins: checkIfUserExists.wins,
       loss: checkIfUserExists.loss,
+      socketid: socketId,
     };
 
     socket.emit("asking-host");
@@ -69,23 +73,29 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
     io.in(`/Room/${gameData.id}/Settings`).emit("request-to-join", player2Data);
   });
 
-  socket.on("accept-game", async (gameData, player2Data) => {
-    console.log(`=== ${player2Data.username} joined room: ${gameData.id} === \n
-    Game Data: ${gameData}`);
+  socket.on("accept-game", async (gameData, player1Data, player2Data) => {
+    console.log(`=== ${player2Data.username} joined room: ${gameData.id} ===`);
+    console.log(player1Data);
+    console.log(player2Data);
+    console.log(gameData);
 
     const multiGame = await getGameByID(gameData.id);
 
-    const checkIfUserExists =
+    const checkIf1stUserExists =
+      (await getUserByID(player1Data.id)) ||
+      (await getGuestByID(player1Data.id));
+
+    const checkIf2ndUserExists =
       (await getUserByID(player2Data.id)) ||
       (await getGuestByID(player2Data.id));
 
     const startingPositions =
       "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
-    if (multiGame && checkIfUserExists) {
+    if (multiGame && checkIf1stUserExists && checkIf2ndUserExists) {
       const updatedGameData = {
         botId: null,
-        player2id: checkIfUserExists.id,
+        player2id: checkIf2ndUserExists.id,
         player1color: "w",
         player2color: "b",
         botColor: null,
@@ -96,9 +106,31 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
       const updateGameData = await updateGame(multiGame.id, updatedGameData);
 
       if (updateGameData) {
-        socket.join(`/Room/${gameData.id}/Settings`);
-        socket.emit("host-accepted", multiGame);
-        io.in(`/Room/${gameData.id}/Settings`).emit("player-joined", multiGame);
+        const player2SocketId = player2Data.socketid;
+
+        const playerOneData = {
+          id: checkIf1stUserExists.id,
+          username: checkIf1stUserExists.username,
+          wins: checkIf1stUserExists.wins,
+          loss: checkIf1stUserExists.loss,
+          ties: checkIf1stUserExists.ties,
+        };
+
+        const playerTwoData = {
+          id: checkIf2ndUserExists.id,
+          username: checkIf2ndUserExists.username,
+          wins: checkIf2ndUserExists.wins,
+          loss: checkIf2ndUserExists.loss,
+          ties: checkIf2ndUserExists.ties,
+        };
+
+        io.to(player2SocketId).emit("host-accepted", updateGameData);
+        io.in(`/Room/${gameData.id}/Settings`).emit(
+          "player-joined",
+          updateGameData,
+          playerOneData,
+          playerTwoData
+        );
       } else {
         const errorMessage = `Could not update game with ID: ${gameData.id}`;
         socket.emit("accept-game-error", new Error(errorMessage));
@@ -109,10 +141,11 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
     }
   });
 
-  socket.on("deny-game", async () => {
+  socket.on("deny-game", async (player2Data) => {
     console.log(`=== SocketID: ${socketId} denied game ===`);
 
-    socket.emit("host-denied");
+    const player2SocketId = player2Data.socketid;
+    io.to(player2SocketId).emit("host-denied");
   });
 
   socket.on("start-multi-player-game", async (gameData) => {

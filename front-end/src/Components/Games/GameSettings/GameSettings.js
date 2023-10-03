@@ -110,11 +110,13 @@ const GameSettings = ({
     } else {
       return (
         <section className="game-settings-options-container">
-          <h1 className="game-settings-room-name">
-            Room Name: {game.room_name}
-            <br />
-            Host: {game.player1}
-          </h1>
+          <div className="game-settings-room-header">
+            <h1>Room Name: {game.room_name}</h1>
+
+            <h3>Host: {player1Data.username}</h3>
+
+            <h3>Opponent: {player2Data.username}</h3>
+          </div>
 
           <div className="game-settings-options">
             {game.is_multiplayer ? (

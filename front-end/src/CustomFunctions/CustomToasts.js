@@ -1,14 +1,21 @@
 import "./CustomToasts.scss";
 import { Button } from "react-bootstrap";
 
-const ToastAskToJoin = ({ socket, token, game, player2Data }) => {
+const ToastAskToJoin = ({
+  socket,
+  token,
+  game,
+  user,
+  player2Data,
+  onAccept,
+  onDeny,
+}) => {
   const handleAccept = () => {
-    socket.emit("accept-game", game, player2Data);
+    onAccept(game, user, player2Data);
   };
 
   const handleDeny = () => {
-    console.log("inside deny");
-    socket.emit("deny-game");
+    onDeny(player2Data);
   };
 
   return (

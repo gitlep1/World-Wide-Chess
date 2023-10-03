@@ -2,7 +2,7 @@ import "./Lobby.scss";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { nanoid } from "nanoid";
-import { useSpring, animated } from "react-spring";
+import { useSpring, animated, to } from "react-spring";
 import { Modal, Button, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { MdManageSearch } from "react-icons/md";
@@ -99,7 +99,7 @@ const Lobbypage = ({
 
     // idea 1: \\
     // store timestamp
-    // lobby checks how much time has passed sine the timestamp
+    // lobby checks how much time has passed since the timestamp
 
     // idea 2: \\
     // store timestamp + 60 secs
@@ -289,88 +289,103 @@ const Lobbypage = ({
     }
   };
 
-  const handlePlayerJoining = async () => {
-    const timeoutPromise = new Promise((resolve, reject) => {
-      setTimeout(() => {
-        reject(new Error("Timeout"));
-      }, 5000); // Set a 5-second timeout
-    });
-
-    const handlePlayerJoiningPromise = new Promise(async (resolve, reject) => {
-      console.log("inside promise");
-
-      socket.on("host-accepted", (gameData) => {
-        console.log(gameData);
-        resolve({ data: gameData });
-      });
-
-      socket.on("host-denied", () => {
-        console.log("denied");
-        reject(new Error("Host denied the request"));
-      });
-    });
-
-    try {
-      // Use Promise.race to resolve when either promise resolves or rejects.
-      const result = await Promise.race([
-        handlePlayerJoiningPromise,
-        timeoutPromise,
-      ]);
-
-      // Notify using React-Toastify based on the result.
-      toast.success("Joining Game ...", {
-        containerId: "askToJoin",
-      });
-      console.log(result.data);
-    } catch (err) {
-      // Notify an error using React-Toastify.
-      toast.error("Host did not decide in time", {
-        containerId: "askToJoin",
-      });
-      setError(err.message);
-    }
-  };
-
   // const handlePlayerJoining = async () => {
-  //   await toast
-  //     .promise(handlePlayerJoiningPromise(), {
-  //       containerId: "askToJoin",
-  //       pending: "Asking Host ...",
-  //       success: "Joining Game ...",
-  //       error: "Error",
-  //     })
-  //     .then((res) => {
-  //       console.log(res.data);
-  //       // notify(res.data);
-  //     })
-  //     .catch((err) => {
-  //       setError(err.message);
-  //     });
-  // };
-
-  // const handlePlayerJoiningPromise = async () => {
-  //   console.log("inside promise func");
-  //   return new Promise(async (resolve, reject) => {
-  //     const timeoutId = setTimeout(() => {
-  //       console.log("timeout");
-  //       clearTimeout(timeoutId);
+  //   const timeoutPromise = new Promise((resolve, reject) => {
+  //     setTimeout(() => {
   //       reject(new Error("Timeout"));
   //     }, 5000);
+  //   });
+
+  //   const handlePlayerJoiningPromise = new Promise(async (resolve, reject) => {
+  //     console.log("inside promise");
 
   //     socket.on("host-accepted", (gameData) => {
-  //       console.log("accepted");
   //       console.log(gameData);
-  //       // navigate(`/Room/${gameData.id}`);
   //       resolve({ data: gameData });
   //     });
 
   //     socket.on("host-denied", () => {
   //       console.log("denied");
-  //       // navigate(`/Room/${gameData.id}`);
   //       reject(new Error("Host denied the request"));
   //     });
+
+  //     return () => {
+  //       socket.off("host-accepted");
+  //       socket.off("host-denied");
+  //     };
   //   });
+
+  //   try {
+  //     // Use Promise.race to resolve when either promise resolves or rejects.
+  //     const result = await Promise.race([
+  //       handlePlayerJoiningPromise,
+  //       timeoutPromise,
+  //     ]);
+
+  //     // Notify using React-Toastify based on the result.
+  //     toast.success("Joining Game ...", {
+  //       containerId: "general-toast",
+  //     });
+  //     console.log(result.data);
+  //   } catch (err) {
+  //     // Notify an error using React-Toastify.
+  //     toast.error("Host did not decide in time", {
+  //       containerId: "general-toast",
+  //     });
+  //     setError(err.message);
+  //   }
   // };
+
+  const handlePlayerJoining = async () => {
+    handlePlayerJoiningPromise()
+      .then((result) => {
+        console.log("The result:", result);
+        toast.success(result, {
+          containerId: "general-toast",
+        });
+      })
+      .catch((error) => {
+        console.log("The error:", error);
+        toast.error(error, {
+          containerId: "general-toast",
+        });
+      });
+  };
+
+  const handlePlayerJoiningPromise = async () => {
+    const toastId = toast.info("Asking Host...", {
+      containerId: "general-toast",
+    });
+
+    return new Promise(async (resolve, reject) => {
+      let result = "";
+
+      const timeoutId = setTimeout(() => {
+        result = "The host did not respond in time.";
+        reject(result);
+      }, 5000);
+
+      await socket.on("host-accepted", async (gameData) => {
+        result = "The host accepted the challenge.";
+        toast.dismiss(toastId);
+        clearTimeout(timeoutId);
+        hostAccepted(gameData);
+        resolve(result);
+      });
+
+      await socket.on("host-denied", async () => {
+        result = "The host denied the challenge.";
+        toast.dismiss(toastId);
+        clearTimeout(timeoutId);
+        reject(result);
+      });
+    });
+  };
+
+  const hostAccepted = (gameData) => {
+    console.log(gameData);
+    navigate(`/Room/${gameData.id}/Settings`);
+  };
 
   const notify = (gameData) => {
     toast.success({
