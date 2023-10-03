@@ -58,31 +58,61 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
     }
 
     const player2Data = {
+      id: checkIfUserExists.id,
       username: checkIfUserExists.username,
       wins: checkIfUserExists.wins,
       loss: checkIfUserExists.loss,
     };
 
+    socket.emit("asking-host");
+
     io.in(`/Room/${gameData.id}/Settings`).emit("request-to-join", player2Data);
   });
 
-  socket.on("multi-room-joined", async (gameData) => {
-    console.log(`=== SocketID: ${socketId} joined room: ${gameData.id} === \n
+  socket.on("accept-game", async (gameData, player2Data) => {
+    console.log(`=== ${player2Data.username} joined room: ${gameData.id} === \n
     Game Data: ${gameData}`);
 
     const multiGame = await getGameByID(gameData.id);
 
-    if (multiGame) {
-      socket.join(`/Room/${gameData.id}/Settings`);
-      io.in(`/Room/${gameData.id}/Settings`).emit(
-        "multi-room-settings",
-        multiGame
-      );
+    const checkIfUserExists =
+      (await getUserByID(player2Data.id)) ||
+      (await getGuestByID(player2Data.id));
+
+    const startingPositions =
+      "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
+    if (multiGame && checkIfUserExists) {
+      const updatedGameData = {
+        botId: null,
+        player2id: checkIfUserExists.id,
+        player1color: "w",
+        player2color: "b",
+        botColor: null,
+        current_positions: startingPositions,
+        in_progress: true,
+        game_time: 0,
+      };
+      const updateGameData = await updateGame(multiGame.id, updatedGameData);
+
+      if (updateGameData) {
+        socket.join(`/Room/${gameData.id}/Settings`);
+        socket.emit("host-accepted", multiGame);
+        io.in(`/Room/${gameData.id}/Settings`).emit("player-joined", multiGame);
+      } else {
+        const errorMessage = `Could not update game with ID: ${gameData.id}`;
+        socket.emit("accept-game-error", new Error(errorMessage));
+      }
     } else {
-      const errorMessage = `Could not get game with ID: ${gameData.id}`;
-      socket.emit("multi-room-created-error", new Error(errorMessage));
-      socket.leave(`/Room/${gameData.id}/Settings`);
+      const errorMessage = `Could not get game with ID: ${gameData.id} or user does not exist`;
+      socket.emit("accept-game-error", new Error(errorMessage));
     }
+  });
+
+  socket.on("deny-game", async () => {
+    console.log(`=== SocketID: ${socketId} denied game ===`);
+
+    socket.emit("host-denied");
   });
 
   socket.on("start-multi-player-game", async (gameData) => {

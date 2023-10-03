@@ -64,6 +64,18 @@ const CustomToastContainers = () => {
       />
 
       <ToastContainer
+        containerId={"loadChessMatchData"}
+        autoClose={4000}
+        theme="dark"
+        limit={1}
+        position="top-left"
+        closeOnClick={true}
+        pauseOnHover={false}
+        pauseOnFocusLoss={false}
+        enableMultiContainer
+      />
+
+      <ToastContainer
         containerId={"GameEnded"}
         autoClose={4000}
         theme="dark"

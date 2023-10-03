@@ -1,10 +1,15 @@
 import "./CustomToasts.scss";
 import { Button } from "react-bootstrap";
 
-const ToastAskToJoin = ({ socket, token, player2Data }) => {
-  const handleAccept = async () => {};
+const ToastAskToJoin = ({ socket, token, game, player2Data }) => {
+  const handleAccept = () => {
+    socket.emit("accept-game", game, player2Data);
+  };
 
-  const handleDeny = async () => {};
+  const handleDeny = () => {
+    console.log("inside deny");
+    socket.emit("deny-game");
+  };
 
   return (
     <div className="toastAskContainer">
@@ -15,10 +20,10 @@ const ToastAskToJoin = ({ socket, token, player2Data }) => {
       <div>
         Wins: {player2Data.wins} Loss: {player2Data.loss}
       </div>
-      <Button variant="success" onClick={() => console.log("clicked Accept")}>
+      <Button variant="success" onClick={handleAccept}>
         Accept
       </Button>{" "}
-      <Button variant="danger" onClick={() => console.log("clicked Deny")}>
+      <Button variant="danger" onClick={handleDeny}>
         Deny
       </Button>
     </div>

@@ -61,14 +61,9 @@ const Lobbypage = ({
       setMultiGamesCopy(multiGames);
     });
 
-    socket.on("host-accepted", (gameData) => {
-      console.log(gameData);
-      // navigate(`/Room/${gameData.id}`);
-    });
-
-    socket.on("host-denied", () => {
-      console.log("denied");
-      // navigate(`/Room/${gameData.id}`);
+    socket.on("asking-host", async () => {
+      console.log("asked host");
+      handlePlayerJoining();
     });
 
     socket.on("get-single-games-error", (error) => {
@@ -84,6 +79,7 @@ const Lobbypage = ({
       socket.off("get-single-games-error");
       socket.off("multi-games");
       socket.off("get-multi-games-error");
+      socket.off("asking-host");
       socket.off("host-accepted");
       socket.off("host-denied");
     };
@@ -272,39 +268,9 @@ const Lobbypage = ({
       }
     }
 
-    const addDataToGame = async (UpdatedMultiGameData) => {
-      await axios
-        .put(`${API}/multi-games/${gameData.id}`, UpdatedMultiGameData, {
-          headers: {
-            authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res) => {
-          socket.emit("get-multi-games");
-          socket.emit("multi-room-joined", res.data.payload);
-          navigate(`/Room/${res.data.payload.id}/Settings`);
-        })
-        .catch((err) => {
-          setError(err.response.data);
-        });
-    };
-
     if (gameData.room_password) {
       if (gameData.room_password === joinWithPassword) {
         socket.emit("ask-to-join", gameData, player2ID);
-        // await toast
-        //   .promise(addDataToGame(), {
-        //     pending: "Joining Game ...",
-        //     success: "Joined Game ...",
-        //     error: "Error",
-        //   })
-        //   .then((res) => {
-        //     // console.log(res.data);
-        //     notify(res.data);
-        //   })
-        //   .catch((err) => {
-        //     setError(err.message);
-        //   });
       } else {
         return toast.error("Incorrect room password.", {
           containerId: "toast-notify",
@@ -312,32 +278,95 @@ const Lobbypage = ({
       }
     } else {
       socket.emit("ask-to-join", gameData, player2ID);
-
-      // await toast
-      //   .promise(addDataToGame(), {
-      //     pending: "Asking host ...",
-      //     success: "Joining Game ...",
-      //     error: "Error",
-      //   })
-      //   .then((res) => {
-      //     notify(res.data);
-      //   })
-      //   .catch((err) => {
-      //     setError(err.message);
-      //   });
     }
   };
+
+  const handlePlayerJoining = async () => {
+    const timeoutPromise = new Promise((resolve, reject) => {
+      setTimeout(() => {
+        reject(new Error("Timeout"));
+      }, 5000); // Set a 5-second timeout
+    });
+
+    const handlePlayerJoiningPromise = new Promise(async (resolve, reject) => {
+      console.log("inside promise");
+
+      socket.on("host-accepted", (gameData) => {
+        console.log(gameData);
+        resolve({ data: gameData });
+      });
+
+      socket.on("host-denied", () => {
+        console.log("denied");
+        reject(new Error("Host denied the request"));
+      });
+    });
+
+    try {
+      // Use Promise.race to resolve when either promise resolves or rejects.
+      const result = await Promise.race([
+        handlePlayerJoiningPromise,
+        timeoutPromise,
+      ]);
+
+      // Notify using React-Toastify based on the result.
+      toast.success("Joining Game ...", {
+        containerId: "askToJoin",
+      });
+      console.log(result.data);
+    } catch (err) {
+      // Notify an error using React-Toastify.
+      toast.error("Host did not decide in time", {
+        containerId: "askToJoin",
+      });
+      setError(err.message);
+    }
+  };
+
+  // const handlePlayerJoining = async () => {
+  //   await toast
+  //     .promise(handlePlayerJoiningPromise(), {
+  //       containerId: "askToJoin",
+  //       pending: "Asking Host ...",
+  //       success: "Joining Game ...",
+  //       error: "Error",
+  //     })
+  //     .then((res) => {
+  //       console.log(res.data);
+  //       // notify(res.data);
+  //     })
+  //     .catch((err) => {
+  //       setError(err.message);
+  //     });
+  // };
+
+  // const handlePlayerJoiningPromise = async () => {
+  //   console.log("inside promise func");
+  //   return new Promise(async (resolve, reject) => {
+  //     const timeoutId = setTimeout(() => {
+  //       console.log("timeout");
+  //       clearTimeout(timeoutId);
+  //       reject(new Error("Timeout"));
+  //     }, 5000);
+
+  //     socket.on("host-accepted", (gameData) => {
+  //       console.log("accepted");
+  //       console.log(gameData);
+  //       // navigate(`/Room/${gameData.id}`);
+  //       resolve({ data: gameData });
+  //     });
+
+  //     socket.on("host-denied", () => {
+  //       console.log("denied");
+  //       // navigate(`/Room/${gameData.id}`);
+  //       reject(new Error("Host denied the request"));
+  //     });
+  //   });
+  // };
 
   const notify = (gameData) => {
     toast.success({
       containerId: "notify-success",
-      position: "top-center",
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: false,
-      pauseOnFocusLoss: false,
-      draggable: true,
-      progress: undefined,
     });
     setTimeout(() => {
       navigate(`/Room/${gameData.id}/Settings`);

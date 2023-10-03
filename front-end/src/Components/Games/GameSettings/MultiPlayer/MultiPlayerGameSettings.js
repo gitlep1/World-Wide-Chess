@@ -76,6 +76,7 @@ const MultiPlayerGameSettings = ({
       <ToastAskToJoin
         socket={socket}
         token={token}
+        game={game}
         player2Data={player2Data}
       />,
       {
