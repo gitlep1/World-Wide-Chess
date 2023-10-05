@@ -25,20 +25,30 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
     }
   });
 
-  socket.on("multi-room-created", async (gameData) => {
+  socket.on("multi-room-created", async (gameData, userID) => {
     console.log(
       `=== New room created by socketID: ${socketId} \n Game Data: `,
       gameData,
       "==="
     );
 
+    const checkIfUserExists = await getUserByID(userID);
     const multiGame = await getGameByID(gameData.id);
 
-    if (multiGame) {
+    if (checkIfUserExists && multiGame) {
+      const player1Data = {
+        id: checkIfUserExists.id,
+        username: checkIfUserExists.username,
+        wins: checkIfUserExists.wins,
+        loss: checkIfUserExists.loss,
+        ties: checkIfUserExists.ties,
+      };
+
       socket.join(`/Room/${gameData.id}/Settings`);
       io.in(`/Room/${gameData.id}/Settings`).emit(
         "multi-room-settings",
-        multiGame
+        multiGame,
+        player1Data
       );
     } else {
       const errorMessage = `Could not get game with ID: ${gameData.id}`;

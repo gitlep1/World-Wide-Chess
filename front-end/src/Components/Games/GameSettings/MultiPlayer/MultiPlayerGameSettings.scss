@@ -1,8 +1,79 @@
+@mixin game-settings-player-info {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+
+  h2,
+  h3 {
+    grid-column: 1 / -1;
+    font-size: 35px;
+  }
+
+  .playerImg {
+    grid-column: 1 / -1;
+    justify-self: center;
+    margin-bottom: 3em;
+  }
+
+  h4:nth-of-type(1) {
+    margin-bottom: 1em;
+    font-size: 30px;
+  }
+
+  h4:nth-of-type(2) {
+    font-size: 30px;
+  }
+
+  h4:nth-of-type(3) {
+    grid-column: 1 / -1;
+    font-size: 30px;
+  }
+}
+
 .multi-player-game-settings-container {
-  border: 5px solid brown;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   align-items: center;
   justify-content: center;
   text-align: center;
+  height: 100%;
+  width: 100%;
+
+  .game-settings-player1-info {
+    @include game-settings-player-info;
+  }
+
+  .game-settings-player2-info {
+    @include game-settings-player-info;
+  }
+
+  .multi-game-settings-buttons-container {
+    grid-column: 1 / -1;
+
+    Button {
+      width: 50%;
+    }
+  }
+}
+
+.arrow-up-icon {
+  font-size: 30px;
+  color: rgb(7, 209, 7);
+}
+
+.arrow-down-icon {
+  font-size: 30px;
+  color: red;
+}
+
+.equal-icon-container {
+  font-size: 20px;
+  background-color: rgb(0, 119, 255);
+  border-radius: 1em;
+
+  .equal-icon {
+    color: black;
+    font-size: 15px;
+    height: 15px;
+    width: 25px;
+  }
 }

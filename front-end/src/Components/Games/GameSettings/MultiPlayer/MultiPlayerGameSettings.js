@@ -1,6 +1,9 @@
 import "./MultiPlayerGameSettings.scss";
 import { useEffect, useState } from "react";
 import { Button, Image } from "react-bootstrap";
+import { FaEquals } from "react-icons/fa";
+import { RiArrowUpCircleFill, RiArrowDownCircleFill } from "react-icons/ri";
+// import { PiEqualsFill } from "react-icons/pi";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -166,6 +169,79 @@ const MultiPlayerGameSettings = ({
       });
   };
 
+  player1Data.wins = 5;
+  player2Data.loss = 10;
+  player1Data.ties = 3;
+  player2Data.ties = 3;
+
+  const renderPlayer1WinIcons = () => {
+    if (player1Data.wins > player2Data.wins) {
+      return <RiArrowUpCircleFill className="arrow-up-icon" />;
+    } else if (player1Data.wins < player2Data.wins) {
+      return <RiArrowDownCircleFill className="arrow-down-icon" />;
+    } else if (player1Data.wins === player2Data.wins) {
+      return <FaEquals className="equal-icon" />;
+    }
+  };
+
+  const renderPlayer1LossIcons = () => {
+    if (player1Data.loss > player2Data.loss) {
+      return <RiArrowUpCircleFill className="arrow-up-icon" />;
+    } else if (player1Data.loss < player2Data.loss) {
+      return <RiArrowDownCircleFill className="arrow-down-icon" />;
+    } else if (player1Data.loss === player2Data.loss) {
+      return <FaEquals className="equal-icon" />;
+    }
+  };
+
+  const renderPlayer1TieIcons = () => {
+    if (player1Data.ties > player2Data.ties) {
+      return <RiArrowUpCircleFill className="arrow-up-icon" />;
+    } else if (player1Data.ties < player2Data.ties) {
+      return <RiArrowDownCircleFill className="arrow-down-icon" />;
+    } else if (player1Data.ties === player2Data.ties) {
+      return (
+        <span className="equal-icon-container">
+          <FaEquals className="equal-icon" />
+        </span>
+      );
+    }
+  };
+
+  const renderPlayer2WinIcons = () => {
+    if (player2Data.wins > player1Data.wins) {
+      return <RiArrowUpCircleFill className="arrow-up-icon" />;
+    } else if (player2Data.wins < player1Data.wins) {
+      return <RiArrowDownCircleFill className="arrow-down-icon" />;
+    } else if (player2Data.wins === player1Data.wins) {
+      return <FaEquals className="equal-icon" />;
+    }
+  };
+
+  const renderPlayer2LossIcons = () => {
+    if (player2Data.loss > player1Data.loss) {
+      return <RiArrowUpCircleFill className="arrow-up-icon" />;
+    } else if (player2Data.loss < player1Data.loss) {
+      return <RiArrowDownCircleFill className="arrow-down-icon" />;
+    } else if (player2Data.loss === player1Data.loss) {
+      return <FaEquals className="equal-icon" />;
+    }
+  };
+
+  const renderPlayer2TieIcons = () => {
+    if (player2Data.ties > player1Data.ties) {
+      return <RiArrowUpCircleFill className="arrow-up-icon" />;
+    } else if (player2Data.ties < player1Data.ties) {
+      return <RiArrowDownCircleFill className="arrow-down-icon" />;
+    } else if (player2Data.ties === player1Data.ties) {
+      return (
+        <span className="equal-icon-container">
+          <FaEquals className="equal-icon" />
+        </span>
+      );
+    }
+  };
+
   return (
     <section className="multi-player-game-settings-container">
       <div className="game-settings-player1-info">
@@ -175,32 +251,56 @@ const MultiPlayerGameSettings = ({
           src={player1Data.profileimg}
           alt="player 1"
           className="playerImg"
+          fluid
+          rounded
         />
-        <h4>Wins: {player1Data.wins}</h4>
-        <h4>Loss: {player1Data.loss}</h4>
-        <h4>Ties: {player1Data.ties}</h4>
+        <h4>
+          {renderPlayer1WinIcons()} Wins: {player1Data.wins}
+        </h4>
+        <h4>
+          {renderPlayer1LossIcons()} Loss: {player1Data.loss}
+        </h4>
+        <h4>
+          {renderPlayer1TieIcons()} Ties: {player1Data.ties}
+        </h4>
       </div>
 
       <div className="game-settings-player2-info">
         <h2>Opponent</h2>
-        <h3>{player2Data.username}</h3>
-        <Image
-          src={player2Data.profileimg}
-          alt="player 2"
-          className="playerImg"
-        />
-        <h4>Wins: {player2Data.wins}</h4>
-        <h4>Loss: {player2Data.loss}</h4>
-        <h4>Ties: {player2Data.ties}</h4>
+        {Object.keys(player2Data).length > 0 ? (
+          <>
+            <h3>{player2Data.username}</h3>
+            <Image
+              src={player2Data.profileimg}
+              alt="player 2"
+              className="playerImg"
+              fluid
+              rounded
+            />
+            <h4>
+              {renderPlayer2WinIcons()} Wins: {player2Data.wins}
+            </h4>
+            <h4>
+              {renderPlayer2LossIcons()} Loss: {player2Data.loss}
+            </h4>
+            <h4>
+              {renderPlayer2TieIcons()} Ties: {player2Data.ties}
+            </h4>
+          </>
+        ) : (
+          <h3>Searching ...</h3>
+        )}
       </div>
 
       {error ? (
         <h1>Host Cancelled Game</h1>
       ) : user.id === game.player1id ? (
-        <div>
-          <Button onClick={handleStartGame} variant="dark">
+        <div className="multi-game-settings-buttons-container">
+          <Button onClick={handleStartGame} variant="success">
             Start Game
-          </Button>{" "}
+          </Button>
+          <br />
+          <br />
           <Button
             variant="danger"
             onClick={() => {
@@ -211,7 +311,7 @@ const MultiPlayerGameSettings = ({
           </Button>
         </div>
       ) : (
-        <>
+        <div className="multi-game-settings-buttons-container">
           <h3>Waiting for host to start</h3>
           <Button
             variant="dark"
@@ -221,7 +321,7 @@ const MultiPlayerGameSettings = ({
           >
             Leave Game
           </Button>
-        </>
+        </div>
       )}
       {/* {game.in_progress ? navigate(`/Room/${game.id}`) : null} */}
     </section>

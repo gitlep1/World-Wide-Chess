@@ -1,14 +1,10 @@
 import "./GameSettings.scss";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
 
 import Loading from "../../Loading/Loading";
 import SinglePlayerGameSettings from "./SinglePlayer/SinglePlayerGameSettings";
 import MultiPlayerGameSettings from "./MultiPlayer/MultiPlayerGameSettings";
-import { Image } from "react-bootstrap";
-
-const API = process.env.REACT_APP_API_URL;
 
 const GameSettings = ({
   screenVersion,
@@ -16,8 +12,6 @@ const GameSettings = ({
   authenticated,
   token,
   socket,
-  isMultiplayer,
-  setIsMultiplayer,
   game,
   setGame,
   player1Data,
@@ -40,8 +34,9 @@ const GameSettings = ({
       setGame(gameData);
     });
 
-    socket.on("multi-room-settings", (gameData) => {
+    socket.on("multi-room-settings", (gameData, player1) => {
       setGame(gameData);
+      setPlayer1Data(player1);
     });
 
     socket.on("single-started", (gameData, player1Data, player2Data) => {
@@ -66,42 +61,6 @@ const GameSettings = ({
       socket.off("host-started-multi");
     };
   }, []); // eslint-disable-line
-
-  // const getRoomData = async () => {
-  //   setLoading(true);
-
-  //   if (isMultiplayer) {
-  //     return axios
-  //       .get(`${API}/multi-player-games/${gameID}`, {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       })
-  //       .then((res) => {
-  //         setLoading(false);
-  //         setGame(res.data.payload);
-  //       })
-  //       .catch((err) => {
-  //         console.log(err);
-  //         setLoading(false);
-  //       });
-  //   } else {
-  //     return axios
-  //       .get(`${API}/single-player-games/${gameID}`, {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       })
-  //       .then((res) => {
-  //         setLoading(false);
-  //         setGame(res.data.payload);
-  //       })
-  //       .catch((err) => {
-  //         console.log(err);
-  //         setLoading(false);
-  //       });
-  //   }
-  // };
 
   const renderGameSettings = () => {
     if (loading) {

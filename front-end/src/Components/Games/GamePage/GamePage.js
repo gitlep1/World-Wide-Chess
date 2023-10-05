@@ -9,8 +9,6 @@ const GamePage = ({
   authenticated,
   token,
   socket,
-  isMultiplayer,
-  setIsMultiplayer,
   game,
   setGame,
   player1Data,
@@ -84,7 +82,20 @@ const GamePage = ({
   };
 
   const renderBotOrPlayerGame = () => {
-    if (!isMultiplayer) {
+    if (game.is_multiplayer) {
+      return (
+        <MultiPlayerGame
+          screenVersion={screenVersion}
+          user={user}
+          game={game}
+          setGame={setGame}
+          player1Data={player1Data}
+          player2Data={player2Data}
+          forfeitNotify={forfeitNotify}
+          socket={socket}
+        />
+      );
+    } else {
       return (
         <SinglePlayerGame
           screenVersion={screenVersion}
@@ -98,19 +109,6 @@ const GamePage = ({
           forfeitNotify={forfeitNotify}
           socket={socket}
           token={token}
-        />
-      );
-    } else {
-      return (
-        <MultiPlayerGame
-          screenVersion={screenVersion}
-          user={user}
-          game={game}
-          setGame={setGame}
-          player1Data={player1Data}
-          player2Data={player2Data}
-          forfeitNotify={forfeitNotify}
-          socket={socket}
         />
       );
     }

@@ -233,7 +233,7 @@ const Lobbypage = ({
         })
         .then((res) => {
           socket.emit("get-multi-games");
-          socket.emit("multi-room-created", res.data.payload);
+          socket.emit("multi-room-created", res.data.payload, user.id);
           navigate(`/Room/${res.data.payload.id}/Settings`);
         })
         .catch((err) => {
