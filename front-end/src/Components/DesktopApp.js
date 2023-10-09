@@ -5,6 +5,8 @@ import { scaleRotate as SidebarMenu } from "react-burger-menu";
 import io from "socket.io-client";
 import Cookies from "js-cookie";
 
+import Loading from "../CustomLoaders/MainLoader";
+
 // Page stuff \\
 import Homepage from "./Homepage/Homepage";
 import LeaderBoard from "./Leaderboard/LeaderBoard";
@@ -52,7 +54,6 @@ const DesktopApp = ({
   handleLogout,
   resize,
   socket,
-  loading,
 }) => {
   const screenVersion = "desktop";
 
@@ -72,9 +73,7 @@ const DesktopApp = ({
     }
   };
 
-  return loading ? (
-    <p>loading...</p>
-  ) : (
+  return (
     <section id="desktop-outer-container" className="desktop-main-parent">
       <SidebarMenu
         outerContainerId={"desktop-outer-container"}

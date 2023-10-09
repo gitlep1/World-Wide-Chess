@@ -10,6 +10,8 @@ import Homepage from "./Homepage/Homepage";
 import LeaderBoard from "./Leaderboard/LeaderBoard";
 import Shop from "./Shop/Shop";
 
+import Loading from "../CustomLoaders/MainLoader";
+
 // Nav stuff \\
 import NavBar from "./NavBar/NavBar";
 import Sidebar from "./Sidebar/Sidebar";
@@ -50,7 +52,6 @@ const MobileApp = ({
   handleLogout,
   resize,
   socket,
-  loading,
 }) => {
   const screenVersion = "mobile";
 
@@ -70,9 +71,7 @@ const MobileApp = ({
     }
   };
 
-  return loading ? (
-    <p>loading...</p>
-  ) : (
+  return (
     <section id="mobile-outer-container" className="mobile-main-parent">
       <SidebarMenu
         outerContainerId={"mobile-outer-container"}
