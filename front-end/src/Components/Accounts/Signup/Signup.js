@@ -3,8 +3,9 @@ import { useState } from "react";
 import { Form, Button, Modal, Image } from "react-bootstrap";
 import { toast } from "react-toastify";
 import axios from "axios";
+
 import Logo from "../../../Images/Logo.png";
-import defaultProfImg from "../../../Images/DefaultProfImg.png";
+import defaultProfImg from "../../../Images/Profiles/DefaultProfImg.png";
 
 const API = process.env.REACT_APP_API_URL;
 

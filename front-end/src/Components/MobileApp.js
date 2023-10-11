@@ -10,8 +10,6 @@ import Homepage from "./Homepage/Homepage";
 import LeaderBoard from "./Leaderboard/LeaderBoard";
 import Shop from "./Shop/Shop";
 
-import Loading from "../CustomLoaders/MainLoader";
-
 // Nav stuff \\
 import NavBar from "./NavBar/NavBar";
 import Sidebar from "./Sidebar/Sidebar";

@@ -5,8 +5,6 @@ import { scaleRotate as SidebarMenu } from "react-burger-menu";
 import io from "socket.io-client";
 import Cookies from "js-cookie";
 
-import Loading from "../CustomLoaders/MainLoader";
-
 // Page stuff \\
 import Homepage from "./Homepage/Homepage";
 import LeaderBoard from "./Leaderboard/LeaderBoard";
@@ -212,12 +210,7 @@ const DesktopApp = ({
             <Route
               path="Shop"
               element={
-                <Shop
-                  screenVersion={screenVersion}
-                  user={user}
-                  authenticated={authenticated}
-                  token={token}
-                />
+                <Shop screenVersion={screenVersion} user={user} token={token} />
               }
             />
             {/* FoF Route */}

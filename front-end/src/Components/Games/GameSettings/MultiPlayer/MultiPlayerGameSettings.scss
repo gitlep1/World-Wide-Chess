@@ -8,6 +8,10 @@
     font-size: 35px;
   }
 
+  h4 {
+    font-size: 30px;
+  }
+
   .playerImg {
     grid-column: 1 / -1;
     justify-self: center;
@@ -53,27 +57,8 @@
       width: 50%;
     }
   }
-}
 
-.arrow-up-icon {
-  font-size: 30px;
-  color: rgb(7, 209, 7);
-}
-
-.arrow-down-icon {
-  font-size: 30px;
-  color: red;
-}
-
-.equal-icon-container {
-  font-size: 20px;
-  background-color: rgb(0, 119, 255);
-  border-radius: 1em;
-
-  .equal-icon {
-    color: black;
-    font-size: 15px;
-    height: 15px;
-    width: 25px;
+  .game-settings-stats-icon {
+    width: 30px;
   }
 }

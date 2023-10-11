@@ -9,9 +9,9 @@ import io from "socket.io-client";
 import DetectScreenSize from "../../../../CustomFunctions/DetectScreenSize";
 import controlWidth from "../../../../CustomFunctions/ControlWidth";
 
-import spectatorDark1 from "../../../../Images/spectatorDark1.png";
-import spectatorDark2 from "../../../../Images/spectatorDark2.png";
-import spectatorDark3 from "../../../../Images/spectatorDark3.png";
+import spectatorDark1 from "../../../../Images/Spectators/spectatorDark1.png";
+import spectatorDark2 from "../../../../Images/Spectators/spectatorDark2.png";
+import spectatorDark3 from "../../../../Images/Spectators/spectatorDark3.png";
 
 const API = process.env.REACT_APP_API_URL;
 

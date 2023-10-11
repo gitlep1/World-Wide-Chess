@@ -18,6 +18,11 @@
   overflow: auto;
   display: grid;
   grid-template-columns: $gridColumnValue;
+
+  .shop-error-message {
+    grid-column: 1 / -1;
+    color: red;
+  }
 }
 
 .desktop-shop-container {

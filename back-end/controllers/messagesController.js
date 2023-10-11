@@ -24,7 +24,6 @@ message.get("/", requireAuth(), async (req, res) => {
 });
 
 message.get("/user", requireAuth(), async (req, res) => {
-  const { uid } = req.query;
   const getAllUserMessages = await getallUserMessagesByID(uid);
 
   if (getAllUserMessages.length > 0) {

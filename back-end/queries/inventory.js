@@ -2,7 +2,7 @@ const db = require("../db/dbConfig.js");
 
 const getInventoryItemsByUserID = async (uid) => {
   try {
-    const inventory = await db.any(
+    const inventory = await db.oneOrNone(
       "SELECT * FROM inventory WHERE user_id = $1",
       uid
     );

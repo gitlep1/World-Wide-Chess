@@ -6,6 +6,10 @@ import { toast } from "react-toastify";
 import { nanoid } from "nanoid";
 import axios from "axios";
 
+import upArrow from "../../../../Images/Up_Green.png";
+import downArrow from "../../../../Images/Down_Red.png";
+import equalSign from "../../../../Images/Equal_Blue.png";
+
 import BotCard from "./BotCard/BotCard";
 
 const API = process.env.REACT_APP_API_URL;
@@ -128,6 +132,178 @@ const SinglePlayerGameSettings = ({
       });
   };
 
+  const renderPlayerWinIcons = () => {
+    if (player1Data.wins > botData.wins) {
+      return (
+        <Image
+          src={upArrow}
+          alt="arrow up icon"
+          className="game-settings-stats-icon"
+          fluid
+          rounded
+        />
+      );
+    } else if (player1Data.wins < botData.wins) {
+      return (
+        <Image
+          src={downArrow}
+          alt="arrow down icon"
+          className="game-settings-stats-icon"
+        />
+      );
+    } else if (player1Data.wins === botData.wins) {
+      return (
+        <Image
+          src={equalSign}
+          alt="equal sign icon"
+          className="game-settings-stats-icon"
+        />
+      );
+    }
+  };
+
+  const renderPlayerLossIcons = () => {
+    if (player1Data.loss > botData.loss) {
+      return (
+        <Image
+          src={upArrow}
+          alt="arrow up icon"
+          className="game-settings-stats-icon"
+        />
+      );
+    } else if (player1Data.loss < botData.loss) {
+      return (
+        <Image
+          src={downArrow}
+          alt="arrow down icon"
+          className="game-settings-stats-icon"
+        />
+      );
+    } else if (player1Data.loss === botData.loss) {
+      return (
+        <Image
+          src={equalSign}
+          alt="equal sign icon"
+          className="game-settings-stats-icon"
+        />
+      );
+    }
+  };
+
+  const renderPlayerTieIcons = () => {
+    if (player1Data.ties > botData.ties) {
+      return (
+        <Image
+          src={upArrow}
+          alt="arrow up icon"
+          className="game-settings-stats-icon"
+        />
+      );
+    } else if (player1Data.ties < botData.ties) {
+      return (
+        <Image
+          src={downArrow}
+          alt="arrow down icon"
+          className="game-settings-stats-icon"
+        />
+      );
+    } else if (player1Data.ties === botData.ties) {
+      return (
+        <Image
+          src={equalSign}
+          alt="equal sign icon"
+          className="game-settings-stats-icon"
+        />
+      );
+    }
+  };
+
+  const renderBotWinIcons = () => {
+    if (botData.wins > player1Data.wins) {
+      return (
+        <Image
+          src={upArrow}
+          alt="arrow up icon"
+          className="game-settings-stats-icon"
+          fluid
+          rounded
+        />
+      );
+    } else if (botData.wins < player1Data.wins) {
+      return (
+        <Image
+          src={downArrow}
+          alt="arrow down icon"
+          className="game-settings-stats-icon"
+        />
+      );
+    } else if (botData.wins === player1Data.wins) {
+      return (
+        <Image
+          src={equalSign}
+          alt="equal sign icon"
+          className="game-settings-stats-icon"
+        />
+      );
+    }
+  };
+
+  const renderBotLossIcons = () => {
+    if (botData.loss > player1Data.loss) {
+      return (
+        <Image
+          src={upArrow}
+          alt="arrow up icon"
+          className="game-settings-stats-icon"
+        />
+      );
+    } else if (botData.loss < player1Data.loss) {
+      return (
+        <Image
+          src={downArrow}
+          alt="arrow down icon"
+          className="game-settings-stats-icon"
+        />
+      );
+    } else if (botData.loss === player1Data.loss) {
+      return (
+        <Image
+          src={equalSign}
+          alt="equal sign icon"
+          className="game-settings-stats-icon"
+        />
+      );
+    }
+  };
+
+  const renderBotTieIcons = () => {
+    if (botData.ties > player1Data.ties) {
+      return (
+        <Image
+          src={upArrow}
+          alt="arrow up icon"
+          className="game-settings-stats-icon"
+        />
+      );
+    } else if (botData.ties < player1Data.ties) {
+      return (
+        <Image
+          src={downArrow}
+          alt="arrow down icon"
+          className="game-settings-stats-icon"
+        />
+      );
+    } else if (botData.ties === player1Data.ties) {
+      return (
+        <Image
+          src={equalSign}
+          alt="equal sign icon"
+          className="game-settings-stats-icon"
+        />
+      );
+    }
+  };
+
   return error ? (
     <h1>Game Cancelled</h1>
   ) : (
@@ -140,13 +316,21 @@ const SinglePlayerGameSettings = ({
             className="single-player-game-settings-title-profile-image"
           />
           <h1>{player1Data.username}</h1>
-          <h3>Rating: {player1Data.rating}</h3>
           {!player1Data.is_guest ? (
-            <div className="playerData-stats">
-              <h3 className="wins">Wins: {player1Data.wins}</h3>
-              <h3 className="loss">Loss: {player1Data.loss}</h3>
-              <h3 className="ties">Ties: {player1Data.ties}</h3>
-            </div>
+            <>
+              <h3>Rating: {player1Data.rating}</h3>
+              <div className="playerData-stats">
+                <h3 className="wins">
+                  {renderPlayerWinIcons()} Wins: {player1Data.wins}
+                </h3>
+                <h3 className="loss">
+                  {renderPlayerLossIcons()} Loss: {player1Data.loss}
+                </h3>
+                <h3 className="ties">
+                  {renderPlayerTieIcons()} Ties: {player1Data.ties}
+                </h3>
+              </div>
+            </>
           ) : null}
         </div>
         <h4>VS</h4>
@@ -160,9 +344,15 @@ const SinglePlayerGameSettings = ({
               />
               <h1>{botData.username}</h1>
               <div className="botData-stats">
-                <h3 className="wins">Wins: {botData.wins}</h3>
-                <h3 className="loss">Loss: {botData.loss}</h3>
-                <h3 className="ties">Ties: {botData.ties}</h3>
+                <h3 className="wins">
+                  {renderBotWinIcons()} Wins: {botData.wins}
+                </h3>
+                <h3 className="loss">
+                  {renderBotLossIcons()} Loss: {botData.loss}
+                </h3>
+                <h3 className="ties">
+                  {renderBotTieIcons()} Ties: {botData.ties}
+                </h3>
               </div>
             </>
           ) : (

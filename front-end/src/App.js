@@ -6,7 +6,7 @@ import io from "socket.io-client";
 import axios from "axios";
 import Cookies from "js-cookie";
 
-import MainLoader from "./CustomLoaders/MainLoader";
+import MainLoader from "./CustomLoaders/MainLoader/MainLoader";
 
 // App components \\
 import DesktopApp from "./Components/DesktopApp";
@@ -19,7 +19,7 @@ import MobileApp from "./Components/MobileApp";
 import DetectScreenSize from "./CustomFunctions/DetectScreenSize";
 import LeavingPage from "./CustomFunctions/LeavingPage";
 
-import DefaultProfImg from "./Images/DefaultProfImg.png";
+import DefaultProfImg from "./Images/Profiles/DefaultProfImg.png";
 
 import CustomToastContainers from "./CustomFunctions/CustomToastContainers";
 

@@ -1,6 +1,8 @@
 const express = require("express");
 const inventory = express.Router();
+const jwt = require("jsonwebtoken");
 
+const { getUserByID } = require("../queries/users");
 const {
   getInventoryItemsByUserID,
   addInventoryItem,
@@ -9,21 +11,41 @@ const { getShopItemsByID } = require("../queries/shop");
 
 const { requireAuth } = require("../validation/requireAuth");
 
-inventory.get("/:uid", requireAuth(), async (req, res) => {
-  const { uid } = req.params;
-  const getAInventory = await getInventoryItemsByUserID(uid);
+inventory.get("/", requireAuth(), async (req, res) => {
+  const { token } = req.user;
+  const decoded = jwt.decode(token);
 
-  if (getAInventory.length > 0) {
-    // console.log("=== GET inventory by ID", getAInventory, "===");
+  const checkIfUserExists = await getUserByID(decoded.user.id);
+
+  if (!checkIfUserExists) {
+    return res.status(404).send("User not found");
+  }
+
+  const getAInventory = await getInventoryItemsByUserID(checkIfUserExists.id);
+
+  if (getAInventory) {
+    console.log("=== GET inventory by ID", getAInventory, "===");
+
     res.status(200).json({ payload: getAInventory });
   } else {
-    res.status(404).send(`inventory for user: ${uid} was not found`);
+    res
+      .status(404)
+      .send(`inventory for user: ${checkIfUserExists.username} was not found`);
   }
 });
 
 inventory.post("/", requireAuth(), async (req, res) => {
+  const { token } = req.user;
+  const decoded = jwt.decode(token);
+
+  const checkIfUserExists = await getUserByID(decoded.user.id);
+
+  if (!checkIfUserExists) {
+    return res.status(404).send("User not found");
+  }
+
   const newInventoryData = {
-    user_id: req.body.user_id,
+    user_id: checkIfUserExists.id,
     item_id: req.body.item_id,
   };
 
@@ -33,7 +55,8 @@ inventory.post("/", requireAuth(), async (req, res) => {
     const createdInventoryItem = await addInventoryItem(newInventoryData);
 
     if (createdInventoryItem) {
-      // console.log("=== POST inventory", createdInventoryItem, "===");
+      console.log("=== POST inventory", createdInventoryItem, "===");
+
       res.status(201).json({ payload: createdInventoryItem });
     } else {
       res.status(404).send("Inventory item not created.");

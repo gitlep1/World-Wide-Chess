@@ -39,6 +39,7 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
       const player1Data = {
         id: checkIfUserExists.id,
         username: checkIfUserExists.username,
+        profileimg: checkIfUserExists.profileimg,
         wins: checkIfUserExists.wins,
         loss: checkIfUserExists.loss,
         ties: checkIfUserExists.ties,
@@ -73,6 +74,7 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
     const player2Data = {
       id: checkIfUserExists.id,
       username: checkIfUserExists.username,
+      profileimg: checkIfUserExists.profileimg,
       wins: checkIfUserExists.wins,
       loss: checkIfUserExists.loss,
       socketid: socketId,
@@ -121,6 +123,7 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
         const playerOneData = {
           id: checkIf1stUserExists.id,
           username: checkIf1stUserExists.username,
+          profileimg: checkIf1stUserExists.profileimg,
           wins: checkIf1stUserExists.wins,
           loss: checkIf1stUserExists.loss,
           ties: checkIf1stUserExists.ties,
@@ -129,6 +132,7 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
         const playerTwoData = {
           id: checkIf2ndUserExists.id,
           username: checkIf2ndUserExists.username,
+          profileimg: checkIf2ndUserExists.profileimg,
           wins: checkIf2ndUserExists.wins,
           loss: checkIf2ndUserExists.loss,
           ties: checkIf2ndUserExists.ties,
@@ -171,11 +175,29 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
       (await getGuestByID(gameData.player2id));
 
     if (player1Data && player2Data) {
+      const playerOneData = {
+        id: player1Data.id,
+        username: player1Data.username,
+        profileimg: player1Data.profileimg,
+        wins: player1Data.wins,
+        loss: player1Data.loss,
+        ties: player1Data.ties,
+      };
+
+      const playerTwoData = {
+        id: player2Data.id,
+        username: player2Data.username,
+        profileimg: player2Data.profileimg,
+        wins: player2Data.wins,
+        loss: player2Data.loss,
+        ties: player2Data.ties,
+      };
+
       io.in(`/Room/${gameData.id}/Settings`).emit(
         "multi-started",
         gameData,
-        player1Data,
-        player2Data
+        playerOneData,
+        playerTwoData
       );
     } else {
       const errorMessage = `Could not get player data: ${player1Data}, ${player2Data}`;
@@ -201,17 +223,35 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
         (await getGuestByID(multiGame.player2id));
 
       if (player1Data && player2Data) {
+        const playerOneData = {
+          id: player1Data.id,
+          username: player1Data.username,
+          profileimg: player1Data.profileimg,
+          wins: player1Data.wins,
+          loss: player1Data.loss,
+          ties: player1Data.ties,
+        };
+
+        const playerTwoData = {
+          id: player2Data.id,
+          username: player2Data.username,
+          profileimg: player2Data.profileimg,
+          wins: player2Data.wins,
+          loss: player2Data.loss,
+          ties: player2Data.ties,
+        };
+
         io.in(`/Room/${gameId}/Settings`).emit(
           "multi-player-reconnected",
           multiGame,
-          player1Data,
-          player2Data
+          playerOneData,
+          playerTwoData
         );
         io.in(`/Room/${gameId}`).emit(
           "multi-player-reconnected",
           multiGame,
-          player1Data,
-          player2Data
+          playerOneData,
+          playerTwoData
         );
       } else {
         const errorMessage = `Opponent has disconnected.`;
