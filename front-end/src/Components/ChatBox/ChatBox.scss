@@ -18,7 +18,7 @@
     align-items: center;
     justify-content: center;
     border-radius: 1em;
-    width: 90%;
+    width: 95%;
     font-size: 25px;
     margin-top: 1.5%;
   }
@@ -33,14 +33,14 @@
     position: absolute;
     top: 45%;
     left: 15%;
-    width: 90%;
+    width: 95%;
     height: 50%;
     font-size: 25px;
   }
 }
 
 .chat-box-container {
-  width: 55vw;
+  width: 65vw;
   height: 50vh;
   position: fixed;
   bottom: 0%;
@@ -126,7 +126,7 @@
 
     .chat-box-message {
       grid-column: 1 / -1;
-      width: 55vw;
+      width: 65vw;
       border-radius: 1em;
       position: fixed;
       bottom: 0%;

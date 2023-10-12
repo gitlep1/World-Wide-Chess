@@ -1,37 +1,84 @@
+import "./CustomModals.scss";
 import { useState, useEffect } from "react";
 import { Button, Image, Modal } from "react-bootstrap";
-import { useSpring, animated } from "react-spring";
-import "./CustomModals.scss";
+import { useSpring, animated, useSpringRef } from "react-spring";
+import { toast } from "react-toastify";
+import axios from "axios";
+
+const API = process.env.REACT_APP_API_URL;
 
 const ShopConfirmModal = ({
   user,
+  token,
   item,
   openConfirm,
   handleConfirm,
   handleCancel,
 }) => {
-  const [timer, setTimer] = useState(3);
+  const api = useSpringRef();
+
   const [loading, setLoading] = useState(false);
   const [buttonVariant, setButtonVariant] = useState("secondary");
+  const [canAfford, setCanAfford] = useState(false);
 
-  const [springProps, setSpringProps] = useSpring(() => ({
-    width: "0%",
-    config: { duration: 3500 },
-  }));
+  const [error, setError] = useState("");
+
+  const springConfirm = useSpring({
+    ref: api,
+  });
 
   useEffect(() => {
-    startTimer();
+    checkBalance();
   }, []); // eslint-disable-line
 
   const startTimer = () => {
+    api.start({
+      from: { width: "0%" },
+      to: { width: "100%" },
+      config: { duration: 4000 },
+    });
+
     setLoading(true);
     setButtonVariant("secondary");
-    setSpringProps({ width: "100%" });
 
     setTimeout(() => {
       setLoading(false);
       setButtonVariant("success");
-    }, 3500);
+    }, 4000);
+  };
+
+  const checkBalance = async () => {
+    try {
+      const checkUser = axios.get(`${API}/users/user`, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      });
+
+      const checkItem = axios.get(`${API}/shop/${item.id}`, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      });
+
+      const [checkUserResponse, checkItemResponse] = await axios.all([
+        checkUser,
+        checkItem,
+      ]);
+
+      const userData = checkUserResponse.data.payload;
+      const itemData = checkItemResponse.data.payload;
+
+      if (userData.chess_coins >= itemData.item_price) {
+        startTimer();
+        setCanAfford(true);
+      } else {
+        setLoading(false);
+        setCanAfford(false);
+      }
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (
@@ -68,22 +115,34 @@ const ShopConfirmModal = ({
         <Button variant="danger" onClick={handleCancel}>
           Cancel
         </Button>
-        <Button
-          variant={buttonVariant}
-          onClick={handleConfirm}
-          disabled={loading}
-          className="shop-modal-footer-confirm-botton"
-        >
-          Confirm
-          <animated.div
-            style={{
-              width: springProps.width,
+        {canAfford ? (
+          <Button
+            variant={buttonVariant}
+            onClick={() => {
+              handleConfirm(item);
             }}
-            className={`shop-modal-footer-confirm-botton-animation ${
-              loading ? "add-border" : null
-            }`}
-          ></animated.div>
-        </Button>
+            disabled={loading}
+            className="shop-modal-footer-confirm-botton"
+          >
+            Confirm
+            <animated.div
+              style={{
+                width: springConfirm.width,
+              }}
+              className={`shop-modal-footer-confirm-botton-animation ${
+                loading ? "add-border" : null
+              }`}
+            ></animated.div>
+          </Button>
+        ) : (
+          <Button
+            variant="secondary"
+            disabled
+            className="shop-modal-footer-confirm-botton"
+          >
+            Cannot Afford
+          </Button>
+        )}
       </Modal.Footer>
     </Modal>
   );

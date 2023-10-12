@@ -45,28 +45,7 @@ const Shop = ({ screenVersion, user, token }) => {
       });
   };
 
-  const checkBalance = async (item) => {
-    await axios
-      .get(`${API}/users/user`, {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => {
-        if (res.data.payload.chess_coins > item.item_price) {
-          return true;
-        } else {
-          return false;
-        }
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
-  };
-
   const handleConfirm = async (item) => {
-    await checkBalance(item);
-
     await axios
       .post(`${API}/inventory`, item, {
         headers: {
@@ -77,7 +56,10 @@ const Shop = ({ screenVersion, user, token }) => {
         toast.success(
           `Successfully bought ${item.item_name} \n Remaining balance: ${
             user.chess_coins - item.item_price
-          }`
+          }`,
+          {
+            containerId: "toast-notify",
+          }
         );
         setOpenConfirm(false);
         setBuyingItem({});
@@ -150,6 +132,7 @@ const Shop = ({ screenVersion, user, token }) => {
       {Object.keys(buyingItem).length > 0 && (
         <ShopConfirmModal
           user={user}
+          token={token}
           item={buyingItem}
           openConfirm={openConfirm}
           handleConfirm={handleConfirm}

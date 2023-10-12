@@ -6,8 +6,8 @@ const { getUserByID } = require("../queries/users");
 const {
   getInventoryItemsByUserID,
   addInventoryItem,
-} = require("../queries/inventory");
-const { getShopItemsByID } = require("../queries/shop");
+} = require("../queries/userInventory");
+const { getShopItemByID } = require("../queries/shop");
 
 const { requireAuth } = require("../validation/requireAuth");
 
@@ -21,12 +21,14 @@ inventory.get("/", requireAuth(), async (req, res) => {
     return res.status(404).send("User not found");
   }
 
-  const getAInventory = await getInventoryItemsByUserID(checkIfUserExists.id);
+  const getUserInventory = await getInventoryItemsByUserID(
+    checkIfUserExists.id
+  );
 
-  if (getAInventory) {
-    console.log("=== GET inventory by ID", getAInventory, "===");
+  if (getUserInventory) {
+    console.log("=== GET user inventory by ID", getUserInventory, "===");
 
-    res.status(200).json({ payload: getAInventory });
+    res.status(200).json({ payload: getUserInventory });
   } else {
     res
       .status(404)
@@ -44,18 +46,22 @@ inventory.post("/", requireAuth(), async (req, res) => {
     return res.status(404).send("User not found");
   }
 
-  const newInventoryData = {
-    user_id: checkIfUserExists.id,
-    item_id: req.body.item_id,
-  };
+  const itemID = req.body.item_id;
 
-  const checkShopItem = await getShopItemsByID(newInventoryData.item_id);
+  const checkShopItem = await getShopItemByID(itemID);
 
   if (checkShopItem) {
+    const newInventoryData = {
+      user_id: checkIfUserExists.id,
+      item_id: checkShopItem.id,
+      item_img: req.body.item_img,
+      item_name: req.body.item_name,
+    };
+
     const createdInventoryItem = await addInventoryItem(newInventoryData);
 
     if (createdInventoryItem) {
-      console.log("=== POST inventory", createdInventoryItem, "===");
+      console.log("=== POST user inventory", createdInventoryItem, "===");
 
       res.status(201).json({ payload: createdInventoryItem });
     } else {

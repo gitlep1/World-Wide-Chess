@@ -70,8 +70,8 @@ CREATE TABLE messages (
 DROP TABLE IF EXISTS shop;
 CREATE TABLE shop (
   id SERIAL UNIQUE NOT NULL PRIMARY KEY,
-  item_img TEXT NOT NULL,
-  item_name TEXT NOT NULL,
+  item_img TEXT UNIQUE NOT NULL,
+  item_name TEXT UNIQUE NOT NULL,
   item_price INT NOT NULL
 );
 
@@ -79,13 +79,18 @@ DROP TABLE IF EXISTS user_inventory;
 CREATE TABLE user_inventory (
   id SERIAL UNIQUE NOT NULL PRIMARY KEY,
   user_id UUID NOT NULL REFERENCES users(id),
-  item_id INT REFERENCES shop(id)
+  item_id INT REFERENCES shop(id),
+  item_img TEXT REFERENCES shop(item_img),
+  item_name TEXT REFERENCES shop(item_name)
 );
 
 DROP TABLE IF EXISTS guest_inventory;
 CREATE TABLE guest_inventory (
   id SERIAL UNIQUE NOT NULL PRIMARY KEY,
-  item_id INT REFERENCES shop(id)
+  guest_id UUID NOT NULL REFERENCES users(id),
+  item_id INT REFERENCES shop(id),
+  item_img TEXT REFERENCES shop(item_img),
+  item_name TEXT REFERENCES shop(item_name)
 );
 
 DROP TABLE IF EXISTS facts;

@@ -28,24 +28,24 @@ INSERT INTO messages (user_id, username, profileimg, message) VALUES
 
 INSERT INTO shop (item_img, item_name, item_price) VALUES
 ('https://picsum.photos/150/150', 'Dragon Border', 1000),
-('https://picsum.photos/150/150', 'Knight Border', 800),
-('https://picsum.photos/150/150', 'Bishop Border', 750),
-('https://picsum.photos/150/150', 'Castle Border', 900),
-('https://picsum.photos/150/150', 'Pawn Border', 500),
-('https://picsum.photos/150/150', 'Marble Piece Set', 1500),
-('https://picsum.photos/150/150', 'Wooden Piece Set', 1000),
-('https://picsum.photos/150/150', 'Glass Piece Set', 1200),
-('https://picsum.photos/150/150', 'Metal Piece Set', 1300),
-('https://picsum.photos/150/150', 'Classic Board Style', 500),
-('https://picsum.photos/150/150', 'Modern Board Style', 700),
-('https://picsum.photos/150/150', 'Futuristic Board Style', 900),
-('https://picsum.photos/150/150', 'Dark Theme', 300),
-('https://picsum.photos/150/150', 'Light Theme', 400),
-('https://picsum.photos/150/150', 'Rainbow Chat Effects', 2000),
-('https://picsum.photos/150/150', 'Monochronic Chat Effects', 4000);
+('https://picsum.photos/151/151', 'Knight Border', 800),
+('https://picsum.photos/152/152', 'Bishop Border', 750),
+('https://picsum.photos/153/153', 'Castle Border', 900),
+('https://picsum.photos/154/154', 'Pawn Border', 500),
+('https://picsum.photos/155/155', 'Marble Piece Set', 1500),
+('https://picsum.photos/156/156', 'Wooden Piece Set', 1000),
+('https://picsum.photos/157/157', 'Glass Piece Set', 1200),
+('https://picsum.photos/158/158', 'Metal Piece Set', 1300),
+('https://picsum.photos/159/159', 'Classic Board Style', 500),
+('https://picsum.photos/160/160', 'Modern Board Style', 700),
+('https://picsum.photos/161/161', 'Futuristic Board Style', 900),
+('https://picsum.photos/162/162', 'Dark Theme', 300),
+('https://picsum.photos/163/163', 'Light Theme', 400),
+('https://picsum.photos/164/164', 'Rainbow Chat Effects', 2000),
+('https://picsum.photos/165/165', 'Monochronic Chat Effects', 4000);
 
-INSERT INTO guest_inventory (item_id) VALUES
-(5), (8), (11);
+INSERT INTO guest_inventory (guest_id, item_id, item_img, item_name) VALUES
+('12f6756d-50ae-4370-b06c-1757549f3469', 5, 'https://picsum.photos/154/154', 'Pawn Border'), ('12f6756d-50ae-4370-b06c-1757549f3469', 8, 'https://picsum.photos/157/157', 'Glass Piece Set'), ('12f6756d-50ae-4370-b06c-1757549f3469', 11, 'https://picsum.photos/160/160', 'Modern Board Style');
 
 INSERT INTO facts (fact_num, fact) VALUES
 (1, 'Legend has it that chess was invented around 200 B. C. by a commander, Hán Xin, who invented the game as a battle simulator. Soon after winning the battle, the game was forgotten, but it resurfaced in the 7th century.'),

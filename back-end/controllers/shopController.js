@@ -1,7 +1,7 @@
 const express = require("express");
 const shop = express.Router();
 
-const { getAllShopItems, getShopItemsByID } = require("../queries/shop");
+const { getAllShopItems, getShopItemByID } = require("../queries/shop");
 
 const { requireAuth } = require("../validation/requireAuth");
 
@@ -18,7 +18,11 @@ shop.get("/", requireAuth(), async (req, res) => {
 
 shop.get("/:id", requireAuth(), async (req, res) => {
   const { id } = req.params;
-  const getAshopItem = await getShopItemsByID(id);
+  const getAshopItem = await getShopItemByID(id);
+
+  console.log(id);
+
+  console.log(getAshopItem);
 
   if (getAshopItem) {
     // console.log("=== GET shop item by ID", getAshopItem, "===");

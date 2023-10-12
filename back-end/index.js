@@ -13,7 +13,8 @@ const multiGamesController = require("./controllers/multiGamesController");
 // const previousGamesController = require("./controllers/previousGamesController");
 const factsController = require("./controllers/factsController");
 const shopController = require("./controllers/shopController");
-const inventoryController = require("./controllers/inventoryController");
+const userInventoryController = require("./controllers/userInventoryController");
+const guestInventoryController = require("./controllers/guestInventoryController");
 const messagesController = require("./controllers/messagesController");
 
 require("dotenv").config();
@@ -60,7 +61,8 @@ app.use("/multi-games", multiGamesController);
 
 app.use("/facts", factsController);
 app.use("/shop", shopController);
-app.use("/inventory", inventoryController);
+app.use("/user-inventory", userInventoryController);
+app.use("/guest-inventory", guestInventoryController);
 app.use("/messages", messagesController);
 
 app.get("/", (req, res) => {
