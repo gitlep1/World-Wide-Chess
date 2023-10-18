@@ -47,7 +47,6 @@ inventory.post("/", requireAuth(), async (req, res) => {
   }
 
   const itemID = req.body.item_id;
-
   const checkShopItem = await getShopItemByID(itemID);
 
   if (checkShopItem) {

@@ -1,9 +1,11 @@
 import "./Shop.scss";
 import { useEffect, useState } from "react";
-import { Card, Form, Button } from "react-bootstrap";
+import { Card, Form, Button, Image } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { nanoid } from "nanoid";
 import axios from "axios";
+
+import ChessCoinIcon from "../../Images/Chess_Coins.png";
 
 import { ShopConfirmModal } from "../../CustomFunctions/CustomModals";
 
@@ -111,7 +113,14 @@ const Shop = ({ screenVersion, user, token }) => {
                   />
                   <Card.Body>
                     <Card.Title>{item.item_name}</Card.Title>
-                    <Card.Text>Price: {item.item_price}</Card.Text>
+                    <Card.Text>
+                      Price: {item.item_price}{" "}
+                      <Image
+                        src={ChessCoinIcon}
+                        alt="Chess Coin Icon"
+                        className="shop-item-card-coin-icon"
+                      />
+                    </Card.Text>
                     <Button
                       variant="dark"
                       onClick={() => {

@@ -5,6 +5,8 @@ import { useSpring, animated, useSpringRef } from "react-spring";
 import { toast } from "react-toastify";
 import axios from "axios";
 
+import ChessCoinIcon from "../Images/Chess_Coins.png";
+
 const API = process.env.REACT_APP_API_URL;
 
 const ShopConfirmModal = ({
@@ -48,8 +50,14 @@ const ShopConfirmModal = ({
   };
 
   const checkBalance = async () => {
+    setError("");
+
+    const userOrGuest = user.is_guest
+      ? `${API}/guests/guest`
+      : `${API}/users/user`;
+
     try {
-      const checkUser = axios.get(`${API}/users/user`, {
+      const checkUser = axios.get(userOrGuest, {
         headers: {
           authorization: `Bearer ${token}`,
         },
@@ -77,7 +85,7 @@ const ShopConfirmModal = ({
         setCanAfford(false);
       }
     } catch (err) {
-      setError(err.message);
+      setError(err.response.data);
     }
   };
 
@@ -104,11 +112,22 @@ const ShopConfirmModal = ({
         <span className="shop-modal-span1">Are you sure you want to buy</span>
         <br />
         <span className="shop-modal-span2">{item.item_name}</span> for{" "}
-        <span className="shop-modal-span3">{item.item_price}</span> CCs?
+        <span className="shop-modal-span3">{item.item_price}</span>{" "}
+        <Image
+          src={ChessCoinIcon}
+          alt="Chess Coin Icon"
+          className="shop-modal-coin-icon"
+        />
         <h3 className="shop-modal-balance">
           <span>New balance</span>: {user.chess_coins} (
-          <span>{user.chess_coins - item.item_price}</span>) CCs
+          <span>{user.chess_coins - item.item_price}</span>){" "}
+          <Image
+            src={ChessCoinIcon}
+            alt="Chess Coin Icon"
+            className="shop-modal-coin-icon"
+          />
         </h3>
+        {error && <h1 style={{ color: "red" }}>ERROR: {error}</h1>}
       </Modal.Body>
 
       <Modal.Footer className="shop-modal-footer border-0">

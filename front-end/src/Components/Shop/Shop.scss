@@ -40,10 +40,16 @@
 
       .shop-item-card {
         height: 100%;
+        font-size: 20px;
+
         .shop-item-card-img {
           width: 160px;
           height: 150px;
           margin: 10px auto;
+        }
+
+        .shop-item-card-coin-icon {
+          width: 35px;
         }
       }
     }

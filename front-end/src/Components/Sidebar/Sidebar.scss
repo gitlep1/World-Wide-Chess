@@ -18,6 +18,14 @@
       flex-direction: column;
       align-items: center;
       justify-content: space-around;
+
+      .chess-coins-container {
+        font-size: 40px;
+
+        .chess-coin-icon {
+          width: 50px;
+        }
+      }
     }
 
     .desktop-menuSideBar-buttons-container1 {

@@ -75,17 +75,25 @@ const App = () => {
 
   const resizeSidebar = () => {
     if (window.innerWidth > 1000) {
-      setResize("20%");
-    }
-    if (window.innerWidth <= 1000) {
       setResize("25%");
     }
+
+    if (window.innerWidth <= 1000) {
+      setResize("30%");
+    }
+
     if (window.innerWidth <= 800) {
       setResize("35%");
     }
+
+    if (window.innerWidth <= 650) {
+      setResize("40%");
+    }
+
     if (window.innerWidth <= 600) {
       setResize("45%");
     }
+
     if (window.innerWidth <= 400) {
       setResize("60%");
     }
