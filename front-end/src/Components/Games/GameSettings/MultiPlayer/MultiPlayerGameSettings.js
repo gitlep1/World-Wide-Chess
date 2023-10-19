@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { Button, Image } from "react-bootstrap";
 import { FaEquals } from "react-icons/fa";
 import { RiArrowUpCircleFill, RiArrowDownCircleFill } from "react-icons/ri";
-// import { PiEqualsFill } from "react-icons/pi";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
