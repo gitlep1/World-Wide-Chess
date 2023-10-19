@@ -251,6 +251,7 @@ const App = () => {
         <DesktopApp
           handleSidebarOpen={handleSidebarOpen}
           user={user}
+          setUser={setUser}
           authenticated={authenticated}
           token={token}
           isOpen={isOpen}
@@ -277,6 +278,7 @@ const App = () => {
         <MobileApp
           handleSidebarOpen={handleSidebarOpen}
           user={user}
+          setUser={setUser}
           authenticated={authenticated}
           token={token}
           isOpen={isOpen}

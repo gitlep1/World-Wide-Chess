@@ -11,10 +11,14 @@ const Inventory = ({
   openInventory,
   handleOpenInventory,
   user,
+  authenticated,
+  token,
 }) => {
   let InventoryItemsArr = [];
   const [searchbar, setSearchbar] = useState("");
   const [inventoryItems, setInventoryItems] = useState([]);
+
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,22 +34,16 @@ const Inventory = ({
 
   const renderInventoryItems = async () => {
     await axios
-      .get(`${API}/inventory/${user.id}`)
-      .then((inventoryRes) => {
-        axios.get(`${API}/shop`).then((shopRes) => {
-          const getAllInventoryItems = inventoryRes.data.map((item) => {
-            for (const shopItem of shopRes.data) {
-              if (item.item_id === shopItem.id) {
-                return shopItem;
-              }
-            }
-            return null;
-          });
-          setInventoryItems(getAllInventoryItems);
-        });
+      .get(`${API}/user-inventory`, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        setInventoryItems(res.data.payload);
       })
       .catch((err) => {
-        console.clear();
+        setError(err.response.data);
       });
   };
 
@@ -81,21 +79,21 @@ const Inventory = ({
           </Form.Group>
         </div>
       </Modal.Header>
-      <Modal.Body>
-        <div>
+      <Modal.Body className="inventory-modal-body-container">
+        <div className="inventory-modal-body">
           {InventoryItemsArr.map((item) => {
             return (
-              <div key={nanoid()} className="shop-item-card-container">
-                <Card className="shop-item-card">
+              <div key={nanoid()} className="inventory-item-card-container">
+                <Card className="inventory-item-card">
                   <Card.Img
-                    className="shop-item-card-img"
+                    className="inventory-item-card-img"
                     variant="top"
                     src={item.item_img}
                     alt={item.item_name}
                   />
-                  <Card.Body>
+                  <Card.Body className="inventory-item-card-body">
                     <Card.Title>{item.item_name}</Card.Title>
-                    <Button variant="dark">Equip</Button>
+                    <Button variant="light">Equip</Button>
                   </Card.Body>
                 </Card>
               </div>

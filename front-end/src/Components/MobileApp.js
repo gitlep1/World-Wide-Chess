@@ -41,6 +41,7 @@ import ChatBox from "./ChatBox/ChatBox";
 const MobileApp = ({
   handleSidebarOpen,
   user,
+  setUser,
   authenticated,
   token,
   isOpen,

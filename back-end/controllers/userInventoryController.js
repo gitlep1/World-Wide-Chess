@@ -46,10 +46,20 @@ inventory.post("/", requireAuth(), async (req, res) => {
     return res.status(404).send("User not found");
   }
 
-  const itemID = req.body.item_id;
+  const itemID = req.body.id;
   const checkShopItem = await getShopItemByID(itemID);
 
-  if (checkShopItem) {
+  if (!(checkShopItem instanceof Error)) {
+    const getUserInventory = await getInventoryItemsByUserID(
+      checkIfUserExists.id
+    );
+
+    for (const item of getUserInventory) {
+      if (item.item_id === itemID) {
+        return res.status(409).send("You already own this item.");
+      }
+    }
+
     if (checkIfUserExists.chess_coins >= checkShopItem.item_price) {
       const newInventoryData = {
         user_id: checkIfUserExists.id,
@@ -83,8 +93,6 @@ inventory.post("/", requireAuth(), async (req, res) => {
           updatedUserData
         );
 
-        console.log("=== POST user inventory", createdInventoryItem, "===");
-
         res
           .status(201)
           .json({ payload: createdInventoryItem, updatedUser: updatedUser });
@@ -95,9 +103,7 @@ inventory.post("/", requireAuth(), async (req, res) => {
       res.status(402).send("Insufficient chess coins");
     }
   } else {
-    res
-      .status(404)
-      .send(`Item with ID: ${newInventoryData.item_id} not found in shop.`);
+    res.status(404).send(`Item not found in shop.`);
   }
 });
 

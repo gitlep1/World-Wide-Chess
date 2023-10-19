@@ -43,6 +43,7 @@ import ChatBox from "./ChatBox/ChatBox";
 const DesktopApp = ({
   handleSidebarOpen,
   user,
+  setUser,
   authenticated,
   token,
   isOpen,
@@ -210,7 +211,12 @@ const DesktopApp = ({
             <Route
               path="Shop"
               element={
-                <Shop screenVersion={screenVersion} user={user} token={token} />
+                <Shop
+                  screenVersion={screenVersion}
+                  user={user}
+                  setUser={setUser}
+                  token={token}
+                />
               }
             />
             {/* FoF Route */}

@@ -11,6 +11,7 @@ const API = process.env.REACT_APP_API_URL;
 
 const ShopConfirmModal = ({
   user,
+  setUser,
   token,
   item,
   openConfirm,
@@ -78,6 +79,7 @@ const ShopConfirmModal = ({
       const userData = checkUserResponse.data.payload;
       const itemData = checkItemResponse.data.payload;
 
+      setUser(userData);
       setBalanceDisplay(userData.chess_coins);
 
       if (userData.chess_coins >= itemData.item_price) {
@@ -91,6 +93,8 @@ const ShopConfirmModal = ({
       setError(err.response.data);
     }
   };
+
+  console.log(user);
 
   return (
     <Modal

@@ -12,7 +12,7 @@ import { ShopConfirmModal } from "../../CustomFunctions/CustomModals";
 
 const API = process.env.REACT_APP_API_URL;
 
-const Shop = ({ screenVersion, user, token }) => {
+const Shop = ({ screenVersion, user, setUser, token }) => {
   let shopItemsArr = [];
   const userData = Cookies.get("Current_User");
 
@@ -150,6 +150,7 @@ const Shop = ({ screenVersion, user, token }) => {
       {Object.keys(buyingItem).length > 0 && (
         <ShopConfirmModal
           user={user}
+          setUser={setUser}
           token={token}
           item={buyingItem}
           openConfirm={openConfirm}
