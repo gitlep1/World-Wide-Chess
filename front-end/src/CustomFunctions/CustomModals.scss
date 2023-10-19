@@ -4,7 +4,13 @@
     grid-template-columns: 1;
     justify-content: center;
     background-color: #1d2226;
-    border-radius: 1% 1% 0px 0px;
+    border: 0;
+
+    .balanceDisplay {
+      color: white;
+      font-size: 25px;
+      margin-left: 15em;
+    }
 
     .shop-modal-header-title1 {
       color: gold;
@@ -51,15 +57,15 @@
     }
 
     .shop-modal-balance {
-      font-size: 18px;
+      font-size: 20px;
 
-      :nth-child(2) {
+      .negativeBalance {
         color: red;
       }
-    }
 
-    .shop-modal-coin-icon {
-      width: 35px;
+      .positiveBalance {
+        color: greenyellow;
+      }
     }
   }
 
@@ -88,4 +94,8 @@
       }
     }
   }
+}
+
+.shop-modal-coin-icon {
+  width: 35px;
 }

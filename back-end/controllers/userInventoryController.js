@@ -2,7 +2,7 @@ const express = require("express");
 const inventory = express.Router();
 const jwt = require("jsonwebtoken");
 
-const { getUserByID } = require("../queries/users");
+const { getUserByID, updateUser } = require("../queries/users");
 const {
   getInventoryItemsByUserID,
   addInventoryItem,
@@ -50,21 +50,49 @@ inventory.post("/", requireAuth(), async (req, res) => {
   const checkShopItem = await getShopItemByID(itemID);
 
   if (checkShopItem) {
-    const newInventoryData = {
-      user_id: checkIfUserExists.id,
-      item_id: checkShopItem.id,
-      item_img: req.body.item_img,
-      item_name: req.body.item_name,
-    };
+    if (checkIfUserExists.chess_coins >= checkShopItem.item_price) {
+      const newInventoryData = {
+        user_id: checkIfUserExists.id,
+        item_id: checkShopItem.id,
+        item_img: checkShopItem.item_img,
+        item_name: checkShopItem.item_name,
+      };
 
-    const createdInventoryItem = await addInventoryItem(newInventoryData);
+      const createdInventoryItem = await addInventoryItem(newInventoryData);
 
-    if (createdInventoryItem) {
-      console.log("=== POST user inventory", createdInventoryItem, "===");
+      if (createdInventoryItem) {
+        const newUserBalance =
+          checkIfUserExists.chess_coins - checkShopItem.item_price;
 
-      res.status(201).json({ payload: createdInventoryItem });
+        const updatedUserData = {
+          profileimg: checkIfUserExists.profileimg,
+          username: checkIfUserExists.username,
+          password: checkIfUserExists.password,
+          email: checkIfUserExists.email,
+          theme: checkIfUserExists.theme,
+          chess_coins: newUserBalance,
+          wins: checkIfUserExists.wins,
+          ties: checkIfUserExists.ties,
+          loss: checkIfUserExists.loss,
+          preferred_color: checkIfUserExists.preferred_color,
+          last_online: checkIfUserExists.last_online,
+        };
+
+        const updatedUser = await updateUser(
+          checkIfUserExists.id,
+          updatedUserData
+        );
+
+        console.log("=== POST user inventory", createdInventoryItem, "===");
+
+        res
+          .status(201)
+          .json({ payload: createdInventoryItem, updatedUser: updatedUser });
+      } else {
+        res.status(404).send("Inventory item not created.");
+      }
     } else {
-      res.status(404).send("Inventory item not created.");
+      res.status(402).send("Insufficient chess coins");
     }
   } else {
     res

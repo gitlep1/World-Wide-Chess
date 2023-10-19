@@ -20,10 +20,6 @@ shop.get("/:id", requireAuth(), async (req, res) => {
   const { id } = req.params;
   const getAshopItem = await getShopItemByID(id);
 
-  console.log(id);
-
-  console.log(getAshopItem);
-
   if (getAshopItem) {
     // console.log("=== GET shop item by ID", getAshopItem, "===");
     res.status(200).json({ payload: getAshopItem });

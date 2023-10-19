@@ -4,6 +4,7 @@ import { Card, Form, Button, Image } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { nanoid } from "nanoid";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 import ChessCoinIcon from "../../Images/Chess_Coins.png";
 
@@ -13,6 +14,8 @@ const API = process.env.REACT_APP_API_URL;
 
 const Shop = ({ screenVersion, user, token }) => {
   let shopItemsArr = [];
+  const userData = Cookies.get("Current_User");
+
   const [shopSearchbar, setShopSearchbar] = useState("");
   const [shopItems, setShopItems] = useState([]);
   const [openConfirm, setOpenConfirm] = useState(false);
@@ -49,25 +52,28 @@ const Shop = ({ screenVersion, user, token }) => {
 
   const handleConfirm = async (item) => {
     await axios
-      .post(`${API}/inventory`, item, {
+      .post(`${API}/user-inventory`, item, {
         headers: {
           authorization: `Bearer ${token}`,
         },
       })
       .then((res) => {
         toast.success(
-          `Successfully bought ${item.item_name} \n Remaining balance: ${
-            user.chess_coins - item.item_price
-          }`,
+          `Successfully bought ${item.item_name} \n Remaining balance: ${res.data.updatedUser.chess_coins}`,
           {
             containerId: "toast-notify",
           }
         );
+        const updateUserCookieData = JSON.parse(userData);
+        console.log(updateUserCookieData);
+
         setOpenConfirm(false);
         setBuyingItem({});
       })
       .catch((err) => {
-        setError(err.message);
+        toast.error(err.response.data, {
+          containerId: "toast-notify",
+        });
       });
   };
 
@@ -111,15 +117,17 @@ const Shop = ({ screenVersion, user, token }) => {
                     src={item.item_img}
                     alt={item.item_name}
                   />
-                  <Card.Body>
-                    <Card.Title>{item.item_name}</Card.Title>
-                    <Card.Text>
-                      Price: {item.item_price}{" "}
+                  <Card.Body className="shop-item-card-body">
+                    <Card.Title className="shop-item-card-body-title">
+                      {item.item_name}
+                    </Card.Title>
+                    <Card.Text className="shop-item-card-price-container">
                       <Image
                         src={ChessCoinIcon}
                         alt="Chess Coin Icon"
                         className="shop-item-card-coin-icon"
                       />
+                      {item.item_price}
                     </Card.Text>
                     <Button
                       variant="dark"
@@ -127,6 +135,7 @@ const Shop = ({ screenVersion, user, token }) => {
                         setOpenConfirm(true);
                         setBuyingItem(item);
                       }}
+                      className="shop-item-card-button"
                     >
                       Buy Now
                     </Button>

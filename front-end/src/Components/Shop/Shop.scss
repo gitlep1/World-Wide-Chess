@@ -25,6 +25,38 @@
   }
 }
 
+@mixin shop-item-card-container {
+  margin: 10px;
+  height: 25em;
+
+  .shop-item-card {
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+
+    .shop-item-card-img {
+      width: 160px;
+      height: 150px;
+      margin: 10px auto;
+      grid-column: 1 / -1;
+    }
+
+    .shop-item-card-body {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr;
+
+      .shop-item-card-price-container {
+        font-size: 25px;
+
+        .shop-item-card-coin-icon {
+          width: 30px;
+        }
+      }
+    }
+  }
+}
+
 .desktop-shop-container {
   @include shop-container;
 
@@ -36,22 +68,7 @@
     @include shop-items-container(repeat(4, 1fr));
 
     .shop-item-card-container {
-      margin: 10px;
-
-      .shop-item-card {
-        height: 100%;
-        font-size: 20px;
-
-        .shop-item-card-img {
-          width: 160px;
-          height: 150px;
-          margin: 10px auto;
-        }
-
-        .shop-item-card-coin-icon {
-          width: 35px;
-        }
-      }
+      @include shop-item-card-container;
     }
   }
 }
@@ -67,15 +84,7 @@
     @include shop-items-container(repeat(2, 1fr));
 
     .shop-item-card-container {
-      margin: 5px;
-
-      .shop-item-card {
-        .shop-item-card-img {
-          width: 160px;
-          height: 150px;
-          margin: 10px auto;
-        }
-      }
+      @include shop-item-card-container;
     }
   }
 }

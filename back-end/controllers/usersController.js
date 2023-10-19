@@ -92,6 +92,7 @@ users.post("/signin", async (req, res) => {
   const checkUser = await checkIfUserExists(email, password);
 
   if (checkUser) {
+    console.log(checkUser.id);
     const getUserData = await getUserByID(checkUser.id);
 
     if (getUserData) {

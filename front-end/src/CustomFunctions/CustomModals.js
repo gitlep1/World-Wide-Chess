@@ -22,6 +22,7 @@ const ShopConfirmModal = ({
   const [loading, setLoading] = useState(false);
   const [buttonVariant, setButtonVariant] = useState("secondary");
   const [canAfford, setCanAfford] = useState(false);
+  const [balanceDisplay, setBalanceDisplay] = useState(user.chess_coins);
 
   const [error, setError] = useState("");
 
@@ -77,6 +78,8 @@ const ShopConfirmModal = ({
       const userData = checkUserResponse.data.payload;
       const itemData = checkItemResponse.data.payload;
 
+      setBalanceDisplay(userData.chess_coins);
+
       if (userData.chess_coins >= itemData.item_price) {
         startTimer();
         setCanAfford(true);
@@ -97,7 +100,15 @@ const ShopConfirmModal = ({
       keyboard={false}
       className="shop-modal-container"
     >
-      <Modal.Header className="shop-modal-header border-0">
+      <Modal.Header className="shop-modal-header">
+        <div className="balanceDisplay">
+          <Image
+            src={ChessCoinIcon}
+            alt="Chess Coin Icon"
+            className="shop-modal-coin-icon"
+          />{" "}
+          {balanceDisplay}
+        </div>
         <Modal.Title className="shop-modal-header-title1">Preview</Modal.Title>
         <Image
           className="shop-modal-header-image"
@@ -119,8 +130,16 @@ const ShopConfirmModal = ({
           className="shop-modal-coin-icon"
         />
         <h3 className="shop-modal-balance">
-          <span>New balance</span>: {user.chess_coins} (
-          <span>{user.chess_coins - item.item_price}</span>){" "}
+          <span>New balance</span>:{" "}
+          <span
+            className={
+              balanceDisplay - item.item_price < 0
+                ? "negativeBalance"
+                : "positiveBalance"
+            }
+          >
+            {balanceDisplay - item.item_price}
+          </span>{" "}
           <Image
             src={ChessCoinIcon}
             alt="Chess Coin Icon"
