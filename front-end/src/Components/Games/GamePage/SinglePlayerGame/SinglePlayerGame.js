@@ -21,15 +21,16 @@ import {
   notifySound,
 } from "../../../../CustomFunctions/SoundEffects";
 
-import spectatorLight1 from "../../../../Images/spectatorLight1.png";
-import spectatorLight2 from "../../../../Images/spectatorLight2.png";
-import spectatorLight3 from "../../../../Images/spectatorLight3.png";
+import spectatorLight1 from "../../../../Images/Spectators/spectatorLight1.png";
+import spectatorLight2 from "../../../../Images/Spectators/spectatorLight2.png";
+import spectatorLight3 from "../../../../Images/Spectators/spectatorLight3.png";
 
 // import spectatorDark1 from "../../../../Images/spectatorDark1.png";
 // import spectatorDark2 from "../../../../Images/spectatorDark2.png";
 // import spectatorDark3 from "../../../../Images/spectatorDark3.png";
 
 import BotLogic from "./BotLogic";
+import { nanoid } from "nanoid";
 
 const API = process.env.REACT_APP_API_URL;
 
@@ -57,6 +58,8 @@ const SinglePlayerGame = ({
   const [showPromotion, setShowPromotion] = useState(false);
   const [currentTimeout, setCurrentTimeout] = useState(null);
   const [isThinking, setIsThinking] = useState(false);
+  const [inGameMessages, setInGameMessages] = useState([]);
+  const [moveHistory, setMoveHistory] = useState([]);
 
   const [stalemate, setStalemate] = useState(false);
   const [showWinner, setShowWinner] = useState(false);
@@ -242,7 +245,14 @@ const SinglePlayerGame = ({
       depth = 4;
     }
 
-    const delayedFunction = BotLogic(chessGame, setFen, depth, setIsThinking);
+    const delayedFunction = BotLogic(
+      chessGame,
+      setFen,
+      depth,
+      setIsThinking,
+      moveHistory,
+      setMoveHistory
+    );
 
     delayedFunction((bestMove) => {
       chessGame.move(bestMove);
@@ -270,6 +280,7 @@ const SinglePlayerGame = ({
     const move = chessGame.move({ from, to });
     if (move) {
       moveSound.play();
+      setMoveHistory([...moveHistory, move]);
       const updatedPositions = {
         current_positions: chessGame.fen(),
         from: from,
@@ -304,6 +315,7 @@ const SinglePlayerGame = ({
     });
 
     if (newMove) {
+      setMoveHistory([...moveHistory, newMove]);
       setShowPromotion(false);
       // Make the AI move after the user move
       if (currentTimeout !== null) {
@@ -369,63 +381,109 @@ const SinglePlayerGame = ({
             Room Name: {game.room_name}
           </h3>
         </div>
+      </div>
 
-        <div className="singlePlayerGame-players-data">
-          <div className="singlePlayerGame-playerOne-data square bg-secondary rounded-pill">
+      <div className="singlePlayerGame-players-data">
+        <div className="singlePlayerGame-playerOne-data square bg-secondary rounded-pill">
+          <div className="profile-pic-container">
             <Image
               src={player1Data.profileimg}
               className="singlePlayerGame-player-image"
               alt="player 1"
-            />{" "}
-            <span
-              style={{
-                color: "white",
-              }}
-            >
-              {player1Data.username}
-            </span>
+              roundedCircle
+            />
           </div>
-          <div className="singlePlayerGame-playerTwo-data square bg-secondary rounded-pill">
+          <span
+            style={{
+              color: "white",
+            }}
+          >
+            {player1Data.username}
+          </span>
+        </div>
+        <div className="singlePlayerGame-playerTwo-data square bg-secondary rounded-pill">
+          <div className="profile-pic-container">
             <Image
               src={player2Data.profileimg}
               className="singlePlayerGame-player-image"
               alt="player 2"
+              roundedCircle
             />
-            <span
-              style={{
-                color: "black",
-              }}
-            >
-              {player2Data.username}
-            </span>
           </div>
+          <span
+            style={{
+              color: "black",
+            }}
+          >
+            {player2Data.username}
+          </span>
         </div>
       </div>
 
-      <div className="singlePlayerGame-chessboard-container">
-        <Chessboard
-          id="PlayVsRandom"
-          boardOrientation={handleBoardOrientation()}
-          position={fen}
-          onPieceDrop={(from, to, piece) => handleMove(from, to, piece)}
-          customBoardStyle={{
-            borderRadius: "15%",
-            boxShadow: "0 5px 23px rgba(0, 0, 0, 1)",
-          }}
-          areArrowsAllowed={false}
-          animationDuration={500}
-          boardWidth={controlWidth(screenSize)}
-          customLightSquareStyle={{
-            borderRadius: "1em",
-            boxShadow: "0 0 15px rgba(255, 255, 255, 1)",
-            backgroundColor: "rgba(225, 225, 225, 1)",
-          }}
-          customDarkSquareStyle={{
-            borderRadius: "1em",
-            boxShadow: "0 0 15px rgba(0, 0, 0, 1)",
-            backgroundColor: "rgba(70, 70, 70, 1)",
-          }}
-        />
+      <div className="singleplayer-main-content-container">
+        <div className="singlePlayerGame-chessboard-container">
+          <Chessboard
+            id="PlayVsRandom"
+            boardOrientation={handleBoardOrientation()}
+            position={fen}
+            onPieceDrop={(from, to, piece) => handleMove(from, to, piece)}
+            customBoardStyle={{
+              borderRadius: "15%",
+              boxShadow: "0 5px 23px rgba(0, 0, 0, 1)",
+            }}
+            areArrowsAllowed={false}
+            animationDuration={500}
+            boardWidth={controlWidth(screenSize)}
+            customLightSquareStyle={{
+              borderRadius: "1em",
+              boxShadow: "0 0 15px rgba(255, 255, 255, 1)",
+              backgroundColor: "rgba(225, 225, 225, 1)",
+            }}
+            customDarkSquareStyle={{
+              borderRadius: "1em",
+              boxShadow: "0 0 15px rgba(0, 0, 0, 1)",
+              backgroundColor: "rgba(70, 70, 70, 1)",
+            }}
+          />
+        </div>
+
+        <div className="singlePlayerGame-chatBox-moveHistory-container rounded-5">
+          <div className="singlePlayerGame-moveHistory-container rounded-5">
+            <h1>History</h1>
+            <div className="singlePlayerGame-moveHistory">
+              {moveHistory.map((move, index) => (
+                <div key={nanoid()}>{move.san}</div>
+              ))}
+            </div>
+          </div>
+          <div className="singlePlayerGame-chatBox-container rounded-5">
+            <h1>ChatBox</h1>
+            <div className="singlePlayerGame-chatBox">
+              <h1>random text</h1>
+              <h1>random text</h1>
+              <h1>random text</h1>
+              <h1>random text</h1>
+              <h1>random text</h1>
+              <h1>random text</h1>
+              <h1>random text</h1>
+              <h1>random text</h1>
+              <h1>random text</h1>
+              <h1>random text</h1>
+            </div>
+          </div>
+        </div>
+
+        <div className="singlePlayerGame-buttons">
+          <Button
+            onClick={() => {
+              endGame(game.id);
+            }}
+            variant="danger"
+            className="singlePlayerGame-endGame-button"
+          >
+            End Game
+          </Button>
+        </div>
 
         <Modal
           className="promotion-modal-container"
@@ -515,21 +573,6 @@ const SinglePlayerGame = ({
             </Button>
           </Modal.Footer>
         </Modal>
-      </div>
-
-      <div className="singlePlayerGame-buttons">
-        <Button
-          onClick={() => {
-            endGame(game.id);
-          }}
-          variant="danger"
-        >
-          End Game
-        </Button>
-      </div>
-
-      <div className="singlePlayerGame-chatBox-container rounded-5">
-        <div className="singlePlayerGame-chatBox rounded-5">Chat Box</div>
       </div>
     </section>
   );

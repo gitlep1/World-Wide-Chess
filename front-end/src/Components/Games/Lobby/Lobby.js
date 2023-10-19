@@ -83,7 +83,7 @@ const Lobbypage = ({
       socket.off("host-accepted");
       socket.off("host-denied");
     };
-  }, [socket]);
+  }, [socket]); // eslint-disable-line
 
   useEffect(() => {
     handleSearch();

@@ -2,7 +2,8 @@ import "./GameSettings.scss";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import Loading from "../../Loading/Loading";
+import GameSettingsLoader from "../../../CustomLoaders/GameSettingsLoader/GameSettingsLoader";
+
 import SinglePlayerGameSettings from "./SinglePlayer/SinglePlayerGameSettings";
 import MultiPlayerGameSettings from "./MultiPlayer/MultiPlayerGameSettings";
 
@@ -64,7 +65,7 @@ const GameSettings = ({
 
   const renderGameSettings = () => {
     if (loading) {
-      return <Loading />;
+      return <GameSettingsLoader />;
     } else if (error) {
       return <h1>Error:</h1>;
     } else {

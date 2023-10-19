@@ -6,6 +6,8 @@ import io from "socket.io-client";
 import axios from "axios";
 import Cookies from "js-cookie";
 
+import MainLoader from "./CustomLoaders/MainLoader/MainLoader";
+
 // App components \\
 import DesktopApp from "./Components/DesktopApp";
 import MobileApp from "./Components/MobileApp";
@@ -17,7 +19,7 @@ import MobileApp from "./Components/MobileApp";
 import DetectScreenSize from "./CustomFunctions/DetectScreenSize";
 import LeavingPage from "./CustomFunctions/LeavingPage";
 
-import DefaultProfImg from "./Images/DefaultProfImg.png";
+import DefaultProfImg from "./Images/Profiles/DefaultProfImg.png";
 
 import CustomToastContainers from "./CustomFunctions/CustomToastContainers";
 
@@ -31,6 +33,9 @@ const socket = io(API);
 // });
 
 const App = () => {
+  const desktopVersion = "desktop";
+  const mobileVersion = "mobile";
+
   const navigate = useNavigate();
   const [screenSize, setScreenSize] = useState(DetectScreenSize().width);
 
@@ -45,7 +50,7 @@ const App = () => {
   const [openInventory, setOpenInventory] = useState(false);
   const [resize, setResize] = useState("");
 
-  const [loading, setLoading] = useState(true);
+  const [mainLoading, setMainLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -70,17 +75,25 @@ const App = () => {
 
   const resizeSidebar = () => {
     if (window.innerWidth > 1000) {
-      setResize("20%");
-    }
-    if (window.innerWidth <= 1000) {
       setResize("25%");
     }
+
+    if (window.innerWidth <= 1000) {
+      setResize("30%");
+    }
+
     if (window.innerWidth <= 800) {
       setResize("35%");
     }
+
+    if (window.innerWidth <= 650) {
+      setResize("40%");
+    }
+
     if (window.innerWidth <= 600) {
       setResize("45%");
     }
+
     if (window.innerWidth <= 400) {
       setResize("60%");
     }
@@ -102,7 +115,7 @@ const App = () => {
     } else {
       await handleGuest();
     }
-    setLoading(false);
+    setMainLoading(false);
   };
 
   // add socket token checking later idea 1 \\
@@ -226,13 +239,19 @@ const App = () => {
     window.location.reload();
   };
 
-  return (
-    <section>
-      <CustomToastContainers />
-      {screenSize >= 800 ? (
+  const renderDesktop = () => {
+    if (mainLoading) {
+      return (
+        <MainLoader screenVersion={desktopVersion} mainLoading={mainLoading} />
+      );
+    } else if (error) {
+      return <h1>ERROR: {error}</h1>;
+    } else {
+      return (
         <DesktopApp
           handleSidebarOpen={handleSidebarOpen}
           user={user}
+          setUser={setUser}
           authenticated={authenticated}
           token={token}
           isOpen={isOpen}
@@ -242,12 +261,24 @@ const App = () => {
           handleLogout={handleLogout}
           resize={resize}
           socket={socket}
-          loading={loading}
         />
-      ) : (
+      );
+    }
+  };
+
+  const renderMobile = () => {
+    if (mainLoading) {
+      return (
+        <MainLoader screenVersion={mobileVersion} mainLoading={mainLoading} />
+      );
+    } else if (error) {
+      return <h1>ERROR: {error}</h1>;
+    } else {
+      return (
         <MobileApp
           handleSidebarOpen={handleSidebarOpen}
           user={user}
+          setUser={setUser}
           authenticated={authenticated}
           token={token}
           isOpen={isOpen}
@@ -257,10 +288,15 @@ const App = () => {
           handleLogout={handleLogout}
           resize={resize}
           socket={socket}
-          loading={loading}
         />
-      )}
-      ;
+      );
+    }
+  };
+
+  return (
+    <section>
+      <CustomToastContainers />
+      {screenSize >= 800 ? renderDesktop() : renderMobile()}
     </section>
   );
 };

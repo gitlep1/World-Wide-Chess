@@ -1,4 +1,11 @@
-const BotLogic = (chessGame, setFen, maxDepth, setIsThinking) => {
+const BotLogic = (
+  chessGame,
+  setFen,
+  maxDepth,
+  setIsThinking,
+  moveHistory,
+  setMoveHistory
+) => {
   const evaluateBoard = (board) => {
     let score = 0;
 
@@ -181,7 +188,7 @@ const BotLogic = (chessGame, setFen, maxDepth, setIsThinking) => {
   const bestMove = () => {
     setIsThinking(true);
 
-    let timeLimit = 3000; // Set a time limit of 3 seconds
+    let timeLimit = 3000;
     let startTime = Date.now();
     let bestMoveVar = null;
     let bestEval = -Infinity;
@@ -214,13 +221,12 @@ const BotLogic = (chessGame, setFen, maxDepth, setIsThinking) => {
 
       let timeElapsed = Date.now() - startTime;
       if (timeElapsed > timeLimit) {
-        break; // Exit the loop if the time limit is reached
+        break;
       }
     }
 
-    // console.log("bestMoveVar: ", bestMoveVar);
     const result = chessGame.move(bestMoveVar);
-    // console.log("result: ", result);
+    setMoveHistory([...moveHistory, result]);
     setFen(chessGame.fen());
 
     setIsThinking(false);

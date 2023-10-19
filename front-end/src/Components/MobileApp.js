@@ -41,6 +41,7 @@ import ChatBox from "./ChatBox/ChatBox";
 const MobileApp = ({
   handleSidebarOpen,
   user,
+  setUser,
   authenticated,
   token,
   isOpen,
@@ -50,7 +51,6 @@ const MobileApp = ({
   handleLogout,
   resize,
   socket,
-  loading,
 }) => {
   const screenVersion = "mobile";
 
@@ -70,9 +70,7 @@ const MobileApp = ({
     }
   };
 
-  return loading ? (
-    <p>loading...</p>
-  ) : (
+  return (
     <section id="mobile-outer-container" className="mobile-main-parent">
       <SidebarMenu
         outerContainerId={"mobile-outer-container"}

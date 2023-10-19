@@ -1,0 +1,101 @@
+.shop-modal-container {
+  .shop-modal-header {
+    display: grid;
+    grid-template-columns: 1;
+    justify-content: center;
+    background-color: #1d2226;
+    border: 0;
+
+    .balanceDisplay {
+      color: white;
+      font-size: 25px;
+      margin-left: 15em;
+    }
+
+    .shop-modal-header-title1 {
+      color: gold;
+      justify-self: center;
+      margin-bottom: 0.5em;
+      font-size: 25px;
+    }
+
+    .shop-modal-header-image {
+      justify-self: center;
+      width: 200px;
+      -webkit-box-shadow: 5px 5px 15px 5px #000000;
+      box-shadow: 5px 5px 15px 5px #000000;
+    }
+
+    .shop-modal-header-title2 {
+      color: white;
+      margin-top: 0.5em;
+      font-size: 25px;
+      text-align: center;
+
+      :nth-child(1) {
+        color: greenyellow;
+      }
+    }
+  }
+
+  .shop-modal-body {
+    text-align: center;
+    color: white;
+    background-color: #1d2226;
+    font-size: 25px;
+
+    .shop-modal-span1 {
+      font-size: 30px;
+    }
+
+    .shop-modal-span2 {
+      color: greenyellow;
+    }
+
+    .shop-modal-span3 {
+      color: orange;
+    }
+
+    .shop-modal-balance {
+      font-size: 20px;
+
+      .negativeBalance {
+        color: red;
+      }
+
+      .positiveBalance {
+        color: greenyellow;
+      }
+    }
+  }
+
+  .shop-modal-footer {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-content: center;
+    color: white;
+    background-color: #1d2226;
+    font-size: 25px;
+
+    .shop-modal-footer-confirm-botton {
+      position: relative;
+
+      .shop-modal-footer-confirm-botton-animation {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .add-border {
+        border-bottom: 5px solid red;
+        border-radius: 0 0 5px 5px;
+      }
+    }
+  }
+}
+
+.shop-modal-coin-icon {
+  width: 35px;
+}

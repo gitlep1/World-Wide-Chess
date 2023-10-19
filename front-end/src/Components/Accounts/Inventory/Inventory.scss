@@ -1,7 +1,48 @@
+@mixin inventory-modal-body-container {
+  .inventory-modal-body {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-content: center;
+    overflow-y: auto;
+
+    .inventory-item-card-container {
+      margin: 10px;
+
+      .inventory-item-card {
+        height: 100%;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        color: white;
+        background-color: #282e33;
+
+        .inventory-item-card-img {
+          width: 160px;
+          height: 150px;
+          margin: 10px auto;
+          grid-column: 1 / -1;
+        }
+
+        .inventory-item-card-body {
+          grid-column: 1 / -1;
+          display: grid;
+          grid-template-columns: 1fr;
+        }
+      }
+    }
+  }
+}
+
 .desktop-inventory-container {
-  // add style later
+  .inventory-modal-body-container {
+    @include inventory-modal-body-container;
+  }
 }
 
 .mobile-inventory-container {
-  // add style later
+  .inventory-modal-body-container {
+    @include inventory-modal-body-container;
+  }
 }

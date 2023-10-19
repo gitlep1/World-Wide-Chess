@@ -2,10 +2,10 @@ $medium: 800px;
 $large: 1000px;
 $giant: 1200px;
 
-$Queen: url("../../../../Images/Queen.png");
-$Rook: url("../../../../Images/Rook.png");
-$Bishop: url("../../../../Images/Bishop.png");
-$Knight: url("../../../../Images/Knight.png");
+$Queen: url("../../../../Images/Promotions/Queen.png");
+$Rook: url("../../../../Images/Promotions/Rook.png");
+$Bishop: url("../../../../Images/Promotions/Bishop.png");
+$Knight: url("../../../../Images/Promotions/Knight.png");
 
 @mixin gamePagePlayer {
   // border: 5px solid cyan;

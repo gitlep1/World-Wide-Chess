@@ -9,7 +9,7 @@ const getAllShopItems = async () => {
   }
 };
 
-const getShopItemsByID = async (id) => {
+const getShopItemByID = async (id) => {
   try {
     const shopItem = await db.oneOrNone("SELECT * FROM shop WHERE id = $1", id);
     return shopItem;
@@ -20,5 +20,5 @@ const getShopItemsByID = async (id) => {
 
 module.exports = {
   getAllShopItems,
-  getShopItemsByID,
+  getShopItemByID,
 };

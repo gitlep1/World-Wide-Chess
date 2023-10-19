@@ -1,7 +1,8 @@
 import "./Sidebar.scss";
-import { Button } from "react-bootstrap";
+import { Button, Image } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { FaCoins } from "react-icons/fa";
+
+import ChessCoinIcon from "../../Images/Chess_Coins.png";
 
 const Sidebar = ({
   screenVersion,
@@ -25,8 +26,13 @@ const Sidebar = ({
             className="profileImg"
           />
           <h2>{user.username}</h2>
-          <h2>
-            <FaCoins /> {user.chess_coins}
+          <h2 className="chess-coins-container">
+            <Image
+              src={ChessCoinIcon}
+              alt="chess coins"
+              className="chess-coin-icon"
+            />
+            {user.chess_coins}
           </h2>
           <h3>Rating:</h3>
         </aside>

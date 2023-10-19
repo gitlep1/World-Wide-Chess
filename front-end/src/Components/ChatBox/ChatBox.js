@@ -49,13 +49,13 @@ const ChatBox = ({ token, socket, user }) => {
     try {
       const allUsers = axios.get(`${API}/users`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          authorization: `Bearer ${token}`,
         },
       });
 
       const allGuests = axios.get(`${API}/guests`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          authorization: `Bearer ${token}`,
         },
       });
 

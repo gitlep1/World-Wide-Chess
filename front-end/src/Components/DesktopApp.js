@@ -43,6 +43,7 @@ import ChatBox from "./ChatBox/ChatBox";
 const DesktopApp = ({
   handleSidebarOpen,
   user,
+  setUser,
   authenticated,
   token,
   isOpen,
@@ -52,7 +53,6 @@ const DesktopApp = ({
   handleLogout,
   resize,
   socket,
-  loading,
 }) => {
   const screenVersion = "desktop";
 
@@ -72,9 +72,7 @@ const DesktopApp = ({
     }
   };
 
-  return loading ? (
-    <p>loading...</p>
-  ) : (
+  return (
     <section id="desktop-outer-container" className="desktop-main-parent">
       <SidebarMenu
         outerContainerId={"desktop-outer-container"}
@@ -216,7 +214,7 @@ const DesktopApp = ({
                 <Shop
                   screenVersion={screenVersion}
                   user={user}
-                  authenticated={authenticated}
+                  setUser={setUser}
                   token={token}
                 />
               }

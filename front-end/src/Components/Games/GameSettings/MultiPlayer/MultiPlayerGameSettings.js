@@ -1,11 +1,13 @@
 import "./MultiPlayerGameSettings.scss";
 import { useEffect, useState } from "react";
 import { Button, Image } from "react-bootstrap";
-import { FaEquals } from "react-icons/fa";
-import { RiArrowUpCircleFill, RiArrowDownCircleFill } from "react-icons/ri";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
+
+import upArrow from "../../../../Images/Up_Green.png";
+import downArrow from "../../../../Images/Down_Red.png";
+import equalSign from "../../../../Images/Equal_Blue.png";
 
 import { ToastAskToJoin } from "../../../../CustomFunctions/CustomToasts";
 
@@ -130,10 +132,6 @@ const MultiPlayerGameSettings = ({
   };
 
   const handleDelete = async (gameID) => {
-    setPlayer1Data({});
-    setPlayer2Data({});
-    setGame({});
-
     await axios
       .delete(`${API}/multi-games/${gameID}`, {
         headers: {
@@ -149,6 +147,9 @@ const MultiPlayerGameSettings = ({
         );
       });
     toast.clearWaitingQueue();
+    setPlayer1Data({});
+    setPlayer2Data({});
+    setGame({});
     setTimeout(() => {
       navigate("/Lobby");
     }, 4100);
@@ -168,78 +169,184 @@ const MultiPlayerGameSettings = ({
       });
   };
 
-  player1Data.wins = 5;
-  player2Data.loss = 10;
-  player1Data.ties = 3;
-  player2Data.ties = 3;
+  // player1Data.wins = 5;
+  // player2Data.loss = 10;
+  // player1Data.ties = 3;
+  // player2Data.ties = 3;
 
   const renderPlayer1WinIcons = () => {
     if (player1Data.wins > player2Data.wins) {
-      return <RiArrowUpCircleFill className="arrow-up-icon" />;
+      return (
+        <Image
+          src={upArrow}
+          alt="arrow up icon"
+          className="game-settings-stats-icon"
+          fluid
+          rounded
+        />
+      );
     } else if (player1Data.wins < player2Data.wins) {
-      return <RiArrowDownCircleFill className="arrow-down-icon" />;
+      return (
+        <Image
+          src={downArrow}
+          alt="arrow down icon"
+          className="game-settings-stats-icon"
+        />
+      );
     } else if (player1Data.wins === player2Data.wins) {
-      return <FaEquals className="equal-icon" />;
+      return (
+        <Image
+          src={equalSign}
+          alt="equal sign icon"
+          className="game-settings-stats-icon"
+        />
+      );
     }
   };
 
   const renderPlayer1LossIcons = () => {
     if (player1Data.loss > player2Data.loss) {
-      return <RiArrowUpCircleFill className="arrow-up-icon" />;
+      return (
+        <Image
+          src={upArrow}
+          alt="arrow up icon"
+          className="game-settings-stats-icon"
+        />
+      );
     } else if (player1Data.loss < player2Data.loss) {
-      return <RiArrowDownCircleFill className="arrow-down-icon" />;
+      return (
+        <Image
+          src={downArrow}
+          alt="arrow down icon"
+          className="game-settings-stats-icon"
+        />
+      );
     } else if (player1Data.loss === player2Data.loss) {
-      return <FaEquals className="equal-icon" />;
+      return (
+        <Image
+          src={equalSign}
+          alt="equal sign icon"
+          className="game-settings-stats-icon"
+        />
+      );
     }
   };
 
   const renderPlayer1TieIcons = () => {
     if (player1Data.ties > player2Data.ties) {
-      return <RiArrowUpCircleFill className="arrow-up-icon" />;
+      return (
+        <Image
+          src={upArrow}
+          alt="arrow up icon"
+          className="game-settings-stats-icon"
+        />
+      );
     } else if (player1Data.ties < player2Data.ties) {
-      return <RiArrowDownCircleFill className="arrow-down-icon" />;
+      return (
+        <Image
+          src={downArrow}
+          alt="arrow down icon"
+          className="game-settings-stats-icon"
+        />
+      );
     } else if (player1Data.ties === player2Data.ties) {
       return (
-        <span className="equal-icon-container">
-          <FaEquals className="equal-icon" />
-        </span>
+        <Image
+          src={equalSign}
+          alt="equal sign icon"
+          className="game-settings-stats-icon"
+        />
       );
     }
   };
 
   const renderPlayer2WinIcons = () => {
     if (player2Data.wins > player1Data.wins) {
-      return <RiArrowUpCircleFill className="arrow-up-icon" />;
+      return (
+        <Image
+          src={upArrow}
+          alt="arrow up icon"
+          className="game-settings-stats-icon"
+          fluid
+          rounded
+        />
+      );
     } else if (player2Data.wins < player1Data.wins) {
-      return <RiArrowDownCircleFill className="arrow-down-icon" />;
+      return (
+        <Image
+          src={downArrow}
+          alt="arrow down icon"
+          className="game-settings-stats-icon"
+        />
+      );
     } else if (player2Data.wins === player1Data.wins) {
-      return <FaEquals className="equal-icon" />;
+      return (
+        <Image
+          src={equalSign}
+          alt="equal sign icon"
+          className="game-settings-stats-icon"
+        />
+      );
     }
   };
 
   const renderPlayer2LossIcons = () => {
     if (player2Data.loss > player1Data.loss) {
-      return <RiArrowUpCircleFill className="arrow-up-icon" />;
+      return (
+        <Image
+          src={upArrow}
+          alt="arrow up icon"
+          className="game-settings-stats-icon"
+        />
+      );
     } else if (player2Data.loss < player1Data.loss) {
-      return <RiArrowDownCircleFill className="arrow-down-icon" />;
+      return (
+        <Image
+          src={downArrow}
+          alt="arrow down icon"
+          className="game-settings-stats-icon"
+        />
+      );
     } else if (player2Data.loss === player1Data.loss) {
-      return <FaEquals className="equal-icon" />;
+      return (
+        <Image
+          src={equalSign}
+          alt="equal sign icon"
+          className="game-settings-stats-icon"
+        />
+      );
     }
   };
 
   const renderPlayer2TieIcons = () => {
     if (player2Data.ties > player1Data.ties) {
-      return <RiArrowUpCircleFill className="arrow-up-icon" />;
+      return (
+        <Image
+          src={upArrow}
+          alt="arrow up icon"
+          className="game-settings-stats-icon"
+        />
+      );
     } else if (player2Data.ties < player1Data.ties) {
-      return <RiArrowDownCircleFill className="arrow-down-icon" />;
+      return (
+        <Image
+          src={downArrow}
+          alt="arrow down icon"
+          className="game-settings-stats-icon"
+        />
+      );
     } else if (player2Data.ties === player1Data.ties) {
       return (
-        <span className="equal-icon-container">
-          <FaEquals className="equal-icon" />
-        </span>
+        <Image
+          src={equalSign}
+          alt="equal sign icon"
+          className="game-settings-stats-icon"
+        />
       );
     }
   };
+
+  console.log(player1Data);
 
   return (
     <section className="multi-player-game-settings-container">

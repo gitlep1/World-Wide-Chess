@@ -1,0 +1,61 @@
+@mixin loading-page-container {
+  background: url("../../Images/Background/kingsFistFight.jpeg") no-repeat
+    center/cover;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin loading-bar-container {
+  position: relative;
+  width: 200px;
+  height: 30px;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+@mixin loading-bar {
+  font-size: 25px;
+  text-align: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  animation: loading-animation 20s infinite linear;
+  @keyframes loading-animation {
+    0% {
+      width: 0;
+    }
+    100% {
+      width: 100%;
+    }
+  }
+}
+
+.desktop-loading-page-container {
+  @include loading-page-container;
+
+  .loading-bar-container {
+    @include loading-bar-container;
+
+    .loading-bar {
+      @include loading-bar;
+    }
+  }
+}
+
+.mobile-loading-page-container {
+  @include loading-page-container;
+
+  .loading-bar-container {
+    @include loading-bar-container;
+
+    .loading-bar {
+      @include loading-bar;
+    }
+  }
+}
