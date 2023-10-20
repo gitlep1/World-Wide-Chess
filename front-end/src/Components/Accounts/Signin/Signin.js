@@ -2,8 +2,9 @@ import "./Signin.scss";
 import { useState } from "react";
 import { Form, Button, Modal, Image } from "react-bootstrap";
 import { toast } from "react-toastify";
-import Logo from "../../../Images/Logo.png";
 import axios from "axios";
+
+import Logo from "../../../Images/Logo.png";
 
 const API = process.env.REACT_APP_API_URL;
 
@@ -14,6 +15,7 @@ const Signin = ({ screenVersion, handleUser, showSignIn, handleClose }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     if (name === "email") {
       setEmail(value);
     } else if (name === "password") {

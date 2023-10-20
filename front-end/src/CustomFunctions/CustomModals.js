@@ -2,7 +2,7 @@ import "./CustomModals.scss";
 import { useState, useEffect } from "react";
 import { Button, Image, Modal } from "react-bootstrap";
 import { useSpring, animated, useSpringRef } from "react-spring";
-import { toast } from "react-toastify";
+import Cookies from "js-cookie";
 import axios from "axios";
 
 import ChessCoinIcon from "../Images/Chess_Coins.png";
@@ -19,6 +19,7 @@ const ShopConfirmModal = ({
   handleCancel,
 }) => {
   const api = useSpringRef();
+  const userCookieData = Cookies.get("Current_User");
 
   const [loading, setLoading] = useState(false);
   const [buttonVariant, setButtonVariant] = useState("secondary");
@@ -79,7 +80,6 @@ const ShopConfirmModal = ({
       const userData = checkUserResponse.data.payload;
       const itemData = checkItemResponse.data.payload;
 
-      setUser(userData);
       setBalanceDisplay(userData.chess_coins);
 
       if (userData.chess_coins >= itemData.item_price) {
@@ -93,8 +93,6 @@ const ShopConfirmModal = ({
       setError(err.response.data);
     }
   };
-
-  console.log(user);
 
   return (
     <Modal

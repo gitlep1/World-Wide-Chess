@@ -14,7 +14,6 @@ const API = process.env.REACT_APP_API_URL;
 
 const Shop = ({ screenVersion, user, setUser, token }) => {
   let shopItemsArr = [];
-  const userData = Cookies.get("Current_User");
 
   const [shopSearchbar, setShopSearchbar] = useState("");
   const [shopItems, setShopItems] = useState([]);
@@ -64,8 +63,9 @@ const Shop = ({ screenVersion, user, setUser, token }) => {
             containerId: "toast-notify",
           }
         );
-        const updateUserCookieData = JSON.parse(userData);
-        console.log(updateUserCookieData);
+
+        Cookies.set("Current_User", JSON.stringify(res.data.updatedUser));
+        setUser(res.data.updatedUser);
 
         setOpenConfirm(false);
         setBuyingItem({});
