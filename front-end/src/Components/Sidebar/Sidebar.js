@@ -48,7 +48,7 @@ const Sidebar = ({
 
         <aside className="menuSideBar-buttons-container1">
           <Button
-            className="desktop-menu-item1"
+            className="menu-item1"
             variant="dark"
             onClick={() => {
               handleOpenInventory();
