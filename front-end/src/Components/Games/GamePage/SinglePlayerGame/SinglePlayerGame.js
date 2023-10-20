@@ -223,11 +223,13 @@ const SinglePlayerGame = ({
         }
       }
       setShowWinner(true);
+      return "checkmate";
     }
 
     if (chessGame.in_stalemate()) {
       setStalemate(true);
       tieSound.play();
+      return "stalemate";
     }
   };
 
@@ -263,12 +265,11 @@ const SinglePlayerGame = ({
 
   const handleMove = async (from, to, piece) => {
     checkForEndGame();
-    // Check if the move is a pawn promotion
+
     const isPromotion = piece === "wP" && from[1] === "7" && to[1] === "8";
     const isPromotion2 = piece === "bP" && from[1] === "2" && to[1] === "1";
 
     if (isPromotion || isPromotion2) {
-      // Store the promotion move and wait for user choice
       const promotion = { from, to };
       setPromotionMove(promotion);
       setShowPromotion(true);
@@ -276,11 +277,10 @@ const SinglePlayerGame = ({
       return;
     }
 
-    // Validate the move before making it
     const move = chessGame.move({ from, to });
     if (move) {
       moveSound.play();
-      setMoveHistory([...moveHistory, move]);
+      // setMoveHistory([...moveHistory, move]);
       const updatedPositions = {
         current_positions: chessGame.fen(),
         from: from,
@@ -288,7 +288,6 @@ const SinglePlayerGame = ({
       };
       await socket.emit("player-single-move-piece", game, updatedPositions);
 
-      // Make the AI move after the user move
       if (currentTimeout !== null) {
         clearTimeout(currentTimeout);
       }
@@ -299,7 +298,6 @@ const SinglePlayerGame = ({
       }, 200);
       setCurrentTimeout(timeout);
     } else {
-      // Invalid move, reset the promotion move
       setPromotionMove(null);
     }
   };
@@ -307,7 +305,6 @@ const SinglePlayerGame = ({
   const handlePromotionChoice = (pieceType) => {
     const { from, to } = promotionMove;
 
-    // Update the promotion move with the chosen piece
     const newMove = chessGame.move({
       from: from,
       to: to,
@@ -315,12 +312,13 @@ const SinglePlayerGame = ({
     });
 
     if (newMove) {
-      setMoveHistory([...moveHistory, newMove]);
+      // setMoveHistory([...moveHistory, newMove]);
       setShowPromotion(false);
-      // Make the AI move after the user move
+
       if (currentTimeout !== null) {
         clearTimeout(currentTimeout);
       }
+
       const timeout = setTimeout(() => {
         makeRandomMove();
         setFen(chessGame.fen());
@@ -328,7 +326,6 @@ const SinglePlayerGame = ({
       }, 200);
       setCurrentTimeout(timeout);
     } else {
-      // Invalid move, reset the promotion move
       setPromotionMove(null);
     }
   };
@@ -355,6 +352,18 @@ const SinglePlayerGame = ({
     } else {
       return "white";
     }
+  };
+
+  const handleMoveHistory = () => {
+    const isGameEnded = checkForEndGame();
+
+    if (isGameEnded === "checkmate" || isGameEnded === "stalemate") {
+      return;
+    }
+
+    return moveHistory.map((move, index) => (
+      <div key={nanoid()}>{move.san}</div>
+    ));
   };
 
   return (
@@ -447,31 +456,25 @@ const SinglePlayerGame = ({
           />
         </div>
 
-        <div className="singlePlayerGame-chatBox-moveHistory-container rounded-5">
-          <div className="singlePlayerGame-moveHistory-container rounded-5">
-            <h1>History</h1>
-            <div className="singlePlayerGame-moveHistory">
-              {moveHistory.map((move, index) => (
-                <div key={nanoid()}>{move.san}</div>
-              ))}
-            </div>
-          </div>
-          <div className="singlePlayerGame-chatBox-container rounded-5">
-            <h1>ChatBox</h1>
-            <div className="singlePlayerGame-chatBox">
-              <h1>random text</h1>
-              <h1>random text</h1>
-              <h1>random text</h1>
-              <h1>random text</h1>
-              <h1>random text</h1>
-              <h1>random text</h1>
-              <h1>random text</h1>
-              <h1>random text</h1>
-              <h1>random text</h1>
-              <h1>random text</h1>
-            </div>
-          </div>
+        {/* <div className="singlePlayerGame-chatBox-moveHistory-container rounded-5"> */}
+        <div className="singlePlayerGame-moveHistory-container rounded-5">
+          <h1 className="singlePlayer-history-title">History</h1>
+          {handleMoveHistory()}
         </div>
+        <div className="singlePlayerGame-chatBox-container rounded-5">
+          <h1 className="singlePlayer-chatbox-title">ChatBox</h1>
+          <h1>random text</h1>
+          <h1>random text</h1>
+          <h1>random text</h1>
+          <h1>random text</h1>
+          <h1>random text</h1>
+          <h1>random text</h1>
+          <h1>random text</h1>
+          <h1>random text</h1>
+          <h1>random text</h1>
+          <h1>random text</h1>
+        </div>
+        {/* </div> */}
 
         <div className="singlePlayerGame-buttons">
           <Button
