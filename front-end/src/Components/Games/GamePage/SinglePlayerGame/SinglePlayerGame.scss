@@ -110,54 +110,77 @@ $Knight: "../../../../../../Images/Promotions/Knight.png";
   }
 
   .singleplayer-main-content-container {
+    border: 5px solid gold;
     display: grid;
-    grid-template-columns: 1fr 500px;
+    grid-template-columns: 300px 1fr 500px;
     justify-content: center;
     align-items: center;
+    // overflow: auto;
 
     .singlePlayerGame-chessboard-container {
-      // border: 5px solid blue;
-    }
-
-    .singlePlayerGame-chatBox-moveHistory-container {
-      // border: 5px solid green;
+      border: 5px solid blue;
       grid-column: 2;
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      align-items: center;
-      text-align: center;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 1);
+      grid-row: 1;
+    }
+
+    // .singlePlayer-history-title {
+    //   grid-column: 1;
+    //   grid-row: 1;
+    // }
+
+    // .singlePlayer-chatbox-title {
+    //   grid-column: 2;
+    //   grid-row: 1;
+    // }
+
+    .singlePlayerGame-moveHistory-container {
+      border: 5px solid white;
+      width: 100%;
+      height: 95%;
+      margin: 0 auto;
+      overflow-y: auto;
+      grid-column: 1;
+      grid-row: 1;
       color: white;
-      font-size: 30px;
 
-      .singlePlayerGame-moveHistory-container {
-        // border: 5px solid white;
-        width: 100%;
-        height: 100%;
-        margin: 0 auto;
-
-        .singlePlayerGame-moveHistory {
-          // border: 5px solid brown;
-          height: 85%;
-          overflow-y: auto;
-        }
-      }
-
-      .singlePlayerGame-chatBox-container {
-        // border: 5px solid orange;
-        text-align: center;
-        font-size: 35px;
-        width: 100%;
-        height: 100%;
-        margin: 0 auto;
-
-        .singlePlayerGame-chatBox {
-          // border: 5px solid purple;
-          height: 85%;
-          overflow-y: auto;
-        }
+      .singlePlayerGame-moveHistory {
+        border: 5px solid brown;
+        height: 85%;
+        overflow-y: auto;
       }
     }
+
+    .singlePlayerGame-chatBox-container {
+      border: 5px solid orange;
+      text-align: center;
+      font-size: 35px;
+      width: 100%;
+      height: 95%;
+      margin: 0 auto;
+      overflow-y: auto;
+      grid-column: 3;
+      grid-row: 1;
+      color: white;
+
+      .singlePlayerGame-chatBox {
+        border: 5px solid purple;
+        height: 85%;
+        overflow-y: auto;
+      }
+    }
+
+    // .singlePlayerGame-chatBox-moveHistory-container {
+    //   border: 5px solid green;
+    //   grid-column: 2;
+    //   display: grid;
+    //   grid-template-columns: repeat(2, 1fr);
+    //   align-items: center;
+    //   text-align: center;
+    //   box-shadow: 0 5px 15px rgba(0, 0, 0, 1);
+    //   color: white;
+    //   font-size: 30px;
+    //   overflow: auto;
+    // }
 
     .singlePlayerGame-buttons {
       // border: 5px solid cyan;

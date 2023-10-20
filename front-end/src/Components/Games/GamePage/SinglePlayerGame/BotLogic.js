@@ -226,7 +226,7 @@ const BotLogic = (
     }
 
     const result = chessGame.move(bestMoveVar);
-    setMoveHistory([...moveHistory, result]);
+    // setMoveHistory([...moveHistory, result]);
     setFen(chessGame.fen());
 
     setIsThinking(false);
