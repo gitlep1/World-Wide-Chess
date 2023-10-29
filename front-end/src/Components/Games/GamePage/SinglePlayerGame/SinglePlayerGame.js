@@ -9,17 +9,6 @@ import axios from "axios";
 
 import DetectScreenSize from "../../../../CustomFunctions/DetectScreenSize";
 import controlWidth from "../../../../CustomFunctions/ControlWidth";
-import {
-  captureSound,
-  castleSound,
-  winnerSound,
-  loserSound,
-  tieSound,
-  moveSound,
-  checkSound,
-  promoteSound,
-  notifySound,
-} from "../../../../CustomFunctions/SoundEffects";
 
 import spectatorLight1 from "../../../../Images/Spectators/spectatorLight1.png";
 import spectatorLight2 from "../../../../Images/Spectators/spectatorLight2.png";
@@ -208,18 +197,14 @@ const SinglePlayerGame = ({
       if (chessGame.turn() === "w") {
         if (game.player1color === "w") {
           setWinner(player2Data);
-          loserSound.play();
         } else if (game.botcolor === "w") {
           setWinner(player1Data);
-          winnerSound.play();
         }
       } else if (chessGame.turn() === "b") {
         if (game.player1color === "b") {
           setWinner(player2Data);
-          loserSound.play();
         } else if (game.botcolor === "b") {
           setWinner(player1Data);
-          winnerSound.play();
         }
       }
       setShowWinner(true);
@@ -228,7 +213,7 @@ const SinglePlayerGame = ({
 
     if (chessGame.in_stalemate()) {
       setStalemate(true);
-      tieSound.play();
+
       return "stalemate";
     }
   };
@@ -259,7 +244,6 @@ const SinglePlayerGame = ({
     delayedFunction((bestMove) => {
       chessGame.move(bestMove);
       setFen(chessGame.fen());
-      moveSound.play();
     });
   };
 
@@ -273,13 +257,11 @@ const SinglePlayerGame = ({
       const promotion = { from, to };
       setPromotionMove(promotion);
       setShowPromotion(true);
-      promoteSound.play();
       return;
     }
 
     const move = chessGame.move({ from, to });
     if (move) {
-      moveSound.play();
       // setMoveHistory([...moveHistory, move]);
       const updatedPositions = {
         current_positions: chessGame.fen(),

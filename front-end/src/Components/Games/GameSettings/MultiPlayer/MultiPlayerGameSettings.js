@@ -346,8 +346,6 @@ const MultiPlayerGameSettings = ({
     }
   };
 
-  console.log(player1Data);
-
   return (
     <section className="multi-player-game-settings-container">
       <div className="game-settings-player1-info">

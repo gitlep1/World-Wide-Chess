@@ -163,8 +163,8 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
   });
 
   socket.on("start-multi-player-game", async (gameData) => {
-    console.log(`=== start-multi-player-game === \n
-    Game Data: ${gameData}`);
+    console.log("=== start-multi-player-game: ");
+    console.log("Game Data: ", gameData, "===");
 
     const player1Data =
       (await getUserByID(gameData.player1id)) ||
@@ -282,12 +282,12 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
         updatedGamePosition
       );
 
-      if (multiGameUpdated) {
+      if (!(multiGameUpdated instanceof Error)) {
         console.log(
           "updated game ID: ",
           gameData.id,
           "with data: ",
-          gameUpdated
+          multiGameUpdated
         );
 
         io.in(`/Room/${gameData.id}`).emit(
@@ -327,7 +327,7 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
         updatedGamePosition
       );
 
-      if (multiGameUpdated) {
+      if (!(multiGameUpdated instanceof Error)) {
         console.log(
           "updated game ID: ",
           gameData.id,
@@ -337,7 +337,7 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
 
         io.in(`/Room/${gameData.id}`).emit(
           "multi-game-state-updated",
-          gameUpdated
+          multiGameUpdated
         );
       } else {
         console.log(
@@ -355,112 +355,10 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
       }
     }
   });
+
+  socket.on("multi-end-game", async (gameID, token) => {
+    //
+  });
 };
 
 module.exports = addMultiGamesSocketEventListeners;
-
-// console.log(
-//   chessGame.move({
-//     from: updatedGamePosition.from,
-//     to: updatedGamePosition.to,
-//   })
-// );
-// if (move) {
-//   console.log("valid");
-// } else {
-//   console.log("invalid");
-// }
-
-// if (move) {
-//   const updatedGameData = {
-//     player2id: gameData.player2id,
-//     player1color: gameData.player1color,
-//     player2color: gameData.player2color,
-//     in_progress: gameData.in_progress,
-//     current_positions: move.after,
-//   };
-//   const updatedGame = await updateGame(gameData.id, updatedGameData);
-
-//   if (updatedGame) {
-//     console.log(
-//       "updated game ID: ",
-//       gameData.id,
-//       "with data: ",
-//       updatedGame
-//     );
-//     io.in(`Room/${gameData.id}`).emit("game-state-updated", updatedGame);
-//   } else {
-//     console.log(
-//       "could not update game ID: ",
-//       gameData.id,
-//       "with data: ",
-//       updatedGame
-//     );
-//     const errorMessage = "ERROR: 409";
-//     io.in(`Room/${gameData.id}`).emit(
-//       "game-state-updated-error",
-//       errorMessage
-//     );
-//   }
-// } else {
-//   console.log("INVALID MOVE!");
-
-//   const errorMessage = "INVALID MOVE!";
-//   io.in(`Room/${gameData.id}`).emit(
-//     "game-state-updated-error",
-//     errorMessage
-//   );
-// }
-
-// if (promotion !== "") {
-//   const move = chessGame.move({ from, to, promotion });
-//   if (move) {
-//     const updatedGameData = {
-//       player2id: oldGameData.player2id,
-//       player1color: oldGameData.player1color,
-//       player2color: oldGameData.player2color,
-//       in_progress: oldGameData.in_progress,
-//       current_positions: move.after,
-//     };
-//     console.log(
-//       "updated game ID: ",
-//       gameData.id,
-//       "with data: ",
-//       updatedGame
-//     );
-
-//     const updatedGame = await updateGame(gameData.id, updatedGameData);
-//     io.in(`Room/${gameData.id}`).emit("game-state-updated", updatedGame);
-//   } else {
-//     console.log(`Could not update game: ${gameData.id}, INVALID MOVE!`);
-
-//     const errorMessage = "INVALID MOVE!";
-//     io.in(`Room/${gameData.id}`).emit(
-//       "game-state-updated-error",
-//       errorMessage
-//     );
-//   }
-// }
-
-// Validate the move and make the move if it's legal
-// const move = chessGame.move({ from, to, promotion });
-// console.log(`from: ${from} ||| to: ${to}`);
-// console.log(`move from: ${move.from} ||| move to: ${move.to}`);
-// if (move) {
-//   const updatedGameData = {
-//     player2id: game[0].player2id,
-//     player1color: game[0].player1color,
-//     player2color: game[0].player2color,
-//     in_progress: game[0].in_progress,
-//     current_positions: move.after,
-//   };
-//   // If the move is valid, update the game state in the database
-//   const updatedGame = await updatedGame(gameId, updatedGameData);
-
-//   // Emit a 'game-state-updated' event to all clients in the game room
-//   io.in(`Room/${gameId}`).emit("game-state-updated", updatedGame);
-
-//   console.log(`Game ${gameId} state updated:`, updatedGame);
-// } else {
-//   console.log(`Could not update game: ${gameId}, INVALID MOVE!`);
-// }
