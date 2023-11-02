@@ -2,12 +2,14 @@ import "./Homepage.scss";
 import { useState } from "react";
 import { Image } from "react-bootstrap";
 
+import Logo from "../../Images/Logo.png";
+
 import DailyTasks from "./HomepageTasks/DailyTasks";
 import MonthlyTasks from "./HomepageTasks/MonthlyTasks";
 
 import HomepageFacts from "./HomepageFacts/HomepageFacts";
 
-const Homepage = ({ screenVersion }) => {
+const Homepage = ({ screenVersion, user, token }) => {
   let topPlayer = {};
 
   const [dailyTaskSelected, setDailyTaskSelected] = useState(true);
@@ -25,16 +27,12 @@ const Homepage = ({ screenVersion }) => {
 
   return (
     <section className={`${screenVersion}-homepage-container`}>
+      <header id="homepage-header">
+        <Image src={Logo} alt="Logo" id="logoImg" />
+        <h1>WORLD WIDE CHESS</h1>
+      </header>
       <div className="homepage-topPlayer">
-        <h1>
-          Top Player: WIP
-          {Object.keys(topPlayer).length > 0 ? (
-            <span id="topPlayer-border">
-              <Image src={topPlayer.profileimg} alt="top-player" />
-              <span id="topPlayer-background"> {topPlayer.username}</span>
-            </span>
-          ) : null}
-        </h1>
+        <h1>Welcome, {user.username}</h1>
       </div>
 
       <div className="homepage-content">

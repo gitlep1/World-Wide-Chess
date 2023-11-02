@@ -75,27 +75,31 @@ const App = () => {
 
   const resizeSidebar = () => {
     if (window.innerWidth > 1000) {
-      setResize("25%");
+      setResize("8%");
     }
-
     if (window.innerWidth <= 1000) {
-      setResize("30%");
+      setResize("10%");
     }
-
+    if (window.innerWidth <= 900) {
+      setResize("11%");
+    }
     if (window.innerWidth <= 800) {
-      setResize("35%");
+      setResize("12%");
     }
-
-    if (window.innerWidth <= 650) {
-      setResize("40%");
+    if (window.innerWidth <= 700) {
+      setResize("15%");
     }
-
     if (window.innerWidth <= 600) {
-      setResize("45%");
+      setResize("16%");
     }
-
+    if (window.innerWidth <= 500) {
+      setResize("20%");
+    }
     if (window.innerWidth <= 400) {
-      setResize("60%");
+      setResize("23%");
+    }
+    if (window.innerWidth <= 325) {
+      setResize("25%");
     }
   };
 
@@ -260,6 +264,7 @@ const App = () => {
           handleUser={handleUser}
           handleLogout={handleLogout}
           resize={resize}
+          setResize={setResize}
           socket={socket}
         />
       );

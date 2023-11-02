@@ -19,8 +19,11 @@ const MultiPlayerGame = ({
   screenVersion,
   user,
   game,
+  setGame,
   player1Data,
+  setPlayer1Data,
   player2Data,
+  setPlayer2Data,
   forfeitNotify,
   endGame,
   socket,
@@ -50,6 +53,37 @@ const MultiPlayerGame = ({
   }, []);
 
   useEffect(() => {
+    socket.emit("get-multi-game-data", game.id);
+
+    socket.on(
+      "multi-player-reconnected",
+      (gameData, playerOneData, playerTwoData) => {
+        setGame(gameData);
+        setPlayer1Data(playerOneData);
+        setPlayer2Data(playerTwoData);
+      }
+    );
+
+    const intervalFunctions = setInterval(() => {
+      socket.emit("get-multi-game-data", game.id);
+
+      socket.on(
+        "multi-player-reconnected",
+        (gameData, playerOneData, playerTwoData) => {
+          setGame(gameData);
+          setPlayer1Data(playerOneData);
+          setPlayer2Data(playerTwoData);
+        }
+      );
+    }, 45000);
+
+    return () => {
+      clearInterval(intervalFunctions);
+      socket.off("multi-player-reconnected");
+    };
+  }, []); // eslint-disable-line
+
+  useEffect(() => {
     const game = new Chess(recentMoves);
     setChessGame(game);
   }, [recentMoves]);
@@ -63,27 +97,52 @@ const MultiPlayerGame = ({
   };
 
   useEffect(() => {
-    socket.on("game-state-updated", (moveData) => {
+    socket.on("multi-game-state-updated", (moveData) => {
       updateGameState(moveData);
     });
 
-    // return () => {
-    //   socket.off("game-state-updated");
-    // };
+    return () => {
+      socket.off("multi-game-state-updated");
+    };
   }, [socket]);
 
-  const handleMove = async (from, to, piece) => {
+  useEffect(() => {
     if (chessGame.game_over()) {
       console.log("game over!");
     }
+
     if (chessGame.in_stalemate()) {
       setShowStalemate(true);
     }
+
     if (chessGame.turn() === "w") {
       if (chessGame.in_checkmate()) {
         setShowWinner(true);
         setWinner(player2Data);
       }
+    } else if (chessGame.turn() === "b") {
+      if (chessGame.in_checkmate()) {
+        setShowWinner(true);
+        setWinner(player1Data);
+      }
+    }
+  }, [chessGame, player1Data, player2Data]);
+
+  const handleMove = async (from, to, piece) => {
+    if (chessGame.game_over()) {
+      return;
+    }
+
+    if (chessGame.in_stalemate()) {
+      setShowStalemate(true);
+    }
+
+    if (chessGame.turn() === "w") {
+      if (chessGame.in_checkmate()) {
+        setShowWinner(true);
+        setWinner(player2Data);
+      }
+
       if (user.id === game.player1id) {
         if (piece[0] === "w") {
           const isPromotion =
@@ -103,7 +162,7 @@ const MultiPlayerGame = ({
               from: from,
               to: to,
             };
-            socket.emit("move-piece", game, updatedGameData);
+            socket.emit("multi-move-piece", game, updatedGameData);
           } else {
             setPromotionMove(null);
             return null;
@@ -138,7 +197,7 @@ const MultiPlayerGame = ({
               from: from,
               to: to,
             };
-            socket.emit("move-piece", game, updatedGameData);
+            socket.emit("multi-move-piece", game, updatedGameData);
           } else {
             setPromotionMove(null);
             return null;
@@ -175,7 +234,7 @@ const MultiPlayerGame = ({
       promotion: newMove.promotion,
     };
 
-    socket.emit("piece-promo", game, updatedGameData);
+    socket.emit("multi-piece-promo", game, updatedGameData);
   };
 
   game["spectators"] = 5;
@@ -399,7 +458,7 @@ const MultiPlayerGame = ({
           <Modal.Footer className="winner-modal-footer">
             <Button
               onClick={() => {
-                endGame(game.id);
+                endGame();
               }}
             >
               End Game
@@ -434,7 +493,7 @@ const MultiPlayerGame = ({
           <Button
             variant="danger"
             onClick={() => {
-              endGame(game.id);
+              endGame();
             }}
           >
             GIVE UP!

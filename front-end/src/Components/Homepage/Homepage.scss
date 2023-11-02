@@ -99,6 +99,21 @@ $TigerGif: url("../../Images/Profiles/tigerRunning.gif");
   }
 }
 
+#homepage-header {
+  #logoImg {
+    width: 150px;
+  }
+
+  h1 {
+    font-size: 25px;
+    color: white;
+    font-family: "Bungee Shade", cursive;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
 .homepage-tasks {
   margin-top: 1em;
   display: grid;

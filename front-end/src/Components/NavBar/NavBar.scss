@@ -9,13 +9,19 @@ $large-desktop: 1300px;
 $extra-large-desktop: 1400px;
 
 @mixin Navbar-container($gridTemplateColumnsValues) {
+  // border: 5px solid red;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 10%;
   display: grid;
-  grid-template-columns: $gridTemplateColumnsValues;
+  grid-template-columns: 1fr;
   background-color: #212529;
 }
 
 @mixin Navbar-header($gridColumn) {
-  grid-column: $gridColumn;
+  grid-column: 1;
   color: aliceblue;
   display: flex;
   flex-direction: column;
@@ -31,7 +37,7 @@ $extra-large-desktop: 1400px;
 
 @mixin grid-template($gridTemplateVersion) {
   display: grid;
-  #{$gridTemplateVersion}: repeat(2, 1fr);
+  #{$gridTemplateVersion}: 1fr;
   align-items: center;
   // justify-content: center;
   text-align: center;
@@ -64,44 +70,24 @@ $extra-large-desktop: 1400px;
       @include Navbar-header(2);
     }
 
-    #HomeAndLobby-container {
-      // background-color: green;
+    .Navbar-home {
       grid-column: 1;
-      grid-row: 1;
-      @include grid-template(grid-template-columns);
-      font-size: 25px;
-      column-gap: 1em;
-      margin-left: 0.5em;
-
-      .Navbar-home {
-        grid-column: 1;
-        @include Navbar-button-style;
-      }
-
-      .Navbar-lobby {
-        grid-column: 2;
-        @include Navbar-button-style;
-      }
+      @include Navbar-button-style;
     }
 
-    #ShopAndMenu-container {
-      // background-color: yellow;
-      grid-column: 3;
-      grid-row: 1;
-      @include grid-template(grid-template-columns);
-      font-size: 25px;
-      column-gap: 1em;
-      margin-right: 0.5em;
+    .Navbar-lobby {
+      grid-column: 1;
+      @include Navbar-button-style;
+    }
 
-      .Navbar-shop {
-        grid-column: 1;
-        @include Navbar-button-style;
-      }
+    .Navbar-shop {
+      grid-column: 1;
+      @include Navbar-button-style;
+    }
 
-      .Navbar-menu {
-        grid-column: 2;
-        @include Navbar-button-style;
-      }
+    .Navbar-menu {
+      grid-column: 1;
+      @include Navbar-button-style;
     }
   }
 
@@ -154,35 +140,9 @@ $extra-large-desktop: 1400px;
       }
     }
   }
-
-  .hide-navbar {
-    border: 5px solid red;
-    display: none;
-  }
 }
 
 .Navbar-active {
   border: 3px solid aliceblue;
   transition-duration: 0.1s;
-}
-
-.Navbar-arrow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  background-color: black;
-  font-size: 20px;
-  width: 3em;
-  height: 1.5em;
-  box-shadow: 0px 0px 5px 2.5px #000000;
-  margin: 0 auto 3% auto;
-
-  &:hover {
-    cursor: pointer;
-  }
-}
-
-#logoImg {
-  width: 110px;
 }

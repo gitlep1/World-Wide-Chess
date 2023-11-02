@@ -1,19 +1,53 @@
-.NavBar-header-navigation {
-  h1 {
-    font-size: 18px;
-    color: white;
-    font-family: "Bungee Shade", cursive;
-    &:hover {
-      cursor: pointer;
-    }
-  }
+.sidebar-burger {
+  position: fixed;
+  top: 1.5%;
+  left: 1.5%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  background-color: black;
+  font-size: 20px;
+  width: 2em;
+  height: 1.5em;
+  box-shadow: 0px 0px 5px 2.5px #000000;
+  margin: 0 auto 3% auto;
 
-  #mainlogoImg {
-    width: 110px;
-    &:hover {
-      cursor: pointer;
-    }
+  &:hover {
+    cursor: pointer;
+    color: black;
+    background-color: white;
   }
+}
+
+.bm-menu-wrap {
+  position: fixed;
+  height: 100%;
+  text-align: center;
+}
+
+/* General sidebar styles */
+.bm-menu {
+  background: #282e33;
+}
+
+/* Morph shape necessary with bubble or elastic */
+.bm-morph-shape {
+  fill: #282e33;
+}
+
+/* Wrapper for item list */
+.bm-item-list {
+  color: #edf2f4;
+}
+
+/* Styling of overlay */
+.bm-overlay {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.bm-cross-button {
+  display: none !important;
 }
 
 // font-family: 'Bungee Shade', cursive;
