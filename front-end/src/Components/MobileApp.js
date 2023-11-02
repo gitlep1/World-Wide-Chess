@@ -1,7 +1,8 @@
 import "./MobileApp.scss";
 import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
-import { bubble as SidebarMenu } from "react-burger-menu";
+import { push as SidebarMenu } from "react-burger-menu";
+import { GiHamburgerMenu } from "react-icons/gi";
 import io from "socket.io-client";
 import Cookies from "js-cookie";
 
@@ -78,7 +79,7 @@ const MobileApp = ({
         isOpen={isOpen}
         onClose={handleSidebarOpen}
         customBurgerIcon={false}
-        right
+        left
         width={resize}
         id="mobile-sidebarmenu"
       >
@@ -97,11 +98,9 @@ const MobileApp = ({
         />
       </SidebarMenu>
 
-      <NavBar
-        screenVersion={screenVersion}
-        handleOpen={handleSidebarOpen}
-        authenticated={authenticated}
-      />
+      <div className="sidebar-burger" onClick={handleSidebarOpen}>
+        <GiHamburgerMenu />
+      </div>
 
       <main id="mobile-page-wrap">
         <Routes>

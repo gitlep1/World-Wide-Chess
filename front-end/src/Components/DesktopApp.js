@@ -1,7 +1,8 @@
 import "./DesktopApp.scss";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Routes, Route } from "react-router-dom";
-import { scaleRotate as SidebarMenu } from "react-burger-menu";
+import { pushRotate as SidebarMenu } from "react-burger-menu";
+import { GiHamburgerMenu } from "react-icons/gi";
 import io from "socket.io-client";
 import Cookies from "js-cookie";
 
@@ -52,9 +53,12 @@ const DesktopApp = ({
   handleUser,
   handleLogout,
   resize,
+  setResize,
   socket,
 }) => {
   const screenVersion = "desktop";
+
+  const reff = useRef();
 
   const [isMultiplayer, setIsMultiplayer] = useState(false);
   const [showSignIn, setShowSignIn] = useState(false);
@@ -80,7 +84,7 @@ const DesktopApp = ({
         isOpen={isOpen}
         onClose={handleSidebarOpen}
         customBurgerIcon={false}
-        right
+        left
         width={resize}
         id="desktop-sidebarmenu"
       >
@@ -97,11 +101,9 @@ const DesktopApp = ({
         />
       </SidebarMenu>
 
-      <NavBar
-        screenVersion={screenVersion}
-        handleOpen={handleSidebarOpen}
-        authenticated={authenticated}
-      />
+      <div className="sidebar-burger" onClick={handleSidebarOpen}>
+        <GiHamburgerMenu />
+      </div>
 
       <main id="desktop-page-wrap">
         <Routes>
@@ -120,7 +122,7 @@ const DesktopApp = ({
               }
             />
             <Route
-              path="Accounts/:userID"
+              path="Account"
               element={
                 <AccountPage
                   screenVersion={screenVersion}
@@ -131,7 +133,7 @@ const DesktopApp = ({
               }
             />
             <Route
-              path="Accounts/:userID/Settings"
+              path="Accounts/Settings"
               element={
                 <AccountSettings
                   screenVersion={screenVersion}

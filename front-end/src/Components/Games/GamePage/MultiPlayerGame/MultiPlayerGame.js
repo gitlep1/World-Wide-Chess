@@ -75,7 +75,7 @@ const MultiPlayerGame = ({
           setPlayer2Data(playerTwoData);
         }
       );
-    }, 180000);
+    }, 45000);
 
     return () => {
       clearInterval(intervalFunctions);
