@@ -102,10 +102,12 @@
 }
 
 .mobile-render-lobby-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+
   .single-game-container {
-    border: 5px solid red;
-    height: 100%;
-    width: 50%;
+    height: 95%;
+    overflow-y: auto;
 
     .room-info {
       @include room-info;
@@ -113,6 +115,9 @@
   }
 
   .multi-game-container {
+    height: 95%;
+    overflow-y: auto;
+
     .room-info {
       @include room-info;
     }
