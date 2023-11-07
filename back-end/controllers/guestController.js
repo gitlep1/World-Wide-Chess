@@ -39,7 +39,16 @@ guest.get(
 
     if (getAGuest) {
       // console.log("=== GET guest by ID", getAGuest, "===");
-      res.status(200).json({ payload: getAGuest });
+
+      const guestData = {
+        profileimg: getAGuest.profileimg,
+        username: getAGuest.username,
+        theme: getAGuest.theme,
+        chess_coins: getAGuest.chess_coins,
+        is_guest: true,
+      };
+
+      res.status(200).json({ payload: guestData });
     } else {
       res.status(404).send("guest not found");
     }
@@ -48,7 +57,7 @@ guest.get(
 
 guest.post("/signup", async (req, res) => {
   const newGuestData = {
-    profileimg: req.body.profileimg,
+    profileimg: "https://i.imgur.com/UhrGSKy.png",
     username: req.body.username,
     is_guest: true,
   };
@@ -66,7 +75,18 @@ guest.post("/signup", async (req, res) => {
       "==="
     );
     const token = jwt.sign(clientTokenPayload, JSK, { expiresIn: "1d" });
-    res.status(201).json({ payload: createdGuest, token });
+
+    const guestData = {
+      profileimg: createdGuest.profileimg,
+      username: createdGuest.username,
+      theme: createdGuest.theme,
+      chess_coins: createdGuest.chess_coins,
+      is_guest: true,
+    };
+
+    console.log(token);
+
+    res.status(201).json({ payload: guestData, token });
   } else {
     res.status(404).send("guest not created");
   }

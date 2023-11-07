@@ -1,7 +1,6 @@
 import "./App.scss";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { nanoid } from "nanoid";
 import io from "socket.io-client";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -146,8 +145,24 @@ const App = () => {
   //   };
   // };
 
+  const generateAlphaNumericID = (length) => {
+    const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let result = "";
+
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * charset.length);
+      result += charset[randomIndex];
+    }
+
+    return result;
+  };
+
   const handleUser = async (user) => {
     if (user) {
+      Cookies.remove("Current_User");
+      Cookies.remove("Authenticated");
+      Cookies.remove("token");
+
       const expirationDate = new Date();
       expirationDate.setDate(expirationDate.getDate() + 30);
 
@@ -190,13 +205,17 @@ const App = () => {
   const handleGuest = async () => {
     const newGuest = {
       profileimg: DefaultProfImg,
-      username: `Guest-${nanoid(5)}`,
+      username: `Guest-${generateAlphaNumericID(5)}`,
       is_guest: true,
     };
 
     return axios
       .post(`${API}/guests/signup`, newGuest)
       .then((res) => {
+        Cookies.remove("Current_User");
+        Cookies.remove("Authenticated");
+        Cookies.remove("token");
+
         const expirationDate = new Date();
         expirationDate.setDate(expirationDate.getDate() + 1);
 

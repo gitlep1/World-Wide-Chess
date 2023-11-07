@@ -1,11 +1,14 @@
 import "./GameSettings.scss";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 import GameSettingsLoader from "../../../CustomLoaders/GameSettingsLoader/GameSettingsLoader";
 
 import SinglePlayerGameSettings from "./SinglePlayer/SinglePlayerGameSettings";
 import MultiPlayerGameSettings from "./MultiPlayer/MultiPlayerGameSettings";
+
+const API = process.env.REACT_APP_API_URL;
 
 const GameSettings = ({
   screenVersion,
@@ -32,10 +35,12 @@ const GameSettings = ({
     socket.emit("get-multi-game-data", gameID);
 
     socket.on("single-room-settings", (gameData) => {
+      console.log("single: ", { gameData });
       setGame(gameData);
     });
 
     socket.on("multi-room-settings", (gameData, player1) => {
+      console.log("multi: ", { gameData });
       setGame(gameData);
       setPlayer1Data(player1);
     });
@@ -63,7 +68,29 @@ const GameSettings = ({
     };
   }, []); // eslint-disable-line
 
-  const renderGameSettings = () => {
+  useEffect(() => {
+    getGameData();
+  }, []); // eslint-disable-line
+
+  const getGameData = async () => {
+    setLoading(true);
+    await axios
+      .get(`${API}/games/${gameID}`, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        setGame(res.data.payload);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setLoading(false);
+        setError(err.response.data);
+      });
+  };
+
+  const renderGameSettings = async () => {
     if (loading) {
       return <GameSettingsLoader />;
     } else if (error) {
@@ -110,6 +137,9 @@ const GameSettings = ({
       );
     }
   };
+
+  // console.log(game);
+  // console.log(game.is_multiplayer);
 
   return (
     <section className={`${screenVersion}-game-settings-container`}>

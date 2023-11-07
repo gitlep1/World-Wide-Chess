@@ -62,7 +62,7 @@ const Lobbypage = ({
     });
 
     socket.on("asking-host", async () => {
-      console.log("asked host");
+      // console.log("asked host");
       handlePlayerJoining();
     });
 
@@ -207,7 +207,7 @@ const Lobbypage = ({
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleCreateGame = async (e) => {
     e.preventDefault();
 
     if (createRoomName.length < 3 || createRoomName.length > 15) {
@@ -289,63 +289,16 @@ const Lobbypage = ({
     }
   };
 
-  // const handlePlayerJoining = async () => {
-  //   const timeoutPromise = new Promise((resolve, reject) => {
-  //     setTimeout(() => {
-  //       reject(new Error("Timeout"));
-  //     }, 5000);
-  //   });
-
-  //   const handlePlayerJoiningPromise = new Promise(async (resolve, reject) => {
-  //     console.log("inside promise");
-
-  //     socket.on("host-accepted", (gameData) => {
-  //       console.log(gameData);
-  //       resolve({ data: gameData });
-  //     });
-
-  //     socket.on("host-denied", () => {
-  //       console.log("denied");
-  //       reject(new Error("Host denied the request"));
-  //     });
-
-  //     return () => {
-  //       socket.off("host-accepted");
-  //       socket.off("host-denied");
-  //     };
-  //   });
-
-  //   try {
-  //     // Use Promise.race to resolve when either promise resolves or rejects.
-  //     const result = await Promise.race([
-  //       handlePlayerJoiningPromise,
-  //       timeoutPromise,
-  //     ]);
-
-  //     // Notify using React-Toastify based on the result.
-  //     toast.success("Joining Game ...", {
-  //       containerId: "general-toast",
-  //     });
-  //     console.log(result.data);
-  //   } catch (err) {
-  //     // Notify an error using React-Toastify.
-  //     toast.error("Host did not decide in time", {
-  //       containerId: "general-toast",
-  //     });
-  //     setError(err.message);
-  //   }
-  // };
-
   const handlePlayerJoining = async () => {
     handlePlayerJoiningPromise()
       .then((result) => {
-        console.log("The result:", result);
+        // console.log("The result:", result);
         toast.success(result, {
           containerId: "general-toast",
         });
       })
       .catch((error) => {
-        console.log("The error:", error);
+        // console.log("The error:", error);
         toast.error(error, {
           containerId: "general-toast",
         });
@@ -506,7 +459,7 @@ const Lobbypage = ({
       >
         <Modal.Title className="lobbyModal-title">Room Settings</Modal.Title>
         <Modal.Body className="lobbyModal-body">
-          <Form onSubmit={handleSubmit}>
+          <Form onSubmit={handleCreateGame}>
             <h3>Room Name</h3>
             <Form.Group controlId="formcreateRoomName">
               <Form.Control
