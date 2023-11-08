@@ -45,6 +45,7 @@ users.get(
       // console.log("=== GET user by ID", getAUser, "===");
 
       const userData = {
+        id: getAUser.id,
         profileimg: getAUser.profileimg,
         username: getAUser.username,
         theme: getAUser.theme,
@@ -96,6 +97,7 @@ users.post("/signup", checkValues, async (req, res) => {
       const token = jwt.sign(clientTokenPayload, JSK, { expiresIn: "30d" });
 
       const userData = {
+        id: createdUser.id,
         profileimg: createdUser.profileimg,
         username: createdUser.username,
         theme: createdUser.theme,
@@ -137,6 +139,7 @@ users.post("/signin", async (req, res) => {
       const token = jwt.sign(clientTokenPayload, JSK, { expiresIn: "30d" });
 
       const userData = {
+        id: getUserData.id,
         profileimg: getUserData.profileimg,
         username: getUserData.username,
         theme: getUserData.theme,

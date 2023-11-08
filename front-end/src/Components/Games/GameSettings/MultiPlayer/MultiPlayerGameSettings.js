@@ -26,13 +26,12 @@ const MultiPlayerGameSettings = ({
   setPlayer1Data,
   setPlayer2Data,
 }) => {
-  const { gameID } = useParams();
   const navigate = useNavigate();
 
   const [toastId, setToastId] = useState("");
 
   useEffect(() => {
-    socket.emit("get-multi-game-data", gameID);
+    socket.emit("get-multi-game-data", game.id);
 
     socket.on(
       "multi-player-reconnected",
@@ -345,8 +344,6 @@ const MultiPlayerGameSettings = ({
       );
     }
   };
-
-  console.log(player2Data);
 
   return (
     <section className="multi-player-game-settings-container">

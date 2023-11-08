@@ -4,9 +4,15 @@ $giant: 1200px;
 
 @mixin lobby-container {
   height: 100vh;
+  // margin-top: 5em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 @mixin lobbySection1 {
+  margin-top: 3em;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1em;
@@ -37,7 +43,7 @@ $giant: 1200px;
   background-color: #1b1b1b;
   border-radius: 1em;
   border: 3px solid white;
-  width: 95%;
+  width: 100%;
   margin: 0 auto;
   grid-column: 1 / -1;
 
@@ -106,7 +112,7 @@ $giant: 1200px;
   display: flex;
   text-align: center;
   flex-direction: column;
-  height: 95vh;
+  height: 70vh;
   width: 85vw;
   max-width: $giant;
   margin: 0 auto;

@@ -52,12 +52,23 @@ games.post(
   requireAuth(),
   scopeAuth(["read:user", "write:user"]),
   async (req, res) => {
+    const { token } = req.user;
+    const decoded = jwt.decode(token);
+
+    const checkUserData =
+      (await getUserByID(decoded.user.id)) ||
+      (await getGuestByID(decoded.user.id));
+
+    if (!checkUserData) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
     const newGameData = {
       room_name: req.body.room_name,
       room_password: req.body.room_password,
-      player1id: req.body.player1id,
+      player1id: checkUserData.id,
       allow_specs: req.body.allow_specs,
-      is_multiplayer: req.body.is_multiplayer,
+      is_multiplayer: true,
     };
 
     const newGame = await createGame(newGameData);

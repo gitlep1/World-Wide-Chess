@@ -182,15 +182,19 @@ const SinglePlayerGame = ({
     prevBoard.current.push(fen);
   }, [fen]);
 
-  // useEffect(() => {
-  //   checkForEndGame();
+  useEffect(() => {
+    checkForEndGame();
 
-  //   const intervalFunction = setInterval(() => {
-  //     checkForEndGame();
-  //   }, 1000);
+    const intervalFunction = setInterval(() => {
+      const isEnded = checkForEndGame();
 
-  //   return () => clearInterval(intervalFunction);
-  // }, []); // eslint-disable-line
+      if (isEnded === "checkmate" || isEnded === "stalemate") {
+        return;
+      }
+    }, 1000);
+
+    return () => clearInterval(intervalFunction);
+  }, []); // eslint-disable-line
 
   const checkForEndGame = () => {
     if (chessGame.in_checkmate()) {
@@ -219,17 +223,21 @@ const SinglePlayerGame = ({
   };
 
   const makeRandomMove = async () => {
-    checkForEndGame();
+    const isEnded = checkForEndGame();
+
+    if (isEnded === "checkmate" || isEnded === "stalemate") {
+      return;
+    }
 
     let depth = 0;
     setIsThinking(true);
 
     if (game.botid === 1) {
-      depth = 2;
+      depth = 1;
     } else if (game.botid === 2) {
-      depth = 3;
+      depth = 2;
     } else if (game.botid === 3) {
-      depth = 4;
+      depth = 3;
     }
 
     const delayedFunction = BotLogic(
@@ -248,7 +256,11 @@ const SinglePlayerGame = ({
   };
 
   const handleMove = async (from, to, piece) => {
-    checkForEndGame();
+    const isEnded = checkForEndGame();
+
+    if (isEnded === "checkmate" || isEnded === "stalemate") {
+      return;
+    }
 
     const isPromotion = piece === "wP" && from[1] === "7" && to[1] === "8";
     const isPromotion2 = piece === "bP" && from[1] === "2" && to[1] === "1";
@@ -349,215 +361,233 @@ const SinglePlayerGame = ({
   };
 
   return (
-    <section className={`${screenVersion}-singlePlayerGame`}>
+    <section className={`${screenVersion}-singlePlayerGame-container`}>
       {!player1Data || !player2Data ? forfeitNotify() : null}
-      <div className="singlePlayerGame-header-container">
-        <div className="singlePlayerGame-header">
-          <span
-            className="singlePlayerGame-spectatorCount"
-            style={
-              game.spectators >= 1
-                ? { visibility: "visible" }
-                : { visibility: "hidden" }
-            }
-          >
-            {game.spectators >= 1 ? game.spectators : null}
-            <Image
-              src={renderSpectatorIcon()}
-              alt="spectator icon"
-              className="singlePlayerGame-spactatorIcon"
-            />
-          </span>
-          <h3 className="singlePlayerGame-roomName">
-            Room Name: {game.room_name}
-          </h3>
-        </div>
-      </div>
+      <div className="singlePlayerGame">
+        <div className="singlePlayerGame-header-container">
+          <div className="singlePlayerGame-header">
+            <span
+              className="singlePlayerGame-spectatorCount"
+              style={
+                game.spectators >= 1
+                  ? { visibility: "visible" }
+                  : { visibility: "hidden" }
+              }
+            >
+              {game.spectators >= 1 ? game.spectators : null}
+              <Image
+                src={renderSpectatorIcon()}
+                alt="spectator icon"
+                className="singlePlayerGame-spactatorIcon"
+              />
+            </span>
+            <h3 className="singlePlayerGame-roomName">
+              Room Name: {game.room_name}
+            </h3>
+          </div>
 
-      <div className="singlePlayerGame-players-data">
-        <div className="singlePlayerGame-playerOne-data square bg-secondary rounded-pill">
-          <div className="profile-pic-container">
-            <Image
-              src={player1Data.profileimg}
-              className="singlePlayerGame-player-image"
-              alt="player 1"
-              roundedCircle
+          <div
+            className={`singlePlayerGame-playerOne-data ${
+              chessGame.turn() === "w" ? "active-turn" : null
+            }`}
+          >
+            <div className="profile-pic-container">
+              <Image
+                src={player1Data.profileimg}
+                className="singlePlayerGame-player-image"
+                alt="player 1"
+                roundedCircle
+              />
+            </div>
+            <span
+              style={{
+                color: "white",
+              }}
+            >
+              {player1Data.username}
+            </span>
+          </div>
+
+          <div
+            className={`singlePlayerGame-playerTwo-data ${
+              chessGame.turn() === "b" ? "active-turn" : null
+            }`}
+          >
+            <div className="profile-pic-container">
+              <Image
+                src={player2Data.profileimg}
+                className="singlePlayerGame-player-image"
+                alt="player 2"
+                roundedCircle
+              />
+            </div>
+            <span
+              style={{
+                color: "white",
+              }}
+            >
+              {player2Data.username}
+              <h4
+                style={{
+                  color: "yellow",
+                }}
+              >
+                {isThinking ? "Thinking" : null}
+              </h4>
+            </span>
+          </div>
+        </div>
+
+        <div className="singleplayer-main-content-container">
+          <div className="singlePlayerGame-chessboard-container">
+            <Chessboard
+              id="PlayVsRandom"
+              boardOrientation={handleBoardOrientation()}
+              position={fen}
+              onPieceDrop={(from, to, piece) => handleMove(from, to, piece)}
+              customBoardStyle={{
+                borderRadius: "15%",
+                boxShadow: "0 5px 23px rgba(0, 0, 0, 1)",
+              }}
+              areArrowsAllowed={false}
+              animationDuration={500}
+              boardWidth={controlWidth(screenSize)}
+              customLightSquareStyle={{
+                borderRadius: "1em",
+                boxShadow: "0 0 15px rgba(255, 255, 255, 1)",
+                backgroundColor: "rgba(225, 225, 225, 1)",
+              }}
+              customDarkSquareStyle={{
+                borderRadius: "1em",
+                boxShadow: "0 0 15px rgba(0, 0, 0, 1)",
+                backgroundColor: "rgba(70, 70, 70, 1)",
+              }}
             />
           </div>
-          <span
-            style={{
-              color: "white",
-            }}
-          >
-            {player1Data.username}
-          </span>
-        </div>
-        <div className="singlePlayerGame-playerTwo-data square bg-secondary rounded-pill">
-          <div className="profile-pic-container">
-            <Image
-              src={player2Data.profileimg}
-              className="singlePlayerGame-player-image"
-              alt="player 2"
-              roundedCircle
-            />
+
+          {/* <div className="singlePlayerGame-chatBox-moveHistory-container rounded-5"> */}
+          <div className="singlePlayerGame-moveHistory-container">
+            <h1 className="singlePlayer-history-title">History</h1>
+            {handleMoveHistory()}
           </div>
-          <span
-            style={{
-              color: "black",
-            }}
-          >
-            {player2Data.username}
-          </span>
-        </div>
-      </div>
+          <div className="singlePlayerGame-chatBox-container">
+            <h1 className="singlePlayer-chatbox-title">ChatBox</h1>
+            <div className="singlePlayerGame-chatBox">
+              <h1>random text</h1>
+              <h1>random text</h1>
+              <h1>random text</h1>
+              <h1>random text</h1>
+              <h1>random text</h1>
+              <h1>random text</h1>
+              <h1>random text</h1>
+              <h1>random text</h1>
+              <h1>random text</h1>
+              <h1>random text</h1>
+            </div>
+          </div>
+          {/* </div> */}
 
-      <div className="singleplayer-main-content-container">
-        <div className="singlePlayerGame-chessboard-container">
-          <Chessboard
-            id="PlayVsRandom"
-            boardOrientation={handleBoardOrientation()}
-            position={fen}
-            onPieceDrop={(from, to, piece) => handleMove(from, to, piece)}
-            customBoardStyle={{
-              borderRadius: "15%",
-              boxShadow: "0 5px 23px rgba(0, 0, 0, 1)",
-            }}
-            areArrowsAllowed={false}
-            animationDuration={500}
-            boardWidth={controlWidth(screenSize)}
-            customLightSquareStyle={{
-              borderRadius: "1em",
-              boxShadow: "0 0 15px rgba(255, 255, 255, 1)",
-              backgroundColor: "rgba(225, 225, 225, 1)",
-            }}
-            customDarkSquareStyle={{
-              borderRadius: "1em",
-              boxShadow: "0 0 15px rgba(0, 0, 0, 1)",
-              backgroundColor: "rgba(70, 70, 70, 1)",
-            }}
-          />
-        </div>
-
-        {/* <div className="singlePlayerGame-chatBox-moveHistory-container rounded-5"> */}
-        <div className="singlePlayerGame-moveHistory-container rounded-5">
-          <h1 className="singlePlayer-history-title">History</h1>
-          {handleMoveHistory()}
-        </div>
-        <div className="singlePlayerGame-chatBox-container rounded-5">
-          <h1 className="singlePlayer-chatbox-title">ChatBox</h1>
-          <h1>random text</h1>
-          <h1>random text</h1>
-          <h1>random text</h1>
-          <h1>random text</h1>
-          <h1>random text</h1>
-          <h1>random text</h1>
-          <h1>random text</h1>
-          <h1>random text</h1>
-          <h1>random text</h1>
-          <h1>random text</h1>
-        </div>
-        {/* </div> */}
-
-        <div className="singlePlayerGame-buttons">
-          <Button
-            onClick={() => {
-              endGame(game.id);
-            }}
-            variant="danger"
-            className="singlePlayerGame-endGame-button"
-          >
-            End Game
-          </Button>
-        </div>
-
-        <Modal
-          className="promotion-modal-container"
-          show={showPromotion}
-          centered
-          backdrop="static"
-        >
-          <Modal.Header>
-            <Modal.Title>Select a piece to promote to:</Modal.Title>
-          </Modal.Header>
-          <Modal.Body className="promotion-modal-body">
-            <Button
-              variant="light"
-              onClick={() => handlePromotionChoice("q")}
-              id="queenButton"
-              className="promotion-modal-buttons"
-            >
-              Queen
-            </Button>
-            <Button
-              variant="light"
-              onClick={() => handlePromotionChoice("r")}
-              id="rookButton"
-              className="promotion-modal-buttons"
-            >
-              Rook
-            </Button>
-            <Button
-              variant="light"
-              onClick={() => handlePromotionChoice("b")}
-              id="bishopButton"
-              className="promotion-modal-buttons"
-            >
-              Bishop
-            </Button>
-            <Button
-              variant="light"
-              onClick={() => handlePromotionChoice("n")}
-              id="knightButton"
-              className="promotion-modal-buttons"
-            >
-              Knight
-            </Button>
-          </Modal.Body>
-        </Modal>
-
-        <Modal
-          className="winner-modal-container"
-          show={showWinner}
-          centered
-          backdrop="static"
-        >
-          <Modal.Header className="winner-modal-header">
-            <Modal.Title>
-              Winner: <h1>{winner.username}</h1>
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Footer className="winner-modal-footer">
+          <div className="singlePlayerGame-buttons">
             <Button
               onClick={() => {
                 endGame(game.id);
               }}
+              variant="danger"
+              className="singlePlayerGame-endGame-button"
             >
               End Game
             </Button>
-          </Modal.Footer>
-        </Modal>
+          </div>
 
-        <Modal
-          className="winner-modal-container"
-          show={stalemate}
-          centered
-          backdrop="static"
-        >
-          <Modal.Header className="winner-modal-header">
-            <Modal.Title>
-              <h1>Game ended in a DRAW!</h1>
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Footer className="winner-modal-footer">
-            <Button
-              onClick={() => {
-                endGame(game.id);
-              }}
-            >
-              End Game
-            </Button>
-          </Modal.Footer>
-        </Modal>
+          <Modal
+            className="promotion-modal-container"
+            show={showPromotion}
+            centered
+            backdrop="static"
+          >
+            <Modal.Header>
+              <Modal.Title>Select a piece to promote to:</Modal.Title>
+            </Modal.Header>
+            <Modal.Body className="promotion-modal-body">
+              <Button
+                variant="light"
+                onClick={() => handlePromotionChoice("q")}
+                id="queenButton"
+                className="promotion-modal-buttons"
+              >
+                Queen
+              </Button>
+              <Button
+                variant="light"
+                onClick={() => handlePromotionChoice("r")}
+                id="rookButton"
+                className="promotion-modal-buttons"
+              >
+                Rook
+              </Button>
+              <Button
+                variant="light"
+                onClick={() => handlePromotionChoice("b")}
+                id="bishopButton"
+                className="promotion-modal-buttons"
+              >
+                Bishop
+              </Button>
+              <Button
+                variant="light"
+                onClick={() => handlePromotionChoice("n")}
+                id="knightButton"
+                className="promotion-modal-buttons"
+              >
+                Knight
+              </Button>
+            </Modal.Body>
+          </Modal>
+
+          <Modal
+            className="winner-modal-container"
+            show={showWinner}
+            centered
+            backdrop="static"
+          >
+            <Modal.Header className="winner-modal-header">
+              <Modal.Title>
+                Winner: <h1>{winner.username}</h1>
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Footer className="winner-modal-footer">
+              <Button
+                onClick={() => {
+                  endGame(game.id);
+                }}
+              >
+                End Game
+              </Button>
+            </Modal.Footer>
+          </Modal>
+
+          <Modal
+            className="winner-modal-container"
+            show={stalemate}
+            centered
+            backdrop="static"
+          >
+            <Modal.Header className="winner-modal-header">
+              <Modal.Title>
+                <h1>Game ended in a DRAW!</h1>
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Footer className="winner-modal-footer">
+              <Button
+                onClick={() => {
+                  endGame(game.id);
+                }}
+              >
+                End Game
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        </div>
       </div>
     </section>
   );

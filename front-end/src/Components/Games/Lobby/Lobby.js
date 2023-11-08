@@ -19,6 +19,7 @@ const API = process.env.REACT_APP_API_URL;
 const Lobbypage = ({
   screenVersion,
   user,
+  setGame,
   isMultiplayer,
   setIsMultiplayer,
   authenticated,
@@ -220,9 +221,7 @@ const Lobbypage = ({
       const newMultiGameData = {
         room_name: createRoomName,
         room_password: createRoomPassword,
-        player1id: user.id,
         allow_specs: allowSpecs,
-        is_multiplayer: true,
       };
 
       await axios
@@ -234,6 +233,7 @@ const Lobbypage = ({
         .then((res) => {
           socket.emit("get-multi-games");
           socket.emit("multi-room-created", res.data.payload, user.id);
+          setGame(res.data.payload);
           navigate(`/Room/${res.data.payload.id}/Settings`);
         })
         .catch((err) => {
@@ -257,6 +257,7 @@ const Lobbypage = ({
         .then((res) => {
           socket.emit("get-single-games");
           socket.emit("single-room-created", res.data.payload);
+          setGame(res.data.payload);
           navigate(`/Room/${res.data.payload.id}/Settings`);
         })
         .catch((err) => {

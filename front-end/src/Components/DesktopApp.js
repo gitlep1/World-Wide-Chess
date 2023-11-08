@@ -152,6 +152,7 @@ const DesktopApp = ({
                 <Lobby
                   screenVersion={screenVersion}
                   user={user}
+                  setGame={setGame}
                   isMultiplayer={isMultiplayer}
                   setIsMultiplayer={setIsMultiplayer}
                   authenticated={authenticated}

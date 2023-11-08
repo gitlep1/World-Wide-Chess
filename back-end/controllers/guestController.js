@@ -77,14 +77,13 @@ guest.post("/signup", async (req, res) => {
     const token = jwt.sign(clientTokenPayload, JSK, { expiresIn: "1d" });
 
     const guestData = {
+      id: createdGuest.id,
       profileimg: createdGuest.profileimg,
       username: createdGuest.username,
       theme: createdGuest.theme,
       chess_coins: createdGuest.chess_coins,
       is_guest: true,
     };
-
-    console.log(token);
 
     res.status(201).json({ payload: guestData, token });
   } else {

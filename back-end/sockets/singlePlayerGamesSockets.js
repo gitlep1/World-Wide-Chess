@@ -164,15 +164,16 @@ const addSingleGamesSocketEventListeners = (io, socket, socketId) => {
 
     const fenData = chessGame.fen();
 
-    if (fenData !== oldSingleGameData.current_positions) {
-      console.log("inside if statement");
-      const errorMessage = "ERROR: Invalid FEN data";
-      io.in(`/Room/${gameData.id}`).emit(
-        "single-game-state-updated-error",
-        errorMessage
-      );
-      return;
-    }
+    // if (fenData !== oldSingleGameData.current_positions) {
+    //   console.log("inside if statement");
+    //   const errorMessage = "ERROR: Invalid FEN data";
+
+    //   io.in(`/Room/${gameData.id}`).emit(
+    //     "single-game-state-updated-error",
+    //     errorMessage
+    //   );
+    //   return;
+    // }
 
     // fix move checker later \\
 

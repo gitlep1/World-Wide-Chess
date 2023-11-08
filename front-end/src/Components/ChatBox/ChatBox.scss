@@ -48,6 +48,12 @@
   border-radius: 1em;
   background-color: #282e33;
   box-shadow: 5px 5px 15px 5px #000000;
+  z-index: 1000;
+  opacity: 85%;
+
+  &:hover {
+    opacity: 100%;
+  }
 
   .chat-box-header {
     color: white;

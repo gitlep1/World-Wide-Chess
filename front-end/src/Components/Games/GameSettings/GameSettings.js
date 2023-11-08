@@ -24,18 +24,16 @@ const GameSettings = ({
   setPlayer2Data,
 }) => {
   const navigate = useNavigate();
-  const { gameID } = useParams();
 
   const [loading, setLoading] = useState(false);
 
   const [error, setError] = useState("");
 
   useEffect(() => {
-    socket.emit("get-single-game-data", gameID);
-    socket.emit("get-multi-game-data", gameID);
+    socket.emit("get-single-game-data", game.id);
+    socket.emit("get-multi-game-data", game.id);
 
     socket.on("single-room-settings", (gameData) => {
-      console.log("single: ", { gameData });
       setGame(gameData);
     });
 
@@ -68,33 +66,39 @@ const GameSettings = ({
     };
   }, []); // eslint-disable-line
 
-  useEffect(() => {
-    getGameData();
-  }, []); // eslint-disable-line
+  // useEffect(() => {
+  //   getGameData();
+  // }, []); // eslint-disable-line
 
-  const getGameData = async () => {
-    setLoading(true);
-    await axios
-      .get(`${API}/games/${gameID}`, {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => {
-        setGame(res.data.payload);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setLoading(false);
-        setError(err.response.data);
-      });
-  };
+  // const getGameData = async () => {
+  //   setLoading(true);
 
-  const renderGameSettings = async () => {
+  //   console.log(game);
+  //   const checkIfMulti = game.is_multiplayer ? "multi-games" : "single-games";
+
+  //   console.log(checkIfMulti);
+
+  //   await axios
+  //     .get(`${API}/${checkIfMulti}/${game.id}`, {
+  //       headers: {
+  //         authorization: `Bearer ${token}`,
+  //       },
+  //     })
+  //     .then((res) => {
+  //       setGame(res.data.payload);
+  //       setLoading(false);
+  //     })
+  //     .catch((err) => {
+  //       setLoading(false);
+  //       setError(err.response.data.error);
+  //     });
+  // };
+
+  const renderGameSettings = () => {
     if (loading) {
       return <GameSettingsLoader />;
     } else if (error) {
-      return <h1>Error:</h1>;
+      return <h1 className="error">Error: {error}</h1>;
     } else {
       return (
         <section className="game-settings-options-container">
@@ -137,9 +141,6 @@ const GameSettings = ({
       );
     }
   };
-
-  // console.log(game);
-  // console.log(game.is_multiplayer);
 
   return (
     <section className={`${screenVersion}-game-settings-container`}>
