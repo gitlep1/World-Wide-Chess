@@ -63,32 +63,20 @@ const SinglePlayerGame = ({
   }, []);
 
   useEffect(() => {
-    const handleBeforeUnload = (e) => {
-      e.preventDefault();
-      e.returnValue = "";
-
-      return "Are you sure you want to leave? Your progress will be lost.";
+    const loadData = async () => {
+      try {
+        await toast.promise(reloadPlayerAndGameData(), {
+          containerId: "loadChessMatchData",
+          success: "Game Data Reloaded!",
+          error: "Error loading game",
+        });
+      } catch (error) {
+        console.error("Error loading game:", error);
+      }
     };
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
+    loadData();
   }, []); // eslint-disable-line
-
-  useEffect(() => {
-    reloadData();
-  }, []); // eslint-disable-line
-
-  const reloadData = async () => {
-    await toast.promise(reloadPlayerAndGameData(), {
-      containerId: "loadChessMatchData",
-      // pending: "Loading Game Data...",
-      success: "Game Data Reloaded!",
-      error: "Error loading game",
-    });
-  };
 
   const reloadPlayerAndGameData = async () => {
     return new Promise(async (resolve, reject) => {
@@ -182,19 +170,20 @@ const SinglePlayerGame = ({
     prevBoard.current.push(fen);
   }, [fen]);
 
-  useEffect(() => {
-    checkForEndGame();
+  // useEffect(() => {
+  //   checkForEndGame();
 
-    const intervalFunction = setInterval(() => {
-      const isEnded = checkForEndGame();
+  //   const intervalFunction = setInterval(() => {
+  //     const isEnded = checkForEndGame();
 
-      if (isEnded === "checkmate" || isEnded === "stalemate") {
-        return;
-      }
-    }, 1000);
+  //     if (isEnded === "checkmate" || isEnded === "stalemate") {
+  //       console.log("Game Ended: Inside useEffect");
+  //       return;
+  //     }
+  //   }, 1000);
 
-    return () => clearInterval(intervalFunction);
-  }, []); // eslint-disable-line
+  //   return () => clearInterval(intervalFunction);
+  // }, []); // eslint-disable-line
 
   const checkForEndGame = () => {
     if (chessGame.in_checkmate()) {
@@ -226,6 +215,7 @@ const SinglePlayerGame = ({
     const isEnded = checkForEndGame();
 
     if (isEnded === "checkmate" || isEnded === "stalemate") {
+      console.log("Game Ended: Inside makeRandomMove");
       return;
     }
 
@@ -259,6 +249,7 @@ const SinglePlayerGame = ({
     const isEnded = checkForEndGame();
 
     if (isEnded === "checkmate" || isEnded === "stalemate") {
+      console.log("Game Ended: Inside handleMove");
       return;
     }
 
