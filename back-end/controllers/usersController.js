@@ -43,7 +43,23 @@ users.get(
 
     if (getAUser) {
       // console.log("=== GET user by ID", getAUser, "===");
-      res.status(200).json({ payload: getAUser });
+
+      const userData = {
+        id: getAUser.id,
+        profileimg: getAUser.profileimg,
+        username: getAUser.username,
+        theme: getAUser.theme,
+        chess_coins: getAUser.chess_coins,
+        wins: getAUser.wins,
+        loss: getAUser.loss,
+        ties: getAUser.ties,
+        rating: getAUser.rating,
+        preferred_color: getAUser.preferred_color,
+        is_guest: false,
+        last_online: getAUser.last_online,
+      };
+
+      res.status(200).json({ payload: userData });
     } else {
       res.status(404).send("user not found");
     }
@@ -79,7 +95,23 @@ users.post("/signup", checkValues, async (req, res) => {
         "==="
       );
       const token = jwt.sign(clientTokenPayload, JSK, { expiresIn: "30d" });
-      res.status(201).json({ payload: createdUser, token });
+
+      const userData = {
+        id: createdUser.id,
+        profileimg: createdUser.profileimg,
+        username: createdUser.username,
+        theme: createdUser.theme,
+        chess_coins: createdUser.chess_coins,
+        wins: createdUser.wins,
+        loss: createdUser.loss,
+        ties: createdUser.ties,
+        rating: createdUser.rating,
+        preferred_color: createdUser.preferred_color,
+        is_guest: false,
+        last_online: createdUser.last_online,
+      };
+
+      res.status(201).json({ payload: userData, token });
     } else {
       res.status(404).send("user not created");
     }
@@ -92,7 +124,6 @@ users.post("/signin", async (req, res) => {
   const checkUser = await checkIfUserExists(email, password);
 
   if (checkUser) {
-    console.log(checkUser.id);
     const getUserData = await getUserByID(checkUser.id);
 
     if (getUserData) {
@@ -106,7 +137,23 @@ users.post("/signin", async (req, res) => {
         "==="
       );
       const token = jwt.sign(clientTokenPayload, JSK, { expiresIn: "30d" });
-      res.status(201).json({ payload: getUserData, token });
+
+      const userData = {
+        id: getUserData.id,
+        profileimg: getUserData.profileimg,
+        username: getUserData.username,
+        theme: getUserData.theme,
+        chess_coins: getUserData.chess_coins,
+        wins: getUserData.wins,
+        loss: getUserData.loss,
+        ties: getUserData.ties,
+        rating: getUserData.rating,
+        preferred_color: getUserData.preferred_color,
+        is_guest: false,
+        last_online: getUserData.last_online,
+      };
+
+      res.status(201).json({ payload: userData, token });
     } else {
       res.status(404).send(`Data for: ${checkUser.id} not found`);
     }

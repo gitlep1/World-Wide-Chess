@@ -12,6 +12,8 @@ import equalSign from "../../../../Images/Equal_Blue.png";
 
 import BotCard from "./BotCard/BotCard";
 
+import DisabledIcon from "../../../../CustomSvgs/DisabledIcon/DisabledIcon";
+
 const API = process.env.REACT_APP_API_URL;
 
 const SinglePlayerGameSettings = ({
@@ -73,7 +75,7 @@ const SinglePlayerGameSettings = ({
     return axios
       .get(`${API}/bots`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          authorization: `Bearer ${token}`,
         },
       })
       .then((res) => {
@@ -335,7 +337,7 @@ const SinglePlayerGameSettings = ({
         </div>
         <h4>VS</h4>
         <div className="single-player-game-settings-botData">
-          {Object.keys(botData).length !== 0 ? (
+          {botData.name !== "QueryResultError" ? (
             <>
               <Image
                 src={botData.profileimg}
@@ -356,19 +358,29 @@ const SinglePlayerGameSettings = ({
               </div>
             </>
           ) : (
-            <h1>Please select a bot difficulty</h1>
+            <h1>Please select a bot to play against</h1>
           )}
         </div>
 
         <div className="single-player-game-settings-buttons">
-          <Button
-            onClick={() => {
-              handleStartGame();
-            }}
-            variant="light"
-          >
-            Start Game
-          </Button>{" "}
+          {botData.id === 1 || botData.id === 2 || botData.id === 3 ? (
+            <Button
+              onClick={() => {
+                handleStartGame();
+              }}
+              variant="light"
+            >
+              Start Game
+            </Button>
+          ) : (
+            <Button
+              className="single-start-button-disabled"
+              disabled
+              variant="light"
+            >
+              <DisabledIcon />
+            </Button>
+          )}
           <Button
             variant="danger"
             onClick={() => {

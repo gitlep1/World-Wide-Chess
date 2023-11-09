@@ -64,9 +64,18 @@ const Shop = ({ screenVersion, user, setUser, token }) => {
           }
         );
 
-        Cookies.set("Current_User", JSON.stringify(res.data.updatedUser));
-        setUser(res.data.updatedUser);
+        Cookies.remove("Current_User");
 
+        const expirationDate = new Date();
+        expirationDate.setDate(expirationDate.getDate() + 30);
+
+        Cookies.set("Current_User", JSON.stringify(res.data.updatedUser), {
+          expires: expirationDate,
+          path: "/",
+          sameSite: "strict",
+        });
+
+        setUser(res.data.updatedUser);
         setOpenConfirm(false);
         setBuyingItem({});
       })

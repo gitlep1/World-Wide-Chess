@@ -1,11 +1,14 @@
 import "./GameSettings.scss";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 import GameSettingsLoader from "../../../CustomLoaders/GameSettingsLoader/GameSettingsLoader";
 
 import SinglePlayerGameSettings from "./SinglePlayer/SinglePlayerGameSettings";
 import MultiPlayerGameSettings from "./MultiPlayer/MultiPlayerGameSettings";
+
+const API = process.env.REACT_APP_API_URL;
 
 const GameSettings = ({
   screenVersion,
@@ -21,21 +24,21 @@ const GameSettings = ({
   setPlayer2Data,
 }) => {
   const navigate = useNavigate();
-  const { gameID } = useParams();
 
   const [loading, setLoading] = useState(false);
 
   const [error, setError] = useState("");
 
   useEffect(() => {
-    socket.emit("get-single-game-data", gameID);
-    socket.emit("get-multi-game-data", gameID);
+    socket.emit("get-single-game-data", game.id);
+    socket.emit("get-multi-game-data", game.id);
 
     socket.on("single-room-settings", (gameData) => {
       setGame(gameData);
     });
 
     socket.on("multi-room-settings", (gameData, player1) => {
+      console.log("multi: ", { gameData });
       setGame(gameData);
       setPlayer1Data(player1);
     });
@@ -63,11 +66,39 @@ const GameSettings = ({
     };
   }, []); // eslint-disable-line
 
+  // useEffect(() => {
+  //   getGameData();
+  // }, []); // eslint-disable-line
+
+  // const getGameData = async () => {
+  //   setLoading(true);
+
+  //   console.log(game);
+  //   const checkIfMulti = game.is_multiplayer ? "multi-games" : "single-games";
+
+  //   console.log(checkIfMulti);
+
+  //   await axios
+  //     .get(`${API}/${checkIfMulti}/${game.id}`, {
+  //       headers: {
+  //         authorization: `Bearer ${token}`,
+  //       },
+  //     })
+  //     .then((res) => {
+  //       setGame(res.data.payload);
+  //       setLoading(false);
+  //     })
+  //     .catch((err) => {
+  //       setLoading(false);
+  //       setError(err.response.data.error);
+  //     });
+  // };
+
   const renderGameSettings = () => {
     if (loading) {
       return <GameSettingsLoader />;
     } else if (error) {
-      return <h1>Error:</h1>;
+      return <h1 className="error">Error: {error}</h1>;
     } else {
       return (
         <section className="game-settings-options-container">

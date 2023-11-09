@@ -192,37 +192,50 @@ const BotLogic = (
     let startTime = Date.now();
     let bestMoveVar = null;
     let bestEval = -Infinity;
+    let timerCount = 0;
 
-    for (let d = 1; d <= maxDepth; d++) {
-      let evalArray = [];
-      let moves = chessGame.moves();
+    const evaluateAndSelectMove = () => {
+      timerCount += 1000;
 
-      for (let i = 0; i < moves.length; i++) {
-        const move = moves[i];
-        chessGame.move(move);
-        const evalBestMove = minimax(
-          chessGame.board(),
-          d,
-          -Infinity,
-          Infinity,
-          false
-        );
-        chessGame.undo();
+      for (let d = 1; d <= maxDepth; d++) {
+        let evalArray = [];
+        let moves = chessGame.moves();
 
-        evalArray.push(evalBestMove);
+        for (let i = 0; i < moves.length; i++) {
+          const move = moves[i];
+
+          chessGame.move(move);
+          const evalBestMove = minimax(
+            chessGame.board(),
+            d,
+            -Infinity,
+            Infinity,
+            false
+          );
+
+          chessGame.undo();
+          evalArray.push(evalBestMove);
+        }
+
+        let evalMax = Math.max(...evalArray);
+
+        if (evalMax > bestEval) {
+          bestEval = evalMax;
+          bestMoveVar = moves[evalArray.indexOf(evalMax)];
+        }
       }
 
-      let evalMax = Math.max(...evalArray);
+      return bestMoveVar;
+    };
 
-      if (evalMax > bestEval) {
-        bestEval = evalMax;
-        bestMoveVar = moves[evalArray.indexOf(evalMax)];
-      }
+    while (timerCount <= timeLimit) {
+      timerCount += 1000;
 
-      let timeElapsed = Date.now() - startTime;
-      if (timeElapsed > timeLimit) {
+      if (timerCount >= timeLimit) {
         break;
       }
+
+      evaluateAndSelectMove();
     }
 
     const result = chessGame.move(bestMoveVar);
@@ -232,7 +245,78 @@ const BotLogic = (
     setIsThinking(false);
 
     return result;
+
+    // const currentTime = Date.now();
+    // if (currentTime - (startTime < timeLimit)) {
+    //   setTimeout(evaluateAndSelectMove);
+    // } else {
+    //   const result = chessGame.move(bestMoveVar);
+    //   // setMoveHistory([...moveHistory, result]);
+    //   setFen(chessGame.fen());
+
+    //   setIsThinking(false);
+
+    //   return result;
+    // }
   };
+
+  // work on more optimized version later \\
+  // const bestMove = () => {
+  //   setIsThinking(true);
+
+  //   const timeLimit = 3000; // 3 seconds
+  //   let startTime = Date.now();
+  //   let bestMoveVar = null;
+  //   let bestEval = -Infinity;
+
+  //   const evaluateAndSelectMove = () => {
+  //     const moves = chessGame.moves({ verbose: true }); // Get extended move information
+
+  //     for (let i = 0; i < moves.length; i++) {
+  //       const move = moves[i];
+
+  //       // Check if the move is a castling move
+  //       if (move.flags.includes("k") || move.flags.includes("q")) {
+  //         // Handle castling moves here, undoing and not selecting them as the best move
+  //         chessGame.ugly_move(move);
+  //         continue;
+  //       }
+
+  //       chessGame.ugly_move(move);
+
+  //       const evalBestMove = minimax(
+  //         chessGame.board(),
+  //         maxDepth,
+  //         -Infinity,
+  //         Infinity,
+  //         false
+  //       );
+
+  //       if (evalBestMove > bestEval) {
+  //         bestEval = evalBestMove;
+  //         bestMoveVar = move;
+  //       }
+
+  //       chessGame.undo();
+  //     }
+
+  //     // Check if the time limit is exceeded
+  //     const currentTime = Date.now();
+  //     if (currentTime - startTime < timeLimit) {
+  //       setTimeout(evaluateAndSelectMove, 0); // Continue thinking
+  //     } else {
+  //       // Time limit exceeded, make the best move
+  //       chessGame.ugly_move(bestMoveVar);
+
+  //       const result = chessGame.ugly_move(bestMoveVar);
+  //       setFen(chessGame.fen());
+  //       setMoveHistory([...moveHistory, result]);
+  //       setIsThinking(false);
+  //     }
+  //   };
+
+  //   evaluateAndSelectMove();
+  // };
 
   // Return a function that returns the function that makes the best move after a delay
   return (callback) => {

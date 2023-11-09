@@ -7,190 +7,169 @@ $Rook: "../../../../../../Images/Promotions/Rook.png";
 $Bishop: "../../../../../../Images/Promotions/Bishop.png";
 $Knight: "../../../../../../Images/Promotions/Knight.png";
 
-@mixin singlePlayerGame {
+@mixin singlePlayerGame-container {
+  background-color: #1b1b1b;
   display: grid;
-  grid-template-columns: 1;
-  row-gap: 3%;
-  width: 95%;
-  margin: 0 auto;
+  grid-template-columns: 1fr;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
 
-  .singlePlayerGame-header-container {
-    border: 5px solid black;
-    background-color: #1b1b1b;
-    grid-row: 1;
-    grid-column: 1 / -1;
-    width: 50%;
-    height: 95%;
+  .singlePlayerGame {
+    // border: 5px solid red;
+    height: 95vh;
+    width: 95vw;
     margin: 0 auto;
-    margin-bottom: 3%;
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     align-items: center;
     justify-content: center;
+    gap: 1em;
 
-    .singlePlayerGame-header {
-      // border: 5px solid cyan;
-      color: white;
-      font-size: 30px;
-      height: 100%;
-      // width: 70%;
-      display: grid;
-      grid-template-columns: 1;
-      align-items: center;
-      justify-content: space-evenly;
-      // column-gap: 5%;
+    .singlePlayerGame-header-container {
+      // border: 5px solid orange;
+      grid-row: 1;
+      grid-column: 1 / -1;
       margin: 0 auto;
+      margin-top: 1em;
+      display: grid;
+      align-items: center;
+      justify-content: center;
+      grid-template-columns: repeat(3, 1fr);
+      column-gap: 1em;
 
-      .singlePlayerGame-spectatorCount {
-        // border: 5px solid yellow;
-        grid-row: 1;
-        grid-column: 1 / -1;
-        text-align: center;
-        justify-self: center;
-        width: 50px;
-        margin-bottom: -1em;
-      }
+      .singlePlayerGame-header {
+        border: 3px solid white;
+        grid-column: 2;
+        color: white;
+        font-size: 30px;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        align-items: center;
+        justify-content: space-evenly;
+        box-shadow: 0 5px 23px rgba(0, 0, 0, 1);
 
-      .singlePlayerGame-spactatorIcon {
-        // border: 5px solid orange;
-        width: 50px;
-        grid-row: 2;
-        margin-bottom: 0.5em;
-      }
+        .singlePlayerGame-spectatorCount {
+          grid-row: 1;
+          grid-column: 2;
+          text-align: center;
+          justify-self: center;
+          width: 50px;
 
-      .singlePlayerGame-roomName {
-        // border: 5px solid purple;
-        grid-row: 3;
-        text-align: center;
+          .singlePlayerGame-spactatorIcon {
+            width: 50px;
+            margin-bottom: 0.5em;
+          }
+        }
+
+        .singlePlayerGame-roomName {
+          grid-column: 1;
+          text-align: center;
+        }
       }
     }
-  }
-
-  .singlePlayerGame-players-data {
-    // border: 5px solid green;
-    grid-row: 2;
-    grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    column-gap: 1em;
-    width: 90%;
-    font-size: 30px;
-    margin: 0 auto;
 
     .singlePlayerGame-playerOne-data {
-      border: 5px solid white;
+      border: 3px solid black;
       box-shadow: 0 5px 23px rgba(0, 0, 0, 1);
-      height: 12vh;
       display: flex;
       align-items: center;
+      height: 100%;
+      grid-row: 1;
+      grid-column: 1;
+      font-size: 30px;
     }
 
     .singlePlayerGame-playerTwo-data {
-      border: 5px solid black;
+      border: 3px solid black;
       box-shadow: 0 5px 23px rgba(0, 0, 0, 1);
-      height: 12vh;
       display: flex;
       align-items: center;
+      height: 100%;
+      grid-column: 3;
+      font-size: 30px;
+    }
+
+    .active-turn {
+      border: 3px solid rgb(224, 162, 7);
     }
 
     .profile-pic-container {
-      // border: 5px solid red;
+      margin-right: 0.5em;
       border-radius: 1em;
       max-width: 100%;
       max-height: 100%;
       overflow: hidden;
 
       .singlePlayerGame-player-image {
-        // border: 5px solid red;
         width: 100px;
         height: 100px;
         object-fit: contain;
         margin-left: 5%;
       }
     }
-  }
 
-  .singleplayer-main-content-container {
-    border: 5px solid gold;
-    display: grid;
-    grid-template-columns: 300px 1fr 500px;
-    justify-content: center;
-    align-items: center;
-    // overflow: auto;
-
-    .singlePlayerGame-chessboard-container {
-      border: 5px solid blue;
-      grid-column: 2;
-      grid-row: 1;
-    }
-
-    // .singlePlayer-history-title {
-    //   grid-column: 1;
-    //   grid-row: 1;
-    // }
-
-    // .singlePlayer-chatbox-title {
-    //   grid-column: 2;
-    //   grid-row: 1;
-    // }
-
-    .singlePlayerGame-moveHistory-container {
-      border: 5px solid white;
-      width: 100%;
-      height: 95%;
-      margin: 0 auto;
-      overflow-y: auto;
-      grid-column: 1;
-      grid-row: 1;
-      color: white;
-
-      .singlePlayerGame-moveHistory {
-        border: 5px solid brown;
-        height: 85%;
-        overflow-y: auto;
-      }
-    }
-
-    .singlePlayerGame-chatBox-container {
-      border: 5px solid orange;
-      text-align: center;
-      font-size: 35px;
-      width: 100%;
-      height: 95%;
-      margin: 0 auto;
-      overflow-y: auto;
-      grid-column: 3;
-      grid-row: 1;
-      color: white;
-
-      .singlePlayerGame-chatBox {
-        border: 5px solid purple;
-        height: 85%;
-        overflow-y: auto;
-      }
-    }
-
-    // .singlePlayerGame-chatBox-moveHistory-container {
-    //   border: 5px solid green;
-    //   grid-column: 2;
-    //   display: grid;
-    //   grid-template-columns: repeat(2, 1fr);
-    //   align-items: center;
-    //   text-align: center;
-    //   box-shadow: 0 5px 15px rgba(0, 0, 0, 1);
-    //   color: white;
-    //   font-size: 30px;
-    //   overflow: auto;
-    // }
-
-    .singlePlayerGame-buttons {
-      // border: 5px solid cyan;
-      display: flex;
-      justify-content: center;
+    .singleplayer-main-content-container {
+      // border: 5px solid gold;
       grid-column: 1 / -1;
-      // margin-top: 3em;
+      display: grid;
+      grid-template-columns: 1fr;
+      justify-content: center;
+      gap: 1em;
 
-      .singlePlayerGame-endGame-button {
-        width: 30%;
+      .singlePlayerGame-chessboard-container {
+        // border: 5px solid blue;
+        justify-self: start;
+      }
+
+      .singlePlayerGame-moveHistory-container {
+        border: 5px solid cyan;
+        position: fixed;
+        right: 0;
+        width: 30vw;
+        height: 50vh;
+        margin: 0 auto;
+        overflow-y: auto;
+        color: white;
+
+        .singlePlayerGame-moveHistory {
+          border: 5px solid brown;
+          height: 85%;
+          overflow-y: auto;
+        }
+      }
+
+      .singlePlayerGame-chatBox-container {
+        border: 5px solid orange;
+        position: fixed;
+        right: 0;
+        top: 10em;
+        width: 30vw;
+        height: 50vh;
+        text-align: center;
+        font-size: 35px;
+        // width: 100%;
+        // height: 75vh;
+        margin: 0 auto;
+        overflow-y: auto;
+        color: white;
+
+        .singlePlayerGame-chatBox {
+          // border: 5px solid purple;
+          height: 85%;
+          overflow-y: auto;
+        }
+      }
+
+      .singlePlayerGame-buttons {
+        // border: 5px solid cyan;
+        display: flex;
+        justify-content: center;
+        grid-column: 1 / -1;
+
+        .singlePlayerGame-endGame-button {
+          width: 30%;
+        }
       }
     }
   }
@@ -245,8 +224,8 @@ $Knight: "../../../../../../Images/Promotions/Knight.png";
   }
 }
 
-.desktop-singlePlayerGame {
-  @include singlePlayerGame;
+.desktop-singlePlayerGame-container {
+  @include singlePlayerGame-container;
 }
 
 .desktop-promotion-modal-container {
@@ -257,8 +236,8 @@ $Knight: "../../../../../../Images/Promotions/Knight.png";
   @include winner-modal-container;
 }
 
-.mobile-singlePlayerGame {
-  @include singlePlayerGame;
+.mobile-singlePlayerGame-container {
+  @include singlePlayerGame-container;
 }
 
 .mobile-promotion-modal-container {
