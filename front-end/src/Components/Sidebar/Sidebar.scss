@@ -14,7 +14,7 @@ $extra: 1400px;
   z-index: 1;
 
   .button-image {
-    border: 5px solid red;
+    // border: 5px solid red;
     width: 40px;
     opacity: 80%;
 
@@ -24,22 +24,22 @@ $extra: 1400px;
     }
 
     @media (min-height: $tiny) {
-      border: 5px solid purple;
+      // border: 5px solid purple;
     }
     @media (min-height: $small) {
-      border: 5px solid orange;
+      // border: 5px solid orange;
       width: 35px;
     }
     @media (min-height: $medium) {
-      border: 5px solid yellow;
+      // border: 5px solid yellow;
       width: 40px;
     }
     @media (min-height: $large) {
-      border: 5px solid green;
+      // border: 5px solid green;
       width: 70px;
     }
     @media (min-height: $extra) {
-      border: 5px solid cyan;
+      // border: 5px solid cyan;
       width: 70px;
     }
   }
@@ -60,22 +60,22 @@ $extra: 1400px;
       }
 
       @media (min-height: $tiny) {
-        border: 5px solid purple;
+        // border: 5px solid purple;
       }
       @media (min-height: $small) {
-        border: 5px solid orange;
+        // border: 5px solid orange;
         width: 35px;
       }
       @media (min-height: $medium) {
-        border: 5px solid yellow;
+        // border: 5px solid yellow;
         width: 40px;
       }
       @media (min-height: $large) {
-        border: 5px solid green;
+        // border: 5px solid green;
         width: 70px;
       }
       @media (min-height: $extra) {
-        border: 5px solid cyan;
+        // border: 5px solid cyan;
         width: 70px;
       }
     }
