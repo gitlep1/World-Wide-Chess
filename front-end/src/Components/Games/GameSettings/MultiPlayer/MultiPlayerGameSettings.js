@@ -1,15 +1,15 @@
 import "./MultiPlayerGameSettings.scss";
 import { useEffect, useState } from "react";
 import { Button, Image } from "react-bootstrap";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
+
+import { ToastAskToJoin } from "../../../../CustomFunctions/CustomToasts";
 
 import upArrow from "../../../../Images/Up_Green.png";
 import downArrow from "../../../../Images/Down_Red.png";
 import equalSign from "../../../../Images/Equal_Blue.png";
-
-import { ToastAskToJoin } from "../../../../CustomFunctions/CustomToasts";
 
 const API = process.env.REACT_APP_API_URL;
 
@@ -33,15 +33,20 @@ const MultiPlayerGameSettings = ({
   useEffect(() => {
     socket.emit("get-multi-game-data", game.id);
 
-    socket.on(
-      "multi-player-reconnected",
-      (gameData, playerOneData, playerTwoData) => {
-        // console.log("inside multi-player-reconnected");
-        setGame(gameData);
-        setPlayer1Data(playerOneData);
-        setPlayer2Data(playerTwoData);
-      }
-    );
+    socket.on("multi-player-reconnected-player1", (gameData, playerOneData) => {
+      setGame(gameData);
+      setPlayer1Data(playerOneData);
+    });
+
+    socket.on("multi-player-reconnected-player2", (gameData, playerTwoData) => {
+      setGame(gameData);
+      setPlayer2Data(playerTwoData);
+    });
+
+    socket.on("multi-room-settings", (gameData, player1) => {
+      setGame(gameData);
+      setPlayer1Data(player1);
+    });
 
     socket.on("request-to-join", (player2Data) => {
       handleAskToJoin(player2Data);
@@ -60,9 +65,17 @@ const MultiPlayerGameSettings = ({
       navigate(`/Room/${gameData.id}`);
     });
 
+    socket.on("opponent-left", (gameData) => {
+      setGame(gameData);
+      setPlayer2Data({});
+    });
+
     return () => {
-      socket.off("multi-player-reconnected");
+      socket.off("multi-player-reconnected-player1");
+      socket.off("multi-player-reconnected-player2");
+      socket.off("multi-room-settings");
       socket.off("request-to-join");
+      socket.off("player-joined");
       socket.off("multi-started");
     };
   }, []); // eslint-disable-line
@@ -155,16 +168,24 @@ const MultiPlayerGameSettings = ({
   };
 
   const handleLeaveGame = async () => {
+    const leaveGameData = {
+      player2id: null,
+      in_progress: false,
+    };
+
     await axios
-      .put(`${API}/multi-games/${game.id}`, {
-        [game.player2id]: null,
-        in_progress: false,
+      .put(`${API}/multi-games/${game.id}`, leaveGameData, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          authorization: `Bearer ${token}`,
         },
       })
-      .then(() => {
+      .then((res) => {
+        setGame(res.data.payload);
+        socket.emit("leave-multi-player-game", game.id);
         navigate("/Lobby");
+      })
+      .catch((err) => {
+        console.log(err.response.data);
       });
   };
 
@@ -369,9 +390,9 @@ const MultiPlayerGameSettings = ({
       </div>
 
       <div className="game-settings-player2-info">
-        <h2>Opponent</h2>
         {Object.keys(player2Data).length > 0 ? (
           <>
+            <h2>Opponent</h2>
             <h3>{player2Data.username}</h3>
             <Image
               src={player2Data.profileimg}
@@ -391,7 +412,7 @@ const MultiPlayerGameSettings = ({
             </h4>
           </>
         ) : (
-          <h3>Searching ...</h3>
+          <h3>Waiting for opponent ...</h3>
         )}
       </div>
 

@@ -1,11 +1,12 @@
 const BotLogic = (
   chessGame,
-  setFen,
   maxDepth,
   setIsThinking,
-  moveHistory,
-  setMoveHistory
+  botMoveHistory,
+  setBotMoveHistory
 ) => {
+  const transpositionTable = {};
+
   const evaluateBoard = (board) => {
     let score = 0;
 
@@ -128,6 +129,12 @@ const BotLogic = (
   };
 
   const minimax = (board, depth, alpha, beta, maximizingPlayer) => {
+    const key = JSON.stringify(board);
+
+    if (transpositionTable[key] !== undefined) {
+      return transpositionTable[key];
+    }
+
     if (depth === 0 || chessGame.game_over()) {
       // Base case: if the depth is 0 or the game is over, evaluate the board and return a score
       return evaluateBoard(board);
@@ -163,6 +170,8 @@ const BotLogic = (
         }
       }
 
+      transpositionTable[key] = maxEval;
+
       // Return the maximum evaluation found
       return maxEval;
     } else {
@@ -180,6 +189,8 @@ const BotLogic = (
           break; // Exit the loop early
         }
       }
+
+      transpositionTable[key] = minEval;
 
       return minEval;
     }
@@ -199,7 +210,7 @@ const BotLogic = (
 
       for (let d = 1; d <= maxDepth; d++) {
         let evalArray = [];
-        let moves = chessGame.moves();
+        let moves = chessGame.moves({ verbose: true });
 
         for (let i = 0; i < moves.length; i++) {
           const move = moves[i];
@@ -239,8 +250,16 @@ const BotLogic = (
     }
 
     const result = chessGame.move(bestMoveVar);
-    // setMoveHistory([...moveHistory, result]);
-    setFen(chessGame.fen());
+
+    const botMoveObj = {
+      from: bestMoveVar.from,
+      to: bestMoveVar.to,
+      piece: `b${bestMoveVar.piece.toUpperCase()}`,
+    };
+
+    console.log({ botMoveObj });
+
+    setBotMoveHistory([...botMoveHistory, botMoveObj]);
 
     setIsThinking(false);
 

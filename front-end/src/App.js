@@ -254,6 +254,7 @@ const App = () => {
       Cookies.remove("Current_User");
       Cookies.remove("Authenticated");
       Cookies.remove("token");
+      Cookies.remove("gameid");
     } else {
       await handleGuest();
     }

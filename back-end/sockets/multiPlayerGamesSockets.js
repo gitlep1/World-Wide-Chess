@@ -1,3 +1,5 @@
+const jwt = require("jsonwebtoken");
+
 const { getUserByID } = require("../queries/users");
 const { getGuestByID } = require("../queries/guests");
 const Chess = require("chess.js").Chess;
@@ -11,9 +13,12 @@ const {
   deleteGame,
 } = require("../queries/multiGames");
 
-const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
-  const token = socket.handshake.auth.token;
+const { requireAuth } = require("../validation/requireAuth");
+const { scopeAuth } = require("../validation/scopeAuth");
 
+const JSK = process.env.JWT_SECRET;
+
+const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
   socket.on("get-multi-games", async () => {
     try {
       const multiGames = await getAllGames();
@@ -87,9 +92,6 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
 
   socket.on("accept-game", async (gameData, player1Data, player2Data) => {
     console.log(`=== ${player2Data.username} joined room: ${gameData.id} ===`);
-    console.log(player1Data);
-    console.log(player2Data);
-    console.log(gameData);
 
     const multiGame = await getGameByID(gameData.id);
 
@@ -242,21 +244,41 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
         };
 
         io.in(`/Room/${gameId}/Settings`).emit(
-          "multi-player-reconnected",
+          "multi-player-reconnected-player1",
           multiGame,
-          playerOneData,
-          playerTwoData
+          playerOneData
         );
         io.in(`/Room/${gameId}`).emit(
-          "multi-player-reconnected",
+          "multi-player-reconnected-player2",
           multiGame,
-          playerOneData,
           playerTwoData
+        );
+
+        return;
+      } else if (player1Data) {
+        const playerOneData = {
+          id: player1Data.id,
+          username: player1Data.username,
+          profileimg: player1Data.profileimg,
+          wins: player1Data.wins,
+          loss: player1Data.loss,
+          ties: player1Data.ties,
+        };
+
+        io.in(`/Room/${gameId}/Settings`).emit(
+          "multi-player-reconnected-player1",
+          multiGame,
+          playerOneData
         );
       } else {
         const errorMessage = `Opponent has disconnected.`;
+
+        io.in(`/Room/${gameId}/Settings`).emit(
+          "multi-opponent-disconnected-settings",
+          errorMessage
+        );
         io.in(`/Room/${gameId}`).emit(
-          "multi-opponent-disconnected",
+          "multi-opponent-disconnected-game",
           errorMessage
         );
       }
@@ -356,8 +378,61 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
     }
   });
 
+  socket.on("leave-multi-player-game", async (gameID) => {
+    socket.leave(`/Room/${gameID}/Settings`);
+
+    const multiGame = await getGameByID(gameID);
+
+    if (multiGame) {
+      io.in(`/Room/${gameID}/Settings`).emit("opponent-left", multiGame);
+    } else {
+      const errorMessage = `Game not found.`;
+      io.in(`/Room/${gameID}/Settings`).emit("multi-game-error", errorMessage);
+    }
+  });
+
   socket.on("multi-end-game", async (gameID, token) => {
-    //
+    const multiGame = await getGameByID(gameID);
+
+    if (multiGame) {
+      const player1Data =
+        (await getUserByID(multiGame.player1id)) ||
+        (await getGuestByID(multiGame.player1id));
+
+      const player2Data =
+        (await getUserByID(multiGame.player2id)) ||
+        (await getGuestByID(multiGame.player2id));
+
+      const decoded = jwt.decode(token);
+
+      if (player1Data.id === decoded.user.id) {
+        const playerOneData = {
+          id: player1Data.id,
+          username: player1Data.username,
+          profileimg: player1Data.profileimg,
+          wins: player1Data.wins,
+          loss: player1Data.loss,
+          ties: player1Data.ties,
+        };
+
+        io.in(`/Room/${gameID}`).emit("player1left", multiGame, playerOneData);
+      } else if (player2Data.id === decoded.user.id) {
+        const playerTwoData = {
+          id: player2Data.id,
+          username: player2Data.username,
+          profileimg: player2Data.profileimg,
+          wins: player2Data.wins,
+          loss: player2Data.loss,
+          ties: player2Data.ties,
+        };
+
+        io.in(`/Room/${gameID}`).emit("player2left", multiGame, playerTwoData);
+      }
+    } else {
+      const errorMessage = `Game has ended.`;
+      io.in(`/Room/${gameID}`).emit("multi-game-ended", errorMessage);
+      socket.leave(`/Room/${gameID}`);
+    }
   });
 };
 

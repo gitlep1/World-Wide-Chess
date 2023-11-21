@@ -1,0 +1,64 @@
+.game-settings-loader-container {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  margin: auto;
+  background-image: url("../../Images/Background/kingsFistFight.jpeg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+
+  .game-settings-loader {
+    font-size: 50px;
+    text-shadow: 0 0 5px white, 0 0 10px white, 0 0 15px white, 0 0 20px #000000,
+      0 0 30px #000000, 0 0 40px #000000, 0 0 55px #000000, 0 0 75px #000000;
+
+    #loaderDot1 {
+      animation: testDot 8s infinite 0.5s;
+      @keyframes testDot {
+        0% {
+          font-size: 50px;
+        }
+        50% {
+          font-size: 150px;
+        }
+        100% {
+          font-size: 50px;
+        }
+      }
+    }
+
+    #loaderDot2 {
+      animation: testDot 8s infinite 1s;
+      @keyframes testDot {
+        0% {
+          font-size: 50px;
+        }
+        50% {
+          font-size: 150px;
+        }
+        100% {
+          font-size: 50px;
+        }
+      }
+    }
+
+    #loaderDot3 {
+      animation: testDot 8s infinite 1.5s;
+      @keyframes testDot {
+        0% {
+          font-size: 50px;
+        }
+        50% {
+          font-size: 150px;
+        }
+        100% {
+          font-size: 50px;
+        }
+      }
+    }
+  }
+}

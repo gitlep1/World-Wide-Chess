@@ -1,5 +1,6 @@
 import "./MultiPlayerGame.scss";
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Chessboard } from "react-chessboard";
 import { Button, Modal, Image } from "react-bootstrap";
 import { Chess } from "chess.js";
@@ -21,13 +22,15 @@ const MultiPlayerGame = ({
   game,
   setGame,
   player1Data,
-  setPlayer1Data,
   player2Data,
+  setPlayer1Data,
   setPlayer2Data,
   forfeitNotify,
   endGame,
   socket,
 }) => {
+  const navigate = useNavigate();
+
   const [screenSize, setScreenSize] = useState(0);
   const prevBoard = useRef([]);
 
@@ -38,6 +41,9 @@ const MultiPlayerGame = ({
   const [showStalemate, setShowStalemate] = useState(false);
   const [showWinner, setShowWinner] = useState(false);
   const [winner, setWinner] = useState({});
+  const [gameEnded, setGameEnded] = useState(false);
+  const [playerLeft, setPlayerLeft] = useState({});
+
   const [error, setError] = useState("");
 
   const [show, setShow] = useState(false);
@@ -55,31 +61,54 @@ const MultiPlayerGame = ({
   useEffect(() => {
     socket.emit("get-multi-game-data", game.id);
 
-    socket.on(
-      "multi-player-reconnected",
-      (gameData, playerOneData, playerTwoData) => {
-        setGame(gameData);
-        setPlayer1Data(playerOneData);
-        setPlayer2Data(playerTwoData);
-      }
-    );
+    socket.on("multi-player-reconnected-player1", (gameData, playerOneData) => {
+      setGame(gameData);
+      setPlayer1Data(playerOneData);
+    });
+
+    socket.on("multi-player-reconnected-player2", (gameData, playerTwoData) => {
+      setGame(gameData);
+      setPlayer2Data(playerTwoData);
+    });
+
+    socket.on("player1left", (gameData, playerOneData) => {
+      setGame(gameData);
+      setGameEnded(true);
+      setPlayerLeft(playerOneData);
+    });
+
+    socket.on("player2left", (gameData, playerTwoData) => {
+      setGame(gameData);
+      setGameEnded(true);
+      setPlayerLeft(playerTwoData);
+    });
 
     const intervalFunctions = setInterval(() => {
       socket.emit("get-multi-game-data", game.id);
 
       socket.on(
-        "multi-player-reconnected",
-        (gameData, playerOneData, playerTwoData) => {
+        "multi-player-reconnected-player1",
+        (gameData, playerOneData) => {
           setGame(gameData);
           setPlayer1Data(playerOneData);
+        }
+      );
+
+      socket.on(
+        "multi-player-reconnected-player2",
+        (gameData, playerTwoData) => {
+          setGame(gameData);
           setPlayer2Data(playerTwoData);
         }
       );
-    }, 45000);
+    }, 30000);
 
     return () => {
       clearInterval(intervalFunctions);
-      socket.off("multi-player-reconnected");
+      socket.off("multi-player-reconnected-player1");
+      socket.off("multi-player-reconnected-player2");
+      socket.off("player1left");
+      socket.off("player2left");
     };
   }, []); // eslint-disable-line
 
@@ -107,10 +136,6 @@ const MultiPlayerGame = ({
   }, [socket]);
 
   useEffect(() => {
-    if (chessGame.game_over()) {
-      console.log("game over!");
-    }
-
     if (chessGame.in_stalemate()) {
       setShowStalemate(true);
     }
@@ -129,20 +154,7 @@ const MultiPlayerGame = ({
   }, [chessGame, player1Data, player2Data]);
 
   const handleMove = async (from, to, piece) => {
-    if (chessGame.game_over()) {
-      return;
-    }
-
-    if (chessGame.in_stalemate()) {
-      setShowStalemate(true);
-    }
-
     if (chessGame.turn() === "w") {
-      if (chessGame.in_checkmate()) {
-        setShowWinner(true);
-        setWinner(player2Data);
-      }
-
       if (user.id === game.player1id) {
         if (piece[0] === "w") {
           const isPromotion =
@@ -174,10 +186,6 @@ const MultiPlayerGame = ({
         return null;
       }
     } else if (chessGame.turn() === "b") {
-      if (chessGame.in_checkmate()) {
-        setShowWinner(true);
-        setWinner(player1Data);
-      }
       if (user.id === game.player2id) {
         if (piece[0] === "b") {
           const isPromotion =
@@ -435,7 +443,7 @@ const MultiPlayerGame = ({
             <Modal.Footer className="winner-modal-footer">
               <Button
                 onClick={() => {
-                  endGame(game.id);
+                  endGame();
                 }}
               >
                 End Game
@@ -497,6 +505,22 @@ const MultiPlayerGame = ({
             }}
           >
             GIVE UP!
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={gameEnded} backdrop="static">
+        <Modal.Header>
+          <Modal.Title>Game Ended!</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{playerLeft.username} has left the game!</Modal.Body>
+        <Modal.Footer>
+          <Button
+            onClick={() => {
+              navigate("/Lobby");
+            }}
+          >
+            Return to Lobby
           </Button>
         </Modal.Footer>
       </Modal>

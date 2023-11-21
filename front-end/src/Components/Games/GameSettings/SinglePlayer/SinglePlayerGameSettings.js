@@ -29,7 +29,6 @@ const SinglePlayerGameSettings = ({
   setPlayer1Data,
   setPlayer2Data,
 }) => {
-  const { gameID } = useParams();
   const navigate = useNavigate();
 
   const [bots, setBots] = useState([]);
@@ -38,7 +37,7 @@ const SinglePlayerGameSettings = ({
   useEffect(() => {
     fetchBotsData();
 
-    socket.emit("get-single-game-data", gameID);
+    socket.emit("get-single-game-data", game.id);
 
     socket.on(
       "single-player-reconnected",
@@ -50,13 +49,17 @@ const SinglePlayerGameSettings = ({
       }
     );
 
+    socket.on("single-room-settings", (gameData) => {
+      setGame(gameData);
+    });
+
     socket.on("single-started", (gameData, playerData, backendBotData) => {
       // console.log("inside single started");
       setGame(gameData);
       setPlayer1Data(playerData);
       setBotData(backendBotData);
       setPlayer2Data(backendBotData);
-      navigate(`/room/${gameID}`);
+      navigate(`/room/${game.id}`);
     });
 
     // socket.on("update-bot-difficulty", (botData) => {
