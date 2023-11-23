@@ -257,8 +257,6 @@ const BotLogic = (
       piece: `b${bestMoveVar.piece.toUpperCase()}`,
     };
 
-    console.log({ botMoveObj });
-
     setBotMoveHistory([...botMoveHistory, botMoveObj]);
 
     setIsThinking(false);
