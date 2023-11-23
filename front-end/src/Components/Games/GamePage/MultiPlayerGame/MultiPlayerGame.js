@@ -154,6 +154,8 @@ const MultiPlayerGame = ({
   }, [chessGame, player1Data, player2Data]);
 
   const handleMove = async (from, to, piece) => {
+    socket.emit("get-multi-game-data", game.id);
+
     if (chessGame.turn() === "w") {
       if (user.id === game.player1id) {
         if (piece[0] === "w") {
