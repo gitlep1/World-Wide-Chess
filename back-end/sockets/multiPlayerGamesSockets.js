@@ -13,6 +13,13 @@ const {
   deleteGame,
 } = require("../queries/multiGames");
 
+const {
+  getMoveHistoryByGameID,
+  createMoveHistory,
+  updateMoveHistory,
+  deleteMoveHistory,
+} = require("../queries/moveHistoryMulti");
+
 const { requireAuth } = require("../validation/requireAuth");
 const { scopeAuth } = require("../validation/scopeAuth");
 
@@ -224,6 +231,8 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
         (await getUserByID(multiGame.player2id)) ||
         (await getGuestByID(multiGame.player2id));
 
+      const moveHistory = await getMoveHistoryByGameID(gameId);
+
       if (player1Data && player2Data) {
         const playerOneData = {
           id: player1Data.id,
@@ -248,10 +257,23 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
           multiGame,
           playerOneData
         );
-        io.in(`/Room/${gameId}`).emit(
+        io.in(`/Room/${gameId}/Settings`).emit(
           "multi-player-reconnected-player2",
           multiGame,
           playerTwoData
+        );
+
+        io.in(`/Room/${gameId}`).emit(
+          "multi-player-reconnected-player1",
+          multiGame,
+          playerOneData,
+          moveHistory
+        );
+        io.in(`/Room/${gameId}`).emit(
+          "multi-player-reconnected-player2",
+          multiGame,
+          playerTwoData,
+          moveHistory
         );
 
         return;
@@ -269,6 +291,12 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
           "multi-player-reconnected-player1",
           multiGame,
           playerOneData
+        );
+        io.in(`/Room/${gameId}`).emit(
+          "multi-player-reconnected-player1",
+          multiGame,
+          playerOneData,
+          moveHistory
         );
       } else {
         const errorMessage = `Opponent has disconnected.`;
@@ -289,94 +317,127 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
     }
   });
 
-  socket.on("multi-move-piece", async (gameData, updatedGamePosition) => {
-    const oldMultiGameData = await getGameByID(gameData.id);
+  socket.on(
+    "multi-move-piece",
+    async (gameData, updatedGamePosition, piece, color) => {
+      const oldMultiGameData = await getGameByID(gameData.id);
 
-    const chessGame = new Chess(oldMultiGameData.current_positions);
+      const chessGame = new Chess(oldMultiGameData.current_positions);
 
-    const from = updatedGamePosition.from;
-    const to = updatedGamePosition.to;
+      const from = updatedGamePosition.from;
+      const to = updatedGamePosition.to;
 
-    const move = chessGame.move({ from, to });
-    if (move) {
-      const multiGameUpdated = await updateGamePositions(
-        gameData.id,
-        updatedGamePosition
-      );
-
-      if (!(multiGameUpdated instanceof Error)) {
-        console.log(
-          "updated game ID: ",
+      const move = chessGame.move({ from, to });
+      if (move) {
+        const multiGameUpdated = await updateGamePositions(
           gameData.id,
-          "with data: ",
-          multiGameUpdated
+          updatedGamePosition
         );
 
-        io.in(`/Room/${gameData.id}`).emit(
-          "multi-game-state-updated",
-          multiGameUpdated
-        );
-      } else {
-        console.log(
-          "could not update game ID: ",
-          gameData.id,
-          "with data: ",
-          multiGameUpdated
-        );
+        if (!(multiGameUpdated instanceof Error)) {
+          console.log(
+            "updated game ID: ",
+            gameData.id,
+            "with data: ",
+            multiGameUpdated
+          );
 
-        const errorMessage = "ERROR: could not update positions";
-        io.in(`Room/${gameData.id}`).emit(
-          "multi-game-state-updated-error",
-          errorMessage
-        );
+          const updatedMoveHistoryData = {
+            from_square: from,
+            to_square: to,
+            piece: piece,
+            color: color,
+          };
+
+          const updatedMoveHistory = await updateMoveHistory(
+            multiGameUpdated.id,
+            updatedMoveHistoryData
+          );
+
+          io.in(`/Room/${gameData.id}`).emit(
+            "multi-game-state-updated",
+            multiGameUpdated,
+            updatedMoveHistory
+          );
+        } else {
+          console.log(
+            "could not update game ID: ",
+            gameData.id,
+            "with data: ",
+            multiGameUpdated
+          );
+
+          const errorMessage = "ERROR: could not update positions";
+          io.in(`Room/${gameData.id}`).emit(
+            "multi-game-state-updated-error",
+            errorMessage
+          );
+        }
       }
     }
-  });
+  );
 
-  socket.on("multi-piece-promo", async (gameData, updatedGamePosition) => {
-    const oldMultiGameData = await getGameByID(gameData.id);
+  socket.on(
+    "multi-piece-promo",
+    async (gameData, updatedGamePosition, piece, color) => {
+      const oldMultiGameData = await getGameByID(gameData.id);
 
-    const chessGame = new Chess(oldMultiGameData.current_positions);
+      const chessGame = new Chess(oldMultiGameData.current_positions);
 
-    const from = updatedGamePosition.from;
-    const to = updatedGamePosition.to;
-    const promotion = updatedGamePosition.promotion;
+      const from = updatedGamePosition.from;
+      const to = updatedGamePosition.to;
+      const promotion = updatedGamePosition.promotion;
 
-    const move = chessGame.move({ from, to, promotion });
-    if (move) {
-      const multiGameUpdated = await updateGamePositions(
-        gameData.id,
-        updatedGamePosition
-      );
-
-      if (!(multiGameUpdated instanceof Error)) {
-        console.log(
-          "updated game ID: ",
+      const move = chessGame.move({ from, to, promotion });
+      if (move) {
+        const multiGameUpdated = await updateGamePositions(
           gameData.id,
-          "with data: ",
-          multiGameUpdated
+          updatedGamePosition
         );
 
-        io.in(`/Room/${gameData.id}`).emit(
-          "multi-game-state-updated",
-          multiGameUpdated
-        );
-      } else {
-        console.log(
-          "could not update game ID: ",
-          gameData.id,
-          "with data: ",
-          multiGameUpdated
-        );
+        if (!(multiGameUpdated instanceof Error)) {
+          console.log(
+            "updated game ID: ",
+            gameData.id,
+            "with data: ",
+            multiGameUpdated
+          );
 
-        const errorMessage = "ERROR: could not update piece promotion position";
-        io.in(`Room/${gameData.id}`).emit(
-          "multi-game-state-updated-error",
-          errorMessage
-        );
+          const updatedMoveHistoryData = {
+            from_square: from,
+            to_square: to,
+            piece: piece,
+            color: color,
+          };
+
+          const updatedMoveHistory = await updateMoveHistory(
+            multiGameUpdated.id,
+            updatedMoveHistoryData
+          );
+
+          io.in(`/Room/${gameData.id}`).emit(
+            "multi-game-state-updated",
+            multiGameUpdated,
+            updatedMoveHistory
+          );
+        } else {
+          console.log(
+            "could not update game ID: ",
+            gameData.id,
+            "with data: ",
+            multiGameUpdated
+          );
+
+          const errorMessage =
+            "ERROR: could not update piece promotion position";
+          io.in(`Room/${gameData.id}`).emit(
+            "multi-game-state-updated-error",
+            errorMessage
+          );
+        }
       }
     }
-  });
+  );
 
   socket.on("leave-multi-player-game", async (gameID) => {
     socket.leave(`/Room/${gameID}/Settings`);
@@ -428,6 +489,10 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
 
         io.in(`/Room/${gameID}`).emit("player2left", multiGame, playerTwoData);
       }
+      await deleteMoveHistory(gameID);
+      setTimeout(async () => {
+        await deleteGame(gameID);
+      }, 8000);
     } else {
       const errorMessage = `Game has ended.`;
       io.in(`/Room/${gameID}`).emit("multi-game-ended", errorMessage);

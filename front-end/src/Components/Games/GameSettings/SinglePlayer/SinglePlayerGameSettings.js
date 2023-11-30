@@ -54,7 +54,6 @@ const SinglePlayerGameSettings = ({
     });
 
     socket.on("single-started", (gameData, playerData, backendBotData) => {
-      // console.log("inside single started");
       setGame(gameData);
       setPlayer1Data(playerData);
       setBotData(backendBotData);
@@ -111,8 +110,16 @@ const SinglePlayerGameSettings = ({
           authorization: `Bearer ${token}`,
         },
       })
-      .then((res) => {
-        // console.log("inside start game: ", res.data.payload);
+      .then(async (res) => {
+        await axios
+          .post(`${API}/single-move-history`, res.data.payload.id, {
+            headers: {
+              authorization: `Bearer ${token}`,
+            },
+          })
+          .catch((err) => {
+            console.log(err.response.data);
+          });
         socket.emit("start-single-player-game", res.data.payload);
       })
       .catch((err) => {

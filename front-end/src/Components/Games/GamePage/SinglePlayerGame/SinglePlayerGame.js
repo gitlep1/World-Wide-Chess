@@ -55,7 +55,6 @@ const SinglePlayerGame = ({
   token,
 }) => {
   let currGameData = {};
-  let currFenData = "";
 
   const { gameID } = useParams();
   const navigate = useNavigate();
@@ -71,6 +70,7 @@ const SinglePlayerGame = ({
   const [isThinking, setIsThinking] = useState(false);
   const [inGameMessages, setInGameMessages] = useState([]);
   const [playerMoveHistory, setPlayerMoveHistory] = useState([]);
+  const [botMoveData, setBotMoveData] = useState({});
   const [botMoveHistory, setBotMoveHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
 
@@ -114,12 +114,9 @@ const SinglePlayerGame = ({
         "single-player-reconnected",
         async (gameData, player1, player2) => {
           try {
-            // Set fen based on the current position
             const currentPosition = gameData.current_positions;
-            currFenData = currentPosition;
             setFen(currentPosition);
 
-            // Update state with the received data
             setGame(gameData);
             setChessGame(new Chess(currentPosition));
             setPlayer1Data(player1);
@@ -127,14 +124,11 @@ const SinglePlayerGame = ({
 
             currGameData = gameData;
 
-            // Check if it's the bot's turn and make a move
             const checkIfBotsTurn = gameData.current_positions.split(" ")[1];
 
             if (checkIfBotsTurn === "b") {
-              console.log("inside if");
               await makeRandomMove();
             } else {
-              console.log("inside else");
               resolve();
             }
 
@@ -147,65 +141,14 @@ const SinglePlayerGame = ({
     });
   };
 
-  // const reloadPlayerAndGameData = async () => {
-  //   return new Promise(async (resolve, reject) => {
-  //     socket.emit("get-single-game-data", gameID);
-
-  //     socket.on(
-  //       "single-player-reconnected",
-  //       async (gameData, player1, player2) => {
-  //         // try {
-
-  //         // } catch (err) {
-
-  //         // }
-  //         const currentPosition = gameData.current_positions;
-  //         setFen(currentPosition);
-
-  //         const currentPlayerColor = gameData.player1color === "w" ? "w" : "b";
-
-  //         setGame(gameData);
-  //         setChessGame(Chess(gameData.current_positions));
-  //         setPlayer1Data(player1);
-  //         setPlayer2Data(player2);
-
-  //         currGameData = gameData;
-
-  //         const checkIfBotsTurn = gameData.current_positions.split(" ")[1];
-  //         if (checkIfBotsTurn === "b") {
-  //           await makeRandomMove();
-  //         }
-  //       }
-  //     );
-
-  //     // await axios
-  //     //   .get(`${API}/single-games/${gameID}`, {
-  //     //     headers: {
-  //     //       authorization: `Bearer ${token}`,
-  //     //     },
-  //     //   })
-  //     //   .then((res) => {
-  //     //     // console.log(res.data.payload.current_positions);
-  //     //     setGame(res.data.payload);
-  //     //     setFen(res.data.payload.current_positions);
-
-  //     //     const checkIfBotsTurn =
-  //     //       res.data.payload.current_positions.split(" ")[1];
-  //     //     if (checkIfBotsTurn === "b") {
-  //     //       makeRandomMove();
-  //     //     }
-  //     //   });
-
-  //     resolve();
-  //   });
-  // };
-
   useEffect(() => {
-    socket.on("single-game-state-updated", async (singleGameUpdated) => {
-      // console.log("singleGameUpdated: ", singleGameUpdated);
-      setGame(singleGameUpdated);
-      setFen(singleGameUpdated.current_positions);
-    });
+    socket.on(
+      "single-game-state-updated",
+      async (singleGameUpdated, updatedMoveHistory) => {
+        setGame(singleGameUpdated);
+        setFen(singleGameUpdated.current_positions);
+      }
+    );
 
     socket.on("single-game-ended", (errorMessage) => {
       toast.error(errorMessage, {
@@ -230,7 +173,7 @@ const SinglePlayerGame = ({
     await axios
       .delete(`${API}/single-games/${gameID}`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          authorization: `Bearer ${token}`,
         },
       })
       .then(() => {
@@ -255,7 +198,6 @@ const SinglePlayerGame = ({
       const isEnded = checkForEndGame();
 
       if (isEnded === "checkmate" || isEnded === "stalemate") {
-        // setShowWinner(true);
         return;
       }
     }, 1000);
@@ -290,10 +232,15 @@ const SinglePlayerGame = ({
   };
 
   const makeRandomMove = async () => {
+    // console.log("inside random", chessGame.turn());
+    if (chessGame.turn() === "w") {
+      // console.log("inside if color");
+      return;
+    }
+
     const isEnded = checkForEndGame();
 
     if (isEnded === "checkmate" || isEnded === "stalemate") {
-      console.log("Game Ended: Inside makeRandomMove");
       return;
     }
 
@@ -313,20 +260,35 @@ const SinglePlayerGame = ({
       depth,
       setIsThinking,
       botMoveHistory,
-      setBotMoveHistory
+      setBotMoveHistory,
+      setBotMoveData
     );
 
     delayedFunction((bestMove) => {
       chessGame.move(bestMove);
       setFen(chessGame.fen());
     });
+
+    // console.log({ botMoveData });
+    if (Object.keys(botMoveData).length > 0) {
+      // console.log("inside if bot");
+      // console.log({ bot: botMoveData });
+      socket.emit(
+        "single-move-piece",
+        game,
+        botMoveData,
+        botMoveData.piece,
+        "b"
+      );
+    }
+
+    return;
   };
 
   const handleMove = async (from, to, piece) => {
     const isEnded = checkForEndGame();
 
     if (isEnded === "checkmate" || isEnded === "stalemate") {
-      console.log("Game Ended: Inside handleMove");
       return;
     }
 
@@ -347,7 +309,8 @@ const SinglePlayerGame = ({
         from: from,
         to: to,
       };
-      await socket.emit("player-single-move-piece", game, updatedPositions);
+      // console.log({ player: updatedPositions });
+      socket.emit("single-move-piece", game, updatedPositions, piece, "w");
 
       const history = {
         from,
@@ -361,8 +324,7 @@ const SinglePlayerGame = ({
         clearTimeout(currentTimeout);
       }
       const timeout = setTimeout(async () => {
-        await makeRandomMove(from, to, piece);
-        socket.emit("bot-single-move-piece", gameID, chessGame.fen());
+        await makeRandomMove();
         setCurrentTimeout(null);
       }, 200);
       setCurrentTimeout(timeout);
@@ -592,7 +554,7 @@ const SinglePlayerGame = ({
         <div className="singleplayer-main-content-container">
           <div className="singlePlayerGame-chessboard-container">
             <Chessboard
-              id="PlayVsRandom"
+              id="PlayerVsComputer"
               boardOrientation={handleBoardOrientation()}
               position={fen}
               onPieceDrop={(from, to, piece) => handleMove(from, to, piece)}
@@ -663,16 +625,7 @@ const SinglePlayerGame = ({
           <div className="singlePlayerGame-chatBox-container">
             <h1 className="singlePlayer-chatbox-title">ChatBox</h1>
             <div className="singlePlayerGame-chatBox">
-              <h1>testing text</h1>
-              <h1>testing text</h1>
-              <h1>testing text</h1>
-              <h1>testing text</h1>
-              <h1>testing text</h1>
-              <h1>testing text</h1>
-              <h1>testing text</h1>
-              <h1>testing text</h1>
-              <h1>testing text</h1>
-              <h1>testing text</h1>
+              {/* put messages here */}
             </div>
           </div>
 

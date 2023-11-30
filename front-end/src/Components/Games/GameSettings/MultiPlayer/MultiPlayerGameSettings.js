@@ -58,12 +58,15 @@ const MultiPlayerGameSettings = ({
       setPlayer2Data(player2);
     });
 
-    socket.on("multi-started", (gameData, playerOneData, playerTwoData) => {
-      setGame(gameData);
-      setPlayer1Data(playerOneData);
-      setPlayer2Data(playerTwoData);
-      navigate(`/Room/${gameData.id}`);
-    });
+    socket.on(
+      "multi-started",
+      async (gameData, playerOneData, playerTwoData) => {
+        setGame(gameData);
+        setPlayer1Data(playerOneData);
+        setPlayer2Data(playerTwoData);
+        navigate(`/Room/${gameData.id}`);
+      }
+    );
 
     socket.on("opponent-left", (gameData) => {
       setGame(gameData);
@@ -135,10 +138,19 @@ const MultiPlayerGameSettings = ({
     await axios
       .put(`${API}/multi-games/${game.id}`, updateGameData, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          authorization: `Bearer ${token}`,
         },
       })
-      .then((res) => {
+      .then(async (res) => {
+        await axios
+          .post(`${API}/multi-move-history`, res.data.payload.id, {
+            headers: {
+              authorization: `Bearer ${token}`,
+            },
+          })
+          .catch((err) => {
+            console.log(err.response.data);
+          });
         socket.emit("start-multi-player-game", res.data.payload);
       });
   };
@@ -147,7 +159,7 @@ const MultiPlayerGameSettings = ({
     await axios
       .delete(`${API}/multi-games/${gameID}`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          authorization: `Bearer ${token}`,
         },
       })
       .then(() => {

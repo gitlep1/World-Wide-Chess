@@ -85,7 +85,7 @@ const updateGamePositions = async (id, updatedPositions) => {
     const updatedGame = await db.one(
       `
       UPDATE games SET current_positions = $2 WHERE id = $1 RETURNING *`,
-      [id, updatedPositions]
+      [id, updatedPositions.current_positions]
     );
     return updatedGame;
   } catch (error) {

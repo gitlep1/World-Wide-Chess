@@ -3,9 +3,11 @@ const BotLogic = (
   maxDepth,
   setIsThinking,
   botMoveHistory,
-  setBotMoveHistory
+  setBotMoveHistory,
+  setBotMoveData
 ) => {
   const transpositionTable = {};
+  const currentPositions = chessGame.fen();
 
   const evaluateBoard = (board) => {
     let score = 0;
@@ -252,88 +254,23 @@ const BotLogic = (
     const result = chessGame.move(bestMoveVar);
 
     const botMoveObj = {
+      current_positions: currentPositions,
       from: bestMoveVar.from,
       to: bestMoveVar.to,
       piece: `b${bestMoveVar.piece.toUpperCase()}`,
     };
 
-    setBotMoveHistory([...botMoveHistory, botMoveObj]);
+    if (result.color === "w") {
+      return;
+    }
 
+    setBotMoveData(botMoveObj);
+    setBotMoveHistory([...botMoveHistory, botMoveObj]);
     setIsThinking(false);
 
+    // console.log({ result });
     return result;
-
-    // const currentTime = Date.now();
-    // if (currentTime - (startTime < timeLimit)) {
-    //   setTimeout(evaluateAndSelectMove);
-    // } else {
-    //   const result = chessGame.move(bestMoveVar);
-    //   // setMoveHistory([...moveHistory, result]);
-    //   setFen(chessGame.fen());
-
-    //   setIsThinking(false);
-
-    //   return result;
-    // }
   };
-
-  // work on more optimized version later \\
-  // const bestMove = () => {
-  //   setIsThinking(true);
-
-  //   const timeLimit = 3000; // 3 seconds
-  //   let startTime = Date.now();
-  //   let bestMoveVar = null;
-  //   let bestEval = -Infinity;
-
-  //   const evaluateAndSelectMove = () => {
-  //     const moves = chessGame.moves({ verbose: true }); // Get extended move information
-
-  //     for (let i = 0; i < moves.length; i++) {
-  //       const move = moves[i];
-
-  //       // Check if the move is a castling move
-  //       if (move.flags.includes("k") || move.flags.includes("q")) {
-  //         // Handle castling moves here, undoing and not selecting them as the best move
-  //         chessGame.ugly_move(move);
-  //         continue;
-  //       }
-
-  //       chessGame.ugly_move(move);
-
-  //       const evalBestMove = minimax(
-  //         chessGame.board(),
-  //         maxDepth,
-  //         -Infinity,
-  //         Infinity,
-  //         false
-  //       );
-
-  //       if (evalBestMove > bestEval) {
-  //         bestEval = evalBestMove;
-  //         bestMoveVar = move;
-  //       }
-
-  //       chessGame.undo();
-  //     }
-
-  //     // Check if the time limit is exceeded
-  //     const currentTime = Date.now();
-  //     if (currentTime - startTime < timeLimit) {
-  //       setTimeout(evaluateAndSelectMove, 0); // Continue thinking
-  //     } else {
-  //       // Time limit exceeded, make the best move
-  //       chessGame.ugly_move(bestMoveVar);
-
-  //       const result = chessGame.ugly_move(bestMoveVar);
-  //       setFen(chessGame.fen());
-  //       setMoveHistory([...moveHistory, result]);
-  //       setIsThinking(false);
-  //     }
-  //   };
-
-  //   evaluateAndSelectMove();
-  // };
 
   // Return a function that returns the function that makes the best move after a delay
   return (callback) => {

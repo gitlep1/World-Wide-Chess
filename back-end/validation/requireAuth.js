@@ -20,7 +20,7 @@ const requireAuth = () => {
               expiresIn: decoded.user.is_guest ? "1d" : "30d",
             });
 
-            res.setHeader("Authorization", `Bearer ${newToken}`);
+            res.setHeader("authorization", `Bearer ${newToken}`);
           } else {
             console.log(err);
             return res.sendStatus(403);
