@@ -10,7 +10,8 @@ const guestController = require("./controllers/guestController");
 const botsController = require("./controllers/botsController");
 const singleGamesController = require("./controllers/singleGamesController");
 const multiGamesController = require("./controllers/multiGamesController");
-// const previousGamesController = require("./controllers/previousGamesController");
+const singleMoveHistoryController = require("./controllers/moveHistorySingleController");
+const multiMoveHistoryController = require("./controllers/moveHistoryMultiController");
 const factsController = require("./controllers/factsController");
 const shopController = require("./controllers/shopController");
 const userInventoryController = require("./controllers/userInventoryController");
@@ -55,10 +56,9 @@ app.use("/users", usersController);
 app.use("/guests", guestController);
 app.use("/bots", botsController);
 app.use("/single-games", singleGamesController);
+app.use("/single-move-history", singleMoveHistoryController);
 app.use("/multi-games", multiGamesController);
-// work on game history later \\
-// app.use("/previousGames", previousGamesController);
-
+app.use("/multi-move-history", multiMoveHistoryController);
 app.use("/facts", factsController);
 app.use("/shop", shopController);
 app.use("/user-inventory", userInventoryController);

@@ -29,7 +29,6 @@ const SinglePlayerGameSettings = ({
   setPlayer1Data,
   setPlayer2Data,
 }) => {
-  const { gameID } = useParams();
   const navigate = useNavigate();
 
   const [bots, setBots] = useState([]);
@@ -38,7 +37,7 @@ const SinglePlayerGameSettings = ({
   useEffect(() => {
     fetchBotsData();
 
-    socket.emit("get-single-game-data", gameID);
+    socket.emit("get-single-game-data", game.id);
 
     socket.on(
       "single-player-reconnected",
@@ -50,13 +49,16 @@ const SinglePlayerGameSettings = ({
       }
     );
 
+    socket.on("single-room-settings", (gameData) => {
+      setGame(gameData);
+    });
+
     socket.on("single-started", (gameData, playerData, backendBotData) => {
-      // console.log("inside single started");
       setGame(gameData);
       setPlayer1Data(playerData);
       setBotData(backendBotData);
       setPlayer2Data(backendBotData);
-      navigate(`/room/${gameID}`);
+      navigate(`/room/${game.id}`);
     });
 
     // socket.on("update-bot-difficulty", (botData) => {
@@ -108,8 +110,16 @@ const SinglePlayerGameSettings = ({
           authorization: `Bearer ${token}`,
         },
       })
-      .then((res) => {
-        // console.log("inside start game: ", res.data.payload);
+      .then(async (res) => {
+        await axios
+          .post(`${API}/single-move-history`, res.data.payload.id, {
+            headers: {
+              authorization: `Bearer ${token}`,
+            },
+          })
+          .catch((err) => {
+            console.log(err.response.data);
+          });
         socket.emit("start-single-player-game", res.data.payload);
       })
       .catch((err) => {

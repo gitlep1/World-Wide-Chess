@@ -3,12 +3,19 @@ import { useRef, useState, useEffect } from "react";
 import { Chessboard } from "react-chessboard";
 import { Chess } from "chess.js";
 import { Button, Modal, Image } from "react-bootstrap";
+import {
+  MdKeyboardDoubleArrowLeft,
+  MdKeyboardDoubleArrowRight,
+} from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { nanoid } from "nanoid";
 import axios from "axios";
 
 import DetectScreenSize from "../../../../CustomFunctions/DetectScreenSize";
 import controlWidth from "../../../../CustomFunctions/ControlWidth";
+
+import BotLogic from "./BotLogic";
 
 import spectatorLight1 from "../../../../Images/Spectators/spectatorLight1.png";
 import spectatorLight2 from "../../../../Images/Spectators/spectatorLight2.png";
@@ -18,8 +25,19 @@ import spectatorLight3 from "../../../../Images/Spectators/spectatorLight3.png";
 // import spectatorDark2 from "../../../../Images/spectatorDark2.png";
 // import spectatorDark3 from "../../../../Images/spectatorDark3.png";
 
-import BotLogic from "./BotLogic";
-import { nanoid } from "nanoid";
+import blackPawn from "../../../../Images/Themes/Pieces/Default/Black/black-pawn.png";
+import blackKnight from "../../../../Images/Themes/Pieces/Default/Black/black-knight.png";
+import blackBishop from "../../../../Images/Themes/Pieces/Default/Black/black-bishop.png";
+import blackRook from "../../../../Images/Themes/Pieces/Default/Black/black-rook.png";
+import blackQueen from "../../../../Images/Themes/Pieces/Default/Black/black-queen.png";
+import blackKing from "../../../../Images/Themes/Pieces/Default/Black/black-king.png";
+
+import whitePawn from "../../../../Images/Themes/Pieces/Default/White/white-pawn.png";
+import whiteKnight from "../../../../Images/Themes/Pieces/Default/White/white-knight.png";
+import whiteBishop from "../../../../Images/Themes/Pieces/Default/White/white-bishop.png";
+import whiteRook from "../../../../Images/Themes/Pieces/Default/White/white-rook.png";
+import whiteQueen from "../../../../Images/Themes/Pieces/Default/White/white-queen.png";
+import whiteKing from "../../../../Images/Themes/Pieces/Default/White/white-king.png";
 
 const API = process.env.REACT_APP_API_URL;
 
@@ -36,10 +54,13 @@ const SinglePlayerGame = ({
   socket,
   token,
 }) => {
+  let currGameData = {};
+
   const { gameID } = useParams();
   const navigate = useNavigate();
   const [screenSize, setScreenSize] = useState(0);
   const prevBoard = useRef([]);
+  const scrollMoveHistory = useRef(null);
 
   const [chessGame, setChessGame] = useState(new Chess(game.current_positions));
   const [fen, setFen] = useState(chessGame.fen());
@@ -48,7 +69,10 @@ const SinglePlayerGame = ({
   const [currentTimeout, setCurrentTimeout] = useState(null);
   const [isThinking, setIsThinking] = useState(false);
   const [inGameMessages, setInGameMessages] = useState([]);
-  const [moveHistory, setMoveHistory] = useState([]);
+  const [playerMoveHistory, setPlayerMoveHistory] = useState([]);
+  const [botMoveData, setBotMoveData] = useState({});
+  const [botMoveHistory, setBotMoveHistory] = useState([]);
+  const [showHistory, setShowHistory] = useState(false);
 
   const [stalemate, setStalemate] = useState(false);
   const [showWinner, setShowWinner] = useState(false);
@@ -61,6 +85,10 @@ const SinglePlayerGame = ({
 
     return () => clearInterval(intervalFunctions);
   }, []);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [playerMoveHistory, botMoveHistory]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -79,55 +107,48 @@ const SinglePlayerGame = ({
   }, []); // eslint-disable-line
 
   const reloadPlayerAndGameData = async () => {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       socket.emit("get-single-game-data", gameID);
 
       socket.on(
         "single-player-reconnected",
         async (gameData, player1, player2) => {
-          // setGame(gameData);
-          setPlayer1Data(player1);
-          setPlayer2Data(player2);
-          // setFen(gameData.current_positions);
+          try {
+            const currentPosition = gameData.current_positions;
+            setFen(currentPosition);
 
-          // console.log(fen);
-          // console.log(gameData.current_positions);
+            setGame(gameData);
+            setChessGame(new Chess(currentPosition));
+            setPlayer1Data(player1);
+            setPlayer2Data(player2);
 
-          // const checkIfBotsTurn = gameData.current_positions.split(" ")[1];
-          // if (checkIfBotsTurn === "b") {
-          //   await makeRandomMove();
-          // }
+            currGameData = gameData;
+
+            const checkIfBotsTurn = gameData.current_positions.split(" ")[1];
+
+            if (checkIfBotsTurn === "b") {
+              await makeRandomMove();
+            } else {
+              resolve();
+            }
+
+            resolve();
+          } catch (error) {
+            reject(error);
+          }
         }
       );
-
-      await axios
-        .get(`${API}/single-games/${gameID}`, {
-          headers: {
-            authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res) => {
-          // console.log(res.data.payload.current_positions);
-          setGame(res.data.payload);
-          setFen(res.data.payload.current_positions);
-
-          const checkIfBotsTurn =
-            res.data.payload.current_positions.split(" ")[1];
-          if (checkIfBotsTurn === "b") {
-            makeRandomMove();
-          }
-        });
-
-      resolve();
     });
   };
 
   useEffect(() => {
-    socket.on("single-game-state-updated", async (singleGameUpdated) => {
-      // console.log("singleGameUpdated: ", singleGameUpdated);
-      setGame(singleGameUpdated);
-      setFen(singleGameUpdated.current_positions);
-    });
+    socket.on(
+      "single-game-state-updated",
+      async (singleGameUpdated, updatedMoveHistory) => {
+        setGame(singleGameUpdated);
+        setFen(singleGameUpdated.current_positions);
+      }
+    );
 
     socket.on("single-game-ended", (errorMessage) => {
       toast.error(errorMessage, {
@@ -152,7 +173,7 @@ const SinglePlayerGame = ({
     await axios
       .delete(`${API}/single-games/${gameID}`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          authorization: `Bearer ${token}`,
         },
       })
       .then(() => {
@@ -170,20 +191,19 @@ const SinglePlayerGame = ({
     prevBoard.current.push(fen);
   }, [fen]);
 
-  // useEffect(() => {
-  //   checkForEndGame();
+  useEffect(() => {
+    checkForEndGame();
 
-  //   const intervalFunction = setInterval(() => {
-  //     const isEnded = checkForEndGame();
+    const intervalFunction = setInterval(() => {
+      const isEnded = checkForEndGame();
 
-  //     if (isEnded === "checkmate" || isEnded === "stalemate") {
-  //       console.log("Game Ended: Inside useEffect");
-  //       return;
-  //     }
-  //   }, 1000);
+      if (isEnded === "checkmate" || isEnded === "stalemate") {
+        return;
+      }
+    }, 1000);
 
-  //   return () => clearInterval(intervalFunction);
-  // }, []); // eslint-disable-line
+    return () => clearInterval(intervalFunction);
+  }, []); // eslint-disable-line
 
   const checkForEndGame = () => {
     if (chessGame.in_checkmate()) {
@@ -212,44 +232,63 @@ const SinglePlayerGame = ({
   };
 
   const makeRandomMove = async () => {
+    // console.log("inside random", chessGame.turn());
+    if (chessGame.turn() === "w") {
+      // console.log("inside if color");
+      return;
+    }
+
     const isEnded = checkForEndGame();
 
     if (isEnded === "checkmate" || isEnded === "stalemate") {
-      console.log("Game Ended: Inside makeRandomMove");
       return;
     }
 
     let depth = 0;
     setIsThinking(true);
 
-    if (game.botid === 1) {
+    if (game.botid === 1 || currGameData.botid === 1) {
       depth = 1;
-    } else if (game.botid === 2) {
+    } else if (game.botid === 2 || currGameData.botid === 2) {
       depth = 2;
-    } else if (game.botid === 3) {
+    } else if (game.botid === 3 || currGameData.botid === 3) {
       depth = 3;
     }
 
     const delayedFunction = BotLogic(
       chessGame,
-      setFen,
       depth,
       setIsThinking,
-      moveHistory,
-      setMoveHistory
+      botMoveHistory,
+      setBotMoveHistory,
+      setBotMoveData
     );
 
     delayedFunction((bestMove) => {
       chessGame.move(bestMove);
       setFen(chessGame.fen());
     });
+
+    // console.log({ botMoveData });
+    if (Object.keys(botMoveData).length > 0) {
+      // console.log("inside if bot");
+      // console.log({ bot: botMoveData });
+      socket.emit(
+        "single-move-piece",
+        game,
+        botMoveData,
+        botMoveData.piece,
+        "b"
+      );
+    }
+
+    return;
   };
 
   const handleMove = async (from, to, piece) => {
     const isEnded = checkForEndGame();
 
     if (isEnded === "checkmate" || isEnded === "stalemate") {
-      console.log("Game Ended: Inside handleMove");
       return;
     }
 
@@ -265,20 +304,27 @@ const SinglePlayerGame = ({
 
     const move = chessGame.move({ from, to });
     if (move) {
-      // setMoveHistory([...moveHistory, move]);
       const updatedPositions = {
         current_positions: chessGame.fen(),
         from: from,
         to: to,
       };
-      await socket.emit("player-single-move-piece", game, updatedPositions);
+      // console.log({ player: updatedPositions });
+      socket.emit("single-move-piece", game, updatedPositions, piece, "w");
+
+      const history = {
+        from,
+        to,
+        piece,
+      };
+
+      setPlayerMoveHistory([...playerMoveHistory, history]);
 
       if (currentTimeout !== null) {
         clearTimeout(currentTimeout);
       }
       const timeout = setTimeout(async () => {
         await makeRandomMove();
-        socket.emit("bot-single-move-piece", gameID, chessGame.fen());
         setCurrentTimeout(null);
       }, 200);
       setCurrentTimeout(timeout);
@@ -297,7 +343,6 @@ const SinglePlayerGame = ({
     });
 
     if (newMove) {
-      // setMoveHistory([...moveHistory, newMove]);
       setShowPromotion(false);
 
       if (currentTimeout !== null) {
@@ -339,16 +384,93 @@ const SinglePlayerGame = ({
     }
   };
 
-  const handleMoveHistory = () => {
-    const isGameEnded = checkForEndGame();
-
-    if (isGameEnded === "checkmate" || isGameEnded === "stalemate") {
-      return;
+  const handleImageSrc = (piece) => {
+    if (piece === "wP") {
+      return whitePawn;
+    } else if (piece === "wN") {
+      return whiteKnight;
+    } else if (piece === "wB") {
+      return whiteBishop;
+    } else if (piece === "wR") {
+      return whiteRook;
+    } else if (piece === "wQ") {
+      return whiteQueen;
+    } else if (piece === "wK") {
+      return whiteKing;
+    } else if (piece === "bP") {
+      return blackPawn;
+    } else if (piece === "bN") {
+      return blackKnight;
+    } else if (piece === "bB") {
+      return blackBishop;
+    } else if (piece === "bR") {
+      return blackRook;
+    } else if (piece === "bQ") {
+      return blackQueen;
+    } else if (piece === "bK") {
+      return blackKing;
     }
+  };
 
-    return moveHistory.map((move, index) => (
-      <div key={nanoid()}>{move.san}</div>
-    ));
+  const handleMoveHistory = () => {
+    return (
+      <div className="move-history">
+        <div className="playerMoveHistory-container">
+          <h4>player</h4>
+          <div className="playerMoveHistory" ref={scrollMoveHistory}>
+            {playerMoveHistory.map((move, index) => (
+              <div key={nanoid()}>
+                {index + 1}.{" "}
+                <Image
+                  src={handleImageSrc(move.piece)}
+                  alt={"chess piece icon"}
+                  className="chess-piece-icon"
+                />{" "}
+                {move.from} {"=>"} {move.to}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="botMoveHistory-container">
+          <h4>bot</h4>
+          <div className="botMoveHistory" ref={scrollMoveHistory}>
+            {botMoveHistory.map((move, index) => (
+              <div key={nanoid()}>
+                {index + 1}.{" "}
+                <Image
+                  src={handleImageSrc(move.piece)}
+                  alt={"chess piece icon"}
+                  className="chess-piece-icon"
+                />{" "}
+                {move.from} {"=>"} {move.to}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const scrollToBottom = () => {
+    if (scrollMoveHistory.current) {
+      const scrollMoveHistoryRef = scrollMoveHistory.current;
+
+      const scrollDiff =
+        scrollMoveHistoryRef.scrollHeight -
+        (scrollMoveHistoryRef.scrollTop - scrollMoveHistoryRef.clientHeight);
+
+      if (scrollDiff <= 800) {
+        if (typeof scrollMoveHistoryRef.scrollTo === "function") {
+          scrollMoveHistoryRef.scrollTo({
+            top: scrollMoveHistoryRef.scrollHeight,
+            behavior: "smooth",
+          });
+        } else {
+          scrollMoveHistoryRef.scrollTop = scrollMoveHistoryRef.scrollHeight;
+        }
+      }
+    }
   };
 
   return (
@@ -432,7 +554,7 @@ const SinglePlayerGame = ({
         <div className="singleplayer-main-content-container">
           <div className="singlePlayerGame-chessboard-container">
             <Chessboard
-              id="PlayVsRandom"
+              id="PlayerVsComputer"
               boardOrientation={handleBoardOrientation()}
               position={fen}
               onPieceDrop={(from, to, piece) => handleMove(from, to, piece)}
@@ -456,27 +578,56 @@ const SinglePlayerGame = ({
             />
           </div>
 
-          {/* <div className="singlePlayerGame-chatBox-moveHistory-container rounded-5"> */}
-          <div className="singlePlayerGame-moveHistory-container">
-            <h1 className="singlePlayer-history-title">History</h1>
-            {handleMoveHistory()}
+          <div
+            className={`move-history-container ${
+              showHistory ? "move-history-active" : null
+            }`}
+          >
+            <span
+              className={`${
+                showHistory ? "move-history-title-active" : "move-history-title"
+              }`}
+            >
+              Move History
+            </span>
+            <span
+              className={`move-history-icons ${
+                showHistory ? "move-history-icons-active" : null
+              }`}
+              onClick={() => {
+                setShowHistory(!showHistory);
+              }}
+            >
+              {showHistory ? (
+                <>
+                  <MdKeyboardDoubleArrowRight />
+                  <MdKeyboardDoubleArrowRight />
+                </>
+              ) : (
+                <>
+                  <MdKeyboardDoubleArrowLeft />
+
+                  <MdKeyboardDoubleArrowLeft />
+                </>
+              )}
+            </span>
+            <div
+              className={`${
+                showHistory
+                  ? "move-history-content-show"
+                  : "move-history-content-hide"
+              }`}
+            >
+              {handleMoveHistory()}
+            </div>
           </div>
+
           <div className="singlePlayerGame-chatBox-container">
             <h1 className="singlePlayer-chatbox-title">ChatBox</h1>
             <div className="singlePlayerGame-chatBox">
-              <h1>random text</h1>
-              <h1>random text</h1>
-              <h1>random text</h1>
-              <h1>random text</h1>
-              <h1>random text</h1>
-              <h1>random text</h1>
-              <h1>random text</h1>
-              <h1>random text</h1>
-              <h1>random text</h1>
-              <h1>random text</h1>
+              {/* put messages here */}
             </div>
           </div>
-          {/* </div> */}
 
           <div className="singlePlayerGame-buttons">
             <Button

@@ -43,7 +43,7 @@ const Message = ({ user, token, socket, onMessageCreated }) => {
       await axios
         .post(`${API}/messages`, messageData, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            authorization: `Bearer ${token}`,
           },
         })
         .then((res) => {

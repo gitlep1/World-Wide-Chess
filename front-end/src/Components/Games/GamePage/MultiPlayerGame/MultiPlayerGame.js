@@ -1,10 +1,16 @@
 import "./MultiPlayerGame.scss";
-import { useState, useRef, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Chessboard } from "react-chessboard";
-import { Button, Modal, Image } from "react-bootstrap";
 import { Chess } from "chess.js";
+import { Button, Modal, Image } from "react-bootstrap";
+import {
+  MdKeyboardDoubleArrowLeft,
+  MdKeyboardDoubleArrowRight,
+} from "react-icons/md";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { nanoid } from "nanoid";
 import axios from "axios";
-import io from "socket.io-client";
 
 import DetectScreenSize from "../../../../CustomFunctions/DetectScreenSize";
 import controlWidth from "../../../../CustomFunctions/ControlWidth";
@@ -12,6 +18,20 @@ import controlWidth from "../../../../CustomFunctions/ControlWidth";
 import spectatorDark1 from "../../../../Images/Spectators/spectatorDark1.png";
 import spectatorDark2 from "../../../../Images/Spectators/spectatorDark2.png";
 import spectatorDark3 from "../../../../Images/Spectators/spectatorDark3.png";
+
+import blackPawn from "../../../../Images/Themes/Pieces/Default/Black/black-pawn.png";
+import blackKnight from "../../../../Images/Themes/Pieces/Default/Black/black-knight.png";
+import blackBishop from "../../../../Images/Themes/Pieces/Default/Black/black-bishop.png";
+import blackRook from "../../../../Images/Themes/Pieces/Default/Black/black-rook.png";
+import blackQueen from "../../../../Images/Themes/Pieces/Default/Black/black-queen.png";
+import blackKing from "../../../../Images/Themes/Pieces/Default/Black/black-king.png";
+
+import whitePawn from "../../../../Images/Themes/Pieces/Default/White/white-pawn.png";
+import whiteKnight from "../../../../Images/Themes/Pieces/Default/White/white-knight.png";
+import whiteBishop from "../../../../Images/Themes/Pieces/Default/White/white-bishop.png";
+import whiteRook from "../../../../Images/Themes/Pieces/Default/White/white-rook.png";
+import whiteQueen from "../../../../Images/Themes/Pieces/Default/White/white-queen.png";
+import whiteKing from "../../../../Images/Themes/Pieces/Default/White/white-king.png";
 
 const API = process.env.REACT_APP_API_URL;
 
@@ -21,23 +41,32 @@ const MultiPlayerGame = ({
   game,
   setGame,
   player1Data,
-  setPlayer1Data,
   player2Data,
+  setPlayer1Data,
   setPlayer2Data,
   forfeitNotify,
   endGame,
   socket,
 }) => {
+  const navigate = useNavigate();
+
   const [screenSize, setScreenSize] = useState(0);
   const prevBoard = useRef([]);
+  const scrollMoveHistory = useRef(null);
 
   const [chessGame, setChessGame] = useState(new Chess());
   const [recentMoves, setRecentMoves] = useState(game.current_positions);
   const [promotionMove, setPromotionMove] = useState(null);
   const [showPromotion, setShowPromotion] = useState(false);
+  const [player1MoveHistory, setPlayer1MoveHistory] = useState([]);
+  const [player2MoveHistory, setPlayer2MoveHistory] = useState([]);
+  const [showHistory, setShowHistory] = useState(false);
   const [showStalemate, setShowStalemate] = useState(false);
   const [showWinner, setShowWinner] = useState(false);
   const [winner, setWinner] = useState({});
+  const [gameEnded, setGameEnded] = useState(false);
+  const [playerLeft, setPlayerLeft] = useState({});
+
   const [error, setError] = useState("");
 
   const [show, setShow] = useState(false);
@@ -53,35 +82,83 @@ const MultiPlayerGame = ({
   }, []);
 
   useEffect(() => {
+    scrollToBottom();
+  }, [player1MoveHistory, player2MoveHistory]);
+
+  useEffect(() => {
     socket.emit("get-multi-game-data", game.id);
 
-    socket.on(
-      "multi-player-reconnected",
-      (gameData, playerOneData, playerTwoData) => {
-        setGame(gameData);
-        setPlayer1Data(playerOneData);
-        setPlayer2Data(playerTwoData);
-      }
-    );
+    socket.on("multi-player-reconnected-player1", (gameData, playerOneData) => {
+      setGame(gameData);
+      setPlayer1Data(playerOneData);
+    });
+
+    socket.on("multi-player-reconnected-player2", (gameData, playerTwoData) => {
+      setGame(gameData);
+      setPlayer2Data(playerTwoData);
+    });
+
+    socket.on("multi-game-state-updated", (moveData) => {
+      setRecentMoves(moveData.current_positions);
+    });
+
+    socket.on("player1left", (gameData, playerOneData) => {
+      setGame(gameData);
+      setGameEnded(true);
+      setPlayerLeft(playerOneData);
+    });
+
+    socket.on("player2left", (gameData, playerTwoData) => {
+      setGame(gameData);
+      setGameEnded(true);
+      setPlayerLeft(playerTwoData);
+    });
 
     const intervalFunctions = setInterval(() => {
       socket.emit("get-multi-game-data", game.id);
 
       socket.on(
-        "multi-player-reconnected",
-        (gameData, playerOneData, playerTwoData) => {
+        "multi-player-reconnected-player1",
+        (gameData, playerOneData) => {
           setGame(gameData);
           setPlayer1Data(playerOneData);
+        }
+      );
+
+      socket.on(
+        "multi-player-reconnected-player2",
+        (gameData, playerTwoData) => {
+          setGame(gameData);
           setPlayer2Data(playerTwoData);
         }
       );
-    }, 45000);
+
+      socket.on("multi-game-state-updated", (moveData) => {
+        setRecentMoves(moveData.current_positions);
+      });
+
+      socket.on("player1left", (gameData, playerOneData) => {
+        setGame(gameData);
+        setGameEnded(true);
+        setPlayerLeft(playerOneData);
+      });
+
+      socket.on("player2left", (gameData, playerTwoData) => {
+        setGame(gameData);
+        setGameEnded(true);
+        setPlayerLeft(playerTwoData);
+      });
+    }, 5000);
 
     return () => {
       clearInterval(intervalFunctions);
-      socket.off("multi-player-reconnected");
+      socket.off("multi-player-reconnected-player1");
+      socket.off("multi-player-reconnected-player2");
+      socket.off("multi-game-state-updated");
+      socket.off("player1left");
+      socket.off("player2left");
     };
-  }, []); // eslint-disable-line
+  }, [socket]); // eslint-disable-line
 
   useEffect(() => {
     const game = new Chess(recentMoves);
@@ -92,25 +169,7 @@ const MultiPlayerGame = ({
     prevBoard.current.push(recentMoves);
   }, [recentMoves]);
 
-  const updateGameState = (newMoveData) => {
-    setRecentMoves(newMoveData.current_positions);
-  };
-
   useEffect(() => {
-    socket.on("multi-game-state-updated", (moveData) => {
-      updateGameState(moveData);
-    });
-
-    return () => {
-      socket.off("multi-game-state-updated");
-    };
-  }, [socket]);
-
-  useEffect(() => {
-    if (chessGame.game_over()) {
-      console.log("game over!");
-    }
-
     if (chessGame.in_stalemate()) {
       setShowStalemate(true);
     }
@@ -129,20 +188,7 @@ const MultiPlayerGame = ({
   }, [chessGame, player1Data, player2Data]);
 
   const handleMove = async (from, to, piece) => {
-    if (chessGame.game_over()) {
-      return;
-    }
-
-    if (chessGame.in_stalemate()) {
-      setShowStalemate(true);
-    }
-
     if (chessGame.turn() === "w") {
-      if (chessGame.in_checkmate()) {
-        setShowWinner(true);
-        setWinner(player2Data);
-      }
-
       if (user.id === game.player1id) {
         if (piece[0] === "w") {
           const isPromotion =
@@ -162,7 +208,16 @@ const MultiPlayerGame = ({
               from: from,
               to: to,
             };
+
             socket.emit("multi-move-piece", game, updatedGameData);
+
+            const history = {
+              from,
+              to,
+              piece,
+            };
+
+            setPlayer1MoveHistory([...player1MoveHistory, history]);
           } else {
             setPromotionMove(null);
             return null;
@@ -174,10 +229,6 @@ const MultiPlayerGame = ({
         return null;
       }
     } else if (chessGame.turn() === "b") {
-      if (chessGame.in_checkmate()) {
-        setShowWinner(true);
-        setWinner(player1Data);
-      }
       if (user.id === game.player2id) {
         if (piece[0] === "b") {
           const isPromotion =
@@ -197,6 +248,15 @@ const MultiPlayerGame = ({
               from: from,
               to: to,
             };
+
+            const history = {
+              from,
+              to,
+              piece,
+            };
+
+            setPlayer2MoveHistory([...player2MoveHistory, history]);
+
             socket.emit("multi-move-piece", game, updatedGameData);
           } else {
             setPromotionMove(null);
@@ -258,251 +318,395 @@ const MultiPlayerGame = ({
     }
   };
 
-  return (
-    <section className={`${screenVersion}-gamePagePlayer`}>
-      {!player1Data || !player2Data ? forfeitNotify() : null}
+  const handleImageSrc = (piece) => {
+    if (piece === "wP") {
+      return whitePawn;
+    } else if (piece === "wN") {
+      return whiteKnight;
+    } else if (piece === "wB") {
+      return whiteBishop;
+    } else if (piece === "wR") {
+      return whiteRook;
+    } else if (piece === "wQ") {
+      return whiteQueen;
+    } else if (piece === "wK") {
+      return whiteKing;
+    } else if (piece === "bP") {
+      return blackPawn;
+    } else if (piece === "bN") {
+      return blackKnight;
+    } else if (piece === "bB") {
+      return blackBishop;
+    } else if (piece === "bR") {
+      return blackRook;
+    } else if (piece === "bQ") {
+      return blackQueen;
+    } else if (piece === "bK") {
+      return blackKing;
+    }
+  };
 
-      <div className="gamePagePlayer-header-container">
-        <div className="gamePagePlayer-header">
-          <h3 id="gamePagePlayer-roomName">Room Name: {game.room_name}</h3>
-          <span
-            id="gamePagePlayer-spectatorCount"
-            style={
-              game.spectators >= 1
-                ? { visibility: "visible" }
-                : { visibility: "hidden" }
-            }
-          >
-            {game.spectators >= 1 ? game.spectators : null}
-          </span>
-          <Image
-            src={renderSpectatorIcon()}
-            alt="spectator icon"
-            id="gamePagePlayer-spactatorIcon"
-          ></Image>
+  const handleMoveHistory = () => {
+    return (
+      <div className="move-history">
+        <div className="player1MoveHistory-container">
+          <h4>
+            Player 1 <br />{" "}
+            <span className="player1MoveHistory-name">
+              ({player1Data.username})
+            </span>
+          </h4>
+          <div className="player1MoveHistory" ref={scrollMoveHistory}>
+            {player1MoveHistory.map((move, index) => (
+              <div key={nanoid()}>
+                {index + 1}.{" "}
+                <Image
+                  src={handleImageSrc(move.piece)}
+                  alt={"chess piece icon"}
+                  className="chess-piece-icon"
+                />{" "}
+                {move.from} {"=>"} {move.to}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="player2MoveHistory-container">
+          <h4>
+            Player 2 <br />{" "}
+            <span className="player2MoveHistory-name">
+              ({player2Data.username})
+            </span>
+          </h4>
+          <div className="player2MoveHistory" ref={scrollMoveHistory}>
+            {player2MoveHistory.map((move, index) => (
+              <div key={nanoid()}>
+                {index + 1}.{" "}
+                <Image
+                  src={handleImageSrc(move.piece)}
+                  alt={"chess piece icon"}
+                  className="chess-piece-icon"
+                />{" "}
+                {move.from} {"=>"} {move.to}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
+    );
+  };
 
-      <div className="gamePagePlayer-players-data">
-        {user.id === game.player1id ? (
-          <>
-            <div className="gamePagePlayer-playerTwo-data square bg-secondary rounded-pill">
+  const scrollToBottom = () => {
+    if (scrollMoveHistory.current) {
+      const scrollMoveHistoryRef = scrollMoveHistory.current;
+
+      const scrollDiff =
+        scrollMoveHistoryRef.scrollHeight -
+        (scrollMoveHistoryRef.scrollTop - scrollMoveHistoryRef.clientHeight);
+
+      if (scrollDiff <= 800) {
+        if (typeof scrollMoveHistoryRef.scrollTo === "function") {
+          scrollMoveHistoryRef.scrollTo({
+            top: scrollMoveHistoryRef.scrollHeight,
+            behavior: "smooth",
+          });
+        } else {
+          scrollMoveHistoryRef.scrollTop = scrollMoveHistoryRef.scrollHeight;
+        }
+      }
+    }
+  };
+
+  return (
+    <section className={`${screenVersion}-multiPlayerGame-container`}>
+      {!player1Data || !player2Data ? forfeitNotify() : null}
+      <div className="multiPlayerGame">
+        <div className="multiPlayerGame-header-container">
+          <div className="multiPlayerGame-header">
+            <span
+              className="multiPlayerGame-spectatorCount"
+              style={
+                game.spectators >= 1
+                  ? { visibility: "visible" }
+                  : { visibility: "hidden" }
+              }
+            >
+              {game.spectators >= 1 ? game.spectators : null}
               <Image
-                src={player2Data.profileimg}
-                className="gamePagePlayer-player-image"
-                alt="player 2"
+                src={renderSpectatorIcon()}
+                alt="spectator icon"
+                className="multiPlayerGame-spactatorIcon"
               />
-              <span
-                style={{
-                  color: "white",
-                }}
-              >
-                {player2Data.username}
-              </span>
-            </div>
+            </span>
+            <h3 className="multiPlayerGame-roomName">
+              Room Name: {game.room_name}
+            </h3>
+          </div>
 
-            <div className="gamePagePlayer-playerOne-data square bg-secondary rounded-pill">
+          <div
+            className={`multiPlayerGame-playerOne-data ${
+              chessGame.turn() === "w" ? "active-turn" : null
+            }`}
+          >
+            <div className="profile-pic-container">
               <Image
                 src={player1Data.profileimg}
-                className="gamePagePlayer-player-image"
+                className="multiPlayerGame-player-image"
                 alt="player 1"
-              />{" "}
-              <span
-                style={{
-                  color: "black",
-                }}
-              >
-                {player1Data.username}
-              </span>
+                roundedCircle
+              />
             </div>
-          </>
-        ) : (
-          <>
-            <div className="gamePagePlayer-playerOne-data square bg-secondary rounded-pill">
-              <Image
-                src={player1Data.profileimg}
-                className="gamePagePlayer-player-image"
-                alt="player 1"
-              />{" "}
-              <span
-                style={{
-                  color: "black",
-                }}
-              >
-                {player1Data.username}
-              </span>
-            </div>
-            <div className="gamePagePlayer-playerTwo-data square bg-secondary rounded-pill">
+            <span
+              style={{
+                color: "white",
+              }}
+            >
+              {player1Data.username}
+            </span>
+          </div>
+
+          <div
+            className={`multiPlayerGame-playerTwo-data ${
+              chessGame.turn() === "b" ? "active-turn" : null
+            }`}
+          >
+            <div className="profile-pic-container">
               <Image
                 src={player2Data.profileimg}
-                className="gamePagePlayer-player-image"
+                className="multiPlayerGame-player-image"
                 alt="player 2"
+                roundedCircle
               />
-              <span
-                style={{
-                  color: "white",
-                }}
-              >
-                {player2Data.username}
-              </span>
             </div>
-          </>
-        )}
-      </div>
+            <span
+              style={{
+                color: "white",
+              }}
+            >
+              {player2Data.username}
+            </span>
+          </div>
+        </div>
 
-      <div className="gamePagePlayer-chessboard-container">
-        <Chessboard
-          id="PlayVsRandom"
-          boardOrientation={controlBoardOrientation()}
-          position={recentMoves}
-          onPieceDrop={(from, to, piece) => handleMove(from, to, piece)}
-          customBoardStyle={{
-            borderRadius: "15%",
-            boxShadow: "0 5px 23px rgba(0, 0, 0, 1)",
-          }}
-          areArrowsAllowed={false}
-          animationDuration={500}
-          boardWidth={controlWidth(screenSize)}
-          customLightSquareStyle={{
-            borderRadius: "15%",
-            boxShadow: "0 0 15px rgba(255, 255, 255, 1)",
-            backgroundColor: "rgba(225, 225, 225, 1)",
-          }}
-          customDarkSquareStyle={{
-            borderRadius: "15%",
-            boxShadow: "0 0 15px rgba(0, 0, 0, 1)",
-            backgroundColor: "rgba(70, 70, 70, 1)",
-          }}
-        />
+        <div className="multiPlayer-main-content-container">
+          <div className="multiPlayerGame-chessboard-container">
+            <Chessboard
+              id="PlayerVsPlayer"
+              boardOrientation={controlBoardOrientation()}
+              position={recentMoves}
+              onPieceDrop={(from, to, piece) => handleMove(from, to, piece)}
+              customBoardStyle={{
+                borderRadius: "15%",
+                boxShadow: "0 5px 23px rgba(0, 0, 0, 1)",
+              }}
+              areArrowsAllowed={false}
+              animationDuration={500}
+              boardWidth={controlWidth(screenSize)}
+              customLightSquareStyle={{
+                borderRadius: "15%",
+                boxShadow: "0 0 15px rgba(255, 255, 255, 1)",
+                backgroundColor: "rgba(225, 225, 225, 1)",
+              }}
+              customDarkSquareStyle={{
+                borderRadius: "15%",
+                boxShadow: "0 0 15px rgba(0, 0, 0, 1)",
+                backgroundColor: "rgba(70, 70, 70, 1)",
+              }}
+            />
+          </div>
 
-        <Modal
-          className="promotion-modal-container"
-          show={showPromotion}
-          centered
-          backdrop="static"
-        >
-          <Modal.Header>
-            <Modal.Title>Select a piece to promote to:</Modal.Title>
-          </Modal.Header>
-          <Modal.Body className="promotion-modal-body">
-            <Button
-              variant="light"
-              onClick={() => handlePromotionChoice("q")}
-              id="queenButton"
-              className="promotion-modal-buttons"
+          <div
+            className={`move-history-container ${
+              showHistory ? "move-history-active" : null
+            }`}
+          >
+            <span
+              className={`${
+                showHistory ? "move-history-title-active" : "move-history-title"
+              }`}
             >
-              Queen
-            </Button>
-            <Button
-              variant="light"
-              onClick={() => handlePromotionChoice("r")}
-              id="rookButton"
-              className="promotion-modal-buttons"
+              Move History
+            </span>
+            <span
+              className={`move-history-icons ${
+                showHistory ? "move-history-icons-active" : null
+              }`}
+              onClick={() => {
+                setShowHistory(!showHistory);
+              }}
             >
-              Rook
-            </Button>
-            <Button
-              variant="light"
-              onClick={() => handlePromotionChoice("b")}
-              id="bishopButton"
-              className="promotion-modal-buttons"
-            >
-              Bishop
-            </Button>
-            <Button
-              variant="light"
-              onClick={() => handlePromotionChoice("n")}
-              id="knightButton"
-              className="promotion-modal-buttons"
-            >
-              Knight
-            </Button>
-          </Modal.Body>
-        </Modal>
+              {showHistory ? (
+                <>
+                  <MdKeyboardDoubleArrowRight />
+                  <MdKeyboardDoubleArrowRight />
+                </>
+              ) : (
+                <>
+                  <MdKeyboardDoubleArrowLeft />
 
-        {winner ? (
+                  <MdKeyboardDoubleArrowLeft />
+                </>
+              )}
+            </span>
+            <div
+              className={`${
+                showHistory
+                  ? "move-history-content-show"
+                  : "move-history-content-hide"
+              }`}
+            >
+              {handleMoveHistory()}
+            </div>
+          </div>
+
+          <div className="multiPlayerGame-chatBox-container">
+            <h1 className="multiPlayer-chatbox-title">ChatBox</h1>
+            <div className="multiPlayerGame-chatBox">
+              {/* put messages here */}
+            </div>
+          </div>
+
+          <div className="multiPlayerGame-buttons">
+            <Button variant="danger" onClick={handleShow}>
+              FORFEIT
+            </Button>
+            <Button
+              variant="warning"
+              onClick={() => {
+                console.log("call for a draw");
+              }}
+            >
+              DRAW
+            </Button>
+          </div>
+
+          <Modal
+            className="promotion-modal-container"
+            show={showPromotion}
+            centered
+            backdrop="static"
+          >
+            <Modal.Header>
+              <Modal.Title>Select a piece to promote to:</Modal.Title>
+            </Modal.Header>
+            <Modal.Body className="promotion-modal-body">
+              <Button
+                variant="light"
+                onClick={() => handlePromotionChoice("q")}
+                id="queenButton"
+                className="promotion-modal-buttons"
+              >
+                Queen
+              </Button>
+              <Button
+                variant="light"
+                onClick={() => handlePromotionChoice("r")}
+                id="rookButton"
+                className="promotion-modal-buttons"
+              >
+                Rook
+              </Button>
+              <Button
+                variant="light"
+                onClick={() => handlePromotionChoice("b")}
+                id="bishopButton"
+                className="promotion-modal-buttons"
+              >
+                Bishop
+              </Button>
+              <Button
+                variant="light"
+                onClick={() => handlePromotionChoice("n")}
+                id="knightButton"
+                className="promotion-modal-buttons"
+              >
+                Knight
+              </Button>
+            </Modal.Body>
+          </Modal>
+
+          {winner ? (
+            <Modal
+              className="winner-modal-container"
+              show={showWinner}
+              centered
+              backdrop="static"
+            >
+              <Modal.Header className="winner-modal-header">
+                <Modal.Title>
+                  Winner: <h1>{winner.username}</h1>
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Footer className="winner-modal-footer">
+                <Button
+                  onClick={() => {
+                    endGame();
+                  }}
+                >
+                  End Game
+                </Button>
+              </Modal.Footer>
+            </Modal>
+          ) : null}
+
           <Modal
             className="winner-modal-container"
-            show={showWinner}
+            show={showStalemate}
             centered
             backdrop="static"
           >
             <Modal.Header className="winner-modal-header">
               <Modal.Title>
-                Winner: <h1>{winner.username}</h1>
+                <h1>Game ended in a DRAW!</h1>
               </Modal.Title>
             </Modal.Header>
             <Modal.Footer className="winner-modal-footer">
               <Button
                 onClick={() => {
-                  endGame(game.id);
+                  endGame();
                 }}
               >
                 End Game
               </Button>
             </Modal.Footer>
           </Modal>
-        ) : null}
 
-        <Modal
-          className="winner-modal-container"
-          show={showStalemate}
-          centered
-          backdrop="static"
-        >
-          <Modal.Header className="winner-modal-header">
-            <Modal.Title>
-              <h1>Game ended in a DRAW!</h1>
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Footer className="winner-modal-footer">
-            <Button
-              onClick={() => {
-                endGame();
-              }}
-            >
-              End Game
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      </div>
+          <Modal show={show} onHide={handleClose}>
+            <Modal.Header closeButton>
+              <Modal.Title>FORFEITTING MATCH!</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>Are you sure you want to forfeit?</Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleClose}>
+                NO WAY!
+              </Button>
+              <Button
+                variant="danger"
+                onClick={() => {
+                  endGame();
+                }}
+              >
+                GIVE UP!
+              </Button>
+            </Modal.Footer>
+          </Modal>
 
-      <div className="gamePagePlayer-buttons">
-        <Button variant="danger" onClick={handleShow}>
-          FORFEIT
-        </Button>
-        <Button
-          variant="warning"
-          onClick={() => {
-            console.log("call for a draw");
-          }}
-        >
-          DRAW
-        </Button>
-      </div>
-
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>FORFEITTING MATCH!</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Are you sure you want to forfeit?</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            NO WAY!
-          </Button>
-          <Button
-            variant="danger"
-            onClick={() => {
-              endGame();
-            }}
-          >
-            GIVE UP!
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-      <div className="gamePagePlayer-chatBox-container rounded-5">
-        <div className="gamePagePlayer-chatBox rounded-5">Chat Box</div>
+          <Modal show={gameEnded} backdrop="static">
+            <Modal.Header>
+              <Modal.Title>Game Ended!</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>{playerLeft.username} has left the game!</Modal.Body>
+            <Modal.Footer>
+              <Button
+                onClick={() => {
+                  navigate("/Lobby");
+                }}
+              >
+                Return to Lobby
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        </div>
       </div>
     </section>
   );

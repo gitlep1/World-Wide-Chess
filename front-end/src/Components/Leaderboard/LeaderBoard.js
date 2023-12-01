@@ -61,7 +61,7 @@ const LeaderBoard = ({ screenVersion, user, authenticated, token, socket }) => {
     await axios
       .get(`${API}/users`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          authorization: `Bearer ${token}`,
         },
       })
       .then((res) => {

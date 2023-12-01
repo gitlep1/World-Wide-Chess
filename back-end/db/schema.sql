@@ -51,6 +51,16 @@ CREATE TABLE games (
   game_time INT DEFAULT 0
 );
 
+DROP TABLE IF EXISTS move_history;
+CREATE TABLE move_history (
+  id SERIAL UNIQUE NOT NULL PRIMARY KEY,
+  game_id INT REFERENCES games(id),
+  from_square INT,
+  to_square INT,
+  piece TEXT,
+  color TEXT
+);
+
 DROP TABLE IF EXISTS spectators;
 CREATE TABLE spectators (
   id SERIAL UNIQUE NOT NULL PRIMARY KEY,

@@ -87,6 +87,7 @@ games.put(
   requireAuth(),
   scopeAuth(["read:user", "write:user"]),
   async (req, res) => {
+    console.log("inside put 1");
     const id = _.escape(req.params.id);
 
     const { token } = req.user;
@@ -135,6 +136,8 @@ games.put(
     const id = _.escape(req.params.id);
     const { token } = req.user;
     const decoded = jwt.decode(token);
+
+    console.log("inside put 2");
 
     const checkIfHost =
       (await getUserByID(decoded.user.id)) ||

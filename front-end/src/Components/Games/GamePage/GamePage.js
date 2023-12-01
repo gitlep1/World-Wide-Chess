@@ -1,9 +1,14 @@
 import "./GamePage.scss";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import Cookies from "js-cookie";
+import axios from "axios";
 
 import SinglePlayerGame from "./SinglePlayerGame/SinglePlayerGame";
 import MultiPlayerGame from "./MultiPlayerGame/MultiPlayerGame";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+
+const API = process.env.REACT_APP_API_URL;
 
 const GamePage = ({
   screenVersion,
@@ -11,8 +16,6 @@ const GamePage = ({
   authenticated,
   token,
   socket,
-  game,
-  setGame,
   player1Data,
   player2Data,
   setPlayer1Data,
@@ -20,107 +23,75 @@ const GamePage = ({
 }) => {
   const navigate = useNavigate();
 
-  const forfeitNotify = () => {
-    // console.log("inside");
-    // if (!player1Data) {
-    //   if (user.id !== player1Data.id) {
-    //     toast.error(`${player1Data.username} has forfeitted.`, {
-    //       toastId: "player1Quit",
-    //       position: "top-center",
-    //       hideProgressBar: false,
-    //       closeOnClick: false,
-    //       pauseOnHover: false,
-    //       pauseOnFocusLoss: false,
-    //       draggable: true,
-    //       progress: undefined,
-    //     });
-    //     setTimeout(() => {
-    //       navigate("/Lobby/");
-    //     }, 4100);
-    //   } else {
-    //     toast.error(`You have forfeitted.`, {
-    //       toastId: "playerOneQuit",
-    //       position: "top-center",
-    //       hideProgressBar: false,
-    //       closeOnClick: false,
-    //       pauseOnHover: false,
-    //       pauseOnFocusLoss: false,
-    //       draggable: true,
-    //       progress: undefined,
-    //     });
-    //     setTimeout(() => {
-    //       navigate("/Lobby/");
-    //     }, 4100);
-    //   }
-    // } else if (!player2Data) {
-    //   if (user.id !== player2Data.id) {
-    //     toast.error(`${player2Data.username} has forfeitted.`, {
-    //       toastId: "player1Quit",
-    //       position: "top-center",
-    //       hideProgressBar: false,
-    //       closeOnClick: false,
-    //       pauseOnHover: false,
-    //       pauseOnFocusLoss: false,
-    //       draggable: true,
-    //       progress: undefined,
-    //     });
-    //     setTimeout(() => {
-    //       navigate("/Lobby/");
-    //     }, 4100);
-    //   } else {
-    //     toast.error(`You have forfeitted.`, {
-    //       toastId: "playerOneQuit",
-    //       position: "top-center",
-    //       hideProgressBar: false,
-    //       closeOnClick: false,
-    //       pauseOnHover: false,
-    //       pauseOnFocusLoss: false,
-    //       draggable: true,
-    //       progress: undefined,
-    //     });
-    //     setTimeout(() => {
-    //       navigate("/Lobby/");
-    //     }, 4100);
-    //   }
-    // }
+  const gameData = JSON.parse(Cookies.get("gameid"));
+
+  const [game, setGame] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    getGameData();
+  }, []); // eslint-disable-line
+
+  const getGameData = async () => {
+    setLoading(true);
+    setError("");
+
+    const isMulti = gameData.isMulti ? "multi-games" : "single-games";
+
+    await axios
+      .get(`${API}/${isMulti}/${gameData.id}`, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        setGame(res.data.payload);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
   };
 
-  const renderLoading = () => {
-    return <div>Loading...</div>;
-  };
-
-  const endGame = () => {
-    if (game.is_multiplayer) {
-      socket.emit("multi-end-game", { gameId: game.id });
+  const endGame = async () => {
+    if (gameData.isMulti) {
+      socket.emit("multi-end-game", gameData.id, token);
     } else {
-      socket.emit("single-end-game", { gameId: game.id });
+      socket.emit("single-end-game", gameData.id, token);
     }
+
+    toast.success("Game ended.", {
+      containerId: "general-toast",
+    });
+
+    const isMulti = gameData.isMulti ? "multi-games" : "single-games";
 
     setGame({});
     setPlayer1Data({});
     setPlayer2Data({});
 
-    toast.success("Game ended.", {
-      toastId: "endGame",
-      position: "top-center",
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: false,
-      pauseOnFocusLoss: false,
-      draggable: true,
-      progress: undefined,
-    });
-    setTimeout(() => {
-      navigate("/Lobby");
-    }, 4100);
-    return;
+    await axios
+      .delete(`${API}/${isMulti}/${gameData.id}`, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        navigate("/Lobby");
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
   };
 
-  const renderBotOrPlayerGame = () => {
-    if (Object.keys(game).length < 1) {
-      renderLoading();
-    }
-    if (game.is_multiplayer) {
+  const renderSingleOrMultiGame = () => {
+    if (loading) {
+      return <div>Loading...</div>;
+    } else if (error) {
+      return <div>ERROR: {error}</div>;
+    } else if (gameData.isMulti) {
       return (
         <MultiPlayerGame
           screenVersion={screenVersion}
@@ -128,10 +99,9 @@ const GamePage = ({
           game={game}
           setGame={setGame}
           player1Data={player1Data}
-          setPlayer1Data={setPlayer1Data}
           player2Data={player2Data}
+          setPlayer1Data={setPlayer1Data}
           setPlayer2Data={setPlayer2Data}
-          forfeitNotify={forfeitNotify}
           endGame={endGame}
           socket={socket}
         />
@@ -147,7 +117,6 @@ const GamePage = ({
           player2Data={player2Data}
           setPlayer1Data={setPlayer1Data}
           setPlayer2Data={setPlayer2Data}
-          forfeitNotify={forfeitNotify}
           endGame={endGame}
           socket={socket}
           token={token}
@@ -157,7 +126,7 @@ const GamePage = ({
   };
 
   return (
-    <section className="gamePageSection">{renderBotOrPlayerGame()}</section>
+    <section className="gamePageSection">{renderSingleOrMultiGame()}</section>
   );
 };
 

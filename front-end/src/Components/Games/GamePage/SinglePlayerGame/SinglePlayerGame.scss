@@ -2,10 +2,10 @@ $medium: 800px;
 $large: 1000px;
 $giant: 1200px;
 
-$Queen: "../../../../../../Images/Promotions/Queen.png";
-$Rook: "../../../../../../Images/Promotions/Rook.png";
-$Bishop: "../../../../../../Images/Promotions/Bishop.png";
-$Knight: "../../../../../../Images/Promotions/Knight.png";
+$Queen: url("../../../../Images/Promotions/Queen.png");
+$Rook: url("../../../../Images/Promotions/Rook.png");
+$Bishop: url("../../../../Images/Promotions/Bishop.png");
+$Knight: url("../../../../Images/Promotions/Knight.png");
 
 @mixin singlePlayerGame-container {
   background-color: #1b1b1b;
@@ -14,9 +14,9 @@ $Knight: "../../../../../../Images/Promotions/Knight.png";
   align-items: center;
   height: 100vh;
   width: 100vw;
+  margin: 0 auto;
 
   .singlePlayerGame {
-    // border: 5px solid red;
     height: 95vh;
     width: 95vw;
     margin: 0 auto;
@@ -27,7 +27,6 @@ $Knight: "../../../../../../Images/Promotions/Knight.png";
     gap: 1em;
 
     .singlePlayerGame-header-container {
-      // border: 5px solid orange;
       grid-row: 1;
       grid-column: 1 / -1;
       margin: 0 auto;
@@ -110,59 +109,132 @@ $Knight: "../../../../../../Images/Promotions/Knight.png";
     }
 
     .singleplayer-main-content-container {
-      // border: 5px solid gold;
       grid-column: 1 / -1;
       display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(2, 1fr);
       justify-content: center;
       gap: 1em;
 
       .singlePlayerGame-chessboard-container {
-        // border: 5px solid blue;
-        justify-self: start;
+        grid-column: 1;
       }
 
-      .singlePlayerGame-moveHistory-container {
-        border: 5px solid cyan;
+      .move-history-container {
+        color: white;
+        border: 1px solid white;
+        background-color: #1b1b1b;
         position: fixed;
         right: 0;
-        width: 30vw;
-        height: 50vh;
-        margin: 0 auto;
-        overflow-y: auto;
-        color: white;
+        top: 19%;
+        width: 5%;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        transition: 1s;
+        max-height: 250px;
+        z-index: 1000;
 
-        .singlePlayerGame-moveHistory {
-          border: 5px solid brown;
-          height: 85%;
-          overflow-y: auto;
+        .move-history-icons {
+          grid-column: 1;
+          grid-row: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-around;
+          align-items: center;
+          opacity: 85%;
+
+          &:hover {
+            cursor: pointer;
+            opacity: 100%;
+          }
+        }
+
+        .move-history-title {
+          writing-mode: vertical-rl;
+          text-orientation: upright;
+          grid-column: 2;
+        }
+
+        .move-history-content-show {
+          grid-row: 1;
+          grid-column: 2;
+          text-align: center;
+
+          .move-history {
+            height: 100%;
+            max-height: 250px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+
+            .chess-piece-icon {
+              width: 30px;
+            }
+
+            .playerMoveHistory-container {
+              background-color: rgb(30, 30, 30);
+              border-right: 1px solid white;
+
+              h4 {
+                border-bottom: 1px solid white;
+              }
+
+              .playerMoveHistory {
+                height: 200px;
+                max-height: 200px;
+                overflow-y: auto;
+              }
+            }
+
+            .botMoveHistory-container {
+              background-color: rgb(30, 30, 30);
+
+              h4 {
+                border-bottom: 1px solid white;
+              }
+
+              .botMoveHistory {
+                height: 200px;
+                max-height: 200px;
+                overflow-y: auto;
+              }
+            }
+          }
+        }
+
+        .move-history-content-hide {
+          display: none;
+        }
+
+        .move-history-title-active {
+          writing-mode: vertical-rl;
+          text-orientation: upright;
+          grid-column: 3;
         }
       }
 
+      .move-history-active {
+        width: 32%;
+        display: grid;
+        grid-template-columns: 0.1fr 1fr 0.1fr;
+      }
+
       .singlePlayerGame-chatBox-container {
-        border: 5px solid orange;
-        position: fixed;
-        right: 0;
-        top: 10em;
-        width: 30vw;
-        height: 50vh;
+        border: 1px solid white;
+        grid-column: 2;
+        width: 100%;
+        height: 100%;
         text-align: center;
         font-size: 35px;
-        // width: 100%;
-        // height: 75vh;
         margin: 0 auto;
         overflow-y: auto;
         color: white;
 
         .singlePlayerGame-chatBox {
-          // border: 5px solid purple;
           height: 85%;
           overflow-y: auto;
         }
       }
 
       .singlePlayerGame-buttons {
-        // border: 5px solid cyan;
         display: flex;
         justify-content: center;
         grid-column: 1 / -1;
@@ -211,7 +283,6 @@ $Knight: "../../../../../../Images/Promotions/Knight.png";
 
 @mixin winner-modal-container {
   .winner-modal-header {
-    // border: 5px solid blue;
     display: flex;
     justify-content: center;
     align-items: center;

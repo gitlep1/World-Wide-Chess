@@ -1,8 +1,7 @@
 import "./Lobby.scss";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { nanoid } from "nanoid";
-import { useSpring, animated, to } from "react-spring";
+import { useSpring, animated } from "react-spring";
 import { Modal, Button, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { MdManageSearch } from "react-icons/md";
@@ -19,7 +18,6 @@ const API = process.env.REACT_APP_API_URL;
 const Lobbypage = ({
   screenVersion,
   user,
-  setGame,
   isMultiplayer,
   setIsMultiplayer,
   authenticated,
@@ -233,7 +231,21 @@ const Lobbypage = ({
         .then((res) => {
           socket.emit("get-multi-games");
           socket.emit("multi-room-created", res.data.payload, user.id);
-          setGame(res.data.payload);
+
+          const expirationDate = new Date();
+          expirationDate.setDate(expirationDate.getDate() + 7);
+
+          const gameData = {
+            id: res.data.payload.id,
+            isMulti: res.data.payload.is_multiplayer,
+          };
+
+          Cookies.set("gameid", JSON.stringify(gameData), {
+            expires: expirationDate,
+            path: "/",
+            sameSite: "strict",
+          });
+
           navigate(`/Room/${res.data.payload.id}/Settings`);
         })
         .catch((err) => {
@@ -257,7 +269,21 @@ const Lobbypage = ({
         .then((res) => {
           socket.emit("get-single-games");
           socket.emit("single-room-created", res.data.payload);
-          setGame(res.data.payload);
+
+          const expirationDate = new Date();
+          expirationDate.setDate(expirationDate.getDate() + 7);
+
+          const gameData = {
+            id: res.data.payload.id,
+            isMulti: res.data.payload.is_multiplayer,
+          };
+
+          Cookies.set("gameid", JSON.stringify(gameData), {
+            expires: expirationDate,
+            path: "/",
+            sameSite: "strict",
+          });
+
           navigate(`/Room/${res.data.payload.id}/Settings`);
         })
         .catch((err) => {
@@ -267,27 +293,46 @@ const Lobbypage = ({
   };
 
   const handleJoin = async (gameID) => {
-    let gameData = {};
-
     const player2ID = user.id;
 
-    for (const game of multiGamesCopy) {
-      if (game.id === gameID) {
-        gameData = game;
-      }
-    }
+    await axios
+      .get(`${API}/multi-games/${gameID}`, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        const gamePayload = res.data.payload;
 
-    if (gameData.room_password) {
-      if (gameData.room_password === joinWithPassword) {
-        socket.emit("ask-to-join", gameData, player2ID);
-      } else {
-        return toast.error("Incorrect room password.", {
-          containerId: "toast-notify",
+        const expirationDate = new Date();
+        expirationDate.setDate(expirationDate.getDate() + 7);
+
+        const gameData = {
+          id: res.data.payload.id,
+          isMulti: res.data.payload.is_multiplayer,
+        };
+
+        Cookies.set("gameid", JSON.stringify(gameData), {
+          expires: expirationDate,
+          path: "/",
+          sameSite: "strict",
         });
-      }
-    } else {
-      socket.emit("ask-to-join", gameData, player2ID);
-    }
+
+        if (gamePayload.room_password) {
+          if (gamePayload.room_password === joinWithPassword) {
+            socket.emit("ask-to-join", gamePayload, player2ID);
+          } else {
+            return toast.error("Incorrect room password.", {
+              containerId: "toast-notify",
+            });
+          }
+        } else {
+          socket.emit("ask-to-join", gamePayload, player2ID);
+        }
+      })
+      .catch((err) => {
+        setError(err.message);
+      });
   };
 
   const handlePlayerJoining = async () => {
