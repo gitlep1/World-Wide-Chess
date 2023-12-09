@@ -1,0 +1,12 @@
+@mixin homepage-containerr {
+  width: 95vw;
+  height: 95vh;
+}
+
+.desktop-homepage-containerr {
+  @include homepage-containerr;
+}
+
+.mobile-homepage-containerr {
+  @include homepage-containerr;
+}

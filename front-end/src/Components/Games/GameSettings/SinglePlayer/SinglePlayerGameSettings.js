@@ -111,8 +111,16 @@ const SinglePlayerGameSettings = ({
         },
       })
       .then(async (res) => {
+        const moveHistoryData = {
+          game_id: res.data.payload.id,
+          from_square: null,
+          to_square: null,
+          piece: null,
+          color: null,
+        };
+
         await axios
-          .post(`${API}/single-move-history`, res.data.payload.id, {
+          .post(`${API}/single-move-history`, moveHistoryData, {
             headers: {
               authorization: `Bearer ${token}`,
             },

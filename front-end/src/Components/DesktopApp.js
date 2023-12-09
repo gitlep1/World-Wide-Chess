@@ -8,6 +8,7 @@ import Cookies from "js-cookie";
 
 // Page stuff \\
 import Homepage from "./Homepage/Homepage";
+import HomepageV2 from "./Homepage/HomepageV2";
 import LeaderBoard from "./Leaderboard/LeaderBoard";
 import Shop from "./Shop/Shop";
 
@@ -120,6 +121,16 @@ const DesktopApp = ({
                 />
               }
             />
+            {/* <Route
+              path="/h2"
+              element={
+                <HomepageV2
+                  screenVersion={screenVersion}
+                  user={user}
+                  token={token}
+                />
+              }
+            /> */}
             <Route
               path="Account"
               element={

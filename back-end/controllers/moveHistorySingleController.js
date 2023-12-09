@@ -5,7 +5,6 @@ const moveHistory = express.Router();
 const {
   getMoveHistoryByGameID,
   createMoveHistory,
-  updateMoveHistory,
   deleteMoveHistory,
 } = require("../queries/moveHistorySingle");
 
@@ -43,41 +42,6 @@ moveHistory.post("/", requireAuth(), async (req, res) => {
     return res.status(201).json({ payload: createdMoveHistory });
   } else {
     return res.status(404).send("move history not created");
-  }
-});
-
-moveHistory.put("/:gameID", requireAuth(), async (req, res) => {
-  const gameID = _.escape(req.params.gameID);
-  const moveHistory = await getMoveHistoryByGameID(gameID);
-  const checkIfGameExists = await getGameByID(gameID);
-
-  if (!checkIfGameExists) {
-    return res
-      .status(404)
-      .send(`Cannot find any move history matching game ID: ${gameID}`);
-  }
-
-  const updatedMoveHistoryData = {
-    from_square: req.body.from_square,
-    to_square: req.body.to_square,
-    piece: req.body.piece,
-    color: req.body.color,
-  };
-
-  if (moveHistory) {
-    const updatedMoveHistory = await updateMoveHistory(
-      gameID,
-      updatedMoveHistoryData
-    );
-
-    if (!updatedMoveHistory) {
-      return res
-        .status(404)
-        .send(`move history not updated for game ID: ${gameID}`);
-    }
-
-    console.log("=== PUT move history", updatedMoveHistory, "===");
-    return res.status(200).json({ payload: updatedMoveHistory });
   }
 });
 

@@ -55,8 +55,8 @@ DROP TABLE IF EXISTS move_history;
 CREATE TABLE move_history (
   id SERIAL UNIQUE NOT NULL PRIMARY KEY,
   game_id INT REFERENCES games(id),
-  from_square INT,
-  to_square INT,
+  from_square TEXT,
+  to_square TEXT,
   piece TEXT,
   color TEXT
 );
