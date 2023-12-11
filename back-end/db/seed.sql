@@ -2,7 +2,7 @@
 
 INSERT INTO users (profileimg, username, password, email, theme, chess_coins, wins, ties, loss, rating, preferred_color, is_guest, last_online) VALUES
 ('https://www.randomlists.com/img/animals/tiger.webp', 'test1', 'test1', 'test1@test.com', 'default', 5000, 3, 2, 1, 1050, 'w', false, NOW()),
-('https://brianrushwriter.files.wordpress.com/2014/11/27566315_s.jpg', 'test2', 'test', 'test2@test.com', 'light', 3000, 3, 2, 5, 1000, 'b', false, NOW()),
+('https://brianrushwriter.files.wordpress.com/2014/11/27566315_s.jpg', 'test2', 'test2', 'test2@test.com', 'light', 3000, 3, 2, 5, 1000, 'b', false, NOW()),
 ('https://i.natgeofe.com/k/02444b59-a50d-48e6-939b-4db10f895e66/5-reasons-eagle_4x3.jpg', 'test3', 'test3', 'test3@test.com', 'dark', 2000, 5, 5, 5, 0, 'w', false, NOW());
 
 INSERT INTO bots (profileimg, username, wins, ties, loss) VALUES 
