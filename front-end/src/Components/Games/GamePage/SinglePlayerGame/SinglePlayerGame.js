@@ -148,7 +148,7 @@ const SinglePlayerGame = ({
         setGame(singleGameUpdated);
         setFen(singleGameUpdated.current_positions);
 
-        console.log(updatedMoveHistory);
+        // console.log(updatedMoveHistory);
       }
     );
 
@@ -161,7 +161,7 @@ const SinglePlayerGame = ({
     });
 
     socket.on("single-game-state-updated-error", async (errorMessage) => {
-      console.log(errorMessage);
+      // console.log(errorMessage);
     });
 
     return () => {
@@ -193,7 +193,7 @@ const SinglePlayerGame = ({
         }, 4100);
       })
       .catch((err) => {
-        console.log({ endGameError: err });
+        // console.log({ endGameError: err });
       });
   };
 
@@ -242,7 +242,7 @@ const SinglePlayerGame = ({
   };
 
   const makeRandomMove = async () => {
-    console.log("inside random", chessGame.turn());
+    // console.log("inside random", chessGame.turn());
     // if (chessGame.turn() === "w") {
     //   console.log("inside if color");
     //   return;
@@ -279,18 +279,18 @@ const SinglePlayerGame = ({
       setFen(chessGame.fen());
     });
 
-    console.log({ botMoveData });
-    if (Object.keys(botMoveData).length > 0) {
-      console.log("inside if bot");
-      console.log({ bot: botMoveData });
-      socket.emit(
-        "single-move-piece",
-        game,
-        botMoveData,
-        botMoveData.piece,
-        "b"
-      );
-    }
+    // console.log({ botMoveData });
+    // if (Object.keys(botMoveData).length > 0) {
+    //   console.log("inside if bot");
+    //   console.log({ bot: botMoveData });
+    //   socket.emit(
+    //     "single-move-piece",
+    //     game,
+    //     botMoveData,
+    //     botMoveData.piece,
+    //     "b"
+    //   );
+    // }
 
     return;
   };
@@ -319,7 +319,7 @@ const SinglePlayerGame = ({
         from: from,
         to: to,
       };
-      console.log({ player: updatedPositions });
+      // console.log({ player: updatedPositions });
       socket.emit("single-move-piece", game, updatedPositions, piece, "w");
 
       const history = {

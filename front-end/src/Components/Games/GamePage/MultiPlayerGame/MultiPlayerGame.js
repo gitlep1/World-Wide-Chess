@@ -98,8 +98,10 @@ const MultiPlayerGame = ({
       setPlayer2Data(playerTwoData);
     });
 
-    socket.on("multi-game-state-updated", (moveData) => {
+    socket.on("multi-game-state-updated", (moveData, updatedMoveHistory) => {
       setRecentMoves(moveData.current_positions);
+
+      // console.log({ updatedMoveHistory });
     });
 
     socket.on("player1left", (gameData, playerOneData) => {
@@ -209,7 +211,7 @@ const MultiPlayerGame = ({
               to: to,
             };
 
-            socket.emit("multi-move-piece", game, updatedGameData);
+            socket.emit("multi-move-piece", game, updatedGameData, piece, "w");
 
             const history = {
               from,
@@ -249,6 +251,8 @@ const MultiPlayerGame = ({
               to: to,
             };
 
+            socket.emit("multi-move-piece", game, updatedGameData, piece, "b");
+
             const history = {
               from,
               to,
@@ -256,8 +260,6 @@ const MultiPlayerGame = ({
             };
 
             setPlayer2MoveHistory([...player2MoveHistory, history]);
-
-            socket.emit("multi-move-piece", game, updatedGameData);
           } else {
             setPromotionMove(null);
             return null;
@@ -573,7 +575,7 @@ const MultiPlayerGame = ({
             <Button
               variant="warning"
               onClick={() => {
-                console.log("call for a draw");
+                // console.log("call for a draw");
               }}
             >
               DRAW

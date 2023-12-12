@@ -36,7 +36,7 @@ moveHistory.post("/", requireAuth(), async (req, res) => {
     color: null,
   };
 
-  const checkIfGameExists = await getGameByID(gameID);
+  const checkIfGameExists = await getGameByID(newMoveHistoryData.game_id);
 
   if (!checkIfGameExists) {
     return res.status(404).send(`Game ID matching: ${gameID} does not exist`);

@@ -84,7 +84,7 @@ const SinglePlayerGameSettings = ({
         setBots(res.data.payload);
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
       });
   };
 
@@ -126,12 +126,12 @@ const SinglePlayerGameSettings = ({
             },
           })
           .catch((err) => {
-            console.log(err.response.data);
+            // console.log(err.response.data);
           });
         socket.emit("start-single-player-game", res.data.payload);
       })
       .catch((err) => {
-        console.log(err.message);
+        // console.log(err.message);
       });
   };
 

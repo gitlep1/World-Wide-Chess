@@ -4,6 +4,7 @@ import { Button, Image } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 import { ToastAskToJoin } from "../../../../CustomFunctions/CustomToasts";
 
@@ -27,6 +28,7 @@ const MultiPlayerGameSettings = ({
   setPlayer2Data,
 }) => {
   const navigate = useNavigate();
+  const gameCookieData = JSON.parse(Cookies.get("gameid"));
 
   const [toastId, setToastId] = useState("");
 
@@ -67,6 +69,10 @@ const MultiPlayerGameSettings = ({
         navigate(`/Room/${gameData.id}`);
       }
     );
+
+    socket.on("multi-game-canceled", () => {
+      handleCancelledGame();
+    });
 
     socket.on("opponent-left", (gameData) => {
       setGame(gameData);
@@ -142,20 +148,42 @@ const MultiPlayerGameSettings = ({
         },
       })
       .then(async (res) => {
+        const newMoveHistoryData = {
+          gameID: res.data.payload.id,
+        };
+
         await axios
-          .post(`${API}/multi-move-history`, res.data.payload.id, {
+          .post(`${API}/multi-move-history`, newMoveHistoryData, {
             headers: {
               authorization: `Bearer ${token}`,
             },
           })
           .catch((err) => {
-            console.log(err.response.data);
+            // console.log(err.response.data);
           });
         socket.emit("start-multi-player-game", res.data.payload);
       });
   };
 
+  const handleCancelledGame = () => {
+    toast.clearWaitingQueue();
+
+    if (user.id === player1Data.id) {
+      navigate("/Lobby");
+    } else {
+      toast.error("Host has cancelled the game.", {
+        containerId: "general-toast",
+      });
+      setTimeout(() => {
+        toast.clearWaitingQueue();
+        navigate("/Lobby");
+      }, 3000);
+    }
+  };
+
   const handleDelete = async (gameID) => {
+    socket.emit("multi-game-cancel", gameID);
+
     await axios
       .delete(`${API}/multi-games/${gameID}`, {
         headers: {
@@ -169,11 +197,16 @@ const MultiPlayerGameSettings = ({
             containerId: "toast-notify",
           }
         );
+      })
+      .catch((err) => {
+        // console.log(err.response.data);
       });
+
     toast.clearWaitingQueue();
     setPlayer1Data({});
     setPlayer2Data({});
     setGame({});
+
     setTimeout(() => {
       navigate("/Lobby");
     }, 4100);
@@ -197,14 +230,9 @@ const MultiPlayerGameSettings = ({
         navigate("/Lobby");
       })
       .catch((err) => {
-        console.log(err.response.data);
+        // console.log(err.response.data);
       });
   };
-
-  // player1Data.wins = 5;
-  // player2Data.loss = 10;
-  // player1Data.ties = 3;
-  // player2Data.ties = 3;
 
   const renderPlayer1WinIcons = () => {
     if (player1Data.wins > player2Data.wins) {

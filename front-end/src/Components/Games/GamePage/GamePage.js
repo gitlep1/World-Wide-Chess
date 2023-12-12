@@ -82,7 +82,7 @@ const GamePage = ({
         navigate("/Lobby");
       })
       .catch((err) => {
-        console.log(err.message);
+        // console.log(err.message);
       });
   };
 

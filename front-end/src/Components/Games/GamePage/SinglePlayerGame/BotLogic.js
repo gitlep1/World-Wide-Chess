@@ -268,7 +268,7 @@ const BotLogic = (
     setBotMoveHistory([...botMoveHistory, botMoveObj]);
     setIsThinking(false);
 
-    console.log({ result });
+    // console.log({ result });
     return result;
   };
 

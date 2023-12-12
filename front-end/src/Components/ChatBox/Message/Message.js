@@ -50,7 +50,7 @@ const Message = ({ user, token, socket, onMessageCreated }) => {
           socket.emit("get-all-messages");
         })
         .catch((err) => {
-          console.log(err.message);
+          // console.log(err.message);
         });
     }
     setInput("");

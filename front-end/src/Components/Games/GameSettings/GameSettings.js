@@ -22,10 +22,10 @@ const GameSettings = ({
   setPlayer1Data,
   setPlayer2Data,
 }) => {
-  const gameData = JSON.parse(Cookies.get("gameid"));
+  const gameCookieData = JSON.parse(Cookies.get("gameid"));
 
   const [game, setGame] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const [error, setError] = useState("");
 
@@ -37,10 +37,10 @@ const GameSettings = ({
     setError("");
     setLoading(true);
 
-    const isMulti = gameData.isMulti ? "multi-games" : "single-games";
+    const isMulti = gameCookieData.isMulti ? "multi-games" : "single-games";
 
     await axios
-      .get(`${API}/${isMulti}/${gameData.id}`, {
+      .get(`${API}/${isMulti}/${gameCookieData.id}`, {
         headers: {
           authorization: `Bearer ${token}`,
         },
@@ -105,11 +105,7 @@ const GameSettings = ({
 
   return (
     <section className={`${screenVersion}-game-settings-container`}>
-      {Object.keys(game).length <= 1 ? (
-        <GameSettingsLoader />
-      ) : (
-        renderGameSettings()
-      )}
+      {renderGameSettings()}
     </section>
   );
 };
