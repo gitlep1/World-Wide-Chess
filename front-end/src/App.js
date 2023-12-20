@@ -17,10 +17,11 @@ import MobileApp from "./Components/MobileApp";
 // Custom functions \\
 import DetectScreenSize from "./CustomFunctions/DetectScreenSize";
 import LeavingPage from "./CustomFunctions/LeavingPage";
+import { SetCookies, RemoveCookies } from "./CustomFunctions/HandleCookies";
 
 import DefaultProfImg from "./Images/Profiles/DefaultProfImg.png";
 
-import CustomToastContainers from "./CustomFunctions/CustomToastContainers";
+import CustomToastContainers from "./CustomToasts/CustomToastContainers";
 
 const API = process.env.REACT_APP_API_URL;
 const socket = io(API);
@@ -39,12 +40,10 @@ const App = () => {
   const [screenSize, setScreenSize] = useState(DetectScreenSize().width);
 
   const userData = Cookies.get("Current_User") || null;
-  const authenticatedData = Cookies.get("Authenticated") || null;
   const tokenData = Cookies.get("token") || null;
 
   const [user, setUser] = useState({});
   const [token, setToken] = useState("");
-  const [authenticated, setAuthenticated] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [openInventory, setOpenInventory] = useState(false);
   const [resize, setResize] = useState("");
@@ -111,9 +110,8 @@ const App = () => {
   };
 
   const checkCookies = async () => {
-    if (userData && authenticatedData && tokenData) {
+    if (userData && tokenData) {
       setUser(JSON.parse(userData));
-      setAuthenticated(JSON.parse(authenticatedData));
       setToken(JSON.parse(tokenData));
     } else {
       await handleGuest();
@@ -159,33 +157,17 @@ const App = () => {
 
   const handleUser = async (user) => {
     if (user) {
-      Cookies.remove("Current_User");
-      Cookies.remove("Authenticated");
-      Cookies.remove("token");
+      RemoveCookies("Current_User");
+      RemoveCookies("token");
 
       const expirationDate = new Date();
       expirationDate.setDate(expirationDate.getDate() + 30);
 
-      Cookies.set("Current_User", JSON.stringify(user.payload), {
-        expires: expirationDate,
-        path: "/",
-        sameSite: "strict",
-      });
-      Cookies.set("Authenticated", JSON.stringify(true), {
-        expires: expirationDate,
-        path: "/",
-        sameSite: "strict",
-      });
-      Cookies.set("token", JSON.stringify(user.token), {
-        expires: expirationDate,
-        path: "/",
-        sameSite: "strict",
-      });
+      SetCookies("Current_User", user.payload, expirationDate);
+      SetCookies("token", user.token, expirationDate);
 
       setUser(user.payload);
       setToken(user.token);
-      setAuthenticated(true);
-
       navigate(`/`);
     } else {
       return null;
@@ -212,33 +194,17 @@ const App = () => {
     return axios
       .post(`${API}/guests/signup`, newGuest)
       .then((res) => {
-        Cookies.remove("Current_User");
-        Cookies.remove("Authenticated");
-        Cookies.remove("token");
+        RemoveCookies("Current_User");
+        RemoveCookies("token");
 
         const expirationDate = new Date();
         expirationDate.setDate(expirationDate.getDate() + 1);
 
-        Cookies.set("Current_User", JSON.stringify(res.data.payload), {
-          expires: expirationDate,
-          path: "/",
-          sameSite: "strict",
-        });
-        Cookies.set("Authenticated", JSON.stringify(true), {
-          expires: expirationDate,
-          path: "/",
-          sameSite: "strict",
-        });
-        Cookies.set("token", JSON.stringify(res.data.token), {
-          expires: expirationDate,
-          path: "/",
-          sameSite: "strict",
-        });
+        SetCookies("Current_User", res.data.payload, expirationDate);
+        SetCookies("token", res.data.token, expirationDate);
 
         setUser(res.data.payload);
         setToken(res.data.token);
-        setAuthenticated(true);
-
         navigate(`/`);
       })
       .catch((err) => {
@@ -248,13 +214,11 @@ const App = () => {
 
   const handleLogout = async () => {
     setUser({});
-    setAuthenticated(false);
 
-    if (userData && authenticatedData) {
-      Cookies.remove("Current_User");
-      Cookies.remove("Authenticated");
-      Cookies.remove("token");
-      Cookies.remove("gameid");
+    if (userData) {
+      RemoveCookies("Current_User");
+      RemoveCookies("token");
+      RemoveCookies("gameid");
     } else {
       await handleGuest();
     }
@@ -276,7 +240,6 @@ const App = () => {
           handleSidebarOpen={handleSidebarOpen}
           user={user}
           setUser={setUser}
-          authenticated={authenticated}
           token={token}
           isOpen={isOpen}
           openInventory={openInventory}
@@ -304,7 +267,6 @@ const App = () => {
           handleSidebarOpen={handleSidebarOpen}
           user={user}
           setUser={setUser}
-          authenticated={authenticated}
           token={token}
           isOpen={isOpen}
           openInventory={openInventory}

@@ -17,27 +17,6 @@ $TigerGif: url("../../Images/Profiles/tigerRunning.gif");
   text-align: center;
   color: rgb(215, 215, 215);
   margin: 0 auto;
-
-  // Top player profile stuff \\
-  h1 {
-    #topPlayer-border {
-      background-image: $TestBorder;
-      background-repeat: no-repeat;
-      background-size: cover;
-      background-position: center;
-
-      img {
-        width: 35px;
-      }
-
-      #topPlayer-background {
-        background-image: $TigerGif;
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position: center;
-      }
-    }
-  }
 }
 
 @mixin homepage-content($gap, $gapSize, $columnValues...) {

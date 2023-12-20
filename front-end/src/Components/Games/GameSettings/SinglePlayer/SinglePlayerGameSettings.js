@@ -20,7 +20,6 @@ const SinglePlayerGameSettings = ({
   game,
   setGame,
   user,
-  authenticated,
   token,
   error,
   socket,

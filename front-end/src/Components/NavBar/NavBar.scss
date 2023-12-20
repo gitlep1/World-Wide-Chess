@@ -8,141 +8,101 @@ $medium-desktop: 1100px;
 $large-desktop: 1300px;
 $extra-large-desktop: 1400px;
 
-@mixin Navbar-container($gridTemplateColumnsValues) {
-  // border: 5px solid red;
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 10%;
+@mixin navbar-container {
+  width: 85svw;
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr;
-  background-color: #212529;
+  grid-template-columns: repeat(5, 1fr);
+  text-align: center;
+  column-gap: 5em;
+
+  .navbar-top-filler-space {
+    grid-row: 1;
+    grid-column: 1 / -1;
+    height: 5vh;
+  }
+
+  .navbar-button {
+    color: white;
+    font-size: 15px;
+
+    &:hover {
+      cursor: pointer;
+      animation: hover 1.5s forwards;
+
+      @keyframes hover {
+        0% {
+          font-size: 15px;
+          border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+        100% {
+          font-size: 20px;
+          border: 3px solid rgba(255, 255, 255, 0.8);
+        }
+      }
+    }
+  }
+
+  .navbar-active {
+    border: 2px solid aliceblue;
+  }
 }
 
-@mixin Navbar-header($gridColumn) {
-  grid-column: 1;
-  color: aliceblue;
+@mixin navbar {
+  text-align: center;
+  padding: 2px;
+  border: 1px solid black;
+  border-bottom: 1px solid rgba(200, 200, 200, 0.5);
+  grid-column: 1 / -1;
+  grid-row: 2;
+  margin-bottom: 0.5em;
+  background: #262727;
+  background: -moz-linear-gradient(left, #262727 0%, #505050 50%, #262727 100%);
+  background: -webkit-linear-gradient(
+    left,
+    #262727 0%,
+    #505050 50%,
+    #262727 100%
+  );
+  background: linear-gradient(to right, #262727 0%, #505050 50%, #262727 100%);
+  box-shadow: 0px 4px 2px -2px rgba(200, 200, 200, 0.3),
+    0px 10px 5px -5px rgba(200, 200, 200, 0.2),
+    0px 20px 10px -10px rgba(200, 200, 200, 0.1);
+}
+
+@mixin navbar-header {
+  width: 40%;
+  margin: 0 auto;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   text-align: center;
-  font-family: "Bungee Shade", cursive;
+  justify-content: space-evenly;
 
-  h1 {
-    font-size: 18px;
+  #logoImg {
+    width: 45px;
+  }
+
+  #logoText {
+    color: rgba(240, 248, 255, 0.8);
+    font-size: 20px;
+    padding-top: 3%;
+    justify-self: center;
+    align-self: center;
+    font-family: "Bungee Shade", cursive;
   }
 }
 
-@mixin grid-template($gridTemplateVersion) {
-  display: grid;
-  #{$gridTemplateVersion}: 1fr;
-  align-items: center;
-  // justify-content: center;
-  text-align: center;
-}
+.desktop-navbar-container {
+  @include navbar-container;
 
-@mixin Navbar-button-style {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  border-radius: 0.5em;
-  color: white;
-  background-color: #383838;
-  opacity: 85%;
-  height: 3em;
-  // margin-left: 0.3em;
+  .navbar {
+    @include navbar;
 
-  &:hover {
-    cursor: pointer;
-    opacity: 100%;
-  }
-}
-
-.desktop-NavBar-container {
-  .Navbar {
-    @include Navbar-container(1fr 250px 1fr);
-
-    #Navbar-header {
-      @include Navbar-header(2);
-    }
-
-    .Navbar-home {
-      grid-column: 1;
-      @include Navbar-button-style;
-    }
-
-    .Navbar-lobby {
-      grid-column: 1;
-      @include Navbar-button-style;
-    }
-
-    .Navbar-shop {
-      grid-column: 1;
-      @include Navbar-button-style;
-    }
-
-    .Navbar-menu {
-      grid-column: 1;
-      @include Navbar-button-style;
-    }
-  }
-
-  .hide-navbar {
-    border: 5px solid red;
-    display: none;
-  }
-}
-
-.mobile-NavBar-container {
-  // border: 5px solid red;
-  .Navbar {
-    // border: 5px solid cyan;
-    @include Navbar-container(repeat(2, 1fr));
-    column-gap: 1em;
-
-    #Navbar-header {
-      // border: 5px solid green;
-      @include Navbar-header(1 / span 2);
-    }
-
-    #HomeAndLobby-container {
-      // border: 5px solid yellow;
-      @include grid-template(grid-template-rows);
-      row-gap: 1em;
-
-      .Navbar-home {
-        @include Navbar-button-style;
-      }
-
-      .Navbar-lobby {
-        grid-row: 2;
-        @include Navbar-button-style;
-      }
-    }
-
-    #ShopAndMenu-container {
-      // border: 5px solid orange;
-      @include grid-template(grid-template-rows);
-      row-gap: 1em;
-
-      .Navbar-shop {
-        grid-row: 1;
-        @include Navbar-button-style;
-      }
-
-      .Navbar-menu {
-        grid-row: 2;
-        @include Navbar-button-style;
-      }
+    .navbar-header {
+      @include navbar-header;
     }
   }
 }
 
-.Navbar-active {
-  border: 3px solid aliceblue;
-  transition-duration: 0.1s;
+.mobile-navbar-container {
+  @include navbar-container;
 }

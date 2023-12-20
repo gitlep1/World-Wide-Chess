@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import Cookies from "js-cookie";
 
-import { ToastAskToJoin } from "../../../../CustomFunctions/CustomToasts";
+import { ToastAskToJoin } from "../../../../CustomToasts/CustomToasts";
 
 import upArrow from "../../../../Images/Up_Green.png";
 import downArrow from "../../../../Images/Down_Red.png";
@@ -18,7 +18,6 @@ const MultiPlayerGameSettings = ({
   game,
   setGame,
   user,
-  authenticated,
   token,
   error,
   socket,

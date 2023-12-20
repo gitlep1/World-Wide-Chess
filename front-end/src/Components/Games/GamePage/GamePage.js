@@ -13,7 +13,6 @@ const API = process.env.REACT_APP_API_URL;
 const GamePage = ({
   screenVersion,
   user,
-  authenticated,
   token,
   socket,
   player1Data,

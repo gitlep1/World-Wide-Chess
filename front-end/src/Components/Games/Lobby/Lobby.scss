@@ -157,6 +157,9 @@ $giant: 1200px;
 
     .lobbyModal-allowSpecs {
       grid-column: 1 / -1;
+      display: flex;
+      justify-content: space-evenly;
+      // border: 5px solid red;
     }
 
     .lobbyModal-create-button {

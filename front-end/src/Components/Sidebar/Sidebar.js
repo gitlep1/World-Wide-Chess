@@ -20,7 +20,6 @@ import SignOutIcon from "../../Images/sign_out.png";
 const Sidebar = ({
   screenVersion,
   user,
-  authenticated,
   handleSidebarOpen,
   handleOpenInventory,
   setShowSignIn,

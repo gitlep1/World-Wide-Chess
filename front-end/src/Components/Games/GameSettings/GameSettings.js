@@ -14,7 +14,6 @@ const API = process.env.REACT_APP_API_URL;
 const GameSettings = ({
   screenVersion,
   user,
-  authenticated,
   token,
   socket,
   player1Data,
@@ -73,7 +72,6 @@ const GameSettings = ({
                 game={game}
                 setGame={setGame}
                 user={user}
-                authenticated={authenticated}
                 token={token}
                 error={error}
                 socket={socket}
@@ -87,7 +85,6 @@ const GameSettings = ({
                 game={game}
                 setGame={setGame}
                 user={user}
-                authenticated={authenticated}
                 token={token}
                 error={error}
                 socket={socket}

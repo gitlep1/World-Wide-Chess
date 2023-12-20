@@ -27,11 +27,11 @@ const Homepage = ({ screenVersion, user, token }) => {
 
   return (
     <section className={`${screenVersion}-homepage-container`}>
-      <header id="homepage-header">
+      {/* <header id="homepage-header">
         <Image src={Logo} alt="Logo" id="logoImg" />
         <h1>WORLD WIDE CHESS</h1>
-      </header>
-      <div className="homepage-topPlayer">
+      </header> */}
+      <div className="homepage-welcome-user">
         <h1>Welcome, {user.username}</h1>
       </div>
 

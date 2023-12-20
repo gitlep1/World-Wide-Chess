@@ -11,7 +11,12 @@ import Cookies from "js-cookie";
 
 import RenderLobby from "./RenderLobby/RenderLobby";
 import AdvancedSearch from "./AdvancedSearch/AdvancedSearch";
-import CustomToasts from "../../../CustomFunctions/CustomToasts";
+
+import {
+  SetCookies,
+  RemoveCookies,
+} from "../../../CustomFunctions/HandleCookies";
+import CustomToasts from "../../../CustomToasts/CustomToasts";
 
 const API = process.env.REACT_APP_API_URL;
 
@@ -20,7 +25,6 @@ const Lobbypage = ({
   user,
   isMultiplayer,
   setIsMultiplayer,
-  authenticated,
   token,
   socket,
 }) => {
@@ -61,7 +65,6 @@ const Lobbypage = ({
     });
 
     socket.on("asking-host", async () => {
-      // console.log("asked host");
       handlePlayerJoining();
     });
 
@@ -96,14 +99,6 @@ const Lobbypage = ({
       setRefreshed(true);
     }
 
-    // idea 1: \\
-    // store timestamp
-    // lobby checks how much time has passed since the timestamp
-
-    // idea 2: \\
-    // store timestamp + 60 secs
-    // lobby checks how much more secs until expiration time
-
     if (refreshed) {
       const refreshInterval = setInterval(() => {
         setCountdown((prevCountdown) => {
@@ -111,16 +106,15 @@ const Lobbypage = ({
           if (newCountdown <= 0) {
             setCountdown(60);
             setRefreshed(false);
-            Cookies.remove("countdown", { path: "/" });
+
+            RemoveCookies("countdown");
+
             clearInterval(refreshInterval);
           } else {
             const currentTime = new Date();
             const expirationTime = new Date(currentTime.getTime() + 60000);
 
-            Cookies.set("countdown", JSON.stringify(newCountdown), {
-              path: "/",
-              expires: expirationTime,
-            });
+            SetCookies("countdown", newCountdown, expirationTime);
           }
 
           return newCountdown;
@@ -182,10 +176,7 @@ const Lobbypage = ({
       const currentTime = new Date();
       const expirationTime = new Date(currentTime.getTime() + 60000);
 
-      Cookies.set("countdown", JSON.stringify(countdown), {
-        path: "/",
-        expires: expirationTime,
-      });
+      SetCookies("countdown", countdown, expirationTime);
     } catch (err) {
       setError(err.response.data);
       setLoading(false);
@@ -215,6 +206,8 @@ const Lobbypage = ({
       });
     }
 
+    RemoveCookies("gameid");
+
     if (isMultiplayer) {
       const newMultiGameData = {
         room_name: createRoomName,
@@ -240,11 +233,7 @@ const Lobbypage = ({
             isMulti: res.data.payload.is_multiplayer,
           };
 
-          Cookies.set("gameid", JSON.stringify(gameData), {
-            expires: expirationDate,
-            path: "/",
-            sameSite: "strict",
-          });
+          SetCookies("gameid", gameData, expirationDate);
 
           navigate(`/Room/${res.data.payload.id}/Settings`);
         })
@@ -278,11 +267,7 @@ const Lobbypage = ({
             isMulti: res.data.payload.is_multiplayer,
           };
 
-          Cookies.set("gameid", JSON.stringify(gameData), {
-            expires: expirationDate,
-            path: "/",
-            sameSite: "strict",
-          });
+          SetCookies("gameid", gameData, expirationDate);
 
           navigate(`/Room/${res.data.payload.id}/Settings`);
         })
@@ -294,6 +279,8 @@ const Lobbypage = ({
 
   const handleJoin = async (gameID) => {
     const player2ID = user.id;
+
+    RemoveCookies("gameid");
 
     await axios
       .get(`${API}/multi-games/${gameID}`, {
@@ -312,11 +299,7 @@ const Lobbypage = ({
           isMulti: res.data.payload.is_multiplayer,
         };
 
-        Cookies.set("gameid", JSON.stringify(gameData), {
-          expires: expirationDate,
-          path: "/",
-          sameSite: "strict",
-        });
+        SetCookies("gameid", gameData, expirationDate);
 
         if (gamePayload.room_password) {
           if (gamePayload.room_password === joinWithPassword) {
@@ -338,13 +321,11 @@ const Lobbypage = ({
   const handlePlayerJoining = async () => {
     handlePlayerJoiningPromise()
       .then((result) => {
-        // console.log("The result:", result);
         toast.success(result, {
           containerId: "general-toast",
         });
       })
       .catch((error) => {
-        // console.log("The error:", error);
         toast.error(error, {
           containerId: "general-toast",
         });
@@ -379,21 +360,6 @@ const Lobbypage = ({
         reject(result);
       });
     });
-  };
-
-  const notify = (gameData) => {
-    toast.success({
-      containerId: "notify-success",
-    });
-    setTimeout(() => {
-      navigate(`/Room/${gameData.id}/Settings`);
-    }, 3500);
-    clearFields();
-  };
-
-  const clearFields = () => {
-    setCreateRoomName("");
-    setCreateRoomPassword("");
   };
 
   const advancedSearchAnimation = useSpring({
@@ -534,7 +500,7 @@ const Lobbypage = ({
                 color: "red",
               }}
             >
-              * Leave blank if you don't want to set a password for this room.*
+              * Leave blank if you do not want to set a password for this room.*
             </p>
             <br />
             <div className="lobbyModal-buttons">
@@ -557,14 +523,15 @@ const Lobbypage = ({
                 MultiPlayer
               </Button>
 
-              <Form.Check
-                type="checkbox"
-                label="Allow Spectators?"
-                name="allowSpecs"
-                checked={allowSpecs}
-                onChange={handleChange}
-                className="lobbyModal-allowSpecs"
-              />
+              <Form.Label className="lobbyModal-allowSpecs">
+                Allow Spectators?
+                <Form.Check
+                  type="checkbox"
+                  name="allowSpecs"
+                  checked={allowSpecs}
+                  onChange={handleChange}
+                />
+              </Form.Label>
 
               <Button
                 className="lobbyModal-create-button"
