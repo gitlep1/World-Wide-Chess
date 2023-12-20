@@ -49,10 +49,22 @@ const NavBar = ({ screenVersion, handleSidebarOpen }) => {
       setHomeActive(false);
       setLobbyActive(false);
       setShopActive(false);
-      setLeaderboardActive(true);
+      setLeaderboardActive(false);
       setMenuActive(false);
     }
   };
+
+  if (
+    homeActive ||
+    lobbyActive ||
+    shopActive ||
+    leaderboardActive ||
+    menuActive
+  ) {
+    setTimeout(() => {
+      handleActiveNav("none");
+    }, 3000);
+  }
 
   return (
     <nav className={`${screenVersion}-navbar-container`}>
@@ -67,6 +79,7 @@ const NavBar = ({ screenVersion, handleSidebarOpen }) => {
         className={`navbar-button ${homeActive ? "navbar-active" : null}`}
         onClick={() => {
           handleActiveNav("home");
+          navigate("/");
         }}
       >
         Home
@@ -75,6 +88,7 @@ const NavBar = ({ screenVersion, handleSidebarOpen }) => {
         className={`navbar-button ${lobbyActive ? "navbar-active" : null}`}
         onClick={() => {
           handleActiveNav("lobby");
+          navigate("/Lobby");
         }}
       >
         Lobby
@@ -83,6 +97,7 @@ const NavBar = ({ screenVersion, handleSidebarOpen }) => {
         className={`navbar-button ${shopActive ? "navbar-active" : null}`}
         onClick={() => {
           handleActiveNav("shop");
+          navigate("/Shop");
         }}
       >
         Shop
@@ -93,6 +108,7 @@ const NavBar = ({ screenVersion, handleSidebarOpen }) => {
         }`}
         onClick={() => {
           handleActiveNav("leaderboard");
+          navigate("/Leaderboard");
         }}
       >
         Leaderboard

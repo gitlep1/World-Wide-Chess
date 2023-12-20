@@ -12,7 +12,7 @@ import LeaderBoard from "./Leaderboard/LeaderBoard";
 import Shop from "./Shop/Shop";
 
 // Nav stuff \\
-import NavBar from "./Navbar/Navbar";
+import Navbar from "./Navbar/Navbar";
 import Sidebar from "./Sidebar/Sidebar";
 import FoF from "./FourOFour/FoF";
 
@@ -95,11 +95,11 @@ const MobileApp = ({
         />
       </SidebarMenu>
 
-      <div className="sidebar-burger" onClick={handleSidebarOpen}>
-        <GiHamburgerMenu />
-      </div>
-
       <main id="mobile-page-wrap">
+        <Navbar
+          screenVersion={screenVersion}
+          handleSidebarOpen={handleSidebarOpen}
+        />
         <Routes>
           <Route path="/">
             {/* Account Routes */}

@@ -8,56 +8,55 @@ $medium-desktop: 1100px;
 $large-desktop: 1300px;
 $extra-large-desktop: 1400px;
 
-$TestBorder: url("../../Images/Profiles/testBorder.png");
-$TigerGif: url("../../Images/Profiles/tigerRunning.gif");
-
 @mixin homepage-container {
+  height: 100vh;
+  width: 100vw;
+  background-image: url("../../Images/Background/homepageBackground2.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: scroll;
+  background-position: center;
+}
+
+@mixin homepage-main-section {
+  color: rgba(255, 255, 255, 0.8);
   height: 90vh;
-  width: 99vw;
-  text-align: center;
-  color: rgb(215, 215, 215);
+  width: 90vw;
   margin: 0 auto;
-}
-
-@mixin homepage-content($gap, $gapSize, $columnValues...) {
   display: grid;
-  grid-template-columns: #{$columnValues};
-  #{$gap}: $gapSize;
-  overflow: auto;
-  align-items: center;
+  grid-template-columns: repeat(3, 1fr);
 }
 
-@mixin homepage-tasks-container($columnValue, $widthValue) {
-  background-color: #212529;
-  grid-column: $columnValue;
-  height: 70vh;
-  width: $widthValue;
-  margin: 0 auto;
-  margin-top: 1.5em;
-  box-shadow: 0px 0px 0px 0.5em #000000, 0px 0px 0px 1em #4b4c4b,
-    0px 0px 0px 1.5em #828482;
-  border-radius: 1em;
+@mixin homepage-section-one {
+  // border: 5px solid cyan;
+  margin-top: 5em;
 }
 
-@mixin homepage-facts-container {
-  height: 80vh;
-  overflow: auto;
+@mixin homepage-section-two {
+  // border: 5px solid green;
+  margin-top: 5em;
+}
+
+@mixin homepage-section-three {
+  // border: 5px solid purple;
 }
 
 .desktop-homepage-container {
   @include homepage-container;
 
-  .homepage-content {
-    @include homepage-content(column-gap, 3em, 900px, 1fr);
+  .homepage-main-section {
+    @include homepage-main-section;
 
-    .homepage-tasks-container {
-      @include homepage-tasks-container(1, 35vw);
-      margin-left: 2em;
+    .homepage-section-one {
+      @include homepage-section-one;
     }
 
-    .homepage-facts-container {
-      grid-column: 2;
-      @include homepage-facts-container;
+    .homepage-section-two {
+      @include homepage-section-two;
+    }
+
+    .homepage-section-three {
+      @include homepage-section-three;
     }
   }
 }
@@ -65,137 +64,19 @@ $TigerGif: url("../../Images/Profiles/tigerRunning.gif");
 .mobile-homepage-container {
   @include homepage-container;
 
-  .homepage-content {
-    @include homepage-content(row-gap, 3em, 1fr);
+  .homepage-main-section {
+    @include homepage-main-section;
 
-    .homepage-tasks-container {
-      @include homepage-tasks-container(1, 75vw);
+    .homepage-section-one {
+      @include homepage-section-one;
     }
 
-    .homepage-facts-container {
-      @include homepage-facts-container;
+    .homepage-section-two {
+      @include homepage-section-two;
     }
-  }
-}
 
-#homepage-header {
-  #logoImg {
-    width: 150px;
-  }
-
-  h1 {
-    font-size: 25px;
-    color: white;
-    font-family: "Bungee Shade", cursive;
-  }
-}
-
-.homepage-tasks {
-  margin-top: 1em;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  column-gap: 1em;
-}
-
-.dailyTasks-button {
-  background-color: #282e33;
-  color: rgb(195, 195, 195);
-  height: 4em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: 0.5em;
-  border-radius: 1em;
-
-  h3 {
-    margin-top: 0.5em;
-  }
-
-  &:hover {
-    cursor: pointer;
-    color: black;
-    background-color: white;
-  }
-}
-
-.dailyTasks-button-selected {
-  background-color: white;
-  color: black;
-  height: 4em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: 0.5em;
-  border-radius: 1em;
-
-  h3 {
-    margin-top: 0.5em;
-  }
-}
-
-.monthlyTasks-button {
-  background-color: #282e33;
-  color: rgb(195, 195, 195);
-  height: 4em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 0.5em;
-  border-radius: 1em;
-
-  h3 {
-    margin-top: 0.5em;
-  }
-
-  &:hover {
-    cursor: pointer;
-    color: black;
-    background-color: white;
-  }
-}
-
-.monthlyTasks-button-selected {
-  background-color: white;
-  color: black;
-  height: 4em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 0.5em;
-  border-radius: 1em;
-
-  h3 {
-    margin-top: 0.5em;
-  }
-}
-
-#tasks-divider {
-  border: 3px solid white;
-  width: 50%;
-  margin: 0 auto;
-  margin-top: 1em;
-}
-
-#tasks-container {
-  height: 85%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  align-items: center;
-
-  .tasks {
-    border: 5px solid white;
-    height: 20%;
-    width: 95%;
-    color: white;
-    font-size: 25px;
-    border-radius: 1em;
-
-    .taskProgress {
-      border: 3px solid gold;
-      width: 80%;
-      margin: 0 auto;
-      border-radius: 1em;
+    .homepage-section-three {
+      @include homepage-section-three;
     }
   }
 }
