@@ -17,6 +17,8 @@ const shopController = require("./controllers/shopController");
 const userInventoryController = require("./controllers/userInventoryController");
 const guestInventoryController = require("./controllers/guestInventoryController");
 const messagesController = require("./controllers/messagesController");
+const dailyTasksController = require("./controllers/dailyTasksController");
+const monthlyTasksController = require("./controllers/monthlyTasksController");
 
 require("dotenv").config();
 
@@ -64,6 +66,8 @@ app.use("/shop", shopController);
 app.use("/user-inventory", userInventoryController);
 app.use("/guest-inventory", guestInventoryController);
 app.use("/messages", messagesController);
+app.use("/daily-tasks", dailyTasksController);
+app.use("/monthly-tasks", monthlyTasksController);
 
 app.get("/", (req, res) => {
   res.send(`
@@ -82,7 +86,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("*", (req, res) => {
-  res.status(404).send("Not found!");
+  res.status(404).send("GET OUT OF HERE OR THE SITE DEMONS WILL GET YOU!!!");
 });
 
 addSocketEventListeners(io);

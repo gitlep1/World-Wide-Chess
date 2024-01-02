@@ -97,13 +97,15 @@ const ChatBox = ({ token, socket, user }) => {
 
   return (
     <section>
-      <div
-        className="chat-box-icon-container"
-        onClick={() => setOpenChat(true)}
-      >
-        <div className="chat-box-icon-1">Global</div>
-        <div className="chat-box-icon-2">Chat</div>
-      </div>
+      {openChat ? null : (
+        <div
+          className="chat-box-icon-container"
+          onClick={() => setOpenChat(true)}
+        >
+          <div className="chat-box-icon-1">Global</div>
+          <div className="chat-box-icon-2">Chat</div>
+        </div>
+      )}
       {openChat && (
         <div className="chat-box-container">
           <div className="chat-box-header">

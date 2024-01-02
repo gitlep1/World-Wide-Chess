@@ -1,9 +1,5 @@
 import "./Homepage.scss";
 import { useState } from "react";
-import { Image } from "react-bootstrap";
-
-import Logo from "../../Images/Logo.png";
-import homepageBackground from "../../Images/Background/homepageBackground.png";
 
 import DailyTasks from "./HomepageTasks/DailyTasks";
 import MonthlyTasks from "./HomepageTasks/MonthlyTasks";
@@ -12,15 +8,12 @@ import HomepageFacts from "./HomepageFacts/HomepageFacts";
 
 const Homepage = ({ screenVersion, user, token }) => {
   const [dailyTaskSelected, setDailyTaskSelected] = useState(true);
-  const [monthlyTaskSelected, setMonthlyTaskSelected] = useState(false);
 
   const handleSelectedTaskButton = (taskSelected) => {
     if (taskSelected === "daily") {
       setDailyTaskSelected(true);
-      setMonthlyTaskSelected(false);
     } else if (taskSelected === "monthly") {
       setDailyTaskSelected(false);
-      setMonthlyTaskSelected(true);
     }
   };
 
@@ -29,18 +22,47 @@ const Homepage = ({ screenVersion, user, token }) => {
       <section className="homepage-main-section">
         <div className="homepage-section-one">
           <div className="homepage-welcome-user">
-            <h1>
-              Welcome: <br /> {user.username}
-            </h1>
+            <h3>
+              Welcome <br /> {user.username}
+            </h3>
           </div>
         </div>
 
         <div className="homepage-section-two">
-          <h1>Site updates</h1>
-        </div>
-
-        <div className="homepage-section-three">
-          {/* empty section to show the background image */}
+          <h3>Tasks</h3>
+          <div className="homepage-section-two-tasks">
+            <div className="tasks-container">
+              <div className="task-button-container">
+                <h4
+                  className={`task-button ${
+                    dailyTaskSelected ? "task-selected" : null
+                  }`}
+                  onClick={() => {
+                    handleSelectedTaskButton("daily");
+                  }}
+                >
+                  Daily
+                </h4>
+                <h4
+                  className={`task-button ${
+                    dailyTaskSelected ? null : "task-selected"
+                  }`}
+                  onClick={() => {
+                    handleSelectedTaskButton("monthly");
+                  }}
+                >
+                  Monthly
+                </h4>
+              </div>
+              <div className="tasks-content">
+                {dailyTaskSelected ? (
+                  <DailyTasks user={user} token={token} />
+                ) : (
+                  <MonthlyTasks user={user} token={token} />
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </section>
