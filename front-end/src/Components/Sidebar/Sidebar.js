@@ -390,7 +390,7 @@ const Sidebar = ({
           alt="leaderboard icon"
           className="button-image"
           onClick={() => {
-            handleActiveNav("shop");
+            handleActiveNav("ranking");
             navigate("/Leaderboard");
           }}
         />
@@ -418,7 +418,7 @@ const Sidebar = ({
           alt="inbox icon"
           className="button-image"
           onClick={() => {
-            handleActiveNav("shop");
+            handleActiveNav("inbox");
             navigate("/Inbox");
           }}
         />
@@ -432,7 +432,7 @@ const Sidebar = ({
           alt="history icon"
           className="button-image"
           onClick={() => {
-            handleActiveNav("shop");
+            handleActiveNav("history");
             navigate("/History");
           }}
         />
@@ -450,7 +450,7 @@ const Sidebar = ({
           alt="account settings icon"
           className="button-image"
           onClick={() => {
-            handleActiveNav("shop");
+            handleActiveNav("settings");
             navigate("/Accounts/Settings");
           }}
         />

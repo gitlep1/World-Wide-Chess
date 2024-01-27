@@ -26,6 +26,10 @@ const Homepage = ({ screenVersion, user, token }) => {
               Welcome <br /> {user.username}
             </h3>
           </div>
+
+          <div className="homepage-previous-matches">Previous Matches</div>
+
+          <HomepageFacts />
         </div>
 
         <div className="homepage-section-two">
@@ -64,6 +68,15 @@ const Homepage = ({ screenVersion, user, token }) => {
             </div>
           </div>
         </div>
+      </section>
+
+      <section className="homepage-footer-container">
+        <footer>
+          <h4>
+            World Wide Chess <br />
+            &copy; 2022
+          </h4>
+        </footer>
       </section>
     </section>
   );

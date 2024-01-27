@@ -2,6 +2,7 @@ import "./Navbar.scss";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Image } from "react-bootstrap";
+import { IoMdArrowDropup } from "react-icons/io";
 
 import Logo from "../../Images/Logo.png";
 
@@ -54,18 +55,6 @@ const NavBar = ({ screenVersion, handleSidebarOpen }) => {
     }
   };
 
-  if (
-    homeActive ||
-    lobbyActive ||
-    shopActive ||
-    leaderboardActive ||
-    menuActive
-  ) {
-    setTimeout(() => {
-      handleActiveNav("none");
-    }, 3000);
-  }
-
   return (
     <nav className={`${screenVersion}-navbar-container`}>
       <div className="navbar-top-filler-space"></div>
@@ -75,52 +64,68 @@ const NavBar = ({ screenVersion, handleSidebarOpen }) => {
           <h1 id="logoText">WORLD WIDE CHESS</h1>
         </header>
       </div>
-      <div
-        className={`navbar-button ${homeActive ? "navbar-active" : null}`}
-        onClick={() => {
-          handleActiveNav("home");
-          navigate("/");
-        }}
-      >
-        Home
-      </div>
-      <div
-        className={`navbar-button ${lobbyActive ? "navbar-active" : null}`}
-        onClick={() => {
-          handleActiveNav("lobby");
-          navigate("/Lobby");
-        }}
-      >
-        Lobby
-      </div>
-      <div
-        className={`navbar-button ${shopActive ? "navbar-active" : null}`}
-        onClick={() => {
-          handleActiveNav("shop");
-          navigate("/Shop");
-        }}
-      >
-        Shop
-      </div>
-      <div
-        className={`navbar-button ${
-          leaderboardActive ? "navbar-active" : null
-        }`}
-        onClick={() => {
-          handleActiveNav("leaderboard");
-          navigate("/Leaderboard");
-        }}
-      >
-        Leaderboard
-      </div>
-      <div
-        className={`navbar-button ${menuActive ? "navbar-active" : null}`}
-        onClick={() => {
-          handleActiveNav("menu");
-          handleSidebarOpen();
-        }}
-      >
-        Menu
+
+      <div className="navbar-buttons-container">
+        <div
+          className="navbar-button"
+          onClick={() => {
+            handleActiveNav("home");
+            navigate("/");
+          }}
+        >
+          Home
+          <div style={{ display: homeActive ? "block" : "none" }}>
+            <IoMdArrowDropup className="navbar-active-arrow" />
+          </div>
+        </div>
+        <div
+          className="navbar-button"
+          onClick={() => {
+            handleActiveNav("lobby");
+            navigate("/Lobby");
+          }}
+        >
+          Lobby
+          <div style={{ display: lobbyActive ? "block" : "none" }}>
+            <IoMdArrowDropup className="navbar-active-arrow" />
+          </div>
+        </div>
+        <div
+          className="navbar-button"
+          onClick={() => {
+            handleActiveNav("shop");
+            navigate("/Shop");
+          }}
+        >
+          Shop
+          <div style={{ display: shopActive ? "block" : "none" }}>
+            <IoMdArrowDropup className="navbar-active-arrow" />
+          </div>
+        </div>
+        <div
+          className="navbar-button"
+          onClick={() => {
+            handleActiveNav("leaderboard");
+            navigate("/Leaderboard");
+          }}
+        >
+          Leaderboard
+          <div style={{ display: leaderboardActive ? "block" : "none" }}>
+            <IoMdArrowDropup className="navbar-active-arrow" />
+          </div>
+        </div>
+        <div
+          className="navbar-button"
+          onClick={() => {
+            handleActiveNav("menu");
+            handleSidebarOpen();
+          }}
+        >
+          Menu
+          <div style={{ display: menuActive ? "block" : "none" }}>
+            <IoMdArrowDropup className="navbar-active-arrow" />
+          </div>
+        </div>
       </div>
     </nav>
   );

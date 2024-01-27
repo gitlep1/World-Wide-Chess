@@ -8,34 +8,42 @@ $medium-desktop: 1100px;
 $large-desktop: 1300px;
 $extra-large-desktop: 1400px;
 
-@mixin homepage-container {
-  height: 100vh;
-  width: 100vw;
+// desktop styling \\
+
+@mixin desktop-homepage-container {
   background-image: url("../../Images/Background/homepageBackground2.png");
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: scroll;
   background-position: center;
+  margin-top: 1em;
+  height: 100vh;
+  width: 100vw;
 }
 
-@mixin homepage-main-section {
+@mixin desktop-homepage-main-section {
   color: rgba(255, 255, 255, 0.8);
-  height: 90vh;
-  width: 90vw;
+  height: 90%;
+  width: 95%;
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 5em;
+  gap: 1em;
 }
 
-@mixin homepage-section-one {
+@mixin desktop-homepage-section-one {
   border-right: 1px solid rgba(255, 255, 255, 0.1);
-  margin-top: 5em;
+  grid-template-columns: 1;
+  display: grid;
+  grid-template-columns: 1;
+  grid-template-rows: 100px 1fr 1fr;
+
+  .homepage-previous-matches {
+    // border: 5px solid red;
+  }
 }
 
-@mixin homepage-section-two {
-  margin-top: 5em;
-
+@mixin desktop-homepage-section-two {
   .homepage-section-two-tasks {
     .tasks-container {
       width: 85%;
@@ -77,34 +85,132 @@ $extra-large-desktop: 1400px;
   }
 }
 
+@mixin desktop-homepage-footer-container {
+  text-align: center;
+  color: white;
+}
+
 .desktop-homepage-container {
-  @include homepage-container;
+  @include desktop-homepage-container;
 
   .homepage-main-section {
-    @include homepage-main-section;
+    @include desktop-homepage-main-section;
 
     .homepage-section-one {
-      @include homepage-section-one;
+      @include desktop-homepage-section-one;
     }
 
     .homepage-section-two {
-      @include homepage-section-two;
+      @include desktop-homepage-section-two;
+    }
+  }
+
+  .homepage-footer-container {
+    @include desktop-homepage-footer-container;
+  }
+}
+
+// mobile styling \\
+
+@mixin mobile-homepage-container {
+  border: 5px solid red;
+  background-image: url("../../Images/Background/homepageBackground2.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: scroll;
+  background-position: center;
+  margin-top: 1em;
+  height: 75vh;
+  width: 100vw;
+}
+
+@mixin mobile-homepage-main-section {
+  border: 5px solid cyan;
+  color: rgba(255, 255, 255, 0.8);
+  height: 95%;
+  width: 95%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1em;
+}
+
+@mixin mobile-homepage-section-one {
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  grid-template-columns: 1;
+  display: grid;
+  grid-template-columns: 1;
+  grid-template-rows: 100px 1fr 1fr;
+  border: 5px solid goldenrod;
+
+  .homepage-previous-matches {
+    // border: 5px solid red;
+  }
+}
+
+@mixin mobile-homepage-section-two {
+  .homepage-section-two-tasks {
+    .tasks-container {
+      width: 85%;
+
+      .task-button-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1em;
+        width: 90%;
+
+        .task-button {
+          text-align: center;
+          background: linear-gradient(
+            to right,
+            #262727 0%,
+            #505050 50%,
+            #262727 100%
+          );
+          box-shadow: 0px 4px 2px -2px rgba(200, 200, 200, 0.3),
+            0px 10px 5px -5px rgba(200, 200, 200, 0.2),
+            0px 20px 10px -10px rgba(200, 200, 200, 0.1);
+
+          &:hover {
+            cursor: pointer;
+            color: goldenrod;
+          }
+        }
+      }
+
+      .task-selected {
+        color: goldenrod;
+        border: 1px solid gold;
+      }
+
+      .tasks-content {
+        grid-column: 1 / -1;
+      }
     }
   }
 }
 
+@mixin mobile-homepage-footer-container {
+  text-align: center;
+  color: white;
+}
+
 .mobile-homepage-container {
-  @include homepage-container;
+  @include mobile-homepage-container;
 
   .homepage-main-section {
-    @include homepage-main-section;
+    @include mobile-homepage-main-section;
 
     .homepage-section-one {
-      @include homepage-section-one;
+      @include mobile-homepage-section-one;
     }
 
     .homepage-section-two {
-      @include homepage-section-two;
+      @include mobile-homepage-section-two;
     }
+  }
+
+  .homepage-footer-container {
+    @include mobile-homepage-footer-container;
   }
 }

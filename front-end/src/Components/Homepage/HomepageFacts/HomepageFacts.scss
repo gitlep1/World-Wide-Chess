@@ -1,19 +1,52 @@
-@mixin homepage-facts {
-  width: 100%;
+@mixin homepage-facts-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  justify-content: center;
+  align-items: center;
   margin: 0 auto;
+  width: 95%;
 
   .homepage-facts-card {
-    cursor: grab;
-    user-select: none;
-    color: gold;
-    background-color: #111;
-    border-radius: 10px;
-    padding: 20px;
-    width: 80%;
-    margin: 0 auto;
+    grid-column: 1 / -1;
+    grid-row: 3;
+    text-align: center;
+    height: 300px;
+    max-height: 300px;
+    display: grid;
+    grid-template-columns: 1;
 
-    &:active {
-      cursor: grabbing;
+    .homepage-fact-number-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+
+      .homepage-fact-number {
+        grid-column: 2;
+      }
+
+      .homepage-fact-left-arrow {
+        grid-column: 1;
+        grid-row: 1;
+      }
+
+      .homepage-fact-right-arrow {
+        grid-column: 3;
+        grid-row: 1;
+      }
+
+      .homepage-arrow {
+        font-size: 25px;
+        user-select: none;
+
+        &:hover {
+          cursor: pointer;
+          color: goldenrod;
+        }
+      }
+    }
+
+    .homepage-fact {
+      height: 300px;
+      max-height: 300px;
     }
   }
 }
@@ -30,18 +63,10 @@
   }
 }
 
-.desktop-homepage-facts {
-  @include homepage-facts;
+.homepage-facts-container {
+  @include homepage-facts-container;
 
   .homepage-skeleton-loading-container {
     @include homepage-skeleton-loading-container(50vw);
-  }
-}
-
-.mobile-homepage-facts {
-  @include homepage-facts;
-
-  .homepage-skeleton-loading-container {
-    @include homepage-skeleton-loading-container(80%);
   }
 }

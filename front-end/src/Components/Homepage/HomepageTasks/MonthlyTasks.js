@@ -74,6 +74,8 @@ const MonthlyTasks = ({ user, token }) => {
           );
         })
       )}
+
+      {error !== "" && <p style={{ color: "red" }}>ERROR: {error}</p>}
     </SkeletonTheme>
   );
 };
