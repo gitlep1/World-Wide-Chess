@@ -12,7 +12,7 @@ import LeaderBoard from "./Leaderboard/LeaderBoard";
 import Shop from "./Shop/Shop";
 
 // Nav stuff \\
-import Navbar from "./Navbar/Navb";
+import Navbar from "./Navbar/Navbar";
 import Sidebar from "./Sidebar/Sidebar";
 import FoF from "./FourOFour/FoF";
 
