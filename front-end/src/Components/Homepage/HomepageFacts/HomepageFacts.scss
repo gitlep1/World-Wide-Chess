@@ -1,17 +1,9 @@
 @mixin homepage-facts-container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto;
-  width: 95%;
+  text-align: center;
+  color: white;
 
   .homepage-facts-card {
-    grid-column: 1 / -1;
-    grid-row: 3;
     text-align: center;
-    height: 300px;
-    max-height: 300px;
     display: grid;
     grid-template-columns: 1;
 
@@ -45,8 +37,9 @@
     }
 
     .homepage-fact {
-      height: 300px;
-      max-height: 300px;
+      height: 180px;
+      max-height: 200px;
+      box-sizing: border-box;
     }
   }
 }

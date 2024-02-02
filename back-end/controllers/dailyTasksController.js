@@ -37,10 +37,12 @@ daily.get(
 
     const checkIfUserExists = await getUserByID(decoded.user.id);
 
+    console.log({decoded})
+
     if (!checkIfUserExists) {
       return res
         .status(404)
-        .json({ error: `User with ID: ${userID} not found` });
+        .json({ error: `User with ID: ${decoded.user.id} not found` });
     }
 
     const getUsersDailyTasks = await getAllDailyTasksByUserID(

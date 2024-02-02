@@ -10,6 +10,8 @@ const requireAuth = () => {
         const decoded = jwt.decode(token);
         if (err) {
           if (err.message === "jwt expired") {
+            console.log(`${decoded.user.username}'s  token expired`);
+
             try {
               const newClientTokenPayload = {
                 user: decoded.user,

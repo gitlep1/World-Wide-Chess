@@ -56,13 +56,9 @@ $extra-large-desktop: 1400px;
 
         .task-button {
           text-align: center;
-          background: linear-gradient(
-            to right,
-            #262727 0%,
-            #505050 50%,
-            #262727 100%
-          );
-          box-shadow: 0px 4px 2px -2px rgba(200, 200, 200, 0.3),
+          background: linear-gradient(to right, #262727 0%, #505050 50%, #262727 100%);
+          box-shadow:
+            0px 4px 2px -2px rgba(200, 200, 200, 0.3),
             0px 10px 5px -5px rgba(200, 200, 200, 0.2),
             0px 20px 10px -10px rgba(200, 200, 200, 0.1);
 
@@ -88,6 +84,8 @@ $extra-large-desktop: 1400px;
 @mixin desktop-homepage-footer-container {
   text-align: center;
   color: white;
+  width: 85%;
+  margin: 0 auto;
 }
 
 .desktop-homepage-container {
@@ -113,7 +111,7 @@ $extra-large-desktop: 1400px;
 // mobile styling \\
 
 @mixin mobile-homepage-container {
-  border: 5px solid red;
+  // border: 5px solid red;
   background-image: url("../../Images/Background/homepageBackground2.png");
   background-repeat: no-repeat;
   background-size: cover;
@@ -125,7 +123,7 @@ $extra-large-desktop: 1400px;
 }
 
 @mixin mobile-homepage-main-section {
-  border: 5px solid cyan;
+  // border: 5px solid cyan;
   color: rgba(255, 255, 255, 0.8);
   height: 95%;
   width: 95%;
@@ -136,12 +134,12 @@ $extra-large-desktop: 1400px;
 }
 
 @mixin mobile-homepage-section-one {
+  // border: 5px solid goldenrod;
   border-right: 1px solid rgba(255, 255, 255, 0.1);
   grid-template-columns: 1;
   display: grid;
   grid-template-columns: 1;
   grid-template-rows: 100px 1fr 1fr;
-  border: 5px solid goldenrod;
 
   .homepage-previous-matches {
     // border: 5px solid red;
@@ -161,13 +159,9 @@ $extra-large-desktop: 1400px;
 
         .task-button {
           text-align: center;
-          background: linear-gradient(
-            to right,
-            #262727 0%,
-            #505050 50%,
-            #262727 100%
-          );
-          box-shadow: 0px 4px 2px -2px rgba(200, 200, 200, 0.3),
+          background: linear-gradient(to right, #262727 0%, #505050 50%, #262727 100%);
+          box-shadow:
+            0px 4px 2px -2px rgba(200, 200, 200, 0.3),
             0px 10px 5px -5px rgba(200, 200, 200, 0.2),
             0px 20px 10px -10px rgba(200, 200, 200, 0.1);
 
@@ -191,8 +185,11 @@ $extra-large-desktop: 1400px;
 }
 
 @mixin mobile-homepage-footer-container {
+  // border: 5px solid yellow;
   text-align: center;
   color: white;
+  width: 95%;
+  margin: 0 auto;
 }
 
 .mobile-homepage-container {
