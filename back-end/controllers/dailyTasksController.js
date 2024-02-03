@@ -37,8 +37,6 @@ daily.get(
 
     const checkIfUserExists = await getUserByID(decoded.user.id);
 
-    console.log({decoded})
-
     if (!checkIfUserExists) {
       return res
         .status(404)
