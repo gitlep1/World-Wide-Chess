@@ -14,7 +14,6 @@ const NavBar = ({ screenVersion, handleSidebarOpen }) => {
   const [shopActive, setShopActive] = useState(false);
   const [leaderboardActive, setLeaderboardActive] = useState(false);
   const [menuActive, setMenuActive] = useState(false);
-  console.log("yes");
 
   const handleActiveNav = (active) => {
     if (active === "home") {
