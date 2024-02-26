@@ -126,11 +126,11 @@ const SinglePlayerGame = ({
 
             const checkIfBotsTurn = gameData.current_positions.split(" ")[1];
 
-            if (checkIfBotsTurn === "b") {
-              await makeRandomMove();
-            } else {
-              resolve();
-            }
+            // if (checkIfBotsTurn === "b") {
+            //   await makeRandomMove();
+            // } else {
+            //   resolve();
+            // }
 
             resolve();
           } catch (error) {
@@ -147,6 +147,8 @@ const SinglePlayerGame = ({
       async (singleGameUpdated, updatedMoveHistory) => {
         setGame(singleGameUpdated);
         setFen(singleGameUpdated.current_positions);
+
+        // console.log(updatedMoveHistory);
       }
     );
 
@@ -159,7 +161,7 @@ const SinglePlayerGame = ({
     });
 
     socket.on("single-game-state-updated-error", async (errorMessage) => {
-      console.log(errorMessage);
+      // console.log(errorMessage);
     });
 
     return () => {
@@ -170,6 +172,11 @@ const SinglePlayerGame = ({
   }, [navigate, setGame, socket]);
 
   const endGame = async (gameID) => {
+    await axios.delete(`${API}/single-move-history/${gameID}`, {
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    });
     await axios
       .delete(`${API}/single-games/${gameID}`, {
         headers: {
@@ -184,6 +191,9 @@ const SinglePlayerGame = ({
         setTimeout(() => {
           navigate("/Lobby");
         }, 4100);
+      })
+      .catch((err) => {
+        // console.log({ endGameError: err });
       });
   };
 
@@ -233,10 +243,10 @@ const SinglePlayerGame = ({
 
   const makeRandomMove = async () => {
     // console.log("inside random", chessGame.turn());
-    if (chessGame.turn() === "w") {
-      // console.log("inside if color");
-      return;
-    }
+    // if (chessGame.turn() === "w") {
+    //   console.log("inside if color");
+    //   return;
+    // }
 
     const isEnded = checkForEndGame();
 
@@ -270,17 +280,17 @@ const SinglePlayerGame = ({
     });
 
     // console.log({ botMoveData });
-    if (Object.keys(botMoveData).length > 0) {
-      // console.log("inside if bot");
-      // console.log({ bot: botMoveData });
-      socket.emit(
-        "single-move-piece",
-        game,
-        botMoveData,
-        botMoveData.piece,
-        "b"
-      );
-    }
+    // if (Object.keys(botMoveData).length > 0) {
+    //   console.log("inside if bot");
+    //   console.log({ bot: botMoveData });
+    //   socket.emit(
+    //     "single-move-piece",
+    //     game,
+    //     botMoveData,
+    //     botMoveData.piece,
+    //     "b"
+    //   );
+    // }
 
     return;
   };

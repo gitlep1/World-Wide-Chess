@@ -15,7 +15,7 @@ const {
 const {
   getMoveHistoryByGameID,
   createMoveHistory,
-  updateMoveHistory,
+  // updateMoveHistory,
   deleteMoveHistory,
 } = require("../queries/moveHistorySingle");
 
@@ -87,15 +87,6 @@ const addSingleGamesSocketEventListeners = (io, socket, socketId) => {
       (await getGuestByID(gameData.playerid));
 
     const botData = await getBotById(gameData.botid);
-
-    const moveHistoryData = {
-      from_square: null,
-      to_square: null,
-      piece: null,
-      color: null,
-    };
-
-    await createMoveHistory(gameData.id, moveHistoryData);
 
     if (playerData && botData) {
       io.in(`/Room/${gameData.id}/Settings`).emit(
@@ -181,13 +172,13 @@ const addSingleGamesSocketEventListeners = (io, socket, socketId) => {
     async (gameData, updatedPositions, piece, color) => {
       const oldSingleGameData = await getGameByID(gameData.id);
 
-      // console.log({ gameData });
-      // console.log({ oldSingleGameData });
-      // console.log({ updatedPositions });
-      // console.log({ piece });
-      // console.log({ color });
+      console.log({ gameData });
+      console.log({ oldSingleGameData });
+      console.log({ updatedPositions });
+      console.log({ piece });
+      console.log({ color });
 
-      const chessGame = new Chess(updatedPositions.current_positions);
+      const chessGame = new Chess(oldSingleGameData.current_positions);
 
       const from = updatedPositions.from;
       const to = updatedPositions.to;
@@ -198,20 +189,24 @@ const addSingleGamesSocketEventListeners = (io, socket, socketId) => {
         oldSingleGameData.id,
         updatedPositions
       );
-      // console.log({ singleGameUpdated });
+      console.log({ singleGameUpdated });
 
       if (!(singleGameUpdated instanceof Error)) {
         const updatedMoveHistoryData = {
+          game_id: singleGameUpdated.id,
           from_square: from,
           to_square: to,
           piece: piece,
           color: color,
         };
 
-        const updatedMoveHistory = await updateMoveHistory(
-          singleGameUpdated.id,
+        console.log({ updatedMoveHistoryData });
+
+        const updatedMoveHistory = await createMoveHistory(
           updatedMoveHistoryData
         );
+
+        console.log({ updatedMoveHistory });
 
         io.in(`/Room/${gameData.id}`).emit(
           "single-game-state-updated",

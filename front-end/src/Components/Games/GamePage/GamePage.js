@@ -13,7 +13,6 @@ const API = process.env.REACT_APP_API_URL;
 const GamePage = ({
   screenVersion,
   user,
-  authenticated,
   token,
   socket,
   player1Data,
@@ -23,7 +22,7 @@ const GamePage = ({
 }) => {
   const navigate = useNavigate();
 
-  const gameData = JSON.parse(Cookies.get("gameid"));
+  const gameData = JSON.parse(Cookies.get("gameid")) || null;
 
   const [game, setGame] = useState({});
   const [loading, setLoading] = useState(true);
@@ -82,8 +81,9 @@ const GamePage = ({
         navigate("/Lobby");
       })
       .catch((err) => {
-        console.log(err.message);
+        setError(err.message);
       });
+    Cookies.remove("gameid");
   };
 
   const renderSingleOrMultiGame = () => {
@@ -104,6 +104,7 @@ const GamePage = ({
           setPlayer2Data={setPlayer2Data}
           endGame={endGame}
           socket={socket}
+          token={token}
         />
       );
     } else {

@@ -17,6 +17,7 @@ CREATE TABLE users (
   wins INT DEFAULT 0,
   ties INT DEFAULT 0,
   loss INT DEFAULT 0,
+  games_played INT DEFAULT 0,
   rating INT DEFAULT 1000,
   preferred_color TEXT,
   is_guest BOOLEAN DEFAULT false,
@@ -55,8 +56,8 @@ DROP TABLE IF EXISTS move_history;
 CREATE TABLE move_history (
   id SERIAL UNIQUE NOT NULL PRIMARY KEY,
   game_id INT REFERENCES games(id),
-  from_square INT,
-  to_square INT,
+  from_square TEXT,
+  to_square TEXT,
   piece TEXT,
   color TEXT
 );
@@ -108,4 +109,26 @@ CREATE TABLE facts (
   id SERIAL UNIQUE NOT NULL PRIMARY KEY,
   fact_num INT NOT NULL,
   fact TEXT NOT NULL
+);
+
+DROP TABLE IF EXISTS daily_tasks;
+CREATE TABLE daily_tasks (
+  id SERIAL UNIQUE NOT NULL PRIMARY KEY,
+  task_name TEXT NOT NULL,
+  task_current INT NOT NULL,
+  task_total INT NOT NULL,
+  task_category TEXT NOT NULL,
+  user_id UUID NOT NULL REFERENCES users(id),
+  completed BOOLEAN DEFAULT false
+);
+
+DROP TABLE IF EXISTS monthly_tasks;
+CREATE TABLE monthly_tasks (
+  id SERIAL UNIQUE NOT NULL PRIMARY KEY,
+  task_name TEXT NOT NULL,
+  task_current INT NOT NULL,
+  task_total INT NOT NULL,
+  task_category TEXT NOT NULL,
+  user_id UUID NOT NULL REFERENCES users(id),
+  completed BOOLEAN DEFAULT false
 );

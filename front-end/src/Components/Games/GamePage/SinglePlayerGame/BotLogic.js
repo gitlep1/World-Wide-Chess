@@ -260,9 +260,9 @@ const BotLogic = (
       piece: `b${bestMoveVar.piece.toUpperCase()}`,
     };
 
-    if (result.color === "w") {
-      return;
-    }
+    // if (result.color === "w") {
+    //   return;
+    // }
 
     setBotMoveData(botMoveObj);
     setBotMoveHistory([...botMoveHistory, botMoveObj]);
@@ -272,7 +272,6 @@ const BotLogic = (
     return result;
   };
 
-  // Return a function that returns the function that makes the best move after a delay
   return (callback) => {
     setTimeout(() => {
       const result = bestMove();

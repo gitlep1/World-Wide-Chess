@@ -9,7 +9,7 @@ import axios from "axios";
 
 const API = process.env.REACT_APP_API_URL;
 
-const LeaderBoard = ({ screenVersion, user, authenticated, token, socket }) => {
+const LeaderBoard = ({ screenVersion, user, token, socket }) => {
   let usersCopy = [];
   const [searchbar, setSearchbar] = useState("");
   const [screenSize, setScreenSize] = useState(0);

@@ -8,7 +8,8 @@ import Cookies from "js-cookie";
 
 import ChessCoinIcon from "../../Images/Chess_Coins.png";
 
-import { ShopConfirmModal } from "../../CustomFunctions/CustomModals";
+import { SetCookies, RemoveCookies } from "../../CustomFunctions/HandleCookies";
+import { ShopConfirmModal } from "../../CustomModals/CustomModals";
 
 const API = process.env.REACT_APP_API_URL;
 
@@ -64,16 +65,9 @@ const Shop = ({ screenVersion, user, setUser, token }) => {
           }
         );
 
-        Cookies.remove("Current_User");
+        RemoveCookies("Current_User");
 
-        const expirationDate = new Date();
-        expirationDate.setDate(expirationDate.getDate() + 30);
-
-        Cookies.set("Current_User", JSON.stringify(res.data.updatedUser), {
-          expires: expirationDate,
-          path: "/",
-          sameSite: "strict",
-        });
+        SetCookies("Current_User", res.data.updatedUser);
 
         setUser(res.data.updatedUser);
         setOpenConfirm(false);

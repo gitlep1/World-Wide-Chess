@@ -41,7 +41,7 @@ const CustomToastContainers = () => {
 
       <ToastContainer
         containerId={"notify-success"}
-        autoClose={3000}
+        autoClose={2000}
         theme="dark"
         limit={1}
         position="top-right"
@@ -53,7 +53,7 @@ const CustomToastContainers = () => {
 
       <ToastContainer
         containerId={"nonEmptyMsg"}
-        autoClose={3000}
+        autoClose={2000}
         theme="dark"
         limit={1}
         position="bottom-right"

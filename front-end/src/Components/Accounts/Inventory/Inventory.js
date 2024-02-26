@@ -11,7 +11,6 @@ const Inventory = ({
   openInventory,
   handleOpenInventory,
   user,
-  authenticated,
   token,
 }) => {
   let InventoryItemsArr = [];

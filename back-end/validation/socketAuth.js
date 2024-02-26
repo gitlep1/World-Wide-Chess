@@ -21,7 +21,7 @@ const socketAuth = (token, socket, next) => {
 
           socket.handshake.auth.token = newToken;
         } else {
-          console.log(err);
+          // console.log(err);
           return next(new Error("Unauthorized"));
         }
       }

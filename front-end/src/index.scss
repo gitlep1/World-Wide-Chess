@@ -1,5 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Bungee+Shade&family=IM+Fell+English+SC&family=Tilt+Prism:YROT@-13&display=swap");
 
+// font-family: 'Bungee Shade', cursive;
+// font-family: 'IM Fell English SC', serif;
+// font-family: 'Tilt Prism', cursive;
+
 * {
   margin: 0;
   padding: 0;
@@ -23,12 +27,9 @@ body {
   height: 100vh;
   width: 100vw;
   margin: 0 auto;
-  background-color: #282e33;
+  background-color: #262b2d;
+  // background-color: #282e33;
   // background-color: #a4a4a4;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-attachment: fixed;
-  background-position: center;
   font-family: "IM Fell English SC", serif;
 
   &::-webkit-scrollbar {

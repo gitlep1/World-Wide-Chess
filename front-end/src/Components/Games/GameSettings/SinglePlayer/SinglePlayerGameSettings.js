@@ -20,7 +20,6 @@ const SinglePlayerGameSettings = ({
   game,
   setGame,
   user,
-  authenticated,
   token,
   error,
   socket,
@@ -84,7 +83,7 @@ const SinglePlayerGameSettings = ({
         setBots(res.data.payload);
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
       });
   };
 
@@ -111,19 +110,27 @@ const SinglePlayerGameSettings = ({
         },
       })
       .then(async (res) => {
+        const moveHistoryData = {
+          game_id: res.data.payload.id,
+          from_square: null,
+          to_square: null,
+          piece: null,
+          color: null,
+        };
+
         await axios
-          .post(`${API}/single-move-history`, res.data.payload.id, {
+          .post(`${API}/single-move-history`, moveHistoryData, {
             headers: {
               authorization: `Bearer ${token}`,
             },
           })
           .catch((err) => {
-            console.log(err.response.data);
+            // console.log(err.response.data);
           });
         socket.emit("start-single-player-game", res.data.payload);
       })
       .catch((err) => {
-        console.log(err.message);
+        // console.log(err.message);
       });
   };
 

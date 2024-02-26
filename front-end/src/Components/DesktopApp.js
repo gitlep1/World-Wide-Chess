@@ -12,7 +12,7 @@ import LeaderBoard from "./Leaderboard/LeaderBoard";
 import Shop from "./Shop/Shop";
 
 // Nav stuff \\
-import NavBar from "./NavBar/NavBar";
+import Navbar from "./Navbar/Navbar";
 import Sidebar from "./Sidebar/Sidebar";
 import FoF from "./FourOFour/FoF";
 
@@ -45,7 +45,6 @@ const DesktopApp = ({
   handleSidebarOpen,
   user,
   setUser,
-  authenticated,
   token,
   isOpen,
   openInventory,
@@ -57,8 +56,6 @@ const DesktopApp = ({
   socket,
 }) => {
   const screenVersion = "desktop";
-
-  const reff = useRef();
 
   const [isMultiplayer, setIsMultiplayer] = useState(false);
   const [showSignIn, setShowSignIn] = useState(false);
@@ -90,7 +87,6 @@ const DesktopApp = ({
         <Sidebar
           screenVersion={screenVersion}
           user={user}
-          authenticated={authenticated}
           token={token}
           handleSidebarOpen={handleSidebarOpen}
           handleOpenInventory={handleOpenInventory}
@@ -100,11 +96,12 @@ const DesktopApp = ({
         />
       </SidebarMenu>
 
-      <div className="sidebar-burger" onClick={handleSidebarOpen}>
-        <GiHamburgerMenu />
-      </div>
-
       <main id="desktop-page-wrap">
+        <Navbar
+          screenVersion={screenVersion}
+          handleSidebarOpen={handleSidebarOpen}
+        />
+
         <Routes>
           <Route path="/">
             {/* Account Routes */}
@@ -115,7 +112,6 @@ const DesktopApp = ({
                 <Homepage
                   screenVersion={screenVersion}
                   user={user}
-                  authenticated={authenticated}
                   token={token}
                 />
               }
@@ -126,7 +122,6 @@ const DesktopApp = ({
                 <AccountPage
                   screenVersion={screenVersion}
                   user={user}
-                  authenticated={authenticated}
                   token={token}
                 />
               }
@@ -137,7 +132,6 @@ const DesktopApp = ({
                 <AccountSettings
                   screenVersion={screenVersion}
                   user={user}
-                  authenticated={authenticated}
                   token={token}
                   handleUser={handleUser}
                   handleLogout={handleLogout}
@@ -153,7 +147,6 @@ const DesktopApp = ({
                   user={user}
                   isMultiplayer={isMultiplayer}
                   setIsMultiplayer={setIsMultiplayer}
-                  authenticated={authenticated}
                   token={token}
                   socket={socket}
                 />
@@ -165,7 +158,6 @@ const DesktopApp = ({
                 <GameSettings
                   screenVersion={screenVersion}
                   user={user}
-                  authenticated={authenticated}
                   token={token}
                   socket={socket}
                   player1Data={player1Data}
@@ -181,7 +173,6 @@ const DesktopApp = ({
                 <GamePage
                   screenVersion={screenVersion}
                   user={user}
-                  authenticated={authenticated}
                   token={token}
                   socket={socket}
                   player1Data={player1Data}
@@ -198,7 +189,6 @@ const DesktopApp = ({
                 <LeaderBoard
                   screenVersion={screenVersion}
                   user={user}
-                  authenticated={authenticated}
                   token={token}
                   socket={socket}
                 />
@@ -233,7 +223,6 @@ const DesktopApp = ({
           openInventory={openInventory}
           handleOpenInventory={handleOpenInventory}
           user={user}
-          authenticated={authenticated}
           token={token}
         />
       ) : null}

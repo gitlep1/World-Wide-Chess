@@ -1,0 +1,30 @@
+.task-container {
+  margin-bottom: 0.5em;
+
+  .task-progress {
+    .progress-container {
+      position: relative;
+      height: 21px;
+
+      .task-info {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+
+        .task-completed {
+          padding-top: 0.4em;
+        }
+
+        .task-slash {
+          margin-left: 0.3em;
+          margin-right: 0.3em;
+        }
+      }
+    }
+  }
+}

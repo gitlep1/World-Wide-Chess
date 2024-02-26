@@ -12,7 +12,7 @@ import LeaderBoard from "./Leaderboard/LeaderBoard";
 import Shop from "./Shop/Shop";
 
 // Nav stuff \\
-import NavBar from "./NavBar/NavBar";
+import Navbar from "./Navbar/Navbar";
 import Sidebar from "./Sidebar/Sidebar";
 import FoF from "./FourOFour/FoF";
 
@@ -43,7 +43,6 @@ const MobileApp = ({
   handleSidebarOpen,
   user,
   setUser,
-  authenticated,
   token,
   isOpen,
   openInventory,
@@ -85,7 +84,6 @@ const MobileApp = ({
         <Sidebar
           screenVersion={screenVersion}
           user={user}
-          authenticated={authenticated}
           token={token}
           handleLogout={handleLogout}
           handleSidebarOpen={handleSidebarOpen}
@@ -97,11 +95,11 @@ const MobileApp = ({
         />
       </SidebarMenu>
 
-      <div className="sidebar-burger" onClick={handleSidebarOpen}>
-        <GiHamburgerMenu />
-      </div>
-
       <main id="mobile-page-wrap">
+        <Navbar
+          screenVersion={screenVersion}
+          handleSidebarOpen={handleSidebarOpen}
+        />
         <Routes>
           <Route path="/">
             {/* Account Routes */}
@@ -112,7 +110,6 @@ const MobileApp = ({
                 <Homepage
                   screenVersion={screenVersion}
                   user={user}
-                  authenticated={authenticated}
                   token={token}
                 />
               }
@@ -123,7 +120,6 @@ const MobileApp = ({
                 <AccountPage
                   screenVersion={screenVersion}
                   user={user}
-                  authenticated={authenticated}
                   token={token}
                 />
               }
@@ -134,7 +130,6 @@ const MobileApp = ({
                 <AccountSettings
                   screenVersion={screenVersion}
                   user={user}
-                  authenticated={authenticated}
                   token={token}
                   handleUser={handleUser}
                   handleLogout={handleLogout}
@@ -150,7 +145,6 @@ const MobileApp = ({
                   user={user}
                   isMultiplayer={isMultiplayer}
                   setIsMultiplayer={setIsMultiplayer}
-                  authenticated={authenticated}
                   token={token}
                   socket={socket}
                 />
@@ -162,7 +156,6 @@ const MobileApp = ({
                 <GameSettings
                   screenVersion={screenVersion}
                   user={user}
-                  authenticated={authenticated}
                   token={token}
                   socket={socket}
                   player1Data={player1Data}
@@ -178,7 +171,6 @@ const MobileApp = ({
                 <GamePage
                   screenVersion={screenVersion}
                   user={user}
-                  authenticated={authenticated}
                   token={token}
                   socket={socket}
                   player1Data={player1Data}
@@ -195,7 +187,6 @@ const MobileApp = ({
                 <LeaderBoard
                   screenVersion={screenVersion}
                   user={user}
-                  authenticated={authenticated}
                   token={token}
                   socket={socket}
                 />
@@ -205,12 +196,7 @@ const MobileApp = ({
             <Route
               path="Shop"
               element={
-                <Shop
-                  screenVersion={screenVersion}
-                  user={user}
-                  authenticated={authenticated}
-                  token={token}
-                />
+                <Shop screenVersion={screenVersion} user={user} token={token} />
               }
             />
             {/* FoF Route */}
@@ -230,7 +216,6 @@ const MobileApp = ({
           openInventory={openInventory}
           handleOpenInventory={handleOpenInventory}
           user={user}
-          authenticated={authenticated}
           token={token}
         />
       ) : null}

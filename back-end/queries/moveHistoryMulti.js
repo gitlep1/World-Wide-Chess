@@ -33,7 +33,7 @@ const createMoveHistory = async (moveHistoryData) => {
 const updateMoveHistory = async (gameID, moveHistoryData) => {
   try {
     const updatedMoveHistory = await db.one(
-      "UPDATE move_history SET from_square = $1, to_square = $2, piece = $3, color = $4 WHERE game_id = $5",
+      "UPDATE move_history SET from_square = $1, to_square = $2, piece = $3, color = $4 WHERE game_id = $5 RETURNING *",
       [
         moveHistoryData.from_square,
         moveHistoryData.to_square,

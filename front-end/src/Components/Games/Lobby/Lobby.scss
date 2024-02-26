@@ -4,7 +4,6 @@ $giant: 1200px;
 
 @mixin lobby-container {
   height: 100vh;
-  // margin-top: 5em;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -157,6 +156,9 @@ $giant: 1200px;
 
     .lobbyModal-allowSpecs {
       grid-column: 1 / -1;
+      display: flex;
+      justify-content: space-evenly;
+      // border: 5px solid red;
     }
 
     .lobbyModal-create-button {
