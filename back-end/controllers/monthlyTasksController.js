@@ -34,13 +34,20 @@ monthly.get(
   async (req, res) => {
     const { token } = req.user;
     const decoded = jwt.decode(token);
+    const userID = decoded.user.id;
 
-    const checkIfUserExists = await getUserByID(decoded.user.id);
+    const checkIfUserExists = await getUserByID(userID);
 
     if (!checkIfUserExists) {
       return res
         .status(404)
         .json({ error: `User with ID: ${userID} not found` });
+    }
+
+    if (checkIfUserExists.is_guest) {
+      return res.status(400).json({
+        error: `Create an account to complete daily and monthly tasks for rewards.`,
+      });
     }
 
     const getUsersMonthlyTasks = await getAllMonthlyTasksByUserID(

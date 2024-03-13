@@ -1,46 +1,38 @@
-@mixin homepage-facts-container {
+@mixin homepage-facts-card {
+  // border: 5px solid purple;
   text-align: center;
-  color: white;
 
-  .homepage-facts-card {
-    text-align: center;
+  .homepage-fact-number-container {
     display: grid;
-    grid-template-columns: 1;
+    grid-template-columns: repeat(3, 1fr);
 
-    .homepage-fact-number-container {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-
-      .homepage-fact-number {
-        grid-column: 2;
-      }
-
-      .homepage-fact-left-arrow {
-        grid-column: 1;
-        grid-row: 1;
-      }
-
-      .homepage-fact-right-arrow {
-        grid-column: 3;
-        grid-row: 1;
-      }
-
-      .homepage-arrow {
-        font-size: 25px;
-        user-select: none;
-
-        &:hover {
-          cursor: pointer;
-          color: goldenrod;
-        }
-      }
+    .homepage-fact-number {
+      grid-column: 2;
     }
 
-    .homepage-fact {
-      height: 180px;
-      max-height: 200px;
-      box-sizing: border-box;
+    .homepage-fact-left-arrow {
+      grid-column: 1;
+      grid-row: 1;
     }
+
+    .homepage-fact-right-arrow {
+      grid-column: 3;
+      grid-row: 1;
+    }
+
+    .homepage-arrow {
+      font-size: 30px;
+      user-select: none;
+
+      &:hover {
+        cursor: pointer;
+        color: goldenrod;
+      }
+    }
+  }
+
+  .homepage-fact {
+    max-height: 250px;
   }
 }
 
@@ -56,8 +48,8 @@
   }
 }
 
-.homepage-facts-container {
-  @include homepage-facts-container;
+.homepage-facts-card {
+  @include homepage-facts-card;
 
   .homepage-skeleton-loading-container {
     @include homepage-skeleton-loading-container(50vw);

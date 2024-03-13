@@ -13,6 +13,8 @@ const requireAuth = () => {
             console.log(`${decoded.user.username}'s  token expired`);
 
             try {
+              console.log(`Creating new token for ${decoded.user.username}`);
+
               const newClientTokenPayload = {
                 user: decoded.user,
                 scopes: ["read:user", "write:user"],
@@ -27,6 +29,8 @@ const requireAuth = () => {
               req.user = {
                 token: newToken,
               };
+
+              console.log(`New token created for ${decoded.user.username}`);
             } catch (error) {
               console.error("Error generating new token:", { error });
               return res.sendStatus(403);

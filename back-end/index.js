@@ -26,6 +26,7 @@ const app = express();
 
 const allowedOrigins = [
   "http://localhost:3000",
+  "http://localhost:4000",
   "https://world-wide-chess.netlify.app",
   "https://world-wide-chess-updates.netlify.app",
 ];
