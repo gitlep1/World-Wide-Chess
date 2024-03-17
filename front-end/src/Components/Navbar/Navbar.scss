@@ -151,7 +151,6 @@ $extra-large-desktop: 1400px;
   }
 }
 
-// Media query for large mobile
 @media screen and (min-width: #{$large-mobile}) {
   .mobile-navbar-container {
     @include navbar-container(5, 1fr);
@@ -168,7 +167,6 @@ $extra-large-desktop: 1400px;
   }
 }
 
-// Media query for extra-large mobile
 @media screen and (min-width: #{$extra-large-mobile}) {
   .mobile-navbar-container {
     @include navbar-container(5, 1fr);

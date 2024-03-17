@@ -1,3 +1,9 @@
+@mixin render-lobby-container {
+  border: 5px solid red;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
 @mixin room-info {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -75,8 +81,7 @@
 }
 
 .desktop-render-lobby-container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  @include render-lobby-container;
 
   .single-game-container {
     height: 95%;
@@ -102,8 +107,7 @@
 }
 
 .mobile-render-lobby-container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  @include render-lobby-container;
 
   .single-game-container {
     height: 95%;

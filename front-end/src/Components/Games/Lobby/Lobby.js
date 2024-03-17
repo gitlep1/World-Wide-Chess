@@ -370,8 +370,8 @@ const Lobbypage = ({
 
   return (
     <section className={`${screenVersion}-lobby-container`}>
-      <section className="lobbySection1-container">
-        <div className="lobbySection1">
+      <section className="lobby-top-container">
+        <div className="lobby-button-container">
           <div
             onClick={() => {
               setShowCreate(true);
@@ -392,70 +392,75 @@ const Lobbypage = ({
               REFRESH
             </div>
           )}
-          <div className="lobby-searchbar-container">
-            <div className="lobby-searchbar-1">
-              <div className="lobby-searchbar-icon-1">
-                <BiSearchAlt2 />
-              </div>
-
-              <Form.Group controlId="lobby-searchbar">
-                <Form.Control
-                  type="text"
-                  name="searchbar"
-                  placeholder="Search Room Name ..."
-                  onChange={handleChange}
-                  value={searchbar}
-                />
-              </Form.Group>
-
-              <div
-                className="lobby-searchbar-icon-2"
-                onClick={() => {
-                  setShowAdvancedSearch(!showAdvancedSearch);
-                }}
-              >
-                <MdManageSearch />
-              </div>
+        </div>
+        <div className="lobby-searchbar-container">
+          <div className="lobby-searchbar-basic">
+            <div className="lobby-searchbar-icon-1">
+              <BiSearchAlt2 />
             </div>
 
-            <animated.div
-              className="lobby-searchbar-2"
-              style={advancedSearchAnimation}
+            <Form.Group controlId="lobby-searchbar">
+              <Form.Control
+                type="text"
+                name="searchbar"
+                placeholder="Search Room Name ..."
+                onChange={handleChange}
+                value={searchbar}
+              />
+            </Form.Group>
+
+            <div
+              className="lobby-searchbar-icon-2"
+              onClick={() => {
+                setShowAdvancedSearch(!showAdvancedSearch);
+              }}
             >
-              {showAdvancedSearch && (
-                <AdvancedSearch
-                  screenVersion={screenVersion}
-                  singleGames={singleGames}
-                  setSingleGamesCopy={setSingleGamesCopy}
-                  multiGames={multiGames}
-                  setMultiGamesCopy={setMultiGamesCopy}
-                  socket={socket}
-                  token={token}
-                />
-              )}
-            </animated.div>
+              <MdManageSearch />
+            </div>
           </div>
+
+          <animated.div style={advancedSearchAnimation}>
+            {showAdvancedSearch && (
+              <AdvancedSearch
+                screenVersion={screenVersion}
+                singleGames={singleGames}
+                setSingleGamesCopy={setSingleGamesCopy}
+                multiGames={multiGames}
+                setMultiGamesCopy={setMultiGamesCopy}
+                socket={socket}
+                token={token}
+              />
+            )}
+          </animated.div>
         </div>
       </section>
       <br />
-      <section className="lobbySection2">
-        <div className="lobbyTable-container">
-          <div className="lobbyTable-header">
-            <h1 className="lobby-Table-header-title">Single Player</h1>
-            <h1 className="lobby-Table-header-title">MultiPlayer</h1>
+      <section className="lobby-bottom-container">
+        <div className="lobby-table-container">
+          <div className="lobby-table-header">
+            <div className="lobby-table-header-title">Single Player</div>
+            <div>single player game</div>
+            <div>single player game</div>
+            <div>single player game</div>
+            <div>single player game</div>
+            <div>single player game</div>
+            <div className="lobby-table-header-title">MultiPlayer</div>
+            <div>multi player game</div>
+            <div>multi player game</div>
+            <div>multi player game</div>
+            <div>multi player game</div>
+            <div>multi player game</div>
           </div>
-          <div className="lobbyTable-body">
-            <RenderLobby
-              screenVersion={screenVersion}
-              singleGames={singleGames}
-              singleGamesCopy={singleGamesCopy}
-              multiGamesCopy={multiGamesCopy}
-              multiGames={multiGames}
-              joinWithPassword={joinWithPassword}
-              setJoinWithPassword={setJoinWithPassword}
-              handleJoin={handleJoin}
-            />
-          </div>
+          <RenderLobby
+            screenVersion={screenVersion}
+            singleGames={singleGames}
+            singleGamesCopy={singleGamesCopy}
+            multiGamesCopy={multiGamesCopy}
+            multiGames={multiGames}
+            joinWithPassword={joinWithPassword}
+            setJoinWithPassword={setJoinWithPassword}
+            handleJoin={handleJoin}
+          />
         </div>
       </section>
 
@@ -465,12 +470,12 @@ const Lobbypage = ({
           setShowCreate(false);
         }}
         centered
-        className="lobbyModal"
+        className="lobby-modal-container"
         backdrop="static"
         keyboard={false}
       >
-        <Modal.Title className="lobbyModal-title">Room Settings</Modal.Title>
-        <Modal.Body className="lobbyModal-body">
+        <Modal.Title className="lobby-modal-title">Room Settings</Modal.Title>
+        <Modal.Body className="lobby-modal-body">
           <Form onSubmit={handleCreateGame}>
             <h3>Room Name</h3>
             <Form.Group controlId="formcreateRoomName">
@@ -480,11 +485,11 @@ const Lobbypage = ({
                 placeholder="Room Name"
                 onChange={handleChange}
                 value={createRoomName}
-                className="lobbyModal-createRoomName-data"
+                className="lobby-modal-name-data"
               />
             </Form.Group>
             <br />
-            <h3 className="lobbyModal-Password">Password</h3>
+            <h3 className="lobby-modal-Password">Password</h3>
             <Form.Group controlId="formPassword">
               <Form.Control
                 type="text"
@@ -492,7 +497,7 @@ const Lobbypage = ({
                 placeholder="Password"
                 onChange={handleChange}
                 value={createRoomPassword}
-                className="lobbyModal-password-data"
+                className="lobby-modal-password-data"
               />
             </Form.Group>
             <p
@@ -503,9 +508,9 @@ const Lobbypage = ({
               * Leave blank if you do not want to set a password for this room.*
             </p>
             <br />
-            <div className="lobbyModal-buttons">
+            <div className="lobby-modal-buttons">
               <Button
-                className={isMultiplayer ? null : "lobbyModal-mode-button"}
+                className={isMultiplayer ? null : "lobby-modal-mode-button"}
                 variant="primary"
                 onClick={() => {
                   setIsMultiplayer(false);
@@ -514,7 +519,7 @@ const Lobbypage = ({
                 SinglePlayer
               </Button>
               <Button
-                className={isMultiplayer ? "lobbyModal-mode-button" : null}
+                className={isMultiplayer ? "lobby-modal-mode-button" : null}
                 variant="success"
                 onClick={() => {
                   setIsMultiplayer(true);
@@ -523,7 +528,7 @@ const Lobbypage = ({
                 MultiPlayer
               </Button>
 
-              <Form.Label className="lobbyModal-allowSpecs">
+              <Form.Label className="lobby-modal-allowSpecs">
                 Allow Spectators?
                 <Form.Check
                   type="checkbox"
@@ -534,14 +539,14 @@ const Lobbypage = ({
               </Form.Label>
 
               <Button
-                className="lobbyModal-create-button"
+                className="lobby-modal-create-button"
                 variant="dark"
                 type="submit"
               >
                 Create
               </Button>
               <Button
-                className="lobbyModal-cancel-button"
+                className="lobby-modal-cancel-button"
                 variant="danger"
                 onClick={() => {
                   setShowCreate(false);
@@ -552,7 +557,7 @@ const Lobbypage = ({
             </div>
           </Form>
         </Modal.Body>
-        <Modal.Footer className="lobbyModal-footer"></Modal.Footer>
+        <Modal.Footer className="lobby-modal-footer"></Modal.Footer>
       </Modal>
     </section>
   );
