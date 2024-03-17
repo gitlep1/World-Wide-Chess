@@ -1,16 +1,19 @@
 import "./HomepageFacts.scss";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { nanoid } from "nanoid";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { IoArrowRedoSharp, IoArrowUndo } from "react-icons/io5";
+import axios from "axios";
 
 import HomepageFactsDraggable from "./HomepageFactsDraggable";
-import axios from "axios";
 
 const API = process.env.REACT_APP_API_URL;
 
 const HomepageFacts = ({ screenVersion }) => {
   const fakeLoadingArr = [1, 2, 3];
+
+  const [factHeight, setFactHeight] = useState(null);
+  const factRef = useRef(null);
 
   const [facts, setFacts] = useState([]);
   const [currentFactIndex, setCurrentFactIndex] = useState(0);
@@ -20,6 +23,12 @@ const HomepageFacts = ({ screenVersion }) => {
   useEffect(() => {
     getAllFacts();
   }, []);
+
+  useEffect(() => {
+    if (factRef.current) {
+      setFactHeight(factRef.current.offsetHeight);
+    }
+  }, [facts]);
 
   const getAllFacts = async () => {
     setLoading(true);
@@ -81,30 +90,36 @@ const HomepageFacts = ({ screenVersion }) => {
       return <h1>Error: {error}</h1>;
     } else {
       return (
-        <div className="homepage-facts-container">
-          <div className="homepage-facts-card">
-            <h1 className="homepage-facts-title">Chess Facts</h1>
-            <div className="homepage-fact-number-container">
-              <h3 className="homepage-fact-number">
-                {facts[currentFactIndex].fact_num}/{facts.length}
-              </h3>
+        <div className="homepage-facts-card">
+          <h1 className="homepage-facts-title">Chess Facts</h1>
+          <div className="homepage-fact-number-container">
+            <h3 className="homepage-fact-number">
+              {facts[currentFactIndex].fact_num}/{facts.length}
+            </h3>
 
-              <div className="homepage-fact-left-arrow">
-                <IoArrowUndo
-                  className="homepage-arrow"
-                  onClick={() => handleArrowClick("left")}
-                />
-              </div>
-              <div className="homepage-fact-right-arrow">
-                <IoArrowRedoSharp
-                  className="homepage-arrow"
-                  onClick={() => handleArrowClick("right")}
-                />
-              </div>
+            <div className="homepage-fact-left-arrow">
+              <IoArrowUndo
+                className="homepage-arrow"
+                onClick={() => handleArrowClick("left")}
+              />
             </div>
-
-            <p className="homepage-fact">{facts[currentFactIndex].fact}</p>
+            <div className="homepage-fact-right-arrow">
+              <IoArrowRedoSharp
+                className="homepage-arrow"
+                onClick={() => handleArrowClick("right")}
+              />
+            </div>
           </div>
+
+          <p ref={factRef} className="homepage-fact">
+            {facts[currentFactIndex].fact}
+          </p>
+          <style jsx>{`
+            .homepage-fact {
+              height: ${factHeight}px;
+              overflow: hidden;
+            }
+          `}</style>
         </div>
       );
     }

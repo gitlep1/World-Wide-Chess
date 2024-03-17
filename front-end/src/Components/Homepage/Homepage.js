@@ -68,17 +68,14 @@ const Homepage = ({ screenVersion, user, token }) => {
         </div>
       </section>
 
-      <section className="homepage-footer-container">
-        <footer>
-          <div className="homepage-facts-container">
-            <HomepageFacts />
-          </div>
-          <h4>
-            World Wide Chess <br />
-            &copy; 2022
-          </h4>
-        </footer>
-      </section>
+      <footer className="homepage-footer-container">
+        <HomepageFacts />
+        <div className="homepage-filler-space"></div>
+        <h4 className="homepage-footer-title">
+          World Wide Chess <br />
+          &copy; 2022
+        </h4>
+      </footer>
     </section>
   );
 };

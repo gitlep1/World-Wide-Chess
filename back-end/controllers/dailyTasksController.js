@@ -43,6 +43,12 @@ daily.get(
         .json({ error: `User with ID: ${decoded.user.id} not found` });
     }
 
+    if (checkIfUserExists.is_guest) {
+      return res.status(400).json({
+        error: `Create an account to complete daily and monthly tasks for rewards.`,
+      });
+    }
+
     const getUsersDailyTasks = await getAllDailyTasksByUserID(
       checkIfUserExists.id
     );

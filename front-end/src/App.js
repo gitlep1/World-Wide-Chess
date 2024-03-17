@@ -52,12 +52,12 @@ const App = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const handleStuff = async () => {
+    const cookieCheckerAndUserLeavingPage = async () => {
       await checkCookies();
       // handleSockets();
       LeavingPage();
     };
-    handleStuff();
+    cookieCheckerAndUserLeavingPage();
   }, []); // eslint-disable-line
 
   useEffect(() => {

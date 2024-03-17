@@ -27,57 +27,69 @@ const DailyTasks = ({ user, token }) => {
         },
       })
       .then((res) => {
-        setLoading(false);
         setTasks(res.data.payload);
       })
       .catch((err) => {
-        setLoading(false);
         setError(err.response.data.message);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
-  return (
-    <SkeletonTheme baseColor="#202020" highlightColor="#444">
-      {loading ? (
-        <Skeleton count={4} />
-      ) : (
-        tasks.map((task) => {
-          return (
-            <div key={nanoid()} className="task-container">
-              <div className="task-name">{task.task_name}</div>
-              <div className="task-progress">
-                <div className="progress-container">
-                  {task.task_current > 0 ? (
-                    <Line
-                      percent={(task.task_current / task.task_total) * 100}
-                      strokeWidth="8"
-                      trailWidth="8"
-                      trailColor="none"
-                      strokeColor="goldenrod"
-                      strokeLinecap="square"
-                    />
-                  ) : null}
-                  <div className="task-info">
-                    {task.completed ? (
-                      <span className="task-completed">COMPLETED</span>
-                    ) : (
-                      <>
-                        <span>{task.task_current}</span>
-                        <span className="task-slash">/</span>
-                        <span>{task.task_total}</span>
-                      </>
-                    )}
-                  </div>
+  const renderData = () => {
+    if (loading) {
+      return (
+        <SkeletonTheme baseColor="#202020" highlightColor="#444">
+          <Skeleton count={4} />;
+        </SkeletonTheme>
+      );
+    } else if (error) {
+      return <p style={{ color: "red" }}>ERROR: {error}</p>;
+    } else if (tasks.length === 0) {
+      return (
+        <p>
+          Please create an account to participate in daily and monhtly tasks for
+          rewards.
+        </p>
+      );
+    } else {
+      return tasks.map((task) => {
+        return (
+          <div key={nanoid()} className="task-container">
+            <div className="task-name">{task.task_name}</div>
+            <div className="task-progress">
+              <div className="progress-container">
+                {task.task_current > 0 ? (
+                  <Line
+                    percent={(task.task_current / task.task_total) * 100}
+                    strokeWidth="8"
+                    trailWidth="8"
+                    trailColor="none"
+                    strokeColor="goldenrod"
+                    strokeLinecap="square"
+                  />
+                ) : null}
+                <div className="task-info">
+                  {task.completed ? (
+                    <span className="task-completed">COMPLETED</span>
+                  ) : (
+                    <>
+                      <span>{task.task_current}</span>
+                      <span className="task-slash">/</span>
+                      <span>{task.task_total}</span>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
-          );
-        })
-      )}
+          </div>
+        );
+      });
+    }
+  };
 
-      {error !== "" && <p style={{ color: "red" }}>ERROR: {error}</p>}
-    </SkeletonTheme>
-  );
+  return renderData();
 };
 
 export default DailyTasks;
