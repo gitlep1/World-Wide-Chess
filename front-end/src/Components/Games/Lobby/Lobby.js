@@ -10,6 +10,9 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 import RenderLobby from "./RenderLobby/RenderLobby";
+import RenderSingleGames from "./RenderLobby/RenderSingleGames";
+import RenderMultiGames from "./RenderLobby/RenderMultiGames";
+
 import AdvancedSearch from "./AdvancedSearch/AdvancedSearch";
 
 import {
@@ -44,6 +47,16 @@ const Lobbypage = ({
 
   const [showCreate, setShowCreate] = useState(false);
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
+  const [showRoomSortingButtonsSingle, setShowRoomSortingButtonsSingle] =
+    useState(false);
+  const [showRoomSortingButtonsMulti, setShowRoomSortingButtonsMulti] =
+    useState(false);
+  const [sortingByTextSingle, setSortingByTextSingle] = useState(
+    "Room Number (Default)"
+  );
+  const [sortingByTextMulti, setSortingByTextMulti] = useState(
+    "Room Number (Default)"
+  );
 
   const [loading, setLoading] = useState(true);
   const [refreshed, setRefreshed] = useState(false);
@@ -362,9 +375,45 @@ const Lobbypage = ({
     });
   };
 
+  const changeSortingByText = (isMulti, option) => {
+    if (!isMulti) {
+      if (option === "Room Number") {
+        setSortingByTextSingle("Room Number (Default)");
+      } else if (option === "Alphabetical") {
+        setSortingByTextSingle("Alphabetical");
+      } else if (option === "Placeholder 1") {
+        setSortingByTextSingle("Placeholder 1");
+      } else if (option === "Placeholder 2") {
+        setSortingByTextSingle("Placeholder 2");
+      }
+    } else {
+      if (option === "Room Number") {
+        setSortingByTextMulti("Room Number (Default)");
+      } else if (option === "Alphabetical") {
+        setSortingByTextMulti("Alphabetical");
+      } else if (option === "Placeholder 3") {
+        setSortingByTextMulti("Placeholder 3");
+      } else if (option === "Placeholder 4") {
+        setSortingByTextMulti("Placeholder 4");
+      }
+    }
+  };
+
   const advancedSearchAnimation = useSpring({
     height: showAdvancedSearch ? "25em" : "0",
     opacity: showAdvancedSearch ? 1 : 0,
+    config: { duration: 500 },
+  });
+
+  const roomSortingDropDownSingleAnimation = useSpring({
+    height: showRoomSortingButtonsSingle ? "10em" : "0",
+    opacity: showRoomSortingButtonsSingle ? 1 : 0,
+    config: { duration: 500 },
+  });
+
+  const roomSortingDropDownMultiAnimation = useSpring({
+    height: showRoomSortingButtonsMulti ? "10em" : "0",
+    opacity: showRoomSortingButtonsMulti ? 1 : 0,
     config: { duration: 500 },
   });
 
@@ -437,21 +486,125 @@ const Lobbypage = ({
       <br />
       <section className="lobby-bottom-container">
         <div className="lobby-table-container">
-          <div className="lobby-table-header">
-            <div className="lobby-table-header-title">Single Player</div>
-            <div>single player game</div>
-            <div>single player game</div>
-            <div>single player game</div>
-            <div>single player game</div>
-            <div>single player game</div>
-            <div className="lobby-table-header-title">MultiPlayer</div>
-            <div>multi player game</div>
-            <div>multi player game</div>
-            <div>multi player game</div>
-            <div>multi player game</div>
-            <div>multi player game</div>
+          <div className="lobby-single-player-container">
+            <div className="lobby-table-header">
+              <h3 className="lobby-table-header-title">Single Player</h3>
+              <Button
+                variant="dark"
+                className="sortingByButton"
+                onClick={() => {
+                  setShowRoomSortingButtonsSingle(
+                    !showRoomSortingButtonsSingle
+                  );
+                }}
+              >
+                Sorting By: {sortingByTextSingle}
+              </Button>
+              <animated.div
+                className="lobby-table-sorting-buttons"
+                style={roomSortingDropDownSingleAnimation}
+              >
+                {showRoomSortingButtonsSingle && (
+                  <>
+                    <Button
+                      variant="dark"
+                      onClick={() => {
+                        changeSortingByText(false, "Room Number");
+                      }}
+                    >
+                      Room Number
+                    </Button>
+                    <Button
+                      variant="dark"
+                      onClick={() => {
+                        changeSortingByText(false, "Alphabetical");
+                      }}
+                    >
+                      Alphabetical
+                    </Button>
+                    <Button
+                      variant="dark"
+                      onClick={() => {
+                        changeSortingByText(false, "Placeholder 1");
+                      }}
+                    >
+                      placeholder 1
+                    </Button>
+                    <Button
+                      variant="dark"
+                      onClick={() => {
+                        changeSortingByText(false, "Placeholder 2");
+                      }}
+                    >
+                      placeholder 2
+                    </Button>
+                  </>
+                )}
+              </animated.div>
+            </div>
+            <div className="lobby-games">
+              <RenderSingleGames />
+            </div>
           </div>
-          <RenderLobby
+          <div className="lobby-multi-player-container">
+            <div className="lobby-table-header">
+              <h3 className="lobby-table-header-title">Multi Player</h3>
+              <Button
+                variant="dark"
+                className="sortingByButton"
+                onClick={() => {
+                  setShowRoomSortingButtonsMulti(!showRoomSortingButtonsMulti);
+                }}
+              >
+                Sorting By: {sortingByTextMulti}
+              </Button>
+              <animated.div
+                className="lobby-table-sorting-buttons"
+                style={roomSortingDropDownMultiAnimation}
+              >
+                {showRoomSortingButtonsMulti && (
+                  <>
+                    <Button
+                      variant="dark"
+                      onClick={() => {
+                        changeSortingByText(true, "Room Number");
+                      }}
+                    >
+                      Room Number
+                    </Button>
+                    <Button
+                      variant="dark"
+                      onClick={() => {
+                        changeSortingByText(true, "Alphabetical");
+                      }}
+                    >
+                      Alphabetical
+                    </Button>
+                    <Button
+                      variant="dark"
+                      onClick={() => {
+                        changeSortingByText(true, "Placeholder 3");
+                      }}
+                    >
+                      placeholder 3
+                    </Button>
+                    <Button
+                      variant="dark"
+                      onClick={() => {
+                        changeSortingByText(true, "Placeholder 4");
+                      }}
+                    >
+                      placeholder 4
+                    </Button>
+                  </>
+                )}
+              </animated.div>
+            </div>
+            <div className="lobby-games">
+              <RenderMultiGames />
+            </div>
+          </div>
+          {/* <RenderLobby
             screenVersion={screenVersion}
             singleGames={singleGames}
             singleGamesCopy={singleGamesCopy}
@@ -460,7 +613,7 @@ const Lobbypage = ({
             joinWithPassword={joinWithPassword}
             setJoinWithPassword={setJoinWithPassword}
             handleJoin={handleJoin}
-          />
+          /> */}
         </div>
       </section>
 

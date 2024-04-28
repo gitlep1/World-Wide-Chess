@@ -1,12 +1,10 @@
 import "./RenderGames.scss";
 import { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import { nanoid } from "nanoid";
 
-const RenderLobby = ({
+const RenderSingleGames = ({
   screenVersion,
-  singleGamesCopy,
-  multiGamesCopy,
+  singleGamesCopy = [],
   joinWithPassword,
   setJoinWithPassword,
   handleJoin,
@@ -35,7 +33,7 @@ const RenderLobby = ({
   const renderSingleGames = () => {
     return singleGamesCopy.map((singleGame) => {
       return (
-        <div className="room-info" key={nanoid()}>
+        <div className="room-info" key={singleGame.id}>
           <span className="room-name">{singleGame.room_name}</span>
 
           <span className="room-status">
@@ -62,79 +60,21 @@ const RenderLobby = ({
     });
   };
 
-  const renderMultiGames = () => {
-    return multiGamesCopy.map((multiGame) => {
-      return (
-        <div className="room-info" key={nanoid()}>
-          <span className="room-name">{multiGame.room_name}</span>
-
-          <span className="room-status">
-            <section className="lobby-status-buttons">
-              {multiGame.in_progress ? (
-                <>
-                  <div className="lobby-button-two">JOIN</div>
-
-                  <div
-                    onClick={() => {
-                      multiGame.room_password
-                        ? handleShowPasswordModal()
-                        : console.log("no password");
-                      handleJoin(multiGame.id);
-                    }}
-                    className="lobby-button-one"
-                  >
-                    SPECTATE
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div
-                    className="lobby-button-one"
-                    onClick={() => {
-                      multiGame.room_password ? (
-                        <>
-                          {handleShowPasswordModal()}
-                          {setPasswordGameId(multiGame.id)}
-                        </>
-                      ) : (
-                        handleJoin(multiGame.id)
-                      );
-                    }}
-                  >
-                    JOIN
-                  </div>
-
-                  <div className="lobby-button-two">SPECTATE</div>
-                </>
-              )}
-            </section>
-          </span>
-        </div>
-      );
-    });
-  };
-
   return (
-    <section className={`${screenVersion}-render-lobby-container`}>
-      <div className="single-game-container" key={nanoid()}>
-        {renderSingleGames()}
-      </div>
-
-      <div className="multi-game-container" key={nanoid()}>
-        {renderMultiGames()}
-      </div>
+    <section className={`${screenVersion}-render-games-container`}>
+      {renderSingleGames()}
 
       <Modal
         show={showPasswordModal}
         onHide={handleClosePasswordModal}
         centered
-        className="lobbyModalPassword-container"
+        className="lobby-modal-password-container"
       >
         <Modal.Title>Room Password</Modal.Title>
-        <Modal.Body className="lobbyModalPassword-modal">
+        <Modal.Body className="lobby-modal-password-modal">
           <Form onSubmit={handlePasswordSubmit}>
             <h3>Password</h3>
-            <Form.Group controlId="lobbyModalPassword-formControl">
+            <Form.Group controlId="lobby-modal-password-form-control">
               <Form.Control
                 type="password"
                 name="joinWithPassword"
@@ -154,10 +94,9 @@ const RenderLobby = ({
             </div>
           </Form>
         </Modal.Body>
-        <Modal.Footer></Modal.Footer>
       </Modal>
     </section>
   );
 };
 
-export default RenderLobby;
+export default RenderSingleGames;

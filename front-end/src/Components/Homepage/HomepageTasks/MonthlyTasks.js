@@ -40,7 +40,7 @@ const MonthlyTasks = ({ user, token }) => {
     if (loading) {
       return (
         <SkeletonTheme baseColor="#202020" highlightColor="#444">
-          <Skeleton count={4} />;
+          <Skeleton count={4} />
         </SkeletonTheme>
       );
     } else if (error) {

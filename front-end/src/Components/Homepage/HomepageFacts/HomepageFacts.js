@@ -111,15 +111,13 @@ const HomepageFacts = ({ screenVersion }) => {
             </div>
           </div>
 
-          <p ref={factRef} className="homepage-fact">
+          <p
+            ref={factRef}
+            className="homepage-fact"
+            style={{ height: `${factHeight}px`, overflow: "hidden" }}
+          >
             {facts[currentFactIndex].fact}
           </p>
-          <style jsx>{`
-            .homepage-fact {
-              height: ${factHeight}px;
-              overflow: hidden;
-            }
-          `}</style>
         </div>
       );
     }

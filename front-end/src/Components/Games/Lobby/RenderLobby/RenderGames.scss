@@ -1,5 +1,5 @@
-@mixin render-lobby-container {
-  border: 5px solid red;
+@mixin render-games-container {
+  border: 5px solid cyan;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
 }
@@ -65,7 +65,7 @@
   }
 }
 
-@mixin lobbyModalPassword-container {
+@mixin lobby-modal-password-container {
   text-align: center;
 
   .lobbyModalPassword-modal {
@@ -80,8 +80,8 @@
   }
 }
 
-.desktop-render-lobby-container {
-  @include render-lobby-container;
+.desktop-render-games-container {
+  @include render-games-container;
 
   .single-game-container {
     height: 95%;
@@ -101,13 +101,13 @@
     }
   }
 
-  .lobbyModalPassword-container {
-    @include lobbyModalPassword-container;
+  .lobby-modal-password-container {
+    @include lobby-modal-password-container;
   }
 }
 
-.mobile-render-lobby-container {
-  @include render-lobby-container;
+.mobile-render-games-container {
+  @include render-games-container;
 
   .single-game-container {
     height: 95%;
@@ -127,7 +127,7 @@
     }
   }
 
-  .lobbyModalPassword-container {
-    @include lobbyModalPassword-container;
+  .lobby-modal-password-container {
+    @include lobby-modal-password-container;
   }
 }

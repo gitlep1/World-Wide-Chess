@@ -1,12 +1,10 @@
 $small-mobile: 350px;
 $medium-mobile: 400px;
 $large-mobile: 600px;
-$extra-large-mobile: 799px;
 
 $small-desktop: 800px;
 $medium-desktop: 1100px;
-$large-desktop: 1300px;
-$extra-large-desktop: 1400px;
+$large-desktop: 1400px;
 
 // background: #262727;
 //   background: -moz-linear-gradient(left, #262727 0%, #505050 50%, #262727 100%);
@@ -128,12 +126,11 @@ $extra-large-desktop: 1400px;
 }
 
 @mixin lobby-bottom-container {
-  border: 5px solid cyan;
+  // border: 5px solid cyan;
   display: flex;
-  text-align: center;
   flex-direction: column;
-  height: 80vh;
-  width: 85vw;
+  height: 80%;
+  width: 95%;
   margin: 0 auto;
   overflow-y: auto;
   -ms-overflow-style: none;
@@ -144,27 +141,50 @@ $extra-large-desktop: 1400px;
   }
 
   .lobby-table-container {
-    border: 5px solid goldenrod;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     color: aliceblue;
-    background-color: #1b1b1b;
-    box-shadow:
-      0px 4px 2px -2px rgba(200, 200, 200, 0.3),
-      0px 10px 5px -5px rgba(200, 200, 200, 0.2),
-      0px 20px 10px -10px rgba(200, 200, 200, 0.1);
+    height: 100%;
+    gap: 1em;
+
+    .lobby-single-player-container {
+      overflow-y: auto;
+    }
+
+    .lobby-multi-player-container {
+      overflow-y: auto;
+    }
 
     .lobby-table-header {
-      display: grid;
-      grid-template-columns: 1;
-      align-items: center;
-      column-gap: 1em;
-      height: 2em;
+      text-align: center;
 
       .lobby-table-header-title {
-        border: 5px solid green;
+        box-shadow:
+          0px 4px 2px -2px rgba(200, 200, 200, 0.3),
+          0px 10px 5px -5px rgba(200, 200, 200, 0.2),
+          0px 20px 10px -10px rgba(200, 200, 200, 0.1);
+        grid-column: 1 / -1;
         width: 100%;
+        font-size: 30px;
         margin: 0 auto;
-        font-size: 17px;
+        margin-bottom: 0.5em;
       }
+
+      .lobby-table-sorting-buttons {
+        display: grid;
+        grid-template-columns: 1;
+        gap: 0.5em;
+        margin-bottom: 1.5em;
+      }
+    }
+
+    .sortingByButton {
+      height: 5em;
+      margin-bottom: 0.5em;
+    }
+
+    .lobby-games {
+      // border: 5px solid red;
     }
   }
 }
@@ -264,10 +284,22 @@ $extra-large-desktop: 1400px;
   }
 }
 
+// MOBILE MEDIA QUERIES \\
+
 @media screen and (min-width: #{$small-mobile}) {
   .mobile-lobby-container {
     .lobby-top-container {
       @include lobby-top-container(1, 1fr);
+    }
+
+    .lobby-bottom-container {
+      @include lobby-bottom-container;
+
+      .lobby-table-container {
+        .lobby-table-header {
+          border: 5px solid red;
+        }
+      }
     }
   }
 }
@@ -277,6 +309,16 @@ $extra-large-desktop: 1400px;
     .lobby-top-container {
       @include lobby-top-container(1, 1fr);
     }
+
+    .lobby-bottom-container {
+      @include lobby-bottom-container;
+
+      .lobby-table-container {
+        .lobby-table-header {
+          border: 5px solid blueviolet;
+        }
+      }
+    }
   }
 }
 
@@ -285,13 +327,71 @@ $extra-large-desktop: 1400px;
     .lobby-top-container {
       @include lobby-top-container(2, 1fr);
     }
+
+    .lobby-bottom-container {
+      @include lobby-bottom-container;
+
+      .lobby-table-container {
+        .lobby-table-header {
+          border: 5px solid green;
+        }
+      }
+    }
   }
 }
 
-@media screen and (min-width: #{$extra-large-mobile}) {
-  .mobile-lobby-container {
+// DESKTOP MEDIA QUERIES \\
+
+@media screen and (min-width: #{$small-desktop}) {
+  .desktop-lobby-container {
     .lobby-top-container {
       @include lobby-top-container(2, 1fr);
+    }
+
+    .lobby-bottom-container {
+      @include lobby-bottom-container;
+
+      .lobby-table-container {
+        .lobby-table-header {
+          border: 5px solid orange;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (min-width: #{$medium-desktop}) {
+  .desktop-lobby-container {
+    .lobby-top-container {
+      @include lobby-top-container(2, 1fr);
+    }
+
+    .lobby-bottom-container {
+      @include lobby-bottom-container;
+
+      .lobby-table-container {
+        .lobby-table-header {
+          border: 5px solid maroon;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (min-width: #{$large-desktop}) {
+  .desktop-lobby-container {
+    .lobby-top-container {
+      @include lobby-top-container(2, 1fr);
+    }
+
+    .lobby-bottom-container {
+      @include lobby-bottom-container;
+
+      .lobby-table-container {
+        .lobby-table-header {
+          border: 5px solid honeydew;
+        }
+      }
     }
   }
 }
