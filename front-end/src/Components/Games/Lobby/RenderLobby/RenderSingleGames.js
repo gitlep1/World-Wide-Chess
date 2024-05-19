@@ -1,6 +1,9 @@
 import "./RenderGames.scss";
 import { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
+import axios from "axios";
+
+const API = process.env.REACT_APP_API_URL;
 
 const RenderSingleGames = ({
   screenVersion,
@@ -8,6 +11,9 @@ const RenderSingleGames = ({
   joinWithPassword,
   setJoinWithPassword,
   handleJoin,
+  sortingByTextSingle,
+  loading,
+  error,
 }) => {
   const [passwordGameId, setPasswordGameId] = useState("");
   const [showPasswordModal, setShowPasswordModal] = useState(false);
@@ -30,34 +36,66 @@ const RenderSingleGames = ({
     setJoinWithPassword("");
   };
 
-  const renderSingleGames = () => {
-    return singleGamesCopy.map((singleGame) => {
-      return (
-        <div className="room-info" key={singleGame.id}>
-          <span className="room-name">{singleGame.room_name}</span>
+  const botSelection = (game) => {
+    if (game.botid === 1) {
+      return "Easy Bot";
+    } else if (game.botid === 2) {
+      return "Medium Bot";
+    } else if (game.botid === 3) {
+      return "Hard Bot";
+    } else {
+      return "Selecting Bot...";
+    }
+  };
 
-          <span className="room-status">
-            <section className="lobby-status-buttons">
-              {singleGame.in_progress ? (
-                <div
-                  onClick={() => {
-                    singleGame.room_password
-                      ? handleShowPasswordModal()
-                      : console.log("no password");
-                    handleJoin(singleGame.id);
-                  }}
-                  className="lobby-button-one"
-                >
-                  SPECTATE
-                </div>
-              ) : (
-                <div className="lobby-button-two">SPECTATE</div>
-              )}
-            </section>
-          </span>
-        </div>
-      );
-    });
+  const renderSingleGames = () => {
+    if (loading) {
+      return <h1>Loading...</h1>;
+    } else if (error) {
+      return <h1>Error: {error}</h1>;
+    } else {
+      if (sortingByTextSingle === "Room Number (Default)") {
+        singleGamesCopy.sort((a, b) => a.id - b.id);
+      } else if (sortingByTextSingle === "Alphabetical") {
+        singleGamesCopy.sort((a, b) => a.room_name.localeCompare(b.room_name));
+      } else if (sortingByTextSingle === "Placeholder 1") {
+        singleGamesCopy.sort((a, b) => a.id - b.id);
+      } else if (sortingByTextSingle === "Placeholder 2") {
+        singleGamesCopy.sort((a, b) => a.id - b.id);
+      }
+
+      return singleGamesCopy.map((singleGame) => {
+        return (
+          <div className="room-info" key={singleGame.id}>
+            <span className="room-number">{singleGame.id}</span>{" "}
+            <span className="room-name">{singleGame.room_name}</span>
+            <div className="room-players">
+              <span>{singleGame.player1}</span> vs
+              <span>{botSelection(singleGame)}</span>
+            </div>
+            <span className="room-status">
+              <section className="lobby-status-buttons">
+                {singleGame.in_progress ? (
+                  <div
+                    onClick={() => {
+                      singleGame.room_password
+                        ? handleShowPasswordModal()
+                        : console.log("no password");
+                      handleJoin(singleGame.id);
+                    }}
+                    className="lobby-button-one"
+                  >
+                    SPECTATE
+                  </div>
+                ) : (
+                  <div className="lobby-button-two">SPECTATE</div>
+                )}
+              </section>
+            </span>
+          </div>
+        );
+      });
+    }
   };
 
   return (

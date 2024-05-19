@@ -8,6 +8,9 @@ const RenderMultiGames = ({
   joinWithPassword,
   setJoinWithPassword,
   handleJoin,
+  sortingByTextMulti,
+  loading,
+  error,
 }) => {
   const [passwordGameId, setPasswordGameId] = useState("");
   const [showPasswordModal, setShowPasswordModal] = useState(false);
@@ -31,55 +34,71 @@ const RenderMultiGames = ({
   };
 
   const renderMultiGames = () => {
-    return multiGamesCopy.map((multiGame) => {
-      return (
-        <div className="room-info" key={multiGame.id}>
-          <span className="room-name">{multiGame.room_name}</span>
+    if (loading) {
+      return <h1>Loading...</h1>;
+    } else if (error) {
+      return <h1>Error: {error}</h1>;
+    } else {
+      if (sortingByTextMulti === "Room Number (Default)") {
+        multiGamesCopy.sort((a, b) => a.id - b.id);
+      } else if (sortingByTextMulti === "Alphabetical") {
+        multiGamesCopy.sort((a, b) => a.room_name.localeCompare(b.room_name));
+      } else if (sortingByTextMulti === "Placeholder 1") {
+        multiGamesCopy.sort((a, b) => a.id - b.id);
+      } else if (sortingByTextMulti === "Placeholder 2") {
+        multiGamesCopy.sort((a, b) => a.id - b.id);
+      }
 
-          <span className="room-status">
-            <section className="lobby-status-buttons">
-              {multiGame.in_progress ? (
-                <>
-                  <div className="lobby-button-two">JOIN</div>
+      return multiGamesCopy.map((multiGame) => {
+        return (
+          <div className="room-info" key={multiGame.id}>
+            <span className="room-name">{multiGame.room_name}</span>
 
-                  <div
-                    onClick={() => {
-                      multiGame.room_password
-                        ? handleShowPasswordModal()
-                        : console.log("no password");
-                      handleJoin(multiGame.id);
-                    }}
-                    className="lobby-button-one"
-                  >
-                    SPECTATE
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div
-                    className="lobby-button-one"
-                    onClick={() => {
-                      multiGame.room_password ? (
-                        <>
-                          {handleShowPasswordModal()}
-                          {setPasswordGameId(multiGame.id)}
-                        </>
-                      ) : (
-                        handleJoin(multiGame.id)
-                      );
-                    }}
-                  >
-                    JOIN
-                  </div>
+            <span className="room-status">
+              <section className="lobby-status-buttons">
+                {multiGame.in_progress ? (
+                  <>
+                    <div className="lobby-button-two">JOIN</div>
 
-                  <div className="lobby-button-two">SPECTATE</div>
-                </>
-              )}
-            </section>
-          </span>
-        </div>
-      );
-    });
+                    <div
+                      onClick={() => {
+                        multiGame.room_password
+                          ? handleShowPasswordModal()
+                          : console.log("no password");
+                        handleJoin(multiGame.id);
+                      }}
+                      className="lobby-button-one"
+                    >
+                      SPECTATE
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div
+                      className="lobby-button-one"
+                      onClick={() => {
+                        multiGame.room_password ? (
+                          <>
+                            {handleShowPasswordModal()}
+                            {setPasswordGameId(multiGame.id)}
+                          </>
+                        ) : (
+                          handleJoin(multiGame.id)
+                        );
+                      }}
+                    >
+                      JOIN
+                    </div>
+
+                    <div className="lobby-button-two">SPECTATE</div>
+                  </>
+                )}
+              </section>
+            </span>
+          </div>
+        );
+      });
+    }
   };
 
   return (

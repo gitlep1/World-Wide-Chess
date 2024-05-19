@@ -136,10 +136,6 @@ $large-desktop: 1400px;
   -ms-overflow-style: none;
   scrollbar-width: none;
 
-  &::-webkit-scrollbar {
-    display: none;
-  }
-
   .lobby-table-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -149,10 +145,20 @@ $large-desktop: 1400px;
 
     .lobby-single-player-container {
       overflow-y: auto;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
 
     .lobby-multi-player-container {
       overflow-y: auto;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .sortingByButton {
+      height: 5em;
+      width: 100%;
+      margin-bottom: 0.5em;
     }
 
     .lobby-table-header {
@@ -176,15 +182,6 @@ $large-desktop: 1400px;
         gap: 0.5em;
         margin-bottom: 1.5em;
       }
-    }
-
-    .sortingByButton {
-      height: 5em;
-      margin-bottom: 0.5em;
-    }
-
-    .lobby-games {
-      // border: 5px solid red;
     }
   }
 }
@@ -297,7 +294,7 @@ $large-desktop: 1400px;
 
       .lobby-table-container {
         .lobby-table-header {
-          border: 5px solid red;
+          // border: 5px solid red;
         }
       }
     }
@@ -315,7 +312,7 @@ $large-desktop: 1400px;
 
       .lobby-table-container {
         .lobby-table-header {
-          border: 5px solid blueviolet;
+          // border: 5px solid blueviolet;
         }
       }
     }
@@ -333,7 +330,7 @@ $large-desktop: 1400px;
 
       .lobby-table-container {
         .lobby-table-header {
-          border: 5px solid green;
+          // border: 5px solid green;
         }
       }
     }
@@ -353,7 +350,7 @@ $large-desktop: 1400px;
 
       .lobby-table-container {
         .lobby-table-header {
-          border: 5px solid orange;
+          // border: 5px solid orange;
         }
       }
     }
@@ -371,7 +368,7 @@ $large-desktop: 1400px;
 
       .lobby-table-container {
         .lobby-table-header {
-          border: 5px solid maroon;
+          // border: 5px solid maroon;
         }
       }
     }
@@ -389,7 +386,7 @@ $large-desktop: 1400px;
 
       .lobby-table-container {
         .lobby-table-header {
-          border: 5px solid honeydew;
+          // border: 5px solid honeydew;
         }
       }
     }

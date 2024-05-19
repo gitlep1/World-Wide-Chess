@@ -70,11 +70,13 @@ const Lobbypage = ({
     socket.on("single-games", (singleGames) => {
       setSingleGames(singleGames);
       setSingleGamesCopy(singleGames);
+      setLoading(false);
     });
 
     socket.on("multi-games", (multiGames) => {
       setMultiGames(multiGames);
       setMultiGamesCopy(multiGames);
+      setLoading(false);
     });
 
     socket.on("asking-host", async () => {
@@ -184,7 +186,6 @@ const Lobbypage = ({
       setSingleGamesCopy(singlePlayerGames);
       setMultiGamesCopy(multiPlayerGames);
       setRefreshed(true);
-      setLoading(false);
 
       const currentTime = new Date();
       const expirationTime = new Date(currentTime.getTime() + 60000);
@@ -192,6 +193,7 @@ const Lobbypage = ({
       SetCookies("countdown", countdown, expirationTime);
     } catch (err) {
       setError(err.response.data);
+    } finally {
       setLoading(false);
     }
   };
@@ -542,9 +544,16 @@ const Lobbypage = ({
                 )}
               </animated.div>
             </div>
-            <div className="lobby-games">
-              <RenderSingleGames />
-            </div>
+            <RenderSingleGames
+              screenVersion={screenVersion}
+              singleGamesCopy={singleGamesCopy}
+              joinWithPassword={joinWithPassword}
+              setJoinWithPassword={setJoinWithPassword}
+              handleJoin={handleJoin}
+              sortingByTextSingle={sortingByTextSingle}
+              loading={loading}
+              error={error}
+            />
           </div>
           <div className="lobby-multi-player-container">
             <div className="lobby-table-header">
@@ -600,20 +609,17 @@ const Lobbypage = ({
                 )}
               </animated.div>
             </div>
-            <div className="lobby-games">
-              <RenderMultiGames />
-            </div>
+            <RenderMultiGames
+              screenVersion={screenVersion}
+              multiGamesCopy={multiGamesCopy}
+              joinWithPassword={joinWithPassword}
+              setJoinWithPassword={setJoinWithPassword}
+              handleJoin={handleJoin}
+              sortingByTextMulti={sortingByTextMulti}
+              loading={loading}
+              error={error}
+            />
           </div>
-          {/* <RenderLobby
-            screenVersion={screenVersion}
-            singleGames={singleGames}
-            singleGamesCopy={singleGamesCopy}
-            multiGamesCopy={multiGamesCopy}
-            multiGames={multiGames}
-            joinWithPassword={joinWithPassword}
-            setJoinWithPassword={setJoinWithPassword}
-            handleJoin={handleJoin}
-          /> */}
         </div>
       </section>
 

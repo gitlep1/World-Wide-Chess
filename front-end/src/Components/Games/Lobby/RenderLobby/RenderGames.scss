@@ -1,41 +1,50 @@
+$large-mobile: 600px;
+
+$small-desktop: 800px;
+$medium-desktop: 1100px;
+$large-desktop: 1400px;
+
 @mixin render-games-container {
-  border: 5px solid cyan;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  // border: 5px solid cyan;
+  height: 45vh;
+  overflow-y: auto;
 }
 
 @mixin room-info {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  column-gap: 3%;
-  justify-content: center;
-  align-items: center;
-  margin: 1em 0.5em;
-  border: 3px solid white;
-  border-radius: 1em;
-  font-size: 15px;
+  grid-template-columns: 30px 1fr;
+  font-size: 18px;
+  background-color: #1b1b1b;
+  text-align: center;
+  margin-bottom: 0.5em;
 
   .room-number {
-    font-size: 30px;
+    // border: 5px solid cyan;
   }
 
   .room-name {
-    font-size: 25px;
+    // border: 5px solid red;
+    padding-right: 1.5em;
+  }
+
+  .room-players {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1;
   }
 
   .room-status {
+    grid-column: 1 / -1;
     .lobby-status-buttons {
       .lobby-button-one {
-        border: 3px solid white;
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 3em;
+        height: 2em;
         text-decoration: none;
         color: aliceblue;
         background-color: black;
         opacity: 85%;
-        border-radius: 1em;
         margin: 0.5em;
         font-size: 14px;
 
@@ -48,16 +57,14 @@
       }
 
       .lobby-button-two {
-        border: 3px solid white;
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 3em;
+        height: 2em;
         text-decoration: none;
         color: aliceblue;
         background-color: gray;
         opacity: 50%;
-        border-radius: 1em;
         margin: 0.5em;
         font-size: 14px;
       }
@@ -83,22 +90,8 @@
 .desktop-render-games-container {
   @include render-games-container;
 
-  .single-game-container {
-    height: 95%;
-    overflow-y: auto;
-
-    .room-info {
-      @include room-info;
-    }
-  }
-
-  .multi-game-container {
-    height: 95%;
-    overflow-y: auto;
-
-    .room-info {
-      @include room-info;
-    }
+  .room-info {
+    @include room-info;
   }
 
   .lobby-modal-password-container {
@@ -109,25 +102,51 @@
 .mobile-render-games-container {
   @include render-games-container;
 
-  .single-game-container {
-    height: 95%;
-    overflow-y: auto;
-
-    .room-info {
-      @include room-info;
-    }
-  }
-
-  .multi-game-container {
-    height: 95%;
-    overflow-y: auto;
-
-    .room-info {
-      @include room-info;
-    }
+  .room-info {
+    @include room-info;
   }
 
   .lobby-modal-password-container {
     @include lobby-modal-password-container;
   }
+}
+
+// MOBILE MEDIA QUERIES \\
+
+@media screen and (min-width: #{$large-mobile}) {
+  .mobile-render-games-container {
+    @include render-games-container;
+
+    .room-info {
+      @include room-info;
+
+      .room-players {
+        grid-template-columns: 1fr 25px 1fr;
+      }
+    }
+  }
+}
+
+// DESKTOP MEDIA QUERIES \\
+
+@media screen and (min-width: #{$small-desktop}) {
+  .desktop-render-games-container {
+    @include render-games-container;
+
+    .room-info {
+      @include room-info;
+
+      .room-players {
+        grid-template-columns: 1fr 25px 1fr;
+      }
+    }
+  }
+}
+
+@media screen and (min-width: #{$medium-desktop}) {
+  // placeholder
+}
+
+@media screen and (min-width: #{$large-desktop}) {
+  // placeholder
 }
