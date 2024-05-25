@@ -13,11 +13,12 @@ import MobileApp from "./Components/MobileApp";
 
 // Page components \\
 // import LandingPage from "./Components/LandingPage/LandingPage";
+import SmallResolution from "./Components/SmallResolution/SmallResolution";
 
 // Custom functions \\
+import { SetCookies, RemoveCookies } from "./CustomFunctions/HandleCookies";
 import DetectScreenSize from "./CustomFunctions/DetectScreenSize";
 import LeavingPage from "./CustomFunctions/LeavingPage";
-import { SetCookies, RemoveCookies } from "./CustomFunctions/HandleCookies";
 
 import DefaultProfImg from "./Images/Profiles/DefaultProfImg.png";
 
@@ -142,6 +143,26 @@ const App = () => {
   //     socket.off("invalid-scope-error");
   //   };
   // };
+
+  // add socket token checking later idea 2 (add to top of desktopApp/mobileApp files \\
+
+  // const API = process.env.REACT_APP_API_URL;
+  // const socket = io(API, {
+  //   auth: {
+  //     token: JSON.parse(Cookies.get("token")),
+  //   },
+  // });
+
+  // add socket token checking later idea 3 \\
+
+  // const handleSocketToken = () => {
+  //   send to a backend route through api and check the token there:
+  //     if not a valid token:
+  //       remove cookies
+  //       on the backend generate a new token for the guest
+  //     else:
+  //       allow the user to continue
+  // }
 
   const generateAlphaNumericID = (length) => {
     const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -274,6 +295,7 @@ const App = () => {
           handleUser={handleUser}
           handleLogout={handleLogout}
           resize={resize}
+          setResize={setResize}
           socket={socket}
         />
       );
@@ -284,6 +306,7 @@ const App = () => {
     <section>
       <CustomToastContainers />
       {screenSize >= 800 ? renderDesktop() : renderMobile()}
+      {screenSize < 400 && <SmallResolution />}
     </section>
   );
 };

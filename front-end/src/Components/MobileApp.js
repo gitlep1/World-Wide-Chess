@@ -2,9 +2,9 @@ import "./MobileApp.scss";
 import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import { push as SidebarMenu } from "react-burger-menu";
-import { GiHamburgerMenu } from "react-icons/gi";
-import io from "socket.io-client";
-import Cookies from "js-cookie";
+// import { GiHamburgerMenu } from "react-icons/gi";
+// import io from "socket.io-client";
+// import Cookies from "js-cookie";
 
 // Page stuff \\
 import Homepage from "./Homepage/Homepage";
@@ -32,13 +32,6 @@ import GamePage from "./Games/GamePage/GamePage";
 // Chat stuff \\
 import ChatBox from "./ChatBox/ChatBox";
 
-// const API = process.env.REACT_APP_API_URL;
-// const socket = io(API, {
-//   auth: {
-//     token: JSON.parse(Cookies.get("token")),
-//   },
-// });
-
 const MobileApp = ({
   handleSidebarOpen,
   user,
@@ -50,6 +43,7 @@ const MobileApp = ({
   handleUser,
   handleLogout,
   resize,
+  setResize,
   socket,
 }) => {
   const screenVersion = "mobile";
@@ -85,9 +79,7 @@ const MobileApp = ({
           screenVersion={screenVersion}
           user={user}
           token={token}
-          handleLogout={handleLogout}
           handleSidebarOpen={handleSidebarOpen}
-          openInventory={openInventory}
           handleOpenInventory={handleOpenInventory}
           setShowSignIn={setShowSignIn}
           setShowSignUp={setShowSignUp}
@@ -100,6 +92,7 @@ const MobileApp = ({
           screenVersion={screenVersion}
           handleSidebarOpen={handleSidebarOpen}
         />
+
         <Routes>
           <Route path="/">
             {/* Account Routes */}
@@ -115,7 +108,7 @@ const MobileApp = ({
               }
             />
             <Route
-              path="Accounts/:userID"
+              path="Account"
               element={
                 <AccountPage
                   screenVersion={screenVersion}
@@ -125,7 +118,7 @@ const MobileApp = ({
               }
             />
             <Route
-              path="Accounts/:userID/Edit"
+              path="Accounts/Settings"
               element={
                 <AccountSettings
                   screenVersion={screenVersion}
@@ -196,7 +189,12 @@ const MobileApp = ({
             <Route
               path="Shop"
               element={
-                <Shop screenVersion={screenVersion} user={user} token={token} />
+                <Shop
+                  screenVersion={screenVersion}
+                  user={user}
+                  setUser={setUser}
+                  token={token}
+                />
               }
             />
             {/* FoF Route */}

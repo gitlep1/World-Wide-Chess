@@ -44,9 +44,19 @@ const RenderSingleGames = ({
     } else if (game.botid === 3) {
       return "Hard Bot";
     } else {
-      return "Selecting Bot...";
+      return `Selecting Bot...`;
     }
   };
+
+  if (sortingByTextSingle === "Room Number (Default)") {
+    singleGamesCopy.sort((a, b) => a.id - b.id);
+  } else if (sortingByTextSingle === "Name") {
+    singleGamesCopy.sort((a, b) => a.room_name.localeCompare(b.room_name));
+  } else if (sortingByTextSingle === "Rank") {
+    singleGamesCopy.sort((a, b) => a.id - b.id);
+  } else if (sortingByTextSingle === "Region") {
+    singleGamesCopy.sort((a, b) => a.id - b.id);
+  }
 
   const renderSingleGames = () => {
     if (loading) {
@@ -54,19 +64,9 @@ const RenderSingleGames = ({
     } else if (error) {
       return <h1>Error: {error}</h1>;
     } else {
-      if (sortingByTextSingle === "Room Number (Default)") {
-        singleGamesCopy.sort((a, b) => a.id - b.id);
-      } else if (sortingByTextSingle === "Alphabetical") {
-        singleGamesCopy.sort((a, b) => a.room_name.localeCompare(b.room_name));
-      } else if (sortingByTextSingle === "Placeholder 1") {
-        singleGamesCopy.sort((a, b) => a.id - b.id);
-      } else if (sortingByTextSingle === "Placeholder 2") {
-        singleGamesCopy.sort((a, b) => a.id - b.id);
-      }
-
       return singleGamesCopy.map((singleGame) => {
         return (
-          <div className="room-info" key={singleGame.id}>
+          <div className="room-info-box" key={singleGame.id}>
             <span className="room-number">{singleGame.id}</span>{" "}
             <span className="room-name">{singleGame.room_name}</span>
             <div className="room-players">

@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const http = require("http");
-const csurf = require("csurf");
+// const csurf = require("csurf"); // research first then use later to handle security vulnerabilities
 const socketIO = require("socket.io");
 const addSocketEventListeners = require("./socket");
 
@@ -31,13 +31,6 @@ const allowedOrigins = [
   "https://world-wide-chess-updates.netlify.app",
 ];
 
-app.use(
-  cors({
-    credentials: true,
-    origin: allowedOrigins,
-  })
-);
-
 const httpServer = http.createServer(app);
 const io = socketIO(httpServer, {
   cors: {
@@ -46,12 +39,20 @@ const io = socketIO(httpServer, {
   },
 });
 
+app.use(
+  cors({
+    credentials: true,
+    origin: allowedOrigins,
+  })
+);
+
 // const csrfProtection = csurf({ cookie: true });
 // app.get("/csrf-token", (req, res) => {
 //   res.set("X-CSRF-Token", req.csrfToken());
 //   res.status(200).send();
 // });
 // app.use(csrfProtection);
+
 app.use(express.json());
 
 app.use("/users", usersController);

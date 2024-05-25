@@ -8,15 +8,21 @@ $large-desktop: 1400px;
   // border: 5px solid cyan;
   height: 45vh;
   overflow-y: auto;
+  // overflow-x: hidden;
 }
 
-@mixin room-info {
+@mixin room-info-box {
+  // border: 5px solid cyan;
   display: grid;
   grid-template-columns: 30px 1fr;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   font-size: 18px;
   background-color: #1b1b1b;
-  text-align: center;
   margin-bottom: 0.5em;
+  height: 12em;
+  max-height: 12em;
 
   .room-number {
     // border: 5px solid cyan;
@@ -24,13 +30,22 @@ $large-desktop: 1400px;
 
   .room-name {
     // border: 5px solid red;
-    padding-right: 1.5em;
   }
 
   .room-players {
+    // border: 5px solid orange;
     grid-column: 1 / -1;
     display: grid;
     grid-template-columns: 1;
+    align-items: center;
+
+    span:nth-of-type(1) {
+      // border: 3px solid brown;
+    }
+
+    span:nth-of-type(2) {
+      // border: 3px solid yellow;
+    }
   }
 
   .room-status {
@@ -90,8 +105,8 @@ $large-desktop: 1400px;
 .desktop-render-games-container {
   @include render-games-container;
 
-  .room-info {
-    @include room-info;
+  .room-info-box {
+    @include room-info-box;
   }
 
   .lobby-modal-password-container {
@@ -102,8 +117,8 @@ $large-desktop: 1400px;
 .mobile-render-games-container {
   @include render-games-container;
 
-  .room-info {
-    @include room-info;
+  .room-info-box {
+    @include room-info-box;
   }
 
   .lobby-modal-password-container {
@@ -117,8 +132,8 @@ $large-desktop: 1400px;
   .mobile-render-games-container {
     @include render-games-container;
 
-    .room-info {
-      @include room-info;
+    .room-info-box {
+      @include room-info-box;
 
       .room-players {
         grid-template-columns: 1fr 25px 1fr;
@@ -133,8 +148,8 @@ $large-desktop: 1400px;
   .desktop-render-games-container {
     @include render-games-container;
 
-    .room-info {
-      @include room-info;
+    .room-info-box {
+      @include room-info-box;
 
       .room-players {
         grid-template-columns: 1fr 25px 1fr;

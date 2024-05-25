@@ -33,27 +33,31 @@ const RenderMultiGames = ({
     setJoinWithPassword("");
   };
 
+  if (sortingByTextMulti === "Room Number (Default)") {
+    multiGamesCopy.sort((a, b) => a.id - b.id);
+  } else if (sortingByTextMulti === "Name") {
+    multiGamesCopy.sort((a, b) => a.room_name.localeCompare(b.room_name));
+  } else if (sortingByTextMulti === "Rank") {
+    multiGamesCopy.sort((a, b) => a.id - b.id);
+  } else if (sortingByTextMulti === "Region") {
+    multiGamesCopy.sort((a, b) => a.id - b.id);
+  }
+
   const renderMultiGames = () => {
     if (loading) {
       return <h1>Loading...</h1>;
     } else if (error) {
       return <h1>Error: {error}</h1>;
     } else {
-      if (sortingByTextMulti === "Room Number (Default)") {
-        multiGamesCopy.sort((a, b) => a.id - b.id);
-      } else if (sortingByTextMulti === "Alphabetical") {
-        multiGamesCopy.sort((a, b) => a.room_name.localeCompare(b.room_name));
-      } else if (sortingByTextMulti === "Placeholder 1") {
-        multiGamesCopy.sort((a, b) => a.id - b.id);
-      } else if (sortingByTextMulti === "Placeholder 2") {
-        multiGamesCopy.sort((a, b) => a.id - b.id);
-      }
-
       return multiGamesCopy.map((multiGame) => {
         return (
-          <div className="room-info" key={multiGame.id}>
+          <div className="room-info-box" key={multiGame.id}>
+            <span className="room-number">{multiGame.id}</span>{" "}
             <span className="room-name">{multiGame.room_name}</span>
-
+            <div className="room-players">
+              <span>{multiGame.player1}</span> vs
+              <span>{multiGame.player2 || "Waiting for opponent..."}</span>
+            </div>
             <span className="room-status">
               <section className="lobby-status-buttons">
                 {multiGame.in_progress ? (

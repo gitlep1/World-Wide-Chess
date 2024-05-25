@@ -1,4 +1,3 @@
-$small-mobile: 350px;
 $medium-mobile: 400px;
 $large-mobile: 600px;
 $extra-large-mobile: 799px;
@@ -56,13 +55,9 @@ $extra-large-desktop: 1400px;
 
         .task-button {
           text-align: center;
-          background: linear-gradient(
-            to right,
-            #262727 0%,
-            #505050 50%,
-            #262727 100%
-          );
-          box-shadow: 0px 4px 2px -2px rgba(200, 200, 200, 0.3),
+          background: linear-gradient(to right, #262727 0%, #505050 50%, #262727 100%);
+          box-shadow:
+            0px 4px 2px -2px rgba(200, 200, 200, 0.3),
             0px 10px 5px -5px rgba(200, 200, 200, 0.2),
             0px 20px 10px -10px rgba(200, 200, 200, 0.1);
 
@@ -181,13 +176,9 @@ $extra-large-desktop: 1400px;
 
         .task-button {
           text-align: center;
-          background: linear-gradient(
-            to right,
-            #262727 0%,
-            #505050 50%,
-            #262727 100%
-          );
-          box-shadow: 0px 4px 2px -2px rgba(200, 200, 200, 0.3),
+          background: linear-gradient(to right, #262727 0%, #505050 50%, #262727 100%);
+          box-shadow:
+            0px 4px 2px -2px rgba(200, 200, 200, 0.3),
             0px 10px 5px -5px rgba(200, 200, 200, 0.2),
             0px 20px 10px -10px rgba(200, 200, 200, 0.1);
 

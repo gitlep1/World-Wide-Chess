@@ -381,22 +381,22 @@ const Lobbypage = ({
     if (!isMulti) {
       if (option === "Room Number") {
         setSortingByTextSingle("Room Number (Default)");
-      } else if (option === "Alphabetical") {
-        setSortingByTextSingle("Alphabetical");
-      } else if (option === "Placeholder 1") {
-        setSortingByTextSingle("Placeholder 1");
-      } else if (option === "Placeholder 2") {
-        setSortingByTextSingle("Placeholder 2");
+      } else if (option === "Name") {
+        setSortingByTextSingle("Name");
+      } else if (option === "Rank") {
+        setSortingByTextSingle("Rank");
+      } else if (option === "Region") {
+        setSortingByTextSingle("Region");
       }
     } else {
       if (option === "Room Number") {
         setSortingByTextMulti("Room Number (Default)");
-      } else if (option === "Alphabetical") {
-        setSortingByTextMulti("Alphabetical");
-      } else if (option === "Placeholder 3") {
-        setSortingByTextMulti("Placeholder 3");
-      } else if (option === "Placeholder 4") {
-        setSortingByTextMulti("Placeholder 4");
+      } else if (option === "Name") {
+        setSortingByTextMulti("Name");
+      } else if (option === "Rank") {
+        setSortingByTextMulti("Rank");
+      } else if (option === "Region") {
+        setSortingByTextMulti("Region");
       }
     }
   };
@@ -519,26 +519,26 @@ const Lobbypage = ({
                     <Button
                       variant="dark"
                       onClick={() => {
-                        changeSortingByText(false, "Alphabetical");
+                        changeSortingByText(false, "Name");
                       }}
                     >
-                      Alphabetical
+                      Name
                     </Button>
                     <Button
                       variant="dark"
                       onClick={() => {
-                        changeSortingByText(false, "Placeholder 1");
+                        changeSortingByText(false, "Rank");
                       }}
                     >
-                      placeholder 1
+                      Rank
                     </Button>
                     <Button
                       variant="dark"
                       onClick={() => {
-                        changeSortingByText(false, "Placeholder 2");
+                        changeSortingByText(false, "Region");
                       }}
                     >
-                      placeholder 2
+                      Region
                     </Button>
                   </>
                 )}
@@ -584,26 +584,26 @@ const Lobbypage = ({
                     <Button
                       variant="dark"
                       onClick={() => {
-                        changeSortingByText(true, "Alphabetical");
+                        changeSortingByText(true, "Name");
                       }}
                     >
-                      Alphabetical
+                      Name
                     </Button>
                     <Button
                       variant="dark"
                       onClick={() => {
-                        changeSortingByText(true, "Placeholder 3");
+                        changeSortingByText(true, "Rank");
                       }}
                     >
-                      placeholder 3
+                      Rank
                     </Button>
                     <Button
                       variant="dark"
                       onClick={() => {
-                        changeSortingByText(true, "Placeholder 4");
+                        changeSortingByText(true, "Region");
                       }}
                     >
-                      placeholder 4
+                      Region
                     </Button>
                   </>
                 )}
