@@ -2,11 +2,11 @@
   color: white;
   display: grid;
   grid-template-columns: 1fr;
-  height: 100vh;
-  width: 100vw;
-  margin: 0 auto;
+  margin: 1em auto;
   background-color: #1b1b1b;
-  box-shadow: 0px 0px 0px 8px #000000, 0px 0px 0px 16px #4b4c4b,
+  box-shadow:
+    0px 0px 0px 8px #000000,
+    0px 0px 0px 16px #4b4c4b,
     5px 5px 15px 5px rgba(0, 0, 0, 0);
 
   .error {
@@ -25,15 +25,8 @@
 
 @mixin game-settings-options-container {
   margin: 0 auto;
-  width: 95%;
-  height: 85%;
-  align-self: center;
-  justify-self: center;
   text-align: center;
-
-  .game-settings-room-name {
-    text-align: center;
-  }
+  width: 100%;
 
   .playerImg {
     width: 100px;
@@ -41,8 +34,6 @@
 
   .game-settings-options {
     margin: 0 auto;
-    width: 90%;
-    height: 90%;
   }
 }
 

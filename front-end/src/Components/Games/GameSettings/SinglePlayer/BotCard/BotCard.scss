@@ -1,17 +1,28 @@
+$medium-mobile: 400px;
+$large-mobile: 600px;
+
+$small-desktop: 800px;
+$medium-desktop: 1100px;
+$large-desktop: 1400px;
+
 .bot-card {
-  border: 3px solid white;
-  background-color: #1b1b1b;
+  border: 1px solid white;
   display: flex;
   align-items: center;
   color: white;
-  height: 30%;
-  box-shadow: 0px 0px 0px 8px #000000, 0px 0px 0px 16px #4b4c4b,
+  background-color: #1b1b1b;
+  box-shadow:
+    0px 0px 0px 8px #000000,
+    0px 0px 0px 16px #4b4c4b,
     5px 5px 15px 5px rgba(0, 0, 0, 0);
-  margin: 1em;
+  margin: 1.3em auto;
+  width: 85%;
 
   &:hover {
     cursor: pointer;
-    box-shadow: 0px 0px 0px 8px #000000, 0px 0px 0px 16px gold,
+    box-shadow:
+      0px 0px 0px 8px #000000,
+      0px 0px 0px 16px gold,
       5px 5px 15px 5px rgba(0, 0, 0, 0);
     border-color: gold;
   }

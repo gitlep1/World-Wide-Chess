@@ -44,22 +44,23 @@ const SmallResolution = () => {
           className="small-resolution"
           style={warning ? null : { display: "none" }}
         >
-          <h1>Your screen's width is too small.</h1>
+          <h1 style={{ color: "yellow" }}>WARNING</h1>
+          <h2>Your screen's width is too small.</h2>
           <p>(less than 400px)</p>
           <h4>Some elements on the page may display incorrectly.</h4>
           {warningCookie.warningNum >= 3 && (
             <Form>
               <Form.Check
                 type="checkbox"
-                label="Ignore this warning?"
+                label="Ignore these warnings?"
                 onChange={() => {
                   setShowWarningDisplay(false);
                 }}
               />
             </Form>
           )}
-          <Button variant="danger" onClick={handleWarning}>
-            Continue?
+          <Button variant="success" onClick={handleWarning}>
+            I understand
           </Button>
         </div>
       );

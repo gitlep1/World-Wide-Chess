@@ -86,9 +86,7 @@ daily.post("/", requireAuth(), async (req, res) => {
   );
 
   if (getUsersDailyTasks.length === 4) {
-    return res.status(400).json({
-      error: `User with ID: ${checkIfUserExists.id} already has 4 tasks`,
-    });
+    return;
   }
 
   const taskPool = [

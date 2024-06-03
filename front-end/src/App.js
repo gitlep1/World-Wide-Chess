@@ -305,8 +305,8 @@ const App = () => {
   return (
     <section>
       <CustomToastContainers />
-      {screenSize >= 800 ? renderDesktop() : renderMobile()}
       {screenSize < 400 && <SmallResolution />}
+      {screenSize >= 800 ? renderDesktop() : renderMobile()}
     </section>
   );
 };
