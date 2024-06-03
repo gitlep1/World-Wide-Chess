@@ -1,0 +1,167 @@
+$large-mobile: 600px;
+
+$small-desktop: 800px;
+$medium-desktop: 1100px;
+$large-desktop: 1400px;
+
+@mixin render-games-container {
+  // border: 5px solid cyan;
+  height: 45vh;
+  overflow-y: auto;
+  // overflow-x: hidden;
+}
+
+@mixin room-info-box {
+  // border: 5px solid cyan;
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 18px;
+  background-color: #1b1b1b;
+  margin-bottom: 0.5em;
+  height: 12em;
+  max-height: 12em;
+
+  .room-number {
+    // border: 5px solid cyan;
+  }
+
+  .room-name {
+    // border: 5px solid red;
+  }
+
+  .room-players {
+    // border: 5px solid orange;
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1;
+    align-items: center;
+
+    span:nth-of-type(1) {
+      // border: 3px solid brown;
+    }
+
+    span:nth-of-type(2) {
+      // border: 3px solid yellow;
+    }
+  }
+
+  .room-status {
+    grid-column: 1 / -1;
+    .lobby-status-buttons {
+      .lobby-button-one {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 2em;
+        text-decoration: none;
+        color: aliceblue;
+        background-color: black;
+        opacity: 85%;
+        margin: 0.5em;
+        font-size: 14px;
+
+        &:hover {
+          opacity: 100%;
+          box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+          cursor: pointer;
+          color: white;
+        }
+      }
+
+      .lobby-button-two {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 2em;
+        text-decoration: none;
+        color: aliceblue;
+        background-color: gray;
+        opacity: 50%;
+        margin: 0.5em;
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+@mixin lobby-modal-password-container {
+  text-align: center;
+
+  .lobbyModalPassword-modal {
+    color: white;
+    background-color: black;
+  }
+
+  #lobbyModalPassword-formControl {
+    width: 80%;
+    margin: 0 auto;
+    margin-bottom: 3%;
+  }
+}
+
+.desktop-render-games-container {
+  @include render-games-container;
+
+  .room-info-box {
+    @include room-info-box;
+  }
+
+  .lobby-modal-password-container {
+    @include lobby-modal-password-container;
+  }
+}
+
+.mobile-render-games-container {
+  @include render-games-container;
+
+  .room-info-box {
+    @include room-info-box;
+  }
+
+  .lobby-modal-password-container {
+    @include lobby-modal-password-container;
+  }
+}
+
+// MOBILE MEDIA QUERIES \\
+
+@media screen and (min-width: #{$large-mobile}) {
+  .mobile-render-games-container {
+    @include render-games-container;
+
+    .room-info-box {
+      @include room-info-box;
+
+      .room-players {
+        grid-template-columns: 1fr 25px 1fr;
+      }
+    }
+  }
+}
+
+// DESKTOP MEDIA QUERIES \\
+
+@media screen and (min-width: #{$small-desktop}) {
+  .desktop-render-games-container {
+    @include render-games-container;
+
+    .room-info-box {
+      @include room-info-box;
+
+      .room-players {
+        grid-template-columns: 1fr 25px 1fr;
+      }
+    }
+  }
+}
+
+@media screen and (min-width: #{$medium-desktop}) {
+  // placeholder
+}
+
+@media screen and (min-width: #{$large-desktop}) {
+  // placeholder
+}

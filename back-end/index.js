@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const http = require("http");
-const csurf = require("csurf");
+// const csurf = require("csurf"); // research first then use later to handle security vulnerabilities
 const socketIO = require("socket.io");
 const addSocketEventListeners = require("./socket");
 
@@ -17,6 +17,8 @@ const shopController = require("./controllers/shopController");
 const userInventoryController = require("./controllers/userInventoryController");
 const guestInventoryController = require("./controllers/guestInventoryController");
 const messagesController = require("./controllers/messagesController");
+const dailyTasksController = require("./controllers/dailyTasksController");
+const monthlyTasksController = require("./controllers/monthlyTasksController");
 
 require("dotenv").config();
 
@@ -24,6 +26,7 @@ const app = express();
 
 const allowedOrigins = [
   "http://localhost:3000",
+  "http://localhost:4000",
   "https://world-wide-chess.netlify.app",
   "https://world-wide-chess-updates.netlify.app",
 ];
@@ -36,8 +39,6 @@ const io = socketIO(httpServer, {
   },
 });
 
-const csrfProtection = csurf({ cookie: true });
-
 app.use(
   cors({
     credentials: true,
@@ -45,11 +46,13 @@ app.use(
   })
 );
 
-app.get("/csrf-token", (req, res) => {
-  res.set("X-CSRF-Token", req.csrfToken());
-  res.status(200).send();
-});
+// const csrfProtection = csurf({ cookie: true });
+// app.get("/csrf-token", (req, res) => {
+//   res.set("X-CSRF-Token", req.csrfToken());
+//   res.status(200).send();
+// });
 // app.use(csrfProtection);
+
 app.use(express.json());
 
 app.use("/users", usersController);
@@ -64,6 +67,8 @@ app.use("/shop", shopController);
 app.use("/user-inventory", userInventoryController);
 app.use("/guest-inventory", guestInventoryController);
 app.use("/messages", messagesController);
+app.use("/daily-tasks", dailyTasksController);
+app.use("/monthly-tasks", monthlyTasksController);
 
 app.get("/", (req, res) => {
   res.send(`
@@ -82,7 +87,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("*", (req, res) => {
-  res.status(404).send("Not found!");
+  res.status(404).send("GET OUT OF HERE OR THE SITE DEMONS WILL GET YOU!!!");
 });
 
 addSocketEventListeners(io);

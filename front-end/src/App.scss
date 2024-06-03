@@ -1,24 +1,24 @@
-.sidebar-burger {
-  position: fixed;
-  top: 1.5%;
-  left: 1.5%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  background-color: black;
-  font-size: 20px;
-  width: 2em;
-  height: 1.5em;
-  box-shadow: 0px 0px 5px 2.5px #000000;
-  margin: 0 auto 3% auto;
+// .sidebar-burger {
+//   position: fixed;
+//   top: 1.5%;
+//   left: 1.5%;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   color: white;
+//   background-color: black;
+//   font-size: 20px;
+//   width: 2em;
+//   height: 1.5em;
+//   box-shadow: 0px 0px 5px 2.5px #000000;
+//   margin: 0 auto 3% auto;
 
-  &:hover {
-    cursor: pointer;
-    color: black;
-    background-color: white;
-  }
-}
+//   &:hover {
+//     cursor: pointer;
+//     color: black;
+//     background-color: white;
+//   }
+// }
 
 .bm-menu-wrap {
   position: fixed;
@@ -28,7 +28,24 @@
 
 /* General sidebar styles */
 .bm-menu {
-  background: #282e33;
+  // background: #282e33;
+  background: #262727;
+  background: -moz-linear-gradient(left, #262727 0%, #505050 50%, #262727 100%);
+  background: -webkit-linear-gradient(
+    left,
+    #262727 0%,
+    #505050 50%,
+    #262727 100%
+  );
+  background: linear-gradient(
+    to right,
+    #262727 0%,
+    #505050a0 50%,
+    #262727 100%
+  );
+  box-shadow: 4px 0px 2px -2px rgba(200, 200, 200, 0.3),
+    10px 0px 5px -5px rgba(200, 200, 200, 0.2),
+    20px 0px 10px -10px rgba(200, 200, 200, 0.1);
 }
 
 /* Morph shape necessary with bubble or elastic */
@@ -49,7 +66,3 @@
 .bm-cross-button {
   display: none !important;
 }
-
-// font-family: 'Bungee Shade', cursive;
-// font-family: 'IM Fell English SC', serif;
-// font-family: 'Tilt Prism', cursive;

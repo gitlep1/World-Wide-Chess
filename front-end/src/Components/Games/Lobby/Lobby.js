@@ -10,8 +10,16 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 import RenderLobby from "./RenderLobby/RenderLobby";
+import RenderSingleGames from "./RenderLobby/RenderSingleGames";
+import RenderMultiGames from "./RenderLobby/RenderMultiGames";
+
 import AdvancedSearch from "./AdvancedSearch/AdvancedSearch";
-import CustomToasts from "../../../CustomFunctions/CustomToasts";
+
+import {
+  SetCookies,
+  RemoveCookies,
+} from "../../../CustomFunctions/HandleCookies";
+import CustomToasts from "../../../CustomToasts/CustomToasts";
 
 const API = process.env.REACT_APP_API_URL;
 
@@ -20,7 +28,6 @@ const Lobbypage = ({
   user,
   isMultiplayer,
   setIsMultiplayer,
-  authenticated,
   token,
   socket,
 }) => {
@@ -40,6 +47,16 @@ const Lobbypage = ({
 
   const [showCreate, setShowCreate] = useState(false);
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
+  const [showRoomSortingButtonsSingle, setShowRoomSortingButtonsSingle] =
+    useState(false);
+  const [showRoomSortingButtonsMulti, setShowRoomSortingButtonsMulti] =
+    useState(false);
+  const [sortingByTextSingle, setSortingByTextSingle] = useState(
+    "Room Number (Default)"
+  );
+  const [sortingByTextMulti, setSortingByTextMulti] = useState(
+    "Room Number (Default)"
+  );
 
   const [loading, setLoading] = useState(true);
   const [refreshed, setRefreshed] = useState(false);
@@ -53,15 +70,16 @@ const Lobbypage = ({
     socket.on("single-games", (singleGames) => {
       setSingleGames(singleGames);
       setSingleGamesCopy(singleGames);
+      setLoading(false);
     });
 
     socket.on("multi-games", (multiGames) => {
       setMultiGames(multiGames);
       setMultiGamesCopy(multiGames);
+      setLoading(false);
     });
 
     socket.on("asking-host", async () => {
-      // console.log("asked host");
       handlePlayerJoining();
     });
 
@@ -96,14 +114,6 @@ const Lobbypage = ({
       setRefreshed(true);
     }
 
-    // idea 1: \\
-    // store timestamp
-    // lobby checks how much time has passed since the timestamp
-
-    // idea 2: \\
-    // store timestamp + 60 secs
-    // lobby checks how much more secs until expiration time
-
     if (refreshed) {
       const refreshInterval = setInterval(() => {
         setCountdown((prevCountdown) => {
@@ -111,16 +121,15 @@ const Lobbypage = ({
           if (newCountdown <= 0) {
             setCountdown(60);
             setRefreshed(false);
-            Cookies.remove("countdown", { path: "/" });
+
+            RemoveCookies("countdown");
+
             clearInterval(refreshInterval);
           } else {
             const currentTime = new Date();
             const expirationTime = new Date(currentTime.getTime() + 60000);
 
-            Cookies.set("countdown", JSON.stringify(newCountdown), {
-              path: "/",
-              expires: expirationTime,
-            });
+            SetCookies("countdown", newCountdown, expirationTime);
           }
 
           return newCountdown;
@@ -177,17 +186,14 @@ const Lobbypage = ({
       setSingleGamesCopy(singlePlayerGames);
       setMultiGamesCopy(multiPlayerGames);
       setRefreshed(true);
-      setLoading(false);
 
       const currentTime = new Date();
       const expirationTime = new Date(currentTime.getTime() + 60000);
 
-      Cookies.set("countdown", JSON.stringify(countdown), {
-        path: "/",
-        expires: expirationTime,
-      });
+      SetCookies("countdown", countdown, expirationTime);
     } catch (err) {
       setError(err.response.data);
+    } finally {
       setLoading(false);
     }
   };
@@ -215,6 +221,8 @@ const Lobbypage = ({
       });
     }
 
+    RemoveCookies("gameid");
+
     if (isMultiplayer) {
       const newMultiGameData = {
         room_name: createRoomName,
@@ -240,11 +248,7 @@ const Lobbypage = ({
             isMulti: res.data.payload.is_multiplayer,
           };
 
-          Cookies.set("gameid", JSON.stringify(gameData), {
-            expires: expirationDate,
-            path: "/",
-            sameSite: "strict",
-          });
+          SetCookies("gameid", gameData, expirationDate);
 
           navigate(`/Room/${res.data.payload.id}/Settings`);
         })
@@ -278,11 +282,7 @@ const Lobbypage = ({
             isMulti: res.data.payload.is_multiplayer,
           };
 
-          Cookies.set("gameid", JSON.stringify(gameData), {
-            expires: expirationDate,
-            path: "/",
-            sameSite: "strict",
-          });
+          SetCookies("gameid", gameData, expirationDate);
 
           navigate(`/Room/${res.data.payload.id}/Settings`);
         })
@@ -294,6 +294,8 @@ const Lobbypage = ({
 
   const handleJoin = async (gameID) => {
     const player2ID = user.id;
+
+    RemoveCookies("gameid");
 
     await axios
       .get(`${API}/multi-games/${gameID}`, {
@@ -312,11 +314,7 @@ const Lobbypage = ({
           isMulti: res.data.payload.is_multiplayer,
         };
 
-        Cookies.set("gameid", JSON.stringify(gameData), {
-          expires: expirationDate,
-          path: "/",
-          sameSite: "strict",
-        });
+        SetCookies("gameid", gameData, expirationDate);
 
         if (gamePayload.room_password) {
           if (gamePayload.room_password === joinWithPassword) {
@@ -338,13 +336,11 @@ const Lobbypage = ({
   const handlePlayerJoining = async () => {
     handlePlayerJoiningPromise()
       .then((result) => {
-        // console.log("The result:", result);
         toast.success(result, {
           containerId: "general-toast",
         });
       })
       .catch((error) => {
-        // console.log("The error:", error);
         toast.error(error, {
           containerId: "general-toast",
         });
@@ -381,19 +377,28 @@ const Lobbypage = ({
     });
   };
 
-  const notify = (gameData) => {
-    toast.success({
-      containerId: "notify-success",
-    });
-    setTimeout(() => {
-      navigate(`/Room/${gameData.id}/Settings`);
-    }, 3500);
-    clearFields();
-  };
-
-  const clearFields = () => {
-    setCreateRoomName("");
-    setCreateRoomPassword("");
+  const changeSortingByText = (isMulti, option) => {
+    if (!isMulti) {
+      if (option === "Room Number") {
+        setSortingByTextSingle("Room Number (Default)");
+      } else if (option === "Name") {
+        setSortingByTextSingle("Name");
+      } else if (option === "Rank") {
+        setSortingByTextSingle("Rank");
+      } else if (option === "Region") {
+        setSortingByTextSingle("Region");
+      }
+    } else {
+      if (option === "Room Number") {
+        setSortingByTextMulti("Room Number (Default)");
+      } else if (option === "Name") {
+        setSortingByTextMulti("Name");
+      } else if (option === "Rank") {
+        setSortingByTextMulti("Rank");
+      } else if (option === "Region") {
+        setSortingByTextMulti("Region");
+      }
+    }
   };
 
   const advancedSearchAnimation = useSpring({
@@ -402,10 +407,22 @@ const Lobbypage = ({
     config: { duration: 500 },
   });
 
+  const roomSortingDropDownSingleAnimation = useSpring({
+    height: showRoomSortingButtonsSingle ? "10em" : "0",
+    opacity: showRoomSortingButtonsSingle ? 1 : 0,
+    config: { duration: 500 },
+  });
+
+  const roomSortingDropDownMultiAnimation = useSpring({
+    height: showRoomSortingButtonsMulti ? "10em" : "0",
+    opacity: showRoomSortingButtonsMulti ? 1 : 0,
+    config: { duration: 500 },
+  });
+
   return (
     <section className={`${screenVersion}-lobby-container`}>
-      <section className="lobbySection1-container">
-        <div className="lobbySection1">
+      <section className="lobby-top-container">
+        <div className="lobby-button-container">
           <div
             onClick={() => {
               setShowCreate(true);
@@ -426,68 +443,181 @@ const Lobbypage = ({
               REFRESH
             </div>
           )}
-          <div className="lobby-searchbar-container">
-            <div className="lobby-searchbar-1">
-              <div className="lobby-searchbar-icon-1">
-                <BiSearchAlt2 />
-              </div>
-
-              <Form.Group controlId="lobby-searchbar">
-                <Form.Control
-                  type="text"
-                  name="searchbar"
-                  placeholder="Search Room Name ..."
-                  onChange={handleChange}
-                  value={searchbar}
-                />
-              </Form.Group>
-
-              <div
-                className="lobby-searchbar-icon-2"
-                onClick={() => {
-                  setShowAdvancedSearch(!showAdvancedSearch);
-                }}
-              >
-                <MdManageSearch />
-              </div>
+        </div>
+        <div className="lobby-searchbar-container">
+          <div className="lobby-searchbar-basic">
+            <div className="lobby-searchbar-icon-1">
+              <BiSearchAlt2 />
             </div>
 
-            <animated.div
-              className="lobby-searchbar-2"
-              style={advancedSearchAnimation}
+            <Form.Group controlId="lobby-searchbar">
+              <Form.Control
+                type="text"
+                name="searchbar"
+                placeholder="Search Room Name ..."
+                onChange={handleChange}
+                value={searchbar}
+              />
+            </Form.Group>
+
+            <div
+              className="lobby-searchbar-icon-2"
+              onClick={() => {
+                setShowAdvancedSearch(!showAdvancedSearch);
+              }}
             >
-              {showAdvancedSearch && (
-                <AdvancedSearch
-                  screenVersion={screenVersion}
-                  singleGames={singleGames}
-                  setSingleGamesCopy={setSingleGamesCopy}
-                  multiGames={multiGames}
-                  setMultiGamesCopy={setMultiGamesCopy}
-                  socket={socket}
-                  token={token}
-                />
-              )}
-            </animated.div>
+              <MdManageSearch />
+            </div>
           </div>
+
+          <animated.div style={advancedSearchAnimation}>
+            {showAdvancedSearch && (
+              <AdvancedSearch
+                screenVersion={screenVersion}
+                singleGames={singleGames}
+                setSingleGamesCopy={setSingleGamesCopy}
+                multiGames={multiGames}
+                setMultiGamesCopy={setMultiGamesCopy}
+                socket={socket}
+                token={token}
+              />
+            )}
+          </animated.div>
         </div>
       </section>
       <br />
-      <section className="lobbySection2">
-        <div className="lobbyTable-container">
-          <div className="lobbyTable-header">
-            <h1 className="lobby-Table-header-title">Single Player</h1>
-            <h1 className="lobby-Table-header-title">MultiPlayer</h1>
-          </div>
-          <div className="lobbyTable-body">
-            <RenderLobby
+      <section className="lobby-bottom-container">
+        <div className="lobby-table-container">
+          <div className="lobby-single-player-container">
+            <div className="lobby-table-header">
+              <h3 className="lobby-table-header-title">Single Player</h3>
+              <Button
+                variant="dark"
+                className="sortingByButton"
+                onClick={() => {
+                  setShowRoomSortingButtonsSingle(
+                    !showRoomSortingButtonsSingle
+                  );
+                }}
+              >
+                Sorting By: {sortingByTextSingle}
+              </Button>
+              <animated.div
+                className="lobby-table-sorting-buttons"
+                style={roomSortingDropDownSingleAnimation}
+              >
+                {showRoomSortingButtonsSingle && (
+                  <>
+                    <Button
+                      variant="dark"
+                      onClick={() => {
+                        changeSortingByText(false, "Room Number");
+                      }}
+                    >
+                      Room Number
+                    </Button>
+                    <Button
+                      variant="dark"
+                      onClick={() => {
+                        changeSortingByText(false, "Name");
+                      }}
+                    >
+                      Name
+                    </Button>
+                    <Button
+                      variant="dark"
+                      onClick={() => {
+                        changeSortingByText(false, "Rank");
+                      }}
+                    >
+                      Rank
+                    </Button>
+                    <Button
+                      variant="dark"
+                      onClick={() => {
+                        changeSortingByText(false, "Region");
+                      }}
+                    >
+                      Region
+                    </Button>
+                  </>
+                )}
+              </animated.div>
+            </div>
+            <RenderSingleGames
               screenVersion={screenVersion}
-              singleGames={singleGames}
               singleGamesCopy={singleGamesCopy}
-              multiGamesCopy={multiGamesCopy}
-              multiGames={multiGames}
               joinWithPassword={joinWithPassword}
               setJoinWithPassword={setJoinWithPassword}
               handleJoin={handleJoin}
+              sortingByTextSingle={sortingByTextSingle}
+              loading={loading}
+              error={error}
+            />
+          </div>
+          <div className="lobby-multi-player-container">
+            <div className="lobby-table-header">
+              <h3 className="lobby-table-header-title">Multi Player</h3>
+              <Button
+                variant="dark"
+                className="sortingByButton"
+                onClick={() => {
+                  setShowRoomSortingButtonsMulti(!showRoomSortingButtonsMulti);
+                }}
+              >
+                Sorting By: {sortingByTextMulti}
+              </Button>
+              <animated.div
+                className="lobby-table-sorting-buttons"
+                style={roomSortingDropDownMultiAnimation}
+              >
+                {showRoomSortingButtonsMulti && (
+                  <>
+                    <Button
+                      variant="dark"
+                      onClick={() => {
+                        changeSortingByText(true, "Room Number");
+                      }}
+                    >
+                      Room Number
+                    </Button>
+                    <Button
+                      variant="dark"
+                      onClick={() => {
+                        changeSortingByText(true, "Name");
+                      }}
+                    >
+                      Name
+                    </Button>
+                    <Button
+                      variant="dark"
+                      onClick={() => {
+                        changeSortingByText(true, "Rank");
+                      }}
+                    >
+                      Rank
+                    </Button>
+                    <Button
+                      variant="dark"
+                      onClick={() => {
+                        changeSortingByText(true, "Region");
+                      }}
+                    >
+                      Region
+                    </Button>
+                  </>
+                )}
+              </animated.div>
+            </div>
+            <RenderMultiGames
+              screenVersion={screenVersion}
+              multiGamesCopy={multiGamesCopy}
+              joinWithPassword={joinWithPassword}
+              setJoinWithPassword={setJoinWithPassword}
+              handleJoin={handleJoin}
+              sortingByTextMulti={sortingByTextMulti}
+              loading={loading}
+              error={error}
             />
           </div>
         </div>
@@ -499,12 +629,12 @@ const Lobbypage = ({
           setShowCreate(false);
         }}
         centered
-        className="lobbyModal"
+        className="lobby-modal-container"
         backdrop="static"
         keyboard={false}
       >
-        <Modal.Title className="lobbyModal-title">Room Settings</Modal.Title>
-        <Modal.Body className="lobbyModal-body">
+        <Modal.Title className="lobby-modal-title">Room Settings</Modal.Title>
+        <Modal.Body className="lobby-modal-body">
           <Form onSubmit={handleCreateGame}>
             <h3>Room Name</h3>
             <Form.Group controlId="formcreateRoomName">
@@ -514,11 +644,11 @@ const Lobbypage = ({
                 placeholder="Room Name"
                 onChange={handleChange}
                 value={createRoomName}
-                className="lobbyModal-createRoomName-data"
+                className="lobby-modal-name-data"
               />
             </Form.Group>
             <br />
-            <h3 className="lobbyModal-Password">Password</h3>
+            <h3 className="lobby-modal-Password">Password</h3>
             <Form.Group controlId="formPassword">
               <Form.Control
                 type="text"
@@ -526,7 +656,7 @@ const Lobbypage = ({
                 placeholder="Password"
                 onChange={handleChange}
                 value={createRoomPassword}
-                className="lobbyModal-password-data"
+                className="lobby-modal-password-data"
               />
             </Form.Group>
             <p
@@ -534,12 +664,12 @@ const Lobbypage = ({
                 color: "red",
               }}
             >
-              * Leave blank if you don't want to set a password for this room.*
+              * Leave blank if you do not want to set a password for this room.*
             </p>
             <br />
-            <div className="lobbyModal-buttons">
+            <div className="lobby-modal-buttons">
               <Button
-                className={isMultiplayer ? null : "lobbyModal-mode-button"}
+                className={isMultiplayer ? null : "lobby-modal-mode-button"}
                 variant="primary"
                 onClick={() => {
                   setIsMultiplayer(false);
@@ -548,7 +678,7 @@ const Lobbypage = ({
                 SinglePlayer
               </Button>
               <Button
-                className={isMultiplayer ? "lobbyModal-mode-button" : null}
+                className={isMultiplayer ? "lobby-modal-mode-button" : null}
                 variant="success"
                 onClick={() => {
                   setIsMultiplayer(true);
@@ -557,24 +687,25 @@ const Lobbypage = ({
                 MultiPlayer
               </Button>
 
-              <Form.Check
-                type="checkbox"
-                label="Allow Spectators?"
-                name="allowSpecs"
-                checked={allowSpecs}
-                onChange={handleChange}
-                className="lobbyModal-allowSpecs"
-              />
+              <Form.Label className="lobby-modal-allowSpecs">
+                Allow Spectators?
+                <Form.Check
+                  type="checkbox"
+                  name="allowSpecs"
+                  checked={allowSpecs}
+                  onChange={handleChange}
+                />
+              </Form.Label>
 
               <Button
-                className="lobbyModal-create-button"
+                className="lobby-modal-create-button"
                 variant="dark"
                 type="submit"
               >
                 Create
               </Button>
               <Button
-                className="lobbyModal-cancel-button"
+                className="lobby-modal-cancel-button"
                 variant="danger"
                 onClick={() => {
                   setShowCreate(false);
@@ -585,7 +716,7 @@ const Lobbypage = ({
             </div>
           </Form>
         </Modal.Body>
-        <Modal.Footer className="lobbyModal-footer"></Modal.Footer>
+        <Modal.Footer className="lobby-modal-footer"></Modal.Footer>
       </Modal>
     </section>
   );

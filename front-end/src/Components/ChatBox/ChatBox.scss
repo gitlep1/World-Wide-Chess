@@ -47,10 +47,10 @@
   bottom: 0%;
   right: 0%;
   border-radius: 1em;
-  background-color: #282e33;
-  box-shadow: 5px 5px 15px 5px #000000;
   z-index: 1000;
   opacity: 85%;
+  background: linear-gradient(to right, #262727 0%, #505050 50%, #262727 100%);
+  box-shadow: 5px 5px 15px 5px #000;
 
   &:hover {
     opacity: 100%;

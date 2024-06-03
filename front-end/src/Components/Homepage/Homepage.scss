@@ -1,4 +1,3 @@
-$small-mobile: 350px;
 $medium-mobile: 400px;
 $large-mobile: 600px;
 $extra-large-mobile: 799px;
@@ -8,215 +7,241 @@ $medium-desktop: 1100px;
 $large-desktop: 1300px;
 $extra-large-desktop: 1400px;
 
-$TestBorder: url("../../Images/Profiles/testBorder.png");
-$TigerGif: url("../../Images/Profiles/tigerRunning.gif");
+// === desktop styling === \\
 
-@mixin homepage-container {
-  height: 90vh;
-  width: 99vw;
-  text-align: center;
-  color: rgb(215, 215, 215);
+@mixin desktop-homepage-container {
+  background-image: url("../../Images/Background/homepageBackground2.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: scroll;
+  background-position: center;
+  margin-top: 1em;
+  height: 100vh;
+  width: 100vw;
+}
+
+@mixin desktop-homepage-main-section {
+  color: rgba(255, 255, 255, 0.8);
+  height: 100%;
+  width: 95%;
   margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1em;
+}
 
-  // Top player profile stuff \\
-  h1 {
-    #topPlayer-border {
-      background-image: $TestBorder;
-      background-repeat: no-repeat;
-      background-size: cover;
-      background-position: center;
+@mixin desktop-homepage-section-one {
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  grid-template-columns: 1;
+  display: grid;
+  grid-template-columns: 1;
+  grid-template-rows: 100px 1fr 1fr;
 
-      img {
-        width: 35px;
+  .homepage-previous-matches {
+    // border: 5px solid red;
+  }
+}
+
+@mixin desktop-homepage-section-two {
+  .homepage-section-two-tasks {
+    .tasks-container {
+      width: 85%;
+
+      .task-button-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1em;
+        width: 90%;
+
+        .task-button {
+          text-align: center;
+          background: linear-gradient(to right, #262727 0%, #505050 50%, #262727 100%);
+          box-shadow:
+            0px 4px 2px -2px rgba(200, 200, 200, 0.3),
+            0px 10px 5px -5px rgba(200, 200, 200, 0.2),
+            0px 20px 10px -10px rgba(200, 200, 200, 0.1);
+
+          &:hover {
+            cursor: pointer;
+            color: goldenrod;
+          }
+        }
       }
 
-      #topPlayer-background {
-        background-image: $TigerGif;
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position: center;
+      .task-selected {
+        color: goldenrod;
+        border: 1px solid gold;
+      }
+
+      .tasks-content {
+        grid-column: 1 / -1;
       }
     }
   }
 }
 
-@mixin homepage-content($gap, $gapSize, $columnValues...) {
+@mixin desktop-homepage-footer-container {
+  // border: 5px solid green;
   display: grid;
-  grid-template-columns: #{$columnValues};
-  #{$gap}: $gapSize;
-  overflow: auto;
-  align-items: center;
-}
-
-@mixin homepage-tasks-container($columnValue, $widthValue) {
-  background-color: #212529;
-  grid-column: $columnValue;
-  height: 70vh;
-  width: $widthValue;
+  grid-template-columns: 1;
+  text-align: center;
+  color: white;
+  width: 85%;
   margin: 0 auto;
-  margin-top: 1.5em;
-  box-shadow: 0px 0px 0px 0.5em #000000, 0px 0px 0px 1em #4b4c4b,
-    0px 0px 0px 1.5em #828482;
-  border-radius: 1em;
-}
 
-@mixin homepage-facts-container {
-  height: 80vh;
-  overflow: auto;
+  .homepage-filler-space {
+    height: 1px;
+    width: 75%;
+    margin: 0 auto;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-self: center;
+  }
+
+  .homepage-footer-title {
+    width: 50%;
+    margin: 0 auto;
+    padding-top: 1em;
+  }
 }
 
 .desktop-homepage-container {
-  @include homepage-container;
+  @include desktop-homepage-container;
 
-  .homepage-content {
-    @include homepage-content(column-gap, 3em, 900px, 1fr);
+  .homepage-main-section {
+    @include desktop-homepage-main-section;
 
-    .homepage-tasks-container {
-      @include homepage-tasks-container(1, 35vw);
-      margin-left: 2em;
+    .homepage-section-one {
+      @include desktop-homepage-section-one;
     }
 
-    .homepage-facts-container {
-      grid-column: 2;
-      @include homepage-facts-container;
+    .homepage-section-two {
+      @include desktop-homepage-section-two;
     }
+  }
+
+  .homepage-footer-container {
+    @include desktop-homepage-footer-container;
+  }
+}
+
+// === mobile styling === \\
+
+@mixin mobile-homepage-container {
+  // border: 5px solid red;
+  background-image: url("../../Images/Background/homepageBackground2.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: scroll;
+  background-position: center;
+  margin-top: 1em;
+  height: 75vh;
+  width: 100vw;
+}
+
+@mixin mobile-homepage-main-section {
+  // border: 5px solid cyan;
+  color: rgba(255, 255, 255, 0.8);
+  height: 95%;
+  width: 95%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1em;
+}
+
+@mixin mobile-homepage-section-one {
+  // border: 5px solid goldenrod;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  grid-template-columns: 1;
+  display: grid;
+  grid-template-columns: 1;
+  grid-template-rows: 100px 1fr 1fr;
+
+  .homepage-previous-matches {
+    // border: 5px solid red;
+  }
+}
+
+@mixin mobile-homepage-section-two {
+  .homepage-section-two-tasks {
+    .tasks-container {
+      width: 85%;
+
+      .task-button-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1em;
+        width: 90%;
+
+        .task-button {
+          text-align: center;
+          background: linear-gradient(to right, #262727 0%, #505050 50%, #262727 100%);
+          box-shadow:
+            0px 4px 2px -2px rgba(200, 200, 200, 0.3),
+            0px 10px 5px -5px rgba(200, 200, 200, 0.2),
+            0px 20px 10px -10px rgba(200, 200, 200, 0.1);
+
+          &:hover {
+            cursor: pointer;
+            color: goldenrod;
+          }
+        }
+      }
+
+      .task-selected {
+        color: goldenrod;
+        border: 1px solid gold;
+      }
+
+      .tasks-content {
+        grid-column: 1 / -1;
+      }
+    }
+  }
+}
+
+@mixin mobile-homepage-footer-container {
+  // border: 5px solid green;
+  text-align: center;
+  color: white;
+  width: 85%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1;
+
+  .homepage-filler-space {
+    height: 1px;
+    width: 75%;
+    margin: 0 auto;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-self: center;
+  }
+
+  .homepage-footer-title {
+    width: 50%;
+    margin: 0 auto;
+    padding-top: 1em;
   }
 }
 
 .mobile-homepage-container {
-  @include homepage-container;
+  @include mobile-homepage-container;
 
-  .homepage-content {
-    @include homepage-content(row-gap, 3em, 1fr);
+  .homepage-main-section {
+    @include mobile-homepage-main-section;
 
-    .homepage-tasks-container {
-      @include homepage-tasks-container(1, 75vw);
+    .homepage-section-one {
+      @include mobile-homepage-section-one;
     }
 
-    .homepage-facts-container {
-      @include homepage-facts-container;
+    .homepage-section-two {
+      @include mobile-homepage-section-two;
     }
   }
-}
 
-#homepage-header {
-  #logoImg {
-    width: 150px;
-  }
-
-  h1 {
-    font-size: 25px;
-    color: white;
-    font-family: "Bungee Shade", cursive;
-  }
-}
-
-.homepage-tasks {
-  margin-top: 1em;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  column-gap: 1em;
-}
-
-.dailyTasks-button {
-  background-color: #282e33;
-  color: rgb(195, 195, 195);
-  height: 4em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: 0.5em;
-  border-radius: 1em;
-
-  h3 {
-    margin-top: 0.5em;
-  }
-
-  &:hover {
-    cursor: pointer;
-    color: black;
-    background-color: white;
-  }
-}
-
-.dailyTasks-button-selected {
-  background-color: white;
-  color: black;
-  height: 4em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: 0.5em;
-  border-radius: 1em;
-
-  h3 {
-    margin-top: 0.5em;
-  }
-}
-
-.monthlyTasks-button {
-  background-color: #282e33;
-  color: rgb(195, 195, 195);
-  height: 4em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 0.5em;
-  border-radius: 1em;
-
-  h3 {
-    margin-top: 0.5em;
-  }
-
-  &:hover {
-    cursor: pointer;
-    color: black;
-    background-color: white;
-  }
-}
-
-.monthlyTasks-button-selected {
-  background-color: white;
-  color: black;
-  height: 4em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 0.5em;
-  border-radius: 1em;
-
-  h3 {
-    margin-top: 0.5em;
-  }
-}
-
-#tasks-divider {
-  border: 3px solid white;
-  width: 50%;
-  margin: 0 auto;
-  margin-top: 1em;
-}
-
-#tasks-container {
-  height: 85%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  align-items: center;
-
-  .tasks {
-    border: 5px solid white;
-    height: 20%;
-    width: 95%;
-    color: white;
-    font-size: 25px;
-    border-radius: 1em;
-
-    .taskProgress {
-      border: 3px solid gold;
-      width: 80%;
-      margin: 0 auto;
-      border-radius: 1em;
-    }
+  .homepage-footer-container {
+    @include mobile-homepage-footer-container;
   }
 }

@@ -1,8 +1,5 @@
 import "./Homepage.scss";
 import { useState } from "react";
-import { Image } from "react-bootstrap";
-
-import Logo from "../../Images/Logo.png";
 
 import DailyTasks from "./HomepageTasks/DailyTasks";
 import MonthlyTasks from "./HomepageTasks/MonthlyTasks";
@@ -10,74 +7,75 @@ import MonthlyTasks from "./HomepageTasks/MonthlyTasks";
 import HomepageFacts from "./HomepageFacts/HomepageFacts";
 
 const Homepage = ({ screenVersion, user, token }) => {
-  let topPlayer = {};
-
   const [dailyTaskSelected, setDailyTaskSelected] = useState(true);
-  const [monthlyTaskSelected, setMonthlyTaskSelected] = useState(false);
 
   const handleSelectedTaskButton = (taskSelected) => {
     if (taskSelected === "daily") {
       setDailyTaskSelected(true);
-      setMonthlyTaskSelected(false);
     } else if (taskSelected === "monthly") {
       setDailyTaskSelected(false);
-      setMonthlyTaskSelected(true);
     }
   };
 
   return (
     <section className={`${screenVersion}-homepage-container`}>
-      <header id="homepage-header">
-        <Image src={Logo} alt="Logo" id="logoImg" />
-        <h1>WORLD WIDE CHESS</h1>
-      </header>
-      <div className="homepage-topPlayer">
-        <h1>Welcome, {user.username}</h1>
-      </div>
+      <section className="homepage-main-section">
+        <div className="homepage-section-one">
+          <div className="homepage-welcome-user">
+            <h3>
+              Welcome <br /> {user.username}
+            </h3>
+          </div>
 
-      <div className="homepage-content">
-        <div className="homepage-tasks-container">
-          <div className="homepage-tasks">
-            <div
-              className={
-                dailyTaskSelected
-                  ? "dailyTasks-button-selected"
-                  : "dailyTasks-button"
-              }
-              onClick={() => {
-                handleSelectedTaskButton("daily");
-              }}
-            >
-              <h3>
-                Daily <br /> Tasks
-              </h3>
-            </div>
-            <div
-              className={
-                monthlyTaskSelected
-                  ? "monthlyTasks-button-selected"
-                  : "monthlyTasks-button"
-              }
-              onClick={() => {
-                handleSelectedTaskButton("monthly");
-              }}
-            >
-              <h3>
-                Monthly <br /> Tasks
-              </h3>
-            </div>
-          </div>
-          <div id="tasks-divider"></div>
-          <div id="tasks-container">
-            {dailyTaskSelected ? <DailyTasks /> : <MonthlyTasks />}
-          </div>
+          <div className="homepage-previous-matches">Previous Matches</div>
         </div>
 
-        <div className="homepage-facts-container">
-          <h1>Chess Facts</h1>
-          <HomepageFacts screenVersion={screenVersion} />
+        <div className="homepage-section-two">
+          <h3>Tasks</h3>
+          <div className="homepage-section-two-tasks">
+            <div className="tasks-container">
+              <div className="task-button-container">
+                <h4
+                  className={`task-button ${
+                    dailyTaskSelected ? "task-selected" : null
+                  }`}
+                  onClick={() => {
+                    handleSelectedTaskButton("daily");
+                  }}
+                >
+                  Daily
+                </h4>
+                <h4
+                  className={`task-button ${
+                    dailyTaskSelected ? null : "task-selected"
+                  }`}
+                  onClick={() => {
+                    handleSelectedTaskButton("monthly");
+                  }}
+                >
+                  Monthly
+                </h4>
+              </div>
+              <div className="tasks-content">
+                {dailyTaskSelected ? (
+                  <DailyTasks user={user} token={token} />
+                ) : (
+                  <MonthlyTasks user={user} token={token} />
+                )}
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
+
+      <footer className="homepage-footer-container">
+        <HomepageFacts />
+        <div className="homepage-filler-space"></div>
+        <h4 className="homepage-footer-title">
+          World Wide Chess <br />
+          &copy; 2022
+        </h4>
+      </footer>
     </section>
   );
 };

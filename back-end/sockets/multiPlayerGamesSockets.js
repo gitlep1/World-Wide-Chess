@@ -89,6 +89,10 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
       profileimg: checkIfUserExists.profileimg,
       wins: checkIfUserExists.wins,
       loss: checkIfUserExists.loss,
+      ties: checkIfUserExists.ties,
+      games_played: checkIfUserExists.games_played,
+      rating: checkIfUserExists.rating,
+      is_guest: checkIfUserExists.is_guest,
       socketid: socketId,
     };
 
@@ -136,6 +140,9 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
           wins: checkIf1stUserExists.wins,
           loss: checkIf1stUserExists.loss,
           ties: checkIf1stUserExists.ties,
+          games_played: checkIf1stUserExists.games_played,
+          rating: checkIf1stUserExists.rating,
+          is_guest: checkIf1stUserExists.is_guest,
         };
 
         const playerTwoData = {
@@ -145,6 +152,9 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
           wins: checkIf2ndUserExists.wins,
           loss: checkIf2ndUserExists.loss,
           ties: checkIf2ndUserExists.ties,
+          games_played: checkIf1stUserExists.games_played,
+          rating: checkIf1stUserExists.rating,
+          is_guest: checkIf1stUserExists.is_guest,
         };
 
         io.to(player2SocketId).emit("host-accepted", updateGameData);
@@ -191,6 +201,9 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
         wins: player1Data.wins,
         loss: player1Data.loss,
         ties: player1Data.ties,
+        games_played: player1Data.games_played,
+        rating: player1Data.rating,
+        is_guest: player1Data.is_guest,
       };
 
       const playerTwoData = {
@@ -200,6 +213,9 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
         wins: player2Data.wins,
         loss: player2Data.loss,
         ties: player2Data.ties,
+        games_played: player2Data.games_played,
+        rating: player2Data.rating,
+        is_guest: player2Data.is_guest,
       };
 
       io.in(`/Room/${gameData.id}/Settings`).emit(
@@ -241,6 +257,9 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
           wins: player1Data.wins,
           loss: player1Data.loss,
           ties: player1Data.ties,
+          games_played: player1Data.games_played,
+          rating: player1Data.rating,
+          is_guest: player1Data.is_guest,
         };
 
         const playerTwoData = {
@@ -250,6 +269,9 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
           wins: player2Data.wins,
           loss: player2Data.loss,
           ties: player2Data.ties,
+          games_played: player2Data.games_played,
+          rating: player2Data.rating,
+          is_guest: player2Data.is_guest,
         };
 
         io.in(`/Room/${gameId}/Settings`).emit(
@@ -285,6 +307,9 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
           wins: player1Data.wins,
           loss: player1Data.loss,
           ties: player1Data.ties,
+          games_played: player1Data.games_played,
+          rating: player1Data.rating,
+          is_guest: player1Data.is_guest,
         };
 
         io.in(`/Room/${gameId}/Settings`).emit(
@@ -487,6 +512,9 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
           wins: player1Data.wins,
           loss: player1Data.loss,
           ties: player1Data.ties,
+          games_played: player1Data.games_played,
+          rating: player1Data.rating,
+          is_guest: player1Data.is_guest,
         };
 
         io.in(`/Room/${gameID}`).emit("player1left", multiGame, playerOneData);
@@ -498,6 +526,9 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
           wins: player2Data.wins,
           loss: player2Data.loss,
           ties: player2Data.ties,
+          games_played: player2Data.games_played,
+          rating: player2Data.rating,
+          is_guest: player2Data.is_guest,
         };
 
         io.in(`/Room/${gameID}`).emit("player2left", multiGame, playerTwoData);

@@ -1,20 +1,38 @@
-@mixin homepage-facts {
-  width: 100%;
-  margin: 0 auto;
+@mixin homepage-facts-card {
+  // border: 5px solid purple;
+  text-align: center;
 
-  .homepage-facts-card {
-    cursor: grab;
-    user-select: none;
-    color: gold;
-    background-color: #111;
-    border-radius: 10px;
-    padding: 20px;
-    width: 80%;
-    margin: 0 auto;
+  .homepage-fact-number-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
 
-    &:active {
-      cursor: grabbing;
+    .homepage-fact-number {
+      grid-column: 2;
     }
+
+    .homepage-fact-left-arrow {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .homepage-fact-right-arrow {
+      grid-column: 3;
+      grid-row: 1;
+    }
+
+    .homepage-arrow {
+      font-size: 30px;
+      user-select: none;
+
+      &:hover {
+        cursor: pointer;
+        color: goldenrod;
+      }
+    }
+  }
+
+  .homepage-fact {
+    max-height: 250px;
   }
 }
 
@@ -30,18 +48,10 @@
   }
 }
 
-.desktop-homepage-facts {
-  @include homepage-facts;
+.homepage-facts-card {
+  @include homepage-facts-card;
 
   .homepage-skeleton-loading-container {
     @include homepage-skeleton-loading-container(50vw);
-  }
-}
-
-.mobile-homepage-facts {
-  @include homepage-facts;
-
-  .homepage-skeleton-loading-container {
-    @include homepage-skeleton-loading-container(80%);
   }
 }

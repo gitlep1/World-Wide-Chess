@@ -18,6 +18,7 @@ const FilterSearch = ({
   const [maxEloRating, setMaxEloRating] = useState("");
   const [roomsWithPasswords, setRoomsWithPasswords] = useState(false);
   const [fullRooms, setFullRooms] = useState(false);
+  const [allowSpecs, setAllowSpecs] = useState(false);
 
   const [singleGamesError, setSingleGamesError] = useState("");
   const [multiGamesError, setMultiGamesError] = useState("");
@@ -29,6 +30,12 @@ const FilterSearch = ({
       setMinEloRating(value);
     } else if (name === "maxElo") {
       setMaxEloRating(value);
+    } else if (name === "roomsWithPasswords") {
+      setRoomsWithPasswords(!roomsWithPasswords);
+    } else if (name === "fullRooms") {
+      setFullRooms(!fullRooms);
+    } else if (name === "allowSpecs") {
+      setAllowSpecs(!allowSpecs);
     }
   };
   const handleSubmit = (e) => {
@@ -107,29 +114,37 @@ const FilterSearch = ({
   };
 
   return (
-    <div className={`${screenVersion}-advancedSearch-container`}>
-      <div id="advancedSearch-title">Advanced Search</div>
+    <div className={`${screenVersion}-advanced-search-container`}>
+      <div id="advanced-search-title">Advanced Search</div>
 
-      <Form onSubmit={handleSubmit} className="advancedSearch-form">
-        <div className="bg-dark advancedSearch-singleOrMulti">
-          <div className="singleOrMultiButtons">placeholder</div>
+      <Form onSubmit={handleSubmit} className="advanced-search-form">
+        <div className="advanced-search-mode">
+          <div className="advanced-search-room-specs-container">
+            Spectators?
+            <Form.Check
+              name="allowSpecs"
+              type="switch"
+              className="custom-switch"
+              value="specs"
+              checked={allowSpecs}
+              onChange={handleChange}
+            />
+          </div>
         </div>
-        <div className="bg-dark advancedSearch-roomPassword-container">
-          password
+        <div className="advanced-search-room-password-container">
+          password?
           <Form.Check
-            name="roomPassword"
+            name="roomsWithPasswords"
             type="switch"
             className="custom-switch"
             value="password"
             checked={roomsWithPasswords}
-            onChange={() => {
-              setRoomsWithPasswords(!roomsWithPasswords);
-            }}
+            onChange={handleChange}
           />
         </div>
-        <div className="bg-dark advancedSearch-eloRating-container">
-          <span className="advancedSearch-eloRating-title">Elo Rating</span>
-          <Form.Group controlId="eloRating-min">
+        <div className="advanced-search-elo-rating-container">
+          <span className="advanced-search-elo-rating-title">Elo Rating</span>
+          <Form.Group controlId="elo-rating-min">
             <Form.Control
               type="number"
               name="minElo"
@@ -139,7 +154,7 @@ const FilterSearch = ({
             />
           </Form.Group>
           <div id="elo-divider"></div>
-          <Form.Group controlId="eloRating-max">
+          <Form.Group controlId="elo-rating-max">
             <Form.Control
               type="number"
               name="maxElo"
@@ -149,25 +164,19 @@ const FilterSearch = ({
             />
           </Form.Group>
         </div>
-        <div className="bg-dark advancedSearch-roomFull-container">
-          full
+        <div className="advanced-search-room-full-container">
+          Full?
           <Form.Check
-            name="roomFull"
+            name="fullRooms"
             type="switch"
             className="custom-switch"
             value="full"
             checked={fullRooms}
-            onChange={() => {
-              setFullRooms(!fullRooms);
-            }}
+            onChange={handleChange}
           />
         </div>
 
-        <Button
-          variant="dark"
-          type="submit"
-          className="bg-dark advancedSearch-button"
-        >
+        <Button variant="dark" type="submit" className="advanced-search-button">
           Search
         </Button>
       </Form>

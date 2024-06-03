@@ -5,13 +5,14 @@ $large: 1024px;
 $extra: 1400px;
 
 @mixin menuSideBar-container {
+  // border: 5px solid red;
   height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
-  position: relative;
-  z-index: 1;
+  // position: relative;
+  // z-index: 1000;
 
   .button-image {
     // border: 5px solid red;

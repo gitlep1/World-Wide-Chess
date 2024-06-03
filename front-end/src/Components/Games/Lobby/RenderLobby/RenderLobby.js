@@ -1,4 +1,4 @@
-import "./RenderLobby.scss";
+import "./RenderGames.scss";
 import { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { nanoid } from "nanoid";

@@ -7,9 +7,9 @@ import {
   MdKeyboardDoubleArrowLeft,
   MdKeyboardDoubleArrowRight,
 } from "react-icons/md";
-import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import { nanoid } from "nanoid";
+import Cookies from "js-cookie";
 import axios from "axios";
 
 import DetectScreenSize from "../../../../CustomFunctions/DetectScreenSize";
@@ -47,6 +47,7 @@ const MultiPlayerGame = ({
   forfeitNotify,
   endGame,
   socket,
+  token,
 }) => {
   const navigate = useNavigate();
 
@@ -108,12 +109,20 @@ const MultiPlayerGame = ({
       setGame(gameData);
       setGameEnded(true);
       setPlayerLeft(playerOneData);
+
+      if (!playerOneData.is_guest && !user.is_guest) {
+        handlePlayerLeaving(playerOneData);
+      }
     });
 
     socket.on("player2left", (gameData, playerTwoData) => {
       setGame(gameData);
       setGameEnded(true);
       setPlayerLeft(playerTwoData);
+
+      if (!playerTwoData.is_guest && !user.is_guest) {
+        handlePlayerLeaving(playerTwoData);
+      }
     });
 
     const intervalFunctions = setInterval(() => {
@@ -137,18 +146,6 @@ const MultiPlayerGame = ({
 
       socket.on("multi-game-state-updated", (moveData) => {
         setRecentMoves(moveData.current_positions);
-      });
-
-      socket.on("player1left", (gameData, playerOneData) => {
-        setGame(gameData);
-        setGameEnded(true);
-        setPlayerLeft(playerOneData);
-      });
-
-      socket.on("player2left", (gameData, playerTwoData) => {
-        setGame(gameData);
-        setGameEnded(true);
-        setPlayerLeft(playerTwoData);
       });
     }, 5000);
 
@@ -187,7 +184,91 @@ const MultiPlayerGame = ({
         setWinner(player1Data);
       }
     }
-  }, [chessGame, player1Data, player2Data]);
+  }, [chessGame, player1Data, player2Data]); // eslint-disable-line
+
+  const handlePlayerLeaving = async (playerLeftData) => {
+    const getUserData = await axios
+      .get(`${API}/users/user`, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      })
+      .catch((err) => {
+        setError(err.response.data);
+      });
+
+    const currentUserData = getUserData.data.payload;
+
+    if (currentUserData.id === playerLeftData.id) {
+      const updateUserData = {
+        loss: (currentUserData.loss += 1),
+        games_played: (currentUserData.games_played += 1),
+        last_online: new Date(),
+      };
+
+      await axios
+        .put(`${API}/users/update`, updateUserData, {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        })
+        .then(async (res) => {
+          const updatedUserData = {
+            data: res.data.payload,
+            currentGamesPlayed: currentUserData.games_played,
+            currentLastOnline: currentUserData.last_online,
+          };
+
+          await axios
+            .put(`${API}/daily-tasks`, updatedUserData, {
+              headers: {
+                authorization: `Bearer ${token}`,
+              },
+            })
+            .then((res) => {
+              // update tasks here \\
+            });
+        })
+        .catch((err) => {
+          setError(err.response.data);
+        });
+    } else {
+      const beforeWins = currentUserData.wins;
+      const updateUserData = {
+        wins: (currentUserData.wins += 1),
+        games_played: (currentUserData.games_played += 1),
+        last_online: new Date(),
+      };
+
+      await axios
+        .put(`${API}/users/update`, updateUserData, {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        })
+        .then(async (res) => {
+          const oldUserData = {
+            data: res.data.payload,
+            oldWins: beforeWins,
+            oldGamesPlayed: currentUserData.games_played,
+            oldLastOnline: currentUserData.last_online,
+          };
+
+          await axios
+            .put(`${API}/daily-tasks`, oldUserData, {
+              headers: {
+                authorization: `Bearer ${token}`,
+              },
+            })
+            .then((res) => {
+              console.log({ data: res.data.payload });
+            });
+        })
+        .catch((err) => {
+          setError(err.response.data);
+        });
+    }
+  };
 
   const handleMove = async (from, to, piece) => {
     if (chessGame.turn() === "w") {
@@ -702,6 +783,7 @@ const MultiPlayerGame = ({
               <Button
                 onClick={() => {
                   navigate("/Lobby");
+                  Cookies.remove("gameid");
                 }}
               >
                 Return to Lobby

@@ -53,9 +53,9 @@ users.get(
         wins: getAUser.wins,
         loss: getAUser.loss,
         ties: getAUser.ties,
+        games_played: getAUser.games_played,
         rating: getAUser.rating,
         preferred_color: getAUser.preferred_color,
-        is_guest: false,
         last_online: getAUser.last_online,
       };
 
@@ -105,6 +105,7 @@ users.post("/signup", checkValues, async (req, res) => {
         wins: createdUser.wins,
         loss: createdUser.loss,
         ties: createdUser.ties,
+        games_played: createdUser.games_played,
         rating: createdUser.rating,
         preferred_color: createdUser.preferred_color,
         is_guest: false,
@@ -147,6 +148,7 @@ users.post("/signin", async (req, res) => {
         wins: getUserData.wins,
         loss: getUserData.loss,
         ties: getUserData.ties,
+        games_played: getUserData.games_played,
         rating: getUserData.rating,
         preferred_color: getUserData.preferred_color,
         is_guest: false,
@@ -164,25 +166,29 @@ users.post("/signin", async (req, res) => {
 
 users.put(
   "/update",
-  checkValues,
   requireAuth(),
   scopeAuth(["read:user", "write:user"]),
   async (req, res) => {
     const { token } = req.user;
     const decoded = jwt.decode(token);
 
+    const checkIfUserExists = await getUserByID(decoded.user.id);
+
     const updatedUserData = {
-      profileimg: req.body.profileimg,
-      username: req.body.username,
-      password: req.body.password,
-      email: req.body.email,
-      theme: req.body.theme,
-      chess_coins: req.body.chess_coins,
-      wins: req.body.wins,
-      ties: req.body.ties,
-      loss: req.body.loss,
-      preferred_color: req.body.preferred_color,
-      last_online: req.body.last_online,
+      profileimg: req.body.profileimg || checkIfUserExists.profileimg,
+      username: req.body.username || checkIfUserExists.username,
+      password: req.body.password || checkIfUserExists.password,
+      email: req.body.email || checkIfUserExists.email,
+      theme: req.body.theme || checkIfUserExists.theme,
+      chess_coins: req.body.chess_coins || checkIfUserExists.chess_coins,
+      wins: req.body.wins || checkIfUserExists.wins,
+      ties: req.body.ties || checkIfUserExists.ties,
+      loss: req.body.loss || checkIfUserExists.loss,
+      games_played: req.body.games_played || checkIfUserExists.games_played,
+      rating: req.body.rating || checkIfUserExists.rating,
+      preferred_color:
+        req.body.preferred_color || checkIfUserExists.preferred_color,
+      last_online: req.body.last_online || checkIfUserExists.last_online,
     };
 
     const updatedUser = await updateUser(decoded.user.id, updatedUserData);
