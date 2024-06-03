@@ -83,8 +83,8 @@ const addSingleGamesSocketEventListeners = (io, socket, socketId) => {
     );
 
     const playerData =
-      (await getUserByID(gameData.playerid)) ||
-      (await getGuestByID(gameData.playerid));
+      (await getUserByID(gameData.player1id)) ||
+      (await getGuestByID(gameData.player1id));
 
     const botData = await getBotById(gameData.botid);
 

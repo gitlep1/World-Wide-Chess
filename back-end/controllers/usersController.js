@@ -42,7 +42,7 @@ users.get(
     const getAUser = await getUserByID(decoded.user.id);
 
     if (getAUser) {
-      // console.log("=== GET user by ID", getAUser, "===");
+      console.log("=== GET user by ID", getAUser, "===");
 
       const userData = {
         id: getAUser.id,

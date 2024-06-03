@@ -130,7 +130,7 @@ games.put(
       };
 
       const updateGameData = await updateGame(id, updatedGameData);
-      console.log({ updateGameData });
+
       if (updateGameData) {
         console.log("=== UPDATE game", updateGameData, "===");
         res.status(200).json({ payload: updateGameData });
