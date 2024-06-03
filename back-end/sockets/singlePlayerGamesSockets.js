@@ -302,7 +302,7 @@ const addSingleGamesSocketEventListeners = (io, socket, socketId) => {
     }
   );
 
-  socket.on("single-game-end", async (gameData) => {
+  socket.on("single-end-game", async (gameID, token) => {
     const singleGame = await getGameByID(gameID);
 
     if (singleGame) {
@@ -320,10 +320,11 @@ const addSingleGamesSocketEventListeners = (io, socket, socketId) => {
         );
 
         await deleteMoveHistory(gameID);
-        setTimeout(async () => {
-          await deleteGame(gameID);
-        }, 8000);
       }
+    } else {
+      const errorMessage = `Game has ended.`;
+      io.in(`/Room/${gameID}`).emit("single-game-ended", errorMessage);
+      socket.leave(`/Room/${gameID}`);
     }
   });
 };
