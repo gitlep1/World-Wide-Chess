@@ -10,13 +10,18 @@ const getAllUsers = async () => {
 const getUserByID = async (id) => {
   const user = await db.oneOrNone(
     "SELECT * FROM users WHERE users.id = $1 AND users.is_guest = false",
-    id
+    [id]
   );
+
+  if (!user) {
+    return null;
+  }
+
   return user;
 };
 
 const createUser = async (newUserData) => {
-  const newUser = await db.one(
+  const newUser = await db.oneOrNone(
     "INSERT INTO users (profileimg, username, password, email) VALUES($1, $2, $3, $4) RETURNING *",
     [
       newUserData.profileimg,
@@ -29,7 +34,7 @@ const createUser = async (newUserData) => {
 };
 
 const updateUser = async (id, updatedUserData) => {
-  const updateUser = await db.one(
+  const updateUser = await db.oneOrNone(
     "UPDATE users SET profileimg = $1, username = $2, password = $3, email = $4, theme = $5, chess_coins = $6, wins = $7, ties = $8, loss = $9, games_played = $10, rating = $11, preferred_color = $12, last_online = $13 WHERE id = $14 RETURNING *",
     [
       updatedUserData.profileimg,
@@ -56,7 +61,7 @@ const deleteUser = async (id) => {
     return false;
   }
 
-  const deletedUser = await db.one(
+  const deletedUser = await db.oneOrNone(
     "DELETE FROM users WHERE id = $1 AND users.is_guest = false",
     id
   );

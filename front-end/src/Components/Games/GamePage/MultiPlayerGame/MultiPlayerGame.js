@@ -703,13 +703,23 @@ const MultiPlayerGame = ({
                 </Modal.Title>
               </Modal.Header>
               <Modal.Footer className="winner-modal-footer">
-                <Button
-                  onClick={() => {
-                    endGame();
-                  }}
-                >
-                  End Game
-                </Button>
+                {user.id === player1Data.id ? (
+                  <Button
+                    onClick={() => {
+                      endGame();
+                    }}
+                  >
+                    End Game
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => {
+                      navigate("/Lobby");
+                    }}
+                  >
+                    Back to Lobby
+                  </Button>
+                )}
               </Modal.Footer>
             </Modal>
           ) : null}
@@ -726,13 +736,23 @@ const MultiPlayerGame = ({
               </Modal.Title>
             </Modal.Header>
             <Modal.Footer className="winner-modal-footer">
-              <Button
-                onClick={() => {
-                  endGame();
-                }}
-              >
-                End Game
-              </Button>
+              {user.id === player1Data.id ? (
+                <Button
+                  onClick={() => {
+                    endGame();
+                  }}
+                >
+                  End Game
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => {
+                    navigate("/Lobby");
+                  }}
+                >
+                  Back to Lobby
+                </Button>
+              )}
             </Modal.Footer>
           </Modal>
 

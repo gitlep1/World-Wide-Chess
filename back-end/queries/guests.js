@@ -16,7 +16,7 @@ const getGuestByID = async (id) => {
 };
 
 const createGuest = async (newGuestData) => {
-  const newGuest = await db.one(
+  const newGuest = await db.oneOrNone(
     "INSERT INTO users (profileimg, username, is_guest) VALUES($1, $2, $3) RETURNING *",
     [newGuestData.profileimg, newGuestData.username, newGuestData.is_guest]
   );
@@ -27,7 +27,7 @@ const deleteGuest = async (id) => {
   if (id === null || id === undefined) {
     return false;
   }
-  const deletedGuest = await db.one(
+  const deletedGuest = await db.oneOrNone(
     "DELETE FROM users WHERE id = $1 AND users.is_guest = true RETURNING *",
     id
   );

@@ -78,9 +78,7 @@ const GamePage = ({
         },
       })
       .then((res) => {
-        setTimeout(() => {
-          navigate("/Lobby");
-        }, 5000);
+        navigate("/Lobby");
       })
       .catch((err) => {
         setError(err.message);

@@ -32,7 +32,7 @@ const getGameByID = async (id) => {
 };
 
 const createGame = async (newGameData) => {
-  const newGame = await db.one(
+  const newGame = await db.oneOrNone(
     "INSERT INTO games (room_name, room_password, player1id, allow_specs, is_multiplayer) VALUES ($1, $2, $3, $4, $5) RETURNING *",
     [
       newGameData.room_name,
@@ -46,9 +46,9 @@ const createGame = async (newGameData) => {
 };
 
 const updateGame = async (id, updatedGameData) => {
-  const updatedGame = await db.one(
+  const updatedGame = await db.oneOrNone(
     `
-      UPDATE games SET botId = $2, player2id = $3, player1color = $4, player2color = $5, botColor = $6, current_positions = $7, in_progress = $8, game_time = $9 WHERE id = $1 RETURNING *`,
+      UPDATE games SET botId = $2, player2id = $3, player1color = $4, player2color = $5, botColor = $6, current_positions = $7, in_progress = $8, game_time = $9 WHERE games.id = $1 RETURNING *`,
     [
       id,
       updatedGameData.botId,
@@ -67,7 +67,7 @@ const updateGame = async (id, updatedGameData) => {
 const updateGamePositions = async (id, updatedPositions) => {
   const updatedGame = await db.oneOrNone(
     `
-      UPDATE games SET current_positions = $2 WHERE id = $1 RETURNING *`,
+      UPDATE games SET current_positions = $2 WHERE games.id = $1 RETURNING *`,
     [id, updatedPositions.current_positions]
   );
   return updatedGame;
@@ -78,7 +78,7 @@ const deleteGame = async (id) => {
     return false;
   }
   const deletedGame = await db.oneOrNone(
-    "DELETE FROM games WHERE id = $1 RETURNING *",
+    "DELETE FROM games WHERE games.id = $1 RETURNING *",
     id
   );
   console.log({ deletedGame });
