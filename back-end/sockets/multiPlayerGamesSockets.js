@@ -534,9 +534,6 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
         io.in(`/Room/${gameID}`).emit("player2left", multiGame, playerTwoData);
       }
       await deleteMoveHistory(gameID);
-      setTimeout(async () => {
-        await deleteGame(gameID);
-      }, 8000);
     } else {
       const errorMessage = `Game has ended.`;
       io.in(`/Room/${gameID}`).emit("multi-game-ended", errorMessage);

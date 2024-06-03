@@ -271,81 +271,63 @@ const MultiPlayerGame = ({
   };
 
   const handleMove = async (from, to, piece) => {
-    if (chessGame.turn() === "w") {
-      if (user.id === game.player1id) {
-        if (piece[0] === "w") {
-          const isPromotion =
-            piece === "wP" && from[1] === "7" && to[1] === "8";
+    if (chessGame.turn() === "w" && user.id === game.player1id) {
+      if (piece[0] === "w") {
+        const isPromotion = piece === "wP" && from[1] === "7" && to[1] === "8";
 
-          if (isPromotion) {
-            const promotion = { from, to };
-            setPromotionMove(promotion);
-            setShowPromotion(true);
-            return;
-          }
+        if (isPromotion) {
+          const promotion = { from, to };
+          setPromotionMove(promotion);
+          setShowPromotion(true);
+          return;
+        }
 
-          const move = chessGame.move({ from, to });
-          if (move) {
-            const updatedGameData = {
-              current_positions: chessGame.fen(),
-              from: from,
-              to: to,
-            };
+        const move = chessGame.move({ from, to });
 
-            socket.emit("multi-move-piece", game, updatedGameData, piece, "w");
+        if (move) {
+          const updatedGameData = {
+            current_positions: chessGame.fen(),
+            from: from,
+            to: to,
+          };
 
-            const history = {
-              from,
-              to,
-              piece,
-            };
+          socket.emit("multi-move-piece", game, updatedGameData, piece, "w");
 
-            setPlayer1MoveHistory([...player1MoveHistory, history]);
-          } else {
-            setPromotionMove(null);
-            return null;
-          }
+          const history = { from, to, piece };
+          setPlayer1MoveHistory([...player1MoveHistory, history]);
         } else {
+          setPromotionMove(null);
           return null;
         }
       } else {
         return null;
       }
-    } else if (chessGame.turn() === "b") {
-      if (user.id === game.player2id) {
-        if (piece[0] === "b") {
-          const isPromotion =
-            piece === "bP" && from[1] === "2" && to[1] === "1";
+    } else if (chessGame.turn() === "b" && user.id === game.player2id) {
+      if (piece[0] === "b") {
+        const isPromotion = piece === "bP" && from[1] === "2" && to[1] === "1";
 
-          if (isPromotion) {
-            const promotion = { from, to };
-            setPromotionMove(promotion);
-            setShowPromotion(true);
-            return;
-          }
+        if (isPromotion) {
+          const promotion = { from, to };
+          setPromotionMove(promotion);
+          setShowPromotion(true);
+          return;
+        }
 
-          const move = chessGame.move({ from, to });
-          if (move) {
-            const updatedGameData = {
-              current_positions: chessGame.fen(),
-              from: from,
-              to: to,
-            };
+        const move = chessGame.move({ from, to });
 
-            socket.emit("multi-move-piece", game, updatedGameData, piece, "b");
+        if (move) {
+          const updatedGameData = {
+            current_positions: chessGame.fen(),
+            from: from,
+            to: to,
+          };
 
-            const history = {
-              from,
-              to,
-              piece,
-            };
+          socket.emit("multi-move-piece", game, updatedGameData, piece, "b");
 
-            setPlayer2MoveHistory([...player2MoveHistory, history]);
-          } else {
-            setPromotionMove(null);
-            return null;
-          }
+          const history = { from, to, piece };
+          setPlayer2MoveHistory([...player2MoveHistory, history]);
         } else {
+          setPromotionMove(null);
           return null;
         }
       } else {

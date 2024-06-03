@@ -24,7 +24,7 @@ CREATE TABLE bots (
   username TEXT UNIQUE NOT NULL,
   wins INT DEFAULT 0,
   ties INT DEFAULT 0,
-  loss INT DEFAULT 0,
+  loss INT DEFAULT 0
 );
 
 DROP TABLE IF EXISTS single_player_games;
@@ -57,7 +57,7 @@ DROP TABLE IF EXISTS spectators;
 CREATE TABLE spectators (
   id SERIAL UNIQUE NOT NULL PRIMARY KEY,
   spec_id INT REFERENCES users(id),
-  multi_player_room_id INT REFERENCES single_player_games(id),
+  single_player_room_id INT REFERENCES single_player_games(id),
   multi_player_room_id INT REFERENCES multi_player_games(id)
 );
 

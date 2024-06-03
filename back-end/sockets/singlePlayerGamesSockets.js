@@ -102,47 +102,56 @@ const addSingleGamesSocketEventListeners = (io, socket, socketId) => {
   });
 
   socket.on("get-single-game-data", async (gameId) => {
-    socket.leave(`/Room/${gameId}/Settings`);
-    socket.leave(`/Room/${gameId}`);
-    socket.join(`/Room/${gameId}/Settings`);
-    socket.join(`/Room/${gameId}`);
-
-    const singleGame = await getGameByID(gameId);
-
-    if (singleGame) {
-      const playerData =
-        (await getUserByID(singleGame.player1id)) ||
-        (await getGuestByID(singleGame.player1id));
-
-      const botData = await getBotById(singleGame.botid);
-
-      const moveHistory = await getMoveHistoryByGameID(gameId);
-
-      if (playerData && botData) {
-        io.in(`/Room/${gameId}/Settings`).emit(
-          "single-player-reconnected",
-          singleGame,
-          playerData,
-          botData
-        );
-        io.in(`/Room/${gameId}`).emit(
-          "single-player-reconnected",
-          singleGame,
-          playerData,
-          botData,
-          moveHistory
-        );
-      } else {
-        const errorMessage = `Opponent has disconnected.`;
-        io.in(`/Room/${gameId}`).emit(
-          "single-opponent-disconnected",
-          errorMessage
-        );
-      }
-    } else {
-      const errorMessage = `Game has ended.`;
-      io.in(`/Room/${gameId}`).emit("single-game-ended", errorMessage);
+    try {
+      socket.leave(`/Room/${gameId}/Settings`);
       socket.leave(`/Room/${gameId}`);
+      socket.join(`/Room/${gameId}/Settings`);
+      socket.join(`/Room/${gameId}`);
+
+      const singleGame = await getGameByID(gameId);
+
+      if (singleGame) {
+        const playerData =
+          (await getUserByID(singleGame.player1id)) ||
+          (await getGuestByID(singleGame.player1id));
+
+        const botData = await getBotById(singleGame.botid);
+
+        const moveHistory = await getMoveHistoryByGameID(gameId);
+
+        if (playerData && botData) {
+          io.in(`/Room/${gameId}/Settings`).emit(
+            "single-player-reconnected",
+            singleGame,
+            playerData,
+            botData
+          );
+          io.in(`/Room/${gameId}`).emit(
+            "single-player-reconnected",
+            singleGame,
+            playerData,
+            botData,
+            moveHistory
+          );
+        } else {
+          const errorMessage = `Host has disconnected.`;
+          io.in(`/Room/${gameId}`).emit(
+            "single-opponent-disconnected",
+            errorMessage
+          );
+        }
+      } else {
+        const errorMessage = `Game has ended.`;
+        io.in(`/Room/${gameId}`).emit("single-game-ended", errorMessage);
+        socket.leave(`/Room/${gameId}`);
+      }
+    } catch (err) {
+      const errorMessage = err.message;
+      io.in(`/Room/${gameId}/Settings`).emit(
+        "game-settings-error",
+        errorMessage
+      );
+      socket.leave(`/Room/${gameId}/Settings`);
     }
   });
 
@@ -264,10 +273,10 @@ const addSingleGamesSocketEventListeners = (io, socket, socketId) => {
             color: color,
           };
 
-          const updatedMoveHistory = await updateMoveHistory(
-            singleGameUpdated.id,
-            updatedMoveHistoryData
-          );
+          // const updatedMoveHistory = await updateMoveHistory(
+          //   singleGameUpdated.id,
+          //   updatedMoveHistoryData
+          // );
 
           io.in(`/Room/${gameData.id}`).emit(
             "single-game-state-updated",
