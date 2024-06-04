@@ -1,6 +1,6 @@
 import "./SinglePlayerGameSettings.scss";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button, Image } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { nanoid } from "nanoid";
@@ -119,7 +119,7 @@ const SinglePlayerGameSettings = ({
         };
 
         await axios
-          .post(`${API}/single-move-history`, moveHistoryData, {
+          .post(`${API}/move-history`, moveHistoryData, {
             headers: {
               authorization: `Bearer ${token}`,
             },

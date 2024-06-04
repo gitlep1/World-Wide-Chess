@@ -54,36 +54,50 @@ const GamePage = ({
       });
   };
 
-  const endGame = async () => {
-    if (gameData.isMulti) {
-      socket.emit("multi-end-game", gameData.id, token);
-    } else {
-      socket.emit("single-end-game", gameData.id, token);
-    }
+  const endGame = async (gameID) => {
+    try {
+      if (gameData.isMulti) {
+        socket.emit("multi-end-game", gameID, token);
+      } else {
+        socket.emit("single-end-game", gameID, token);
+      }
 
-    toast.success("Game ended.", {
-      containerId: "general-toast",
-    });
+      toast.success("Game ended.", {
+        containerId: "general-toast",
+      });
 
-    const isMulti = gameData.isMulti ? "multi-games" : "single-games";
+      const isMulti = gameData.isMulti ? "multi-games" : "single-games";
 
-    setGame({});
-    setPlayer1Data({});
-    setPlayer2Data({});
+      setGame({});
+      setPlayer1Data({});
+      setPlayer2Data({});
 
-    await axios
-      .delete(`${API}/${isMulti}/${gameData.id}`, {
+      const deleteMoveHistory = axios.delete(`${API}/move-history/${gameID}`, {
         headers: {
           authorization: `Bearer ${token}`,
         },
-      })
-      .then((res) => {
-        navigate("/Lobby");
-      })
-      .catch((err) => {
-        setError(err.message);
       });
-    Cookies.remove("gameid");
+
+      const deleteGame = axios.delete(`${API}/${isMulti}/${gameID}`, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      });
+
+      await axios
+        .all([deleteMoveHistory, deleteGame])
+        .then((res) => {
+          setTimeout(() => {
+            navigate("/Lobby");
+          }, 5000);
+        })
+        .catch((err) => {
+          setError(err.message);
+        });
+      Cookies.remove("gameid");
+    } catch (err) {
+      setError(err.response.data);
+    }
   };
 
   const renderSingleOrMultiGame = () => {

@@ -15,9 +15,9 @@ const {
 const {
   getMoveHistoryByGameID,
   createMoveHistory,
-  // updateMoveHistory,
+  updateMoveHistory,
   deleteMoveHistory,
-} = require("../queries/moveHistorySingle");
+} = require("../queries/moveHistory");
 
 const addSingleGamesSocketEventListeners = (io, socket, socketId) => {
   const token = socket.handshake.auth.token;
@@ -198,7 +198,6 @@ const addSingleGamesSocketEventListeners = (io, socket, socketId) => {
         oldSingleGameData.id,
         updatedPositions
       );
-      console.log({ singleGameUpdated });
 
       if (!(singleGameUpdated instanceof Error)) {
         const updatedMoveHistoryData = {
@@ -209,13 +208,9 @@ const addSingleGamesSocketEventListeners = (io, socket, socketId) => {
           color: color,
         };
 
-        console.log({ updatedMoveHistoryData });
-
         const updatedMoveHistory = await createMoveHistory(
           updatedMoveHistoryData
         );
-
-        console.log({ updatedMoveHistory });
 
         io.in(`/Room/${gameData.id}`).emit(
           "single-game-state-updated",
@@ -273,10 +268,9 @@ const addSingleGamesSocketEventListeners = (io, socket, socketId) => {
             color: color,
           };
 
-          // const updatedMoveHistory = await updateMoveHistory(
-          //   singleGameUpdated.id,
-          //   updatedMoveHistoryData
-          // );
+          const updatedMoveHistory = await createMoveHistory(
+            updatedMoveHistoryData
+          );
 
           io.in(`/Room/${gameData.id}`).emit(
             "single-game-state-updated",
@@ -318,8 +312,6 @@ const addSingleGamesSocketEventListeners = (io, socket, socketId) => {
           singleGame,
           playerData.username
         );
-
-        await deleteMoveHistory(gameID);
       }
     } else {
       const errorMessage = `Game has ended.`;

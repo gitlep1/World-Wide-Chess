@@ -94,7 +94,9 @@ users.post("/signup", checkValues, async (req, res) => {
         clientTokenPayload,
         "==="
       );
-      const token = jwt.sign(clientTokenPayload, JSK, { expiresIn: "30d" });
+      const token = jwt.sign(clientTokenPayload, JSK, {
+        expiresIn: "30d",
+      });
 
       const userData = {
         id: createdUser.id,
@@ -137,7 +139,9 @@ users.post("/signin", async (req, res) => {
         clientTokenPayload,
         "==="
       );
-      const token = jwt.sign(clientTokenPayload, JSK, { expiresIn: "30d" });
+      const token = jwt.sign(clientTokenPayload, JSK, {
+        expiresIn: "30d",
+      });
 
       const userData = {
         id: getUserData.id,

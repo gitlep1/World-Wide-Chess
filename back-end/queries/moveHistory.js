@@ -1,7 +1,7 @@
 const db = require("../db/dbConfig.js");
 
 const getMoveHistoryByGameID = async (gameID) => {
-  const moveHistory = await db.oneOrNone(
+  const moveHistory = await db.manyOrNone(
     "SELECT * FROM move_history WHERE game_id = $1",
     gameID
   );
@@ -9,7 +9,7 @@ const getMoveHistoryByGameID = async (gameID) => {
 };
 
 const createMoveHistory = async (moveHistoryData) => {
-  const newMoveHistory = db.one(
+  const newMoveHistory = db.oneOrNone(
     "INSERT INTO move_history (game_id, from_square, to_square, piece, color) VALUES ($1, $2, $3, $4, $5) RETURNING *",
     [
       moveHistoryData.game_id,
@@ -26,7 +26,7 @@ const deleteMoveHistory = async (gameID) => {
   if (gameID === null || gameID === undefined) {
     return false;
   }
-  const deletedMessage = await db.one(
+  const deletedMessage = await db.manyOrNone(
     "DELETE FROM move_history WHERE game_id = $1 RETURNING *",
     gameID
   );

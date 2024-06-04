@@ -10,8 +10,7 @@ const guestController = require("./controllers/guestController");
 const botsController = require("./controllers/botsController");
 const singleGamesController = require("./controllers/singleGamesController");
 const multiGamesController = require("./controllers/multiGamesController");
-const singleMoveHistoryController = require("./controllers/moveHistorySingleController");
-const multiMoveHistoryController = require("./controllers/moveHistoryMultiController");
+const moveHistoryController = require("./controllers/moveHistoryController");
 const factsController = require("./controllers/factsController");
 const shopController = require("./controllers/shopController");
 const userInventoryController = require("./controllers/userInventoryController");
@@ -55,18 +54,28 @@ app.use(
 
 app.use(express.json());
 
+// === account routes === \\
 app.use("/users", usersController);
 app.use("/guests", guestController);
 app.use("/bots", botsController);
+
+// === game routes === \\
 app.use("/single-games", singleGamesController);
-app.use("/single-move-history", singleMoveHistoryController);
 app.use("/multi-games", multiGamesController);
-app.use("/multi-move-history", multiMoveHistoryController);
+app.use("/move-history", moveHistoryController);
+
+// === misc routes === \\
 app.use("/facts", factsController);
 app.use("/shop", shopController);
+
+// === inventory routes === \\
 app.use("/user-inventory", userInventoryController);
 app.use("/guest-inventory", guestInventoryController);
+
+// === message routes === \\
 app.use("/messages", messagesController);
+
+// === task routes === \\
 app.use("/daily-tasks", dailyTasksController);
 app.use("/monthly-tasks", monthlyTasksController);
 
