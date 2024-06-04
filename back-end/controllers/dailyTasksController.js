@@ -163,7 +163,7 @@ daily.put(
             const newUserWins = checkIfUserExists.wins;
             const oldUserWins = oldUserData.oldWins;
 
-            console.log({ cur: task.task_current, total: task.task_total });
+            console.log({ current: task.task_current, total: task.task_total });
 
             if (newUserWins === oldUserWins + 1) {
               if (task.task_current === task.task_total) {

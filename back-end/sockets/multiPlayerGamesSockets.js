@@ -16,9 +16,8 @@ const {
 const {
   getMoveHistoryByGameID,
   createMoveHistory,
-  updateMoveHistory,
   deleteMoveHistory,
-} = require("../queries/moveHistoryMulti");
+} = require("../queries/moveHistory");
 
 const { requireAuth } = require("../validation/requireAuth");
 const { scopeAuth } = require("../validation/scopeAuth");
@@ -385,13 +384,6 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
 
           console.log({ multiGameUpdated });
 
-          const updatedMoveHistory = await updateMoveHistory(
-            multiGameUpdated.id,
-            updatedMoveHistoryData
-          );
-
-          console.log({ updatedMoveHistory });
-
           io.in(`/Room/${oldGameData.id}`).emit(
             "multi-game-state-updated",
             multiGameUpdated,
@@ -448,15 +440,9 @@ const addMultiGamesSocketEventListeners = (io, socket, socketId) => {
             color: color,
           };
 
-          const updatedMoveHistory = await updateMoveHistory(
-            multiGameUpdated.id,
-            updatedMoveHistoryData
-          );
-
           io.in(`/Room/${gameData.id}`).emit(
             "multi-game-state-updated",
-            multiGameUpdated,
-            updatedMoveHistory
+            multiGameUpdated
           );
         } else {
           console.log(

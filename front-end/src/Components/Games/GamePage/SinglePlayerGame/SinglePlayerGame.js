@@ -172,7 +172,7 @@ const SinglePlayerGame = ({
   }, [navigate, setGame, socket]);
 
   const endGame = async (gameID) => {
-    await axios.delete(`${API}/single-move-history/${gameID}`, {
+    await axios.delete(`${API}/move-history/${gameID}`, {
       headers: {
         authorization: `Bearer ${token}`,
       },
