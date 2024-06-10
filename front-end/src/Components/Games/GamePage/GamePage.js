@@ -98,7 +98,7 @@ const GamePage = ({
           }, 4100);
         })
         .catch((err) => {
-          setError(err.message);
+          setError(err);
         });
     } catch (err) {
       setError(err.response.data);
