@@ -57,7 +57,12 @@ const Homepage = ({ screenVersion, user, token }) => {
                 </h4>
               </div>
               <div className="tasks-content">
-                {dailyTaskSelected ? (
+                {user.is_guest ? (
+                  <p>
+                    Please create an account to participate in daily and monhtly
+                    tasks for rewards.
+                  </p>
+                ) : dailyTaskSelected ? (
                   <DailyTasks user={user} token={token} />
                 ) : (
                   <MonthlyTasks user={user} token={token} />

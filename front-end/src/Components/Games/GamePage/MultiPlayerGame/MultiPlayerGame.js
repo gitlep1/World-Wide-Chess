@@ -482,6 +482,8 @@ const MultiPlayerGame = ({
     }
   };
 
+  const highlightValidPositions = (piece, sourceSquare) => {};
+
   return (
     <section className={`${screenVersion}-multiPlayerGame-container`}>
       {!player1Data || !player2Data ? forfeitNotify() : null}
@@ -565,7 +567,7 @@ const MultiPlayerGame = ({
                 boxShadow: "0 5px 23px rgba(0, 0, 0, 1)",
               }}
               areArrowsAllowed={false}
-              animationDuration={500}
+              animationDuration={400}
               boardWidth={controlWidth(screenSize)}
               customLightSquareStyle={{
                 borderRadius: "15%",
@@ -576,6 +578,13 @@ const MultiPlayerGame = ({
                 borderRadius: "15%",
                 boxShadow: "0 0 15px rgba(0, 0, 0, 1)",
                 backgroundColor: "rgba(70, 70, 70, 1)",
+              }}
+              onPieceDragBegin={(piece, sourceSquare) => {
+                // console.log("inside drag");
+                highlightValidPositions(piece, sourceSquare);
+              }}
+              onMouseOverSquare={(square) => {
+                // console.log({ square });
               }}
             />
           </div>

@@ -34,7 +34,7 @@ const addSocketEventListeners = (io) => {
     //   socket.disconnect(true);
     // });
 
-    // add socket token checking later \\
+    // === add socket token checking later === \\
     // socket.on("check-token", (token) => {
     //   console.log("check: ", token);
     //   socketAuth(token, socket, (error) => {

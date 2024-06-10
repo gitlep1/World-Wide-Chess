@@ -1,7 +1,9 @@
+const jwt = require("jsonwebtoken");
+const Chess = require("chess.js").Chess;
+
 const { getUserByID } = require("../queries/users");
 const { getGuestByID } = require("../queries/guests");
 const { getBotById } = require("../queries/bots");
-const Chess = require("chess.js").Chess;
 
 const {
   getAllGames,
