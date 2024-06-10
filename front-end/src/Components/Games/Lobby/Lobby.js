@@ -9,17 +9,17 @@ import { BiSearchAlt2 } from "react-icons/bi";
 import axios from "axios";
 import Cookies from "js-cookie";
 
-import RenderLobby from "./RenderLobby/RenderLobby";
+import AdvancedSearch from "./AdvancedSearch/AdvancedSearch";
+
 import RenderSingleGames from "./RenderLobby/RenderSingleGames";
 import RenderMultiGames from "./RenderLobby/RenderMultiGames";
 
-import AdvancedSearch from "./AdvancedSearch/AdvancedSearch";
+import CustomToasts from "../../../CustomToasts/CustomToasts";
 
 import {
   SetCookies,
   RemoveCookies,
 } from "../../../CustomFunctions/HandleCookies";
-import CustomToasts from "../../../CustomToasts/CustomToasts";
 
 const API = process.env.REACT_APP_API_URL;
 
@@ -402,7 +402,7 @@ const Lobbypage = ({
   };
 
   const advancedSearchAnimation = useSpring({
-    height: showAdvancedSearch ? "25em" : "0",
+    height: showAdvancedSearch ? "20.5em" : "0",
     opacity: showAdvancedSearch ? 1 : 0,
     config: { duration: 500 },
   });
@@ -485,7 +485,9 @@ const Lobbypage = ({
           </animated.div>
         </div>
       </section>
+
       <br />
+
       <section className="lobby-bottom-container">
         <div className="lobby-table-container">
           <div className="lobby-single-player-container">
