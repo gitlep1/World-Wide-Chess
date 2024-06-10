@@ -98,6 +98,7 @@ const GamePage = ({
           }, 4100);
         })
         .catch((err) => {
+          console.log("inside");
           setError(err);
         });
     } catch (err) {
