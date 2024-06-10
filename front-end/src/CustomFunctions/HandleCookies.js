@@ -9,7 +9,6 @@ const SetCookies = (name, data, expirationDate) => {
 };
 
 const RemoveCookies = (name) => {
-  console.log("remove cookie: ", name);
   Cookies.remove(name);
 };
 
