@@ -50,7 +50,7 @@ const SinglePlayerGame = ({
   player2Data,
   setPlayer1Data,
   setPlayer2Data,
-  forfeitNotify,
+  endGame,
   socket,
   token,
 }) => {
@@ -170,32 +170,6 @@ const SinglePlayerGame = ({
       socket.off("single-game-state-updated-error");
     };
   }, [navigate, setGame, socket]);
-
-  const endGame = async (gameID) => {
-    await axios.delete(`${API}/move-history/${gameID}`, {
-      headers: {
-        authorization: `Bearer ${token}`,
-      },
-    });
-    await axios
-      .delete(`${API}/single-games/${gameID}`, {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      })
-      .then(() => {
-        toast.success("Game Ended", {
-          containerId: "GameEnded",
-        });
-        socket.emit("get-single-game-data");
-        setTimeout(() => {
-          navigate("/Lobby");
-        }, 4100);
-      })
-      .catch((err) => {
-        // console.log({ endGameError: err });
-      });
-  };
 
   useEffect(() => {
     prevBoard.current.push(fen);
@@ -485,7 +459,6 @@ const SinglePlayerGame = ({
 
   return (
     <section className={`${screenVersion}-singlePlayerGame-container`}>
-      {!player1Data || !player2Data ? forfeitNotify() : null}
       <div className="singlePlayerGame">
         <div className="singlePlayerGame-header-container">
           <div className="singlePlayerGame-header">
@@ -573,7 +546,7 @@ const SinglePlayerGame = ({
                 boxShadow: "0 5px 23px rgba(0, 0, 0, 1)",
               }}
               areArrowsAllowed={false}
-              animationDuration={500}
+              animationDuration={400}
               boardWidth={controlWidth(screenSize)}
               customLightSquareStyle={{
                 borderRadius: "1em",

@@ -8,6 +8,11 @@ import axios from "axios";
 import SinglePlayerGame from "./SinglePlayerGame/SinglePlayerGame";
 import MultiPlayerGame from "./MultiPlayerGame/MultiPlayerGame";
 
+import {
+  SetCookies,
+  RemoveCookies,
+} from "../../../CustomFunctions/HandleCookies";
+
 const API = process.env.REACT_APP_API_URL;
 
 const GamePage = ({
@@ -89,12 +94,12 @@ const GamePage = ({
         .then((res) => {
           setTimeout(() => {
             navigate("/Lobby");
-          }, 5000);
+            RemoveCookies("gameid");
+          }, 4100);
         })
         .catch((err) => {
           setError(err.message);
         });
-      Cookies.remove("gameid");
     } catch (err) {
       setError(err.response.data);
     }
