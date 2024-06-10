@@ -73,9 +73,9 @@ $large-desktop: 1400px;
 }
 
 @mixin lobby-searchbar-container {
+  border: 1px solid black;
   color: white;
   background-color: #1b1b1b;
-  border: 1px solid black;
   width: 100%;
   margin: 0 auto;
   grid-column: 1 / -1;

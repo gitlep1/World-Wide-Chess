@@ -14,8 +14,8 @@ const FilterSearch = ({
   socket,
   token,
 }) => {
-  const [minEloRating, setMinEloRating] = useState("");
-  const [maxEloRating, setMaxEloRating] = useState("");
+  const [minRating, setMinRating] = useState("");
+  const [maxRating, setMaxRating] = useState("");
   const [roomsWithPasswords, setRoomsWithPasswords] = useState(false);
   const [fullRooms, setFullRooms] = useState(false);
   const [allowSpecs, setAllowSpecs] = useState(false);
@@ -26,10 +26,10 @@ const FilterSearch = ({
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    if (name === "minElo") {
-      setMinEloRating(value);
-    } else if (name === "maxElo") {
-      setMaxEloRating(value);
+    if (name === "minRating") {
+      setMinRating(value);
+    } else if (name === "maxRating") {
+      setMaxRating(value);
     } else if (name === "roomsWithPasswords") {
       setRoomsWithPasswords(!roomsWithPasswords);
     } else if (name === "fullRooms") {
@@ -38,13 +38,15 @@ const FilterSearch = ({
       setAllowSpecs(!allowSpecs);
     }
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
     socket.off("get-single-games");
     socket.off("get-multi-games");
 
-    let singleGamesList = [];
-    let multiGamesList = [];
+    let singleGamesList;
+    let multiGamesList;
 
     if (roomsWithPasswords || fullRooms) {
       if (roomsWithPasswords) {
@@ -62,24 +64,24 @@ const FilterSearch = ({
       setSingleGamesCopy(singleGamesList);
       setMultiGamesCopy(multiGamesList);
     } else {
-      revertSearch();
+      return handleRevertSearch;
     }
 
-    // do elo rating later \\
-    // if (minEloRating !== "") {
+    // do  rating later \\
+    // if (minRating !== "") {
     //   gamesList = games.filter(
-    //     (game) => Number(game.player1rating) >= Number(minEloRating)
+    //     (game) => Number(game.player1rating) >= Number(minRating)
     //   );
     // }
 
-    // if (minEloRating !== "") {
+    // if (minRating !== "") {
     //   gamesList = games.filter(
-    //     (game) => Number(game.player1rating) <= Number(minEloRating)
+    //     (game) => Number(game.player1rating) <= Number(minRating)
     //   );
     // }
   };
 
-  const revertSearch = async () => {
+  const handleRevertSearch = async () => {
     const singlePlayerGamesRequest = axios
       .get(`${API}/single-games`, {
         headers: {
@@ -118,21 +120,19 @@ const FilterSearch = ({
       <div id="advanced-search-title">Advanced Search</div>
 
       <Form onSubmit={handleSubmit} className="advanced-search-form">
-        <div className="advanced-search-mode">
-          <div className="advanced-search-room-specs-container">
-            Spectators?
-            <Form.Check
-              name="allowSpecs"
-              type="switch"
-              className="custom-switch"
-              value="specs"
-              checked={allowSpecs}
-              onChange={handleChange}
-            />
-          </div>
+        <div className="advanced-search-specs-container">
+          Spectators?
+          <Form.Check
+            name="allowSpecs"
+            type="switch"
+            className="custom-switch"
+            value="specs"
+            checked={allowSpecs}
+            onChange={handleChange}
+          />
         </div>
-        <div className="advanced-search-room-password-container">
-          password?
+        <div className="advanced-search-password-container">
+          Password?
           <Form.Check
             name="roomsWithPasswords"
             type="switch"
@@ -142,29 +142,7 @@ const FilterSearch = ({
             onChange={handleChange}
           />
         </div>
-        <div className="advanced-search-elo-rating-container">
-          <span className="advanced-search-elo-rating-title">Elo Rating</span>
-          <Form.Group controlId="elo-rating-min">
-            <Form.Control
-              type="number"
-              name="minElo"
-              placeholder="min ..."
-              onChange={handleChange}
-              value={minEloRating}
-            />
-          </Form.Group>
-          <div id="elo-divider"></div>
-          <Form.Group controlId="elo-rating-max">
-            <Form.Control
-              type="number"
-              name="maxElo"
-              placeholder="max ..."
-              onChange={handleChange}
-              value={maxEloRating}
-            />
-          </Form.Group>
-        </div>
-        <div className="advanced-search-room-full-container">
+        <div className="advanced-search-full-container">
           Full?
           <Form.Check
             name="fullRooms"
@@ -175,10 +153,48 @@ const FilterSearch = ({
             onChange={handleChange}
           />
         </div>
+        <div className="advanced-search-rating-container">
+          <span className="advanced-search-rating-title">Rating</span>
+          <div className="rating-number-container">
+            <Form.Group controlId="rating-min">
+              <Form.Control
+                type="number"
+                name="minRating"
+                placeholder="min ..."
+                onChange={handleChange}
+                value={minRating}
+              />
+            </Form.Group>
+            <div id="rating-divider"></div>
+            <Form.Group controlId="rating-max">
+              <Form.Control
+                type="number"
+                name="maxRating"
+                placeholder="max ..."
+                onChange={handleChange}
+                value={maxRating}
+              />
+            </Form.Group>
+          </div>
+        </div>
 
-        <Button variant="dark" type="submit" className="advanced-search-button">
-          Search
-        </Button>
+        <div className="advanced-search-button-container">
+          <Button
+            variant="dark"
+            type="submit"
+            className="advanced-search-button"
+          >
+            Search
+          </Button>
+
+          <Button
+            variant="dark"
+            className="advanced-search-button"
+            onClick={handleRevertSearch}
+          >
+            Revert
+          </Button>
+        </div>
       </Form>
     </div>
   );
