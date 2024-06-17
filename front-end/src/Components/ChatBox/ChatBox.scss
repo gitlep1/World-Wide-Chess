@@ -146,11 +146,8 @@
     height: 100vh;
     .chat-box-body {
       .chat-box-messages {
-        // border: 5px solid red;
         .messages {
           padding-left: 3%;
-          // height: calc(100% - 70%); // how to use calc to start at 30% and increment by 1% until reaching the max-height
-          // height: 25%;
           overflow-y: auto;
           border-radius: 1em;
         }
@@ -171,10 +168,8 @@
   .chat-box-container {
     .chat-box-body {
       .chat-box-messages {
-        // border: 5px solid cyan;
         .messages {
           padding-left: 3%;
-          // height: 30%;
           overflow-y: auto;
           border-radius: 1em;
         }
@@ -183,7 +178,6 @@
       .chat-box-players-online {
         .players-online {
           padding-left: 5%;
-          // height: 23%;
           overflow-y: auto;
         }
       }
@@ -197,7 +191,6 @@
       .chat-box-messages {
         .messages {
           padding-left: 3%;
-          // height: 30%;
           overflow-y: auto;
           border-radius: 1em;
         }
@@ -206,7 +199,6 @@
       .chat-box-players-online {
         .players-online {
           padding-left: 5%;
-          // height: 30%;
           overflow-y: auto;
         }
       }
@@ -218,10 +210,8 @@
   .chat-box-container {
     .chat-box-body {
       .chat-box-messages {
-        // border: 5px solid purple;
         .messages {
           padding-left: 3%;
-          // height: 65%;
           overflow-y: auto;
           border-radius: 1em;
         }
@@ -230,7 +220,6 @@
       .chat-box-players-online {
         .players-online {
           padding-left: 5%;
-          // height: 58%;
           overflow-y: auto;
         }
       }

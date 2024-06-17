@@ -48,37 +48,46 @@ const FilterSearch = ({
     let singleGamesList;
     let multiGamesList;
 
-    if (roomsWithPasswords || fullRooms) {
-      if (roomsWithPasswords) {
-        singleGamesList = singleGames.filter((game) => game.room_password);
+    if (allowSpecs) {
+      singleGamesList = singleGames.filter((game) => game.allow_specs);
 
-        multiGamesList = multiGames.filter((game) => game.room_password);
-      }
-
-      if (fullRooms) {
-        singleGamesList = singleGames.filter((game) => game.in_progress);
-
-        multiGamesList = multiGames.filter((game) => game.in_progress);
-      }
-
-      setSingleGamesCopy(singleGamesList);
-      setMultiGamesCopy(multiGamesList);
-    } else {
-      return handleRevertSearch;
+      multiGamesList = multiGames.filter((game) => game.allow_specs);
     }
 
-    // do  rating later \\
+    if (roomsWithPasswords) {
+      singleGamesList = singleGames.filter((game) => game.room_password);
+
+      multiGamesList = multiGames.filter((game) => game.room_password);
+    }
+
+    if (fullRooms) {
+      singleGamesList = singleGames.filter((game) => game.in_progress);
+
+      multiGamesList = multiGames.filter((game) => game.in_progress);
+    }
+
     // if (minRating !== "") {
-    //   gamesList = games.filter(
+    //   singleGamesList = singleGamesList.filter(
+    //     (game) => Number(game.player1rating) >= Number(minRating)
+    //   );
+
+    //   multiGamesList = multiGamesList.filter(
     //     (game) => Number(game.player1rating) >= Number(minRating)
     //   );
     // }
 
-    // if (minRating !== "") {
-    //   gamesList = games.filter(
-    //     (game) => Number(game.player1rating) <= Number(minRating)
+    // if (maxRating !== "") {
+    //   singleGamesList = singleGamesList.filter(
+    //     (game) => Number(game.player1rating) >= Number(maxRating)
+    //   );
+
+    //   multiGamesList = multiGamesList.filter(
+    //     (game) => Number(game.player1rating) <= Number(maxRating)
     //   );
     // }
+
+    setSingleGamesCopy(singleGamesList);
+    setMultiGamesCopy(multiGamesList);
   };
 
   const handleRevertSearch = async () => {

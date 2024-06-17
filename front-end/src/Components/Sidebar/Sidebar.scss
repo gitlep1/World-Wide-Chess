@@ -5,17 +5,13 @@ $large: 1024px;
 $extra: 1400px;
 
 @mixin menuSideBar-container {
-  // border: 5px solid red;
   height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
-  // position: relative;
-  // z-index: 1000;
 
   .button-image {
-    // border: 5px solid red;
     width: 40px;
     opacity: 80%;
 
@@ -24,23 +20,16 @@ $extra: 1400px;
       cursor: pointer;
     }
 
-    @media (min-height: $tiny) {
-      // border: 5px solid purple;
-    }
     @media (min-height: $small) {
-      // border: 5px solid orange;
       width: 35px;
     }
     @media (min-height: $medium) {
-      // border: 5px solid yellow;
       width: 40px;
     }
     @media (min-height: $large) {
-      // border: 5px solid green;
       width: 70px;
     }
     @media (min-height: $extra) {
-      // border: 5px solid cyan;
       width: 70px;
     }
   }
@@ -60,23 +49,16 @@ $extra: 1400px;
         cursor: pointer;
       }
 
-      @media (min-height: $tiny) {
-        // border: 5px solid purple;
-      }
       @media (min-height: $small) {
-        // border: 5px solid orange;
         width: 35px;
       }
       @media (min-height: $medium) {
-        // border: 5px solid yellow;
         width: 40px;
       }
       @media (min-height: $large) {
-        // border: 5px solid green;
         width: 70px;
       }
       @media (min-height: $extra) {
-        // border: 5px solid cyan;
         width: 70px;
       }
     }
@@ -126,10 +108,16 @@ $extra: 1400px;
   z-index: 0;
   width: 50%;
   height: 50%;
-  -webkit-box-shadow: 0px 0px 0px 5px black, inset 0px 10px 27px -8px #141414,
-    inset 0px -10px 27px -8px #a31925, 4px 5px 16px 7px rgba(0, 0, 0, 0);
-  box-shadow: 0px 0px 0px 5px black, inset 0px 10px 27px -8px #141414,
-    inset 0px -10px 27px -8px #a31925, 4px 5px 16px 7px rgba(0, 0, 0, 0);
+  -webkit-box-shadow:
+    0px 0px 0px 5px black,
+    inset 0px 10px 27px -8px #141414,
+    inset 0px -10px 27px -8px #a31925,
+    4px 5px 16px 7px rgba(0, 0, 0, 0);
+  box-shadow:
+    0px 0px 0px 5px black,
+    inset 0px 10px 27px -8px #141414,
+    inset 0px -10px 27px -8px #a31925,
+    4px 5px 16px 7px rgba(0, 0, 0, 0);
 }
 
 @mixin sidebar-style {

@@ -24,7 +24,6 @@ users.get("/", requireAuth(), scopeAuth(["read:user"]), async (req, res) => {
   const allUsers = await getAllUsers();
 
   if (allUsers) {
-    // console.log("=== GET Users", allUsers, "===");
     res.status(200).json({ payload: allUsers });
   } else {
     res.status(404).send("Cannot find any users");
