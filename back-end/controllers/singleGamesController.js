@@ -25,7 +25,6 @@ games.get("/", requireAuth(), scopeAuth(["read:user"]), async (req, res) => {
     const allGames = await getAllGames();
 
     if (allGames) {
-      // console.log("=== GET games", allGames, "===");
       res.status(200).json({ payload: allGames });
     } else {
       res.status(404).json({ error: "No chess games found." });
@@ -45,7 +44,6 @@ games.get(
       const gotAGame = await getGameByID(id);
 
       if (gotAGame) {
-        // console.log("=== GET game", gotAGame, "===");
         res.status(200).json({ payload: gotAGame });
       } else {
         res.status(404).json({ error: `Cannot get chess game with ID: ${id}` });

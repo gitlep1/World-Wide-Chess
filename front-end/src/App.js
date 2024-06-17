@@ -12,7 +12,6 @@ import DesktopApp from "./Components/DesktopApp";
 import MobileApp from "./Components/MobileApp";
 
 // Page components \\
-// import LandingPage from "./Components/LandingPage/LandingPage";
 import SmallResolution from "./Components/SmallResolution/SmallResolution";
 
 // Custom functions \\

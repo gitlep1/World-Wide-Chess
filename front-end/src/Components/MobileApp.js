@@ -2,9 +2,6 @@ import "./MobileApp.scss";
 import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import { push as SidebarMenu } from "react-burger-menu";
-// import { GiHamburgerMenu } from "react-icons/gi";
-// import io from "socket.io-client";
-// import Cookies from "js-cookie";
 
 // Page stuff \\
 import Homepage from "./Homepage/Homepage";

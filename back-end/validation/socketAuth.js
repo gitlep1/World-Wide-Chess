@@ -2,8 +2,6 @@ const jwt = require("jsonwebtoken");
 const JSK = process.env.JWT_SECRET;
 
 const socketAuth = (token, socket, next) => {
-  // const token = socket.handshake.auth.token;
-  // console.log(token);
   if (token) {
     jwt.verify(token, JSK, (err) => {
       if (err) {
@@ -21,7 +19,6 @@ const socketAuth = (token, socket, next) => {
 
           socket.handshake.auth.token = newToken;
         } else {
-          // console.log(err);
           return next(new Error("Unauthorized"));
         }
       }
