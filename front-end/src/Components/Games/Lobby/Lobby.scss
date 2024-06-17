@@ -125,7 +125,6 @@ $large-desktop: 1400px;
 }
 
 @mixin lobby-bottom-container {
-  // border: 5px solid cyan;
   display: flex;
   flex-direction: column;
   height: 80%;
@@ -211,7 +210,6 @@ $large-desktop: 1400px;
       grid-column: 1 / -1;
       display: flex;
       justify-content: space-evenly;
-      // border: 5px solid red;
     }
 
     .lobby-modal-create-button {
@@ -293,7 +291,6 @@ $large-desktop: 1400px;
 
       .lobby-table-container {
         .lobby-table-header {
-          // border: 5px solid blueviolet;
         }
       }
     }
@@ -311,7 +308,6 @@ $large-desktop: 1400px;
 
       .lobby-table-container {
         .lobby-table-header {
-          // border: 5px solid green;
         }
       }
     }
@@ -331,7 +327,6 @@ $large-desktop: 1400px;
 
       .lobby-table-container {
         .lobby-table-header {
-          // border: 5px solid orange;
         }
       }
     }
@@ -349,7 +344,6 @@ $large-desktop: 1400px;
 
       .lobby-table-container {
         .lobby-table-header {
-          // border: 5px solid maroon;
         }
       }
     }
@@ -367,7 +361,6 @@ $large-desktop: 1400px;
 
       .lobby-table-container {
         .lobby-table-header {
-          // border: 5px solid honeydew;
         }
       }
     }

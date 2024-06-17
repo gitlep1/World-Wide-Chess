@@ -48,37 +48,26 @@ const FilterSearch = ({
     let singleGamesList;
     let multiGamesList;
 
-    if (roomsWithPasswords || fullRooms) {
-      if (roomsWithPasswords) {
-        singleGamesList = singleGames.filter((game) => game.room_password);
-
-        multiGamesList = multiGames.filter((game) => game.room_password);
-      }
-
-      if (fullRooms) {
-        singleGamesList = singleGames.filter((game) => game.in_progress);
-
-        multiGamesList = multiGames.filter((game) => game.in_progress);
-      }
-
-      setSingleGamesCopy(singleGamesList);
-      setMultiGamesCopy(multiGamesList);
-    } else {
-      return handleRevertSearch;
+    if (allowSpecs) {
+      singleGamesList = singleGames.filter((game) => game.allow_specs);
+      
+      multiGamesList = multiGames.filter((game) => game.allow_specs);
     }
 
-    // do  rating later \\
-    // if (minRating !== "") {
-    //   gamesList = games.filter(
-    //     (game) => Number(game.player1rating) >= Number(minRating)
-    //   );
-    // }
+    if (roomsWithPasswords) {
+      singleGamesList = singleGames.filter((game) => game.room_password);
+      
+      multiGamesList = multiGames.filter((game) => game.room_password);
+    }
 
-    // if (minRating !== "") {
-    //   gamesList = games.filter(
-    //     (game) => Number(game.player1rating) <= Number(minRating)
-    //   );
-    // }
+    if (fullRooms) {
+      singleGamesList = singleGames.filter((game) => game.in_progress);
+      
+      multiGamesList = multiGames.filter((game) => game.in_progress);
+    }
+    
+    setSingleGamesCopy(singleGamesList);
+    setMultiGamesCopy(multiGamesList);
   };
 
   const handleRevertSearch = async () => {

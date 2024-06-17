@@ -88,7 +88,6 @@ games.delete("/:userID/:id", requireAuth(), async (req, res) => {
   const deletePreviousGame = await deletePreviousGames(userID, id);
 
   if (deletePreviousGame.id) {
-    console.log("=== DESTROY game", deletePreviousGame, "===");
     res.status(200).json({ payload: deletePreviousGame });
   } else {
     res.status(404).send(`Game with the ID: ${id} could not be deleted.`);

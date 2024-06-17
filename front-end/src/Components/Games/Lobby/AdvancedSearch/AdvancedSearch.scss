@@ -103,7 +103,6 @@
 }
 
 @mixin advanced-search-button-container {
-  // border: 5px solid red;
   grid-column: 1 / -1;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -123,12 +122,7 @@
   }
 }
 
-@mixin form-check-input {
-  background-color: black;
-  border-color: white;
-}
-
-// DESKTOP STYLING \\
+// === DESKTOP STYLING === \\
 
 .desktop-advanced-search-container {
   @include advanced-search-container;
@@ -160,13 +154,9 @@
       @include advanced-search-button-container;
     }
   }
-
-  .form-check-input:checked {
-    @include form-check-input;
-  }
 }
 
-// MOBILE STYLING \\
+// === MOBILE STYLING === \\
 
 .mobile-advanced-search-container {
   @include advanced-search-container;
@@ -198,8 +188,9 @@
       @include advanced-search-button-container;
     }
   }
+}
 
-  .form-check-input:checked {
-    @include form-check-input;
-  }
+.form-check-input:checked {
+  background-color: black;
+  border-color: white;
 }

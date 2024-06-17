@@ -8,6 +8,7 @@ const API = process.env.REACT_APP_API_URL;
 
 const Message = ({ user, token, socket, onMessageCreated }) => {
   const [input, setInput] = useState("");
+  const [error, setError] = useState("");
 
   const onChange = (e) => {
     setInput(e.target.value);
@@ -39,7 +40,7 @@ const Message = ({ user, token, socket, onMessageCreated }) => {
         profileimg: user.profileimg,
         message: input,
       };
-      // socket.emit("create-message", messageData);
+
       await axios
         .post(`${API}/messages`, messageData, {
           headers: {
@@ -50,7 +51,7 @@ const Message = ({ user, token, socket, onMessageCreated }) => {
           socket.emit("get-all-messages");
         })
         .catch((err) => {
-          // console.log(err.message);
+          setError(err.message);
         });
     }
     setInput("");

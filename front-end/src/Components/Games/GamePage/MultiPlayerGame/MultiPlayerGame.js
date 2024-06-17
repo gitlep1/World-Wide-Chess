@@ -101,8 +101,6 @@ const MultiPlayerGame = ({
 
     socket.on("multi-game-state-updated", (moveData, updatedMoveHistory) => {
       setRecentMoves(moveData.current_positions);
-
-      // console.log({ updatedMoveHistory });
     });
 
     socket.on("player1left", (gameData, playerOneData) => {
@@ -580,12 +578,9 @@ const MultiPlayerGame = ({
                 backgroundColor: "rgba(70, 70, 70, 1)",
               }}
               onPieceDragBegin={(piece, sourceSquare) => {
-                // console.log("inside drag");
                 highlightValidPositions(piece, sourceSquare);
               }}
-              onMouseOverSquare={(square) => {
-                // console.log({ square });
-              }}
+              onMouseOverSquare={(square) => {}}
             />
           </div>
 

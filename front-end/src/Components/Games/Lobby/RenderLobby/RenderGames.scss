@@ -5,14 +5,11 @@ $medium-desktop: 1100px;
 $large-desktop: 1400px;
 
 @mixin render-games-container {
-  // border: 5px solid cyan;
   height: 45vh;
   overflow-y: auto;
-  // overflow-x: hidden;
 }
 
 @mixin room-info-box {
-  // border: 5px solid cyan;
   display: grid;
   grid-template-columns: 30px 1fr;
   align-items: center;
@@ -25,26 +22,21 @@ $large-desktop: 1400px;
   max-height: 12em;
 
   .room-number {
-    // border: 5px solid cyan;
   }
 
   .room-name {
-    // border: 5px solid red;
   }
 
   .room-players {
-    // border: 5px solid orange;
     grid-column: 1 / -1;
     display: grid;
     grid-template-columns: 1;
     align-items: center;
 
     span:nth-of-type(1) {
-      // border: 3px solid brown;
     }
 
     span:nth-of-type(2) {
-      // border: 3px solid yellow;
     }
   }
 

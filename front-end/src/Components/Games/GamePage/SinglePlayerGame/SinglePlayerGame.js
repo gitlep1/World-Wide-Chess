@@ -147,8 +147,6 @@ const SinglePlayerGame = ({
       async (singleGameUpdated, updatedMoveHistory) => {
         setGame(singleGameUpdated);
         setFen(singleGameUpdated.current_positions);
-
-        // console.log(updatedMoveHistory);
       }
     );
 

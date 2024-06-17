@@ -14,13 +14,10 @@ const { scopeAuth } = require("../validation/scopeAuth");
 
 const JSK = process.env.JWT_SECRET;
 
-// const DefaultProfImg = "../Images/DefaultProfImg.png";
-
 guest.get("/", requireAuth(), scopeAuth(["read:user"]), async (req, res) => {
   const allGuests = await getAllGuests();
 
   if (allGuests) {
-    // console.log("=== GET Users", allGuests, "===");
     res.status(200).json({ payload: allGuests });
   } else {
     res.status(404).send("Cannot find any guests");
@@ -38,8 +35,6 @@ guest.get(
     const getAGuest = await getGuestByID(decoded.user.id);
 
     if (getAGuest) {
-      // console.log("=== GET guest by ID", getAGuest, "===");
-
       const guestData = {
         profileimg: getAGuest.profileimg,
         username: getAGuest.username,
@@ -69,11 +64,7 @@ guest.post("/signup", async (req, res) => {
       user: createdGuest,
       scopes: ["read:user", "write:user"],
     };
-    console.log(
-      "=== POST guest (clientTokenPayload)",
-      clientTokenPayload,
-      "==="
-    );
+
     const token = jwt.sign(clientTokenPayload, JSK, {
       expiresIn: "1d",
     });
@@ -104,7 +95,6 @@ guest.delete(
     const deletedGuest = await deleteGuest(decoded.user.id);
 
     if (deletedGuest.id) {
-      console.log("=== DELETE guest", deletedGuest, "===");
       res.status(200).json(
         `Guest: ${deletedGuest.username} \n 
           with ID: ${deletedGuest.id} has been deleted.`
