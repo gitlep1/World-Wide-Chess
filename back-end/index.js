@@ -1,7 +1,6 @@
 const express = require("express");
 const cors = require("cors");
 const http = require("http");
-// const csurf = require("csurf"); // research first then use later to handle security vulnerabilities
 const socketIO = require("socket.io");
 const addSocketEventListeners = require("./socket");
 
@@ -46,13 +45,6 @@ app.use(
     origin: allowedOrigins,
   })
 );
-
-// const csrfProtection = csurf({ cookie: true });
-// app.get("/csrf-token", (req, res) => {
-//   res.set("X-CSRF-Token", req.csrfToken());
-//   res.status(200).send();
-// });
-// app.use(csrfProtection);
 
 app.use(express.json());
 
