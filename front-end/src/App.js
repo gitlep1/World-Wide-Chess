@@ -26,12 +26,6 @@ import CustomToastContainers from "./CustomToasts/CustomToastContainers";
 const API = process.env.REACT_APP_API_URL;
 const socket = io(API);
 
-// const socket = io(API, {
-//   auth: {
-//     token: JSON.parse(Cookies.get("token")),
-//   },
-// });
-
 const App = () => {
   const desktopVersion = "desktop";
   const mobileVersion = "mobile";
@@ -118,50 +112,6 @@ const App = () => {
     }
     setMainLoading(false);
   };
-
-  // add socket token checking later idea 1 \\
-
-  // const handleSockets = () => {
-  //   socket.emit("check-token", token);
-
-  //   // console.log(token);
-  //   // console.log(tokenData);
-
-  //   socket.on("invalid-token-error", (err) => {
-  //     setError(err);
-  //     setLoading(false);
-  //   });
-
-  //   socket.on("invalid-scope-error", (err) => {
-  //     setError(err);
-  //     setLoading(false);
-  //   });
-
-  //   return () => {
-  //     socket.off("invalid-token-error");
-  //     socket.off("invalid-scope-error");
-  //   };
-  // };
-
-  // add socket token checking later idea 2 (add to top of desktopApp/mobileApp files \\
-
-  // const API = process.env.REACT_APP_API_URL;
-  // const socket = io(API, {
-  //   auth: {
-  //     token: JSON.parse(Cookies.get("token")),
-  //   },
-  // });
-
-  // add socket token checking later idea 3 \\
-
-  // const handleSocketToken = () => {
-  //   send to a backend route through api and check the token there:
-  //     if not a valid token:
-  //       remove cookies
-  //       on the backend generate a new token for the guest
-  //     else:
-  //       allow the user to continue
-  // }
 
   const generateAlphaNumericID = (length) => {
     const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
