@@ -1,5 +1,7 @@
 import "./Homepage.scss";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "react-bootstrap";
 
 import DailyTasks from "./HomepageTasks/DailyTasks";
 import MonthlyTasks from "./HomepageTasks/MonthlyTasks";
@@ -7,6 +9,8 @@ import MonthlyTasks from "./HomepageTasks/MonthlyTasks";
 import HomepageFacts from "./HomepageFacts/HomepageFacts";
 
 const Homepage = ({ screenVersion, user, token }) => {
+  const navigate = useNavigate();
+
   const [dailyTaskSelected, setDailyTaskSelected] = useState(true);
 
   const handleSelectedTaskButton = (taskSelected) => {
@@ -25,9 +29,20 @@ const Homepage = ({ screenVersion, user, token }) => {
             <h3>
               Welcome <br /> {user.username}
             </h3>
+            <div className="play-button-container">
+              <Button
+                className="play-button"
+                variant="outline-warning"
+                onClick={() => {
+                  navigate("./Lobby");
+                }}
+              >
+                Play Chess
+              </Button>
+            </div>
           </div>
 
-          <div className="homepage-previous-matches">Previous Matches</div>
+          {/* <div className="homepage-previous-matches">Previous Matches</div> */}
         </div>
 
         <div className="homepage-section-two">

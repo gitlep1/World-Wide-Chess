@@ -35,9 +35,10 @@ $extra-large-desktop: 1400px;
   grid-template-columns: 1;
   display: grid;
   grid-template-columns: 1;
-  grid-template-rows: 100px 1fr 1fr;
+  grid-template-rows: auto 1fr;
 
   .homepage-previous-matches {
+    //
   }
 }
 
@@ -237,4 +238,8 @@ $extra-large-desktop: 1400px;
   .homepage-footer-container {
     @include mobile-homepage-footer-container;
   }
+}
+
+.play-button {
+  width: 95%;
 }
