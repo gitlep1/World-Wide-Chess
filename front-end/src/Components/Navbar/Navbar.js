@@ -1,6 +1,6 @@
 import "./Navbar.scss";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Image } from "react-bootstrap";
 import { IoMdArrowDropup } from "react-icons/io";
 
@@ -8,6 +8,7 @@ import Logo from "../../Images/Logo.png";
 
 const NavBar = ({ screenVersion, handleSidebarOpen }) => {
   const navigate = useNavigate();
+  const location = useLocation().pathname.split("/").pop();
 
   const [homeActive, setHomeActive] = useState(false);
   const [lobbyActive, setLobbyActive] = useState(false);
