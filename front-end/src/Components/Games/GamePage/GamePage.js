@@ -106,6 +106,7 @@ const GamePage = ({
   };
 
   const renderSingleOrMultiGame = () => {
+    console.log({ error });
     if (loading) {
       return <div>Loading...</div>;
     } else if (error) {
