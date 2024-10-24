@@ -90,7 +90,7 @@ const App = () => {
     if (window.innerWidth <= 400) {
       setResize("23%");
     }
-    if (window.innerWidth <= 324) {
+    if (window.innerWidth <= 325) {
       setResize("25%");
     }
   };
